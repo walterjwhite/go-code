@@ -9,7 +9,7 @@ import (
 	"github.com/walterjwhite/go-application/libraries/shutdown"
 )
 
-var logFile = flag.String("Log", "", "The log file to write to", "Log")
+var logFile = flag.String("Log", "", "The log file to write to")
 
 func Configure() context.Context {
 	identifier.Log()
