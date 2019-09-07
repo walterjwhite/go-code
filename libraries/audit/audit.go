@@ -1,12 +1,16 @@
 package main
 
 import (
+	"bytes"
+	"strings"
 	"io/ioutil"
+	"log"
 	"os"
 	"os/exec"
 
 	"github.com/walterjwhite/go-application/libraries/path"
 	"github.com/walterjwhite/go-application/libraries/runner"
+	"github.com/walterjwhite/go-application/libraries/screenshot"
 )
 
 func Audit(command *exec.Cmd, label string) (int, string, error) {
