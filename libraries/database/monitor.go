@@ -1,7 +1,8 @@
-package monitor
+package database
 
 import (
-	"github.com/walterjwhite/go-application/libraries/database"
+	//"github.com/walterjwhite/go-application/libraries/database"
+	"github.com/walterjwhite/go-application/libraries/monitor"
 )
 
 type DatabaseMonitorAction struct {
@@ -18,7 +19,7 @@ type DatabaseMonitorActionEvent struct {
 	Event                 interface{}
 }
 
-func New(action *monitor.Action, session *monitor.Session) DatabaseMonitorAction {
+func NewMonitor(action *monitor.Action, session *monitor.Session) DatabaseMonitorAction {
 	var databaseMonitorAction DatabaseMonitorAction
 
 	yamlhelper.Read(action.Reference, &databaseMonitorAction)
