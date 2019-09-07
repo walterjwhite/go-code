@@ -1,1 +1,3 @@
-module github.com/walterjwhite/go-application/libraries/application/io/writematcher
+module github.com/walterjwhite/go-application/libraries/writermatcher
+
+go 1.12

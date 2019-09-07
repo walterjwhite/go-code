@@ -2,6 +2,8 @@
 
 source ./.helpers/libraries/format
 
+_GITHUB_MODULE_PATH=github.com/walterjwhite/go-application/libraries
+
 _build_library() {
 	_PWD=$(pwd)
 	
@@ -10,10 +12,17 @@ _build_library() {
 	echo -e "building library: $_LIBRARY"
 	
 	format
-	
-	vgo build
+	_setup_module
+	go build
 	
 	cd $_PWD
+}
+
+_setup_module() {
+	if [ ! -e go.mod ]
+	then
+		go mod init $_GITHUB_MODULE_PATH/$(basename $_LIBRARY)
+	fi
 }
 
 _build_libraries() {

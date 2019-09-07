@@ -24,7 +24,7 @@ echo -e "$_VERSION"
 echo -e "$_GO_VERSION"
 echo -e "$_OS_ARCHITECTURE"
 
-# set -x
+set -x
 
 _PWD=$(pwd)
 
@@ -37,9 +37,7 @@ _build_command() {
 	cd $_COMMAND_DIRECTORY
 	format
 	
-	vgo build -ldflags "$_OPTIONS"
-	#go build -ldflags "$_OPTIONS"
-	#vgo build
+	go build -ldflags "$_OPTIONS"
 
 	cd $_PWD
 }

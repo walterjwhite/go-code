@@ -1,9 +1,15 @@
 github.com/walterjwhite/go-application/libraries/identifier v0.0.0-20190907145257-2983bae739f3 h1:xpioDv93g0hQ+JJ7pepKqCkNNqPJb9fJHbHwH0HpQLc=
 github.com/walterjwhite/go-application/libraries/identifier v0.0.0-20190907145257-2983bae739f3/go.mod h1:d4GhwdM6x7ErZqHaDJm/+7fNq4nql5Bsitmbjmkcums=
+github.com/walterjwhite/go-application/libraries/identifier v0.0.0-20190907160606-318f9aa236a5 h1:jW2Lh+7V/zcqcO64dXdnsiJPxVMHE35hNhbecB+6IuU=
+github.com/walterjwhite/go-application/libraries/identifier v0.0.0-20190907160606-318f9aa236a5/go.mod h1:d4GhwdM6x7ErZqHaDJm/+7fNq4nql5Bsitmbjmkcums=
 github.com/walterjwhite/go-application/libraries/logging v0.0.0-20190907145257-2983bae739f3 h1:h/Wi9NecHfJPMnvv3yAlaDyGh1RRJM8H1FDX3KophaU=
 github.com/walterjwhite/go-application/libraries/logging v0.0.0-20190907145257-2983bae739f3/go.mod h1:eT1gabHFI1zsMFXK/q0+Klg7S0KIWpnlToO2uF+20Mw=
+github.com/walterjwhite/go-application/libraries/logging v0.0.0-20190907160606-318f9aa236a5 h1:lI5KAoMyXGxsiPsjxgpJW1ZpGqtbvFMGx/a8YrX59uo=
+github.com/walterjwhite/go-application/libraries/logging v0.0.0-20190907160606-318f9aa236a5/go.mod h1:eT1gabHFI1zsMFXK/q0+Klg7S0KIWpnlToO2uF+20Mw=
 github.com/walterjwhite/go-application/libraries/shutdown v0.0.0-20190907145257-2983bae739f3 h1:7MtKebSLyi+aO6vjYiOxUtLYPXYA/LOkucoY8tGYvtY=
 github.com/walterjwhite/go-application/libraries/shutdown v0.0.0-20190907145257-2983bae739f3/go.mod h1:QycOiJK6vO3rLRelPjbs1usU/wmkYOk5sKVMLOKSKYY=
+github.com/walterjwhite/go-application/libraries/shutdown v0.0.0-20190907160606-318f9aa236a5 h1:eQ/+hrORky+jSMDjMcOqxAr1OoxQuixxrw7qaWfG54I=
+github.com/walterjwhite/go-application/libraries/shutdown v0.0.0-20190907160606-318f9aa236a5/go.mod h1:Whit+hHYjvvO8wvh7w9NXhDP0nko0CXXfW0390TUWeE=
 golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2/go.mod h1:djNgcEr1/C05ACkg1iLfiJU5Ep61QUkGW8qpdssI0+w=
 golang.org/x/net v0.0.0-20190827160401-ba9fcec4b297 h1:k7pJ2yAPLPgbskkFdhRCsA77k2fySZ1zf2zCjvQCiIM=
 golang.org/x/net v0.0.0-20190827160401-ba9fcec4b297/go.mod h1:z5CRVTTTmAJ677TzLLGU+0bjPO0LkuOLi4/5GtJWs/s=
