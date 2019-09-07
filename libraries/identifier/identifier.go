@@ -1,7 +1,6 @@
 package identifier
 
 import (
-	"fmt"
 	"log"
 )
 

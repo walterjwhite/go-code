@@ -1,5 +1,10 @@
 package logging
 
+import (
+	"log"
+	"os"
+)
+
 func Set(filename string) {
 	if len(filename) == 0 {
 		log.Println("No log file configured, using stdout/stderr")
