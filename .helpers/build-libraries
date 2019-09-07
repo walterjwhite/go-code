@@ -30,7 +30,7 @@ _format() {
 
 if [ "$#" -eq "0" ]
 then
-	_build_libraries $(find libraries -type f | grep go.mod$ | sed -e "s/\/go\.mod$//")
+	_build_libraries $(find libraries -type f | grep gopkg.toml$ | sed -e "s/\/gopkg\.toml$//")
 else
 	_build_libraries $@
 fi
