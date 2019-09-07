@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	ctx := application.Configure()
+	application.Configure()
 	//application.Wait(ctx)
 
 	screenshot.Take("label", "detail")

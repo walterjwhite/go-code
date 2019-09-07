@@ -9,7 +9,7 @@ _build_library() {
 	
 	echo -e "building library: $_LIBRARY"
 	
-	_format
+	format
 	
 	vgo build
 	

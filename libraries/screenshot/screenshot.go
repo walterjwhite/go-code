@@ -2,8 +2,8 @@ package screenshot
 
 import (
 	"github.com/vova616/screenshot"
-	"image/png"
 	"github.com/walterjwhite/go-application/libraries/path"
+	"image/png"
 	"log"
 )
 
