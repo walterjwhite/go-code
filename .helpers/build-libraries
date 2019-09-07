@@ -6,6 +6,9 @@ _build_library() {
 	cd $_LIBRARY
 	
 	echo -e "building library: $_LIBRARY"
+	
+	_format
+	
 	vgo build
 	
 	cd $_PWD
@@ -15,6 +18,13 @@ _build_libraries() {
 	for _LIBRARY in $@
 	do
 		_build_library
+	done
+}
+
+_format() {
+	for _SOURCE_FILE in $(find . -type f | grep \\.go$)
+	do
+		gofmt -s -w $_SOURCE_FILE
 	done
 }
 

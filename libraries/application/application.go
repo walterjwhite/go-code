@@ -3,7 +3,7 @@ package application
 import (
 	"context"
 	"flag"
-	
+
 	"github.com/walterjwhite/go-application/libraries/identifier"
 	"github.com/walterjwhite/go-application/libraries/logging"
 	"github.com/walterjwhite/go-application/libraries/shutdown"

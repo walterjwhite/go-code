@@ -1,10 +1,10 @@
 package main
 
 import (
+	"io/ioutil"
 	"os"
 	"os/exec"
-	"io/ioutil"
-	
+
 	"github.com/walterjwhite/go-application/libraries/path"
 	"github.com/walterjwhite/go-application/libraries/runner"
 )
