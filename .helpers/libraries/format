@@ -1,0 +1,8 @@
+#!/bin/bash
+
+format() {
+	for _SOURCE_FILE in $(find . -type f | grep \\.go$)
+	do
+		gofmt -s -w $_SOURCE_FILE
+	done
+}

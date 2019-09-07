@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source ./.helpers/libraries/format
+
 _build_library() {
 	_PWD=$(pwd)
 	
@@ -21,12 +23,7 @@ _build_libraries() {
 	done
 }
 
-_format() {
-	for _SOURCE_FILE in $(find . -type f | grep \\.go$)
-	do
-		gofmt -s -w $_SOURCE_FILE
-	done
-}
+
 
 if [ "$#" -eq "0" ]
 then

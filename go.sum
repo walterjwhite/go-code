@@ -2,3 +2,16 @@ github.com/BurntSushi/xgb v0.0.0-20160522181843-27f122750802 h1:1BDTz0u9nC3//pOC
 github.com/BurntSushi/xgb v0.0.0-20160522181843-27f122750802/go.mod h1:IVnqGOEym/WlBOVXweHU+Q+/VP0lqqI8lqeDx9IjBqo=
 github.com/vova616/screenshot v0.0.0-20190211115255-f9547e483e0a h1:bDR1b8ylagDeiZJLd0QXit1Q5JuJujlvTwidz0ie7aE=
 github.com/vova616/screenshot v0.0.0-20190211115255-f9547e483e0a/go.mod h1:gjlNhAXON0uGGilpsAZpMx5bN1ZVavUlJETHif7w4HQ=
+github.com/walterjwhite/go-application/libraries/application v0.0.0-20190907145257-2983bae739f3 h1:EgvVMzPS0q/00UYRTQPKDNp41M9jb6lbTbwbg3/KME0=
+github.com/walterjwhite/go-application/libraries/application v0.0.0-20190907145257-2983bae739f3/go.mod h1:VaoC9R2Fw/7ymeNXHdcFNk8G/tY2+35Xlxo3AacS4uk=
+github.com/walterjwhite/go-application/libraries/identifier v0.0.0-20190907145257-2983bae739f3 h1:xpioDv93g0hQ+JJ7pepKqCkNNqPJb9fJHbHwH0HpQLc=
+github.com/walterjwhite/go-application/libraries/identifier v0.0.0-20190907145257-2983bae739f3/go.mod h1:d4GhwdM6x7ErZqHaDJm/+7fNq4nql5Bsitmbjmkcums=
+github.com/walterjwhite/go-application/libraries/logging v0.0.0-20190907145257-2983bae739f3 h1:h/Wi9NecHfJPMnvv3yAlaDyGh1RRJM8H1FDX3KophaU=
+github.com/walterjwhite/go-application/libraries/logging v0.0.0-20190907145257-2983bae739f3/go.mod h1:eT1gabHFI1zsMFXK/q0+Klg7S0KIWpnlToO2uF+20Mw=
+github.com/walterjwhite/go-application/libraries/shutdown v0.0.0-20190907145257-2983bae739f3 h1:7MtKebSLyi+aO6vjYiOxUtLYPXYA/LOkucoY8tGYvtY=
+github.com/walterjwhite/go-application/libraries/shutdown v0.0.0-20190907145257-2983bae739f3/go.mod h1:QycOiJK6vO3rLRelPjbs1usU/wmkYOk5sKVMLOKSKYY=
+golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2/go.mod h1:djNgcEr1/C05ACkg1iLfiJU5Ep61QUkGW8qpdssI0+w=
+golang.org/x/net v0.0.0-20190827160401-ba9fcec4b297 h1:k7pJ2yAPLPgbskkFdhRCsA77k2fySZ1zf2zCjvQCiIM=
+golang.org/x/net v0.0.0-20190827160401-ba9fcec4b297/go.mod h1:z5CRVTTTmAJ677TzLLGU+0bjPO0LkuOLi4/5GtJWs/s=
+golang.org/x/sys v0.0.0-20190215142949-d0b11bdaac8a/go.mod h1:STP8DvDyc/dI5b8T5hshtkjS+E42TnysNCUPdjciGhY=
+golang.org/x/text v0.3.0/go.mod h1:NqM8EUOU14njkJ3fqMW+pc6Ldnwhi/IjpwHt7yyuwOQ=
