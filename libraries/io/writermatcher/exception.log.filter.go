@@ -1,4 +1,4 @@
-package jwthelper
+package writematcher
 
 import (
 	"io"
@@ -39,7 +39,7 @@ func checkLineForException(s interface{}, line string) {
 func matches(line string, pattern string, ignoreCase bool) bool {
 	if ignoreCase {
 		line = strings.ToUpper(line)
-		pattern = strings.toUpper(pattern)
+		pattern = strings.ToUpper(pattern)
 	}
 
 	return strings.Contains(line, pattern)

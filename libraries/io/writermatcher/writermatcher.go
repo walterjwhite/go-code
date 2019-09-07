@@ -1,4 +1,4 @@
-package writermatcher
+package writematcher
 
 import (
 	"io"
@@ -15,8 +15,8 @@ type WriterMatcher interface {
 	Check(p []byte)
 }
 
-func (writerDelegate WriterDelegate) Write(p []byte) (n int, err error) {
-	writerDelegate.Matcher.check(p)
+func (writerDelegate *WriterDelegate) Write(p []byte) (n int, err error) {
+	writerDelegate.Matcher.Check(p)
 
 	if writerDelegate.Delegate != nil {
 		return writerDelegate.Delegate.Write(p)

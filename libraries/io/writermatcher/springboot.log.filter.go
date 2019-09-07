@@ -1,4 +1,4 @@
-package jwthelper
+package writematcher
 
 import (
 	"fmt"
@@ -9,13 +9,13 @@ import (
 // this only prints if the application log level is INFO or lower
 const SpringBootApplicationStartedString = "Started Application in"
 
-type SpringBootApplicationStarteupNotifier struct {
+type SpringBootApplicationStartupNotifier struct {
 	Channel  chan *string
 	Notified bool
 }
 
 func New(channel chan *string, writer io.Writer) WriterDelegate {
-	return WriterDelegate{Channel: channel, Delegate: writer, Filter: SpringBootApplicationStartupNotifier{Channel: channel}}
+	return WriterDelegate{Channel: channel, Delegate: writer, Matcher: SpringBootApplicationStartupNotifier{Channel: channel}}
 }
 
 func (n SpringBootApplicationStartupNotifier) Check(p []byte) {
