@@ -5,10 +5,9 @@ import (
 )
 
 // *MUST* be injected at compile time
-var ApplicationVersion string
-var BuildDate string
-var GoVersion string
-var OsArchitecture string
+var (
+	ApplicationVersion, BuildDate, GoVersion, OsArchitecture string
+)
 
 func Log() {
 	if isConfigured() {

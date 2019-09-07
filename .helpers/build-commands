@@ -1,20 +1,24 @@
 #!/bin/bash
 
+# @see: https://medium.com/@joshroppo/setting-go-1-5-variables-at-compile-time-for-versioning-5b30a965d33e
+
 _BUILD_DATE=$(date +"%Y/%m/%d-%H:%M:%S")
 _VERSION=$(git rev-parse HEAD)
+_GO_VERSION=$(go version | awk {'print$3'})
+_OS_ARCHITECTURE=$(go version | awk {'print$4'})
 
-#_APPLICATION_VERSION_FLAG="-X libraries.identifier.applicationVersion=$_VERSION"
-#_BUILD_DATE_FLAG="-X libraries.identifier.buildDate=\"$_BUILD_DATE\""
+_APPLICATION_VERSION_FLAG="-X github.com/walterjwhite/go-application/libraries/identifier.ApplicationVersion=$_VERSION"
+_BUILD_DATE_FLAG="-X github.com/walterjwhite/go-application/libraries/identifier.BuildDate=$_BUILD_DATE"
+_GO_VERSION_FLAG="-X github.com/walterjwhite/go-application/libraries/identifier.GoVersion=$_GO_VERSION"
+_OS_ARCHITECTURE_FLAG="-X github.com/walterjwhite/go-application/libraries/identifier.OSArchitecture=$_OS_ARCHITECTURE"
 
-#_APPLICATION_VERSION_FLAG="-X libraries.identifier.ApplicationVersion=$_VERSION"
-#_BUILD_DATE_FLAG="-X libraries.identifier.BuildDate=\"$_BUILD_DATE\""
+_OPTIONS=" $_APPLICATION_VERSION_FLAG $_BUILD_DATE_FLAG $_GO_VERSION_FLAG $_OS_ARCHITECTURE_FLAG"
 
-#_APPLICATION_VERSION_FLAG="-X github.com/walterjwhite/go-application/libraries/identifier.applicationVersion=$_VERSION"
-#_BUILD_DATE_FLAG="-X github.com/walterjwhite/go-application/libraries/identifier.buildDate=\"$_BUILD_DATE\""
-_APPLICATION_VERSION_FLAG="-X identifier.ApplicationVersion=$_VERSION"
-_BUILD_DATE_FLAG="-X identifier.BuildDate=\"$_BUILD_DATE\""
-
-_OPTIONS=" $_APPLICATION_VERSION_FLAG $_BUILD_DATE_FLAG"
+echo -e "#####"
+echo -e "$_BUILD_DATE"
+echo -e "$_VERSION"
+echo -e "$_GO_VERSION"
+echo -e "$_OS_ARCHITECTURE"
 
 # set -x
 
@@ -28,8 +32,7 @@ do
 	_EXECUTABLE=$(basename $_COMMAND_DIRECTORY)
 	
 	cd $_COMMAND_DIRECTORY
-	#go build -ldflags "$_OPTIONS"
-	go build -ldflags "-X identifier.BuildDate=\"$_BUILD_DATE\" -X identifier.ApplicationVersion=$_VERSION"
-	
+	go build -ldflags "$_OPTIONS"
+
 	cd $_PWD
 done
