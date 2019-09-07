@@ -1,2 +1,6 @@
 [[constraint]]
   name = "github.com/vova616/screenshot"
+
+[[constraint]]
+  name = "github.com/walterjwhite/go-application/libraries/path"
+  version = "0.0.1"

@@ -38,7 +38,8 @@ _build_command() {
 	format
 	
 	#vgo build -ldflags "$_OPTIONS"
-	vgo build
+	go build -ldflags "$_OPTIONS"
+	#vgo build
 
 	cd $_PWD
 }
