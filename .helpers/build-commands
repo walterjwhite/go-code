@@ -34,7 +34,7 @@ do
 	_EXECUTABLE=$(basename $_COMMAND_DIRECTORY)
 	
 	cd $_COMMAND_DIRECTORY
-	go build -ldflags "$_OPTIONS"
+	vgo build -ldflags "$_OPTIONS"
 
 	cd $_PWD
 done

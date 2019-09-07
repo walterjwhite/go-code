@@ -1,18 +1,12 @@
 package main
 
 import (
-	"fmt"
-	"log"
-
-	"github.com/faiface/beep"
-	"github.com/faiface/speaker"
-	"github.com/faiface/wav"
-
 	"os"
-	"sync"
-	"time"
-
-	synclocal "libraries/sync"
+	"os/exec"
+	"io/ioutil"
+	
+	"github.com/walterjwhite/go-application/libraries/path"
+	"github.com/walterjwhite/go-application/libraries/runner"
 )
 
 func Audit(command *exec.Cmd, label string) (int, string, error) {

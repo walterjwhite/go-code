@@ -1,7 +1,27 @@
 #!/bin/bash
 
-for _LIBRARY in $(ls libraries)
-do
+_build_library() {
+	_PWD=$(pwd)
+	
+	cd $_LIBRARY
+	
 	echo -e "building library: $_LIBRARY"
-	go install libraries/$_LIBRARY
-done
+	vgo build
+	
+	cd $_PWD
+}
+
+_build_libraries() {
+	for _LIBRARY in $@
+	do
+		_build_library
+	done
+}
+
+if [ "$#" -eq "0" ]
+then
+	_build_libraries $(find libraries -type f | grep go.mod$ | sed -e "s/\/go\.mod$//")
+else
+	_build_libraries $@
+fi
+
