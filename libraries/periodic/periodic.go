@@ -25,3 +25,12 @@ func Periodic(ctx context.Context, interval time.Duration, fn func() error) {
 		}
 	}
 }
+
+func GetInterval(intervalString string) time.Duration {
+	duration, err := time.ParseDuration(intervalString)
+	if err != nil {
+		panic(err)
+	}
+	
+	return duration
+}

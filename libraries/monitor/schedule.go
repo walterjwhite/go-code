@@ -1,5 +1,10 @@
 package monitor
 
+import (
+	"github.com/walterjwhite/go-application/libraries/after"
+	"github.com/walterjwhite/go-application/libraries/periodic"
+)
+
 func (a *Action) schedule() {
 	if a.isLongRunning() {
 		a.invokeLongRunning()

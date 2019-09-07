@@ -1,5 +1,10 @@
 package monitor
 
+import (
+	"context"
+	"log"
+)
+
 type Monitor interface {
 	Execute() error
 }

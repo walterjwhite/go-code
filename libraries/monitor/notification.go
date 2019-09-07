@@ -2,6 +2,7 @@ package monitor
 
 import (
 	"fmt"
+	"log"
 )
 
 type NotificationEvent struct {
@@ -36,7 +37,7 @@ func (session *Session) watchChannel() {
 func (session *Session) pushAlerts(notificationEvent *NotificationEvent) {
 	session.scheduleNoActivityAlert()
 
-	notification := notificationEvent.build()
+	//notification := notificationEvent.build()
 	session.push(notification)
 }
 
@@ -46,13 +47,21 @@ func (n *NotificationEvent) build() notify.Notification {
 */
 
 func (session *Session) push(notificationEvent *NotificationEvent) {
+	for _, alert := range session.Alerts {
+		/*
+			notifier := AlertRegistry[alert.Type](&alert, session, &notification)
+			notifier.Notify()
+		*/
+	}
 }
 
 func (session *Session) NoActivityAlert() error {
 	details := fmt.Sprintf(session.NoActivity.Description, session.NoActivity.Interval)
 	// generate notification / push to channel
 
-	go session.push(notification)
+	notificationEvent := &NotificationEvent{Session: *session, Details: "No Activity"}
+
+	go session.push(notificationEvent)
 	session.scheduleNoActivityAlert()
 
 	return nil
