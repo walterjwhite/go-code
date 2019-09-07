@@ -24,5 +24,5 @@ func Configure() context.Context {
 
 func Wait(ctx context.Context) {
 	// wait for CTRL+C (or context to expire)
-	_ = <-ctx.Done()
+	<-ctx.Done()
 }

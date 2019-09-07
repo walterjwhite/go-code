@@ -11,7 +11,11 @@ import (
 
 func Build(ctx context.Context, debug *bool /*, notifications notify.Notifier*/) {
 	command, arguments := maven.GetCommandLine([]string{"clean", "install", "-Dmaven.test.skip=true", "-Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn", "-B"}, debug)
-	runner.Run(ctx, command, arguments...)
+	/*exitcode*/ _, err := runner.Run(ctx, command, arguments...)
+	if err != nil {
+		panic(err)
+	}
+
 	//	notification.Notify()
 }
 
@@ -21,7 +25,7 @@ func BuildNotification() notify.Notification {
 }
 */
 
-func getBuildDirectory() string {
+func GetBuildDirectory() string {
 	dir, err := os.Getwd()
 	if err != nil {
 		log.Fatal(err)

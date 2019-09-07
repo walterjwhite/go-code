@@ -14,6 +14,7 @@ _build_library() {
 		echo -e "building library: $_LIBRARY"
 	
 		format
+		_lint
 		_setup_module
 		go build
 	fi
@@ -35,7 +36,9 @@ _build_libraries() {
 	done
 }
 
-
+_lint() {
+	golangci-lint run --fix ./
+}
 
 if [ "$#" -eq "0" ]
 then

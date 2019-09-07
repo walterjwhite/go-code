@@ -19,7 +19,10 @@ func Take(label string, detail string) {
 	file := path.GetFile(label, "png", detail)
 
 	defer file.Close()
-	png.Encode(file, img)
+	err = png.Encode(file, img)
+	if err != nil {
+		panic(err)
+	}
 
 	log.Printf("Captured screenshot: %v / %v", label, file.Name())
 }

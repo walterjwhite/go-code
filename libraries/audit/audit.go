@@ -18,12 +18,15 @@ func Audit(command *exec.Cmd, label string) (int, string, error) {
 
 	var buffer bytes.Buffer
 
-	ioutil.WriteFile(logFile.Name(), []byte(strings.Join(command.Args, " ")+"\n\n"), os.ModePerm)
+	err := ioutil.WriteFile(logFile.Name(), []byte(strings.Join(command.Args, " ")+"\n\n"), os.ModePerm)
+	if err != nil {
+		panic(err)
+	}
 
 	runner.WithWriters(command, logFile, os.Stdout, &buffer)
 
 	screenshot.Take(label, "0.before")
-	err := command.Run()
+	err = command.Run()
 
 	if err != nil {
 		log.Printf("Error running command: %v\n", err)
