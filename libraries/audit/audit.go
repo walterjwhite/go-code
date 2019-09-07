@@ -1,12 +1,12 @@
-package main
+package audit
 
 import (
 	"bytes"
-	"strings"
 	"io/ioutil"
 	"log"
 	"os"
 	"os/exec"
+	"strings"
 
 	"github.com/walterjwhite/go-application/libraries/path"
 	"github.com/walterjwhite/go-application/libraries/runner"
@@ -22,7 +22,7 @@ func Audit(command *exec.Cmd, label string) (int, string, error) {
 
 	runner.WithWriters(command, logFile, os.Stdout, &buffer)
 
-	screenshot.Screenshot(label, "0.before")
+	screenshot.Take(label, "0.before")
 	err := command.Run()
 
 	if err != nil {
@@ -33,6 +33,6 @@ func Audit(command *exec.Cmd, label string) (int, string, error) {
 		}
 	}
 
-	screenshot.Screenshot(label, "1.after")
+	screenshot.Take(label, "1.after")
 	return 0, buffer.String(), nil
 }
