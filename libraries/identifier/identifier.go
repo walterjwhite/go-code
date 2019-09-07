@@ -6,13 +6,15 @@ import (
 
 // *MUST* be injected at compile time
 var (
-	ApplicationVersion, BuildDate, GoVersion, OsArchitecture string
+	ApplicationVersion, BuildDate, GoVersion, OSArchitecture string
 )
 
 func Log() {
 	if isConfigured() {
 		log.Printf("Application Version: %v\n", ApplicationVersion)
 		log.Printf("Built on: %v\n", BuildDate)
+		log.Printf("OSArchitecture: %v\n", OSArchitecture)
+		log.Printf("GoVersion: %v\n", GoVersion)
 	}
 }
 

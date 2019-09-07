@@ -7,10 +7,12 @@ _VERSION=$(git rev-parse HEAD)
 _GO_VERSION=$(go version | awk {'print$3'})
 _OS_ARCHITECTURE=$(go version | awk {'print$4'})
 
-_APPLICATION_VERSION_FLAG="-X github.com/walterjwhite/go-application/libraries/identifier.ApplicationVersion=$_VERSION"
-_BUILD_DATE_FLAG="-X github.com/walterjwhite/go-application/libraries/identifier.BuildDate=$_BUILD_DATE"
-_GO_VERSION_FLAG="-X github.com/walterjwhite/go-application/libraries/identifier.GoVersion=$_GO_VERSION"
-_OS_ARCHITECTURE_FLAG="-X github.com/walterjwhite/go-application/libraries/identifier.OSArchitecture=$_OS_ARCHITECTURE"
+_PACKAGE_PREFIX="github.com/walterjwhite/go-application/libraries/identifier"
+
+_APPLICATION_VERSION_FLAG="-X ${_PACKAGE_PREFIX}.ApplicationVersion=$_VERSION"
+_BUILD_DATE_FLAG="-X ${_PACKAGE_PREFIX}.BuildDate=$_BUILD_DATE"
+_GO_VERSION_FLAG="-X ${_PACKAGE_PREFIX}.GoVersion=$_GO_VERSION"
+_OS_ARCHITECTURE_FLAG="-X ${_PACKAGE_PREFIX}.OSArchitecture=$_OS_ARCHITECTURE"
 
 _OPTIONS=" $_APPLICATION_VERSION_FLAG $_BUILD_DATE_FLAG $_GO_VERSION_FLAG $_OS_ARCHITECTURE_FLAG"
 
