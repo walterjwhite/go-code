@@ -1,0 +1,35 @@
+#!/bin/bash
+
+_BUILD_DATE=$(date +"%Y/%m/%d-%H:%M:%S")
+_VERSION=$(git rev-parse HEAD)
+
+#_APPLICATION_VERSION_FLAG="-X libraries.identifier.applicationVersion=$_VERSION"
+#_BUILD_DATE_FLAG="-X libraries.identifier.buildDate=\"$_BUILD_DATE\""
+
+#_APPLICATION_VERSION_FLAG="-X libraries.identifier.ApplicationVersion=$_VERSION"
+#_BUILD_DATE_FLAG="-X libraries.identifier.BuildDate=\"$_BUILD_DATE\""
+
+#_APPLICATION_VERSION_FLAG="-X github.com/walterjwhite/go-application/libraries/identifier.applicationVersion=$_VERSION"
+#_BUILD_DATE_FLAG="-X github.com/walterjwhite/go-application/libraries/identifier.buildDate=\"$_BUILD_DATE\""
+_APPLICATION_VERSION_FLAG="-X identifier.ApplicationVersion=$_VERSION"
+_BUILD_DATE_FLAG="-X identifier.BuildDate=\"$_BUILD_DATE\""
+
+_OPTIONS=" $_APPLICATION_VERSION_FLAG $_BUILD_DATE_FLAG"
+
+# set -x
+
+_PWD=$(pwd)
+
+for _COMMAND in $(grep -l "package main" $(find commands -type f | grep \\.go$) | sort -u)
+do
+	echo -e "building command: $_COMMAND"
+	
+	_COMMAND_DIRECTORY=$(dirname $_COMMAND)
+	_EXECUTABLE=$(basename $_COMMAND_DIRECTORY)
+	
+	cd $_COMMAND_DIRECTORY
+	#go build -ldflags "$_OPTIONS"
+	go build -ldflags "-X identifier.BuildDate=\"$_BUILD_DATE\" -X identifier.ApplicationVersion=$_VERSION"
+	
+	cd $_PWD
+done

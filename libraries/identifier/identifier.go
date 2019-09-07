@@ -5,16 +5,18 @@ import (
 )
 
 // *MUST* be injected at compile time
-var applicationVersion string
-var buildDate string
+var ApplicationVersion string
+var BuildDate string
+var GoVersion string
+var OsArchitecture string
 
 func Log() {
 	if isConfigured() {
-		log.Printf("Application Version: %v\n", applicationVersion)
-		log.Printf("Built on: %v\n", buildDate)
+		log.Printf("Application Version: %v\n", ApplicationVersion)
+		log.Printf("Built on: %v\n", BuildDate)
 	}
 }
 
 func isConfigured() bool {
-	return len(applicationVersion) > 0 && len(buildDate) > 0
+	return len(ApplicationVersion) > 0 && len(BuildDate) > 0
 }

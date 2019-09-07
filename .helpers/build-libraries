@@ -1,0 +1,7 @@
+#!/bin/bash
+
+for _LIBRARY in $(ls libraries)
+do
+	echo -e "building library: $_LIBRARY"
+	go install libraries/$_LIBRARY
+done

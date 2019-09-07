@@ -1,0 +1,5 @@
+Goals:
+1. provide common utilities for everyday tasks (application identifier, setting up shutdown handler (ctrl+c)
+2. facilitate auditing (command, arguments, output + screenshot)
+3. take screenshots
+4. learn go++

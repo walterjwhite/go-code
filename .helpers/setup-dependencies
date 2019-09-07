@@ -1,0 +1,7 @@
+#!/bin/bash
+
+for _DEPENDENCY in $(cat .dependencies)
+do
+	echo -e "installing dependency: $_DEPENDENCY"
+	go get -u $_DEPENDENCY
+done
