@@ -39,7 +39,7 @@ _build_libraries() {
 
 if [ "$#" -eq "0" ]
 then
-	_build_libraries $(find libraries -type d)
+	_build_libraries $(find libraries -type d | sort -u)
 else
 	_build_libraries $@
 fi

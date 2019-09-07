@@ -1,4 +1,4 @@
-package writematcher
+package writermatcher
 
 import (
 	"io"

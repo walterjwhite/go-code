@@ -1,0 +1,3 @@
+github.com/walterjwhite/go-application v0.0.1 h1:naxdNkC2o68DYELOHIjmUwjANNyegCmBFJ+KVj6oOhA=
+github.com/walterjwhite/go-application/libraries/runner v0.0.0-20190907163545-9f751bc4eb10 h1:fAH+5DUBFicXNIyTlCrlSDjCQ6tTtFLU5feuMChWS20=
+github.com/walterjwhite/go-application/libraries/runner v0.0.0-20190907163545-9f751bc4eb10/go.mod h1:UU2suvGWUqsjuB5cxdy4Tz72y038OivtccfBGw5QY50=
