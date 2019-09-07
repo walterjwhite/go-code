@@ -37,7 +37,8 @@ _build_command() {
 	cd $_COMMAND_DIRECTORY
 	format
 	
-	vgo build -ldflags "$_OPTIONS"
+	#vgo build -ldflags "$_OPTIONS"
+	vgo build
 
 	cd $_PWD
 }
