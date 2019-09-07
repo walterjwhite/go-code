@@ -3,17 +3,20 @@
 source ./.helpers/libraries/format
 
 _GITHUB_MODULE_PATH=github.com/walterjwhite/go-application/libraries
+_PWD=$(pwd)
 
 _build_library() {
-	_PWD=$(pwd)
-	
 	cd $_LIBRARY
 	
-	echo -e "building library: $_LIBRARY"
+	local _HAS_GO_FILES=$(find . -maxdepth 1 -type f  | grep \\.go$ | wc -l)
+	if [ "$_HAS_GO_FILES" -gt "0" ]
+	then
+		echo -e "building library: $_LIBRARY"
 	
-	format
-	_setup_module
-	go build
+		format
+		_setup_module
+		go build
+	fi
 	
 	cd $_PWD
 }
@@ -36,7 +39,7 @@ _build_libraries() {
 
 if [ "$#" -eq "0" ]
 then
-	_build_libraries $(find libraries -type f | grep gopkg.toml$ | sed -e "s/\/gopkg\.toml$//")
+	_build_libraries $(find libraries -type d)
 else
 	_build_libraries $@
 fi

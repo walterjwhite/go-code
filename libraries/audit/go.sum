@@ -14,9 +14,13 @@ github.com/jfreymuth/vorbis v1.0.0/go.mod h1:8zy3lUAm9K/rJJk223RKy6vjCZTWC61NA2Q
 github.com/lucasb-eyer/go-colorful v0.0.0-20181028223441-12d3b2882a08/go.mod h1:NXg0ArsFk0Y01623LgUqoqcouGDB+PwCCQlrwrG6xJ4=
 github.com/mattn/go-runewidth v0.0.4/go.mod h1:LwmH8dsx7+W8Uxz3IHJYH5QSwggIsqBzpuz5H//U1FU=
 github.com/mewkiz/flac v1.0.5/go.mod h1:EHZNU32dMF6alpurYyKHDLYpW1lYpBZ5WrXi/VuNIGs=
+github.com/mitchellh/go-homedir v1.1.0 h1:lukF9ziXFxDFPkA1vsr5zpc1XuPDn/wFntq5mG+4E0Y=
+github.com/mitchellh/go-homedir v1.1.0/go.mod h1:SfyaCUpYCn1Vlf4IUYiD9fPX4A5wJrkLzIz1N1q0pr0=
 github.com/pkg/errors v0.8.1/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=
 github.com/walterjwhite/go-application v0.0.1 h1:naxdNkC2o68DYELOHIjmUwjANNyegCmBFJ+KVj6oOhA=
 github.com/walterjwhite/go-application/libraries v0.0.0-20190907145257-2983bae739f3 h1:PKDqMfgewcwrbX8eX6BIxE7o9SIFpzvR+qycB0FUNEA=
+github.com/walterjwhite/go-application/libraries/path v0.0.0-20190907162134-fdbbf7c9b99b h1:1jKtu+6/I9EfzbkuT6iMJpBvt/rvb9SUDMW665McQcQ=
+github.com/walterjwhite/go-application/libraries/path v0.0.0-20190907162134-fdbbf7c9b99b/go.mod h1:0HQmt9WjK6bk51ugtOlMRcXil2aNda6p2GZKilMxQ7A=
 golang.org/x/exp v0.0.0-20180710024300-14dda7b62fcd/go.mod h1:CJ0aWSM057203Lf6IL+f9T1iT9GByDxfZKAQTCR3kQA=
 golang.org/x/image v0.0.0-20180708004352-c73c2afc3b81/go.mod h1:ux5Hcp/YLpHSI86hEcLt0YII63i6oz57MZXIpbrjZUs=
 golang.org/x/mobile v0.0.0-20180806140643-507816974b79/go.mod h1:z+o9i4GpDbdi3rU15maQ/Ox0txvL9dWGYEHz965HBQE=
