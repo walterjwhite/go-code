@@ -1,4 +1,4 @@
 github.com/mitchellh/go-homedir v1.1.0 h1:lukF9ziXFxDFPkA1vsr5zpc1XuPDn/wFntq5mG+4E0Y=
 github.com/mitchellh/go-homedir v1.1.0/go.mod h1:SfyaCUpYCn1Vlf4IUYiD9fPX4A5wJrkLzIz1N1q0pr0=
-github.com/walterjwhite/go-application/libraries/logging v0.0.0-20190908213804-7f40493dd999 h1:2PlRzaxdyvg8Fp7PtfN89JYfVyEt8CyMkS9ypxIILkM=
-github.com/walterjwhite/go-application/libraries/logging v0.0.0-20190908213804-7f40493dd999/go.mod h1:QhUzDkllcR89OKA19aGv91GE6r5WBifLHFKkG4Anqhg=
+github.com/walterjwhite/go-application/libraries/logging v0.0.0-20190908215948-473df8f9d550 h1:bpvo+aDzfchXgIWd4aScQtCmiDTPiAtQ9q1c7mzSJ3w=
+github.com/walterjwhite/go-application/libraries/logging v0.0.0-20190908215948-473df8f9d550/go.mod h1:QhUzDkllcR89OKA19aGv91GE6r5WBifLHFKkG4Anqhg=
