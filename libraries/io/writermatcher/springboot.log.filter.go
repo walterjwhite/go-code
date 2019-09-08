@@ -14,8 +14,8 @@ type SpringBootApplicationStartupNotifier struct {
 	Notified bool
 }
 
-func New(channel chan *string, writer io.Writer) WriterDelegate {
-	return WriterDelegate{Channel: channel, Delegate: writer, Matcher: SpringBootApplicationStartupNotifier{Channel: channel}}
+func New(channel chan *string, writer io.Writer) *WriterDelegate {
+	return &WriterDelegate{Channel: channel, Delegate: writer, Matcher: SpringBootApplicationStartupNotifier{Channel: channel}}
 }
 
 func (n SpringBootApplicationStartupNotifier) Check(p []byte) {
