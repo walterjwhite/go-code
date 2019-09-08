@@ -5,6 +5,7 @@ require (
 	github.com/jmoiron/sqlx v1.2.0
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/vova616/screenshot v0.0.0-20190211115255-f9547e483e0a
+	github.com/walterjwhite/go-application/libraries/after v0.0.0-20190908114105-312d0be0480b
 	github.com/walterjwhite/go-application/libraries/application v0.0.0-20190907145257-2983bae739f3
 	github.com/walterjwhite/go-application/libraries/identifier v0.0.0-20190907145257-2983bae739f3 // indirect
 	github.com/walterjwhite/go-application/libraries/logging v0.0.0-20190908113628-983e802f4bd2
