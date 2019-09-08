@@ -12,12 +12,12 @@ func Run(ctx context.Context, profile string, debug bool /*, notificationBuilder
 	var c Configuration
 	c.getConf(profile)
 
-	command := make([]exec.Cmd, 0)
+	commands := make([]exec.Cmd, 0)
 	for index, application := range c.Applications {
-		comands = append(commands, *runApplication(ctx, index, profile, c, application, debug, notificationBuilder))
+		commands = append(commands, *runApplication(ctx, index, profile, c, application, debug /*, notificationBuilder*/))
 	}
 
-	for index, command := range commands {
+	for _, command := range commands {
 		_, err := command.Process.Wait()
 
 		// TODO: push event to channel

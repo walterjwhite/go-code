@@ -1,11 +1,7 @@
-package maven
+package run
 
 import (
 	"fmt"
-	"gopkg.in/yaml.v2"
-	"io/ioutil"
-	"log"
-
 	"github.com/walterjwhite/go-application/libraries/yamlhelper"
 )
 

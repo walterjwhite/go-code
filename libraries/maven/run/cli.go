@@ -3,6 +3,7 @@ package run
 import (
 	"context"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"log"
 	"os"
@@ -11,7 +12,7 @@ import (
 	"strings"
 
 	"github.com/walterjwhite/go-application/libraries/io/writermatcher"
-	//"github.com/walterjwhite/go-application/libraries/notify"
+	"github.com/walterjwhite/go-application/libraries/logging"
 	"github.com/walterjwhite/go-application/libraries/runner"
 	"github.com/walterjwhite/go-application/libraries/timestamp"
 	"path/filepath"
@@ -40,7 +41,8 @@ func runApplication(ctx context.Context, index int, profile string, configuratio
 	logFile := getLogFile(application)
 	runner.WithEnvironment(command, true, configuration.Environment...)
 
-	var writer io.Writer = logFilter.NewSpringBootWriterFilter(notificationChannel, logFile)
+	// TODO: configure this @ runtime, perhaps we're not using SpringBoot @ all
+	var writer io.Writer = writermatcher.New(notificationChannel, logFile)
 	runner.WithWriter(command, &writer)
 
 	logging.Panic(runner.Start(command))
@@ -54,11 +56,11 @@ func getDebugPort(index int) int {
 	return DebugPortStart + index
 }
 
-type NoApplicationArtifactError struct {
+type NoApplicationArtifactFoundError struct {
 	ApplicationName string
 }
 
-func (e *UnableToAddCertificateError) Error() string {
+func (e *NoApplicationArtifactFoundError) Error() string {
 	return fmt.Sprintf("No application artifact found for %s\n", e.ApplicationName)
 }
 
@@ -73,7 +75,7 @@ func getJarFile(application string) *string {
 		}
 	}
 
-	logging.Panic(&NoApplicationArtifactError{ApplicationName: application})
+	logging.Panic(&NoApplicationArtifactFoundError{ApplicationName: application})
 	return nil
 }
 
