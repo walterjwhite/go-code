@@ -48,7 +48,8 @@ func process(ctx context.Context) {
 				_, arguments = maven.GetCommandLine(arguments, debug)
 			}
 
-			runner.Run(ctx, command, arguments...)
+			_, err := runner.Run(ctx, command, arguments...)
+			logging.Panic(err)
 		}
 	}
 }
