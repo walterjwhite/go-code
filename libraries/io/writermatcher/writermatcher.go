@@ -15,11 +15,11 @@ type WriterMatcher interface {
 	Check(p []byte)
 }
 
-func (writerDelegate *WriterDelegate) Write(p []byte) (n int, err error) {
-	writerDelegate.Matcher.Check(p)
+func (w *WriterDelegate) Write(p []byte) (n int, err error) {
+	w.Matcher.Check(p)
 
-	if writerDelegate.Delegate != nil {
-		return writerDelegate.Delegate.Write(p)
+	if w.Delegate != nil {
+		return w.Delegate.Write(p)
 	}
 
 	return len(p), nil

@@ -9,16 +9,16 @@ import (
 // this only prints if the application log level is INFO or lower
 const SpringBootApplicationStartedString = "Started Application in"
 
-type SpringBootApplicationStartupNotifier struct {
+type SpringBootApplicationStartupMatcher struct {
 	Channel  chan *string
 	Notified bool
 }
 
-func New(channel chan *string, writer io.Writer) *WriterDelegate {
-	return &WriterDelegate{Channel: channel, Delegate: writer, Matcher: SpringBootApplicationStartupNotifier{Channel: channel}}
+func NewSpringBootApplicationStartupMatcher(channel chan *string, writer io.Writer) *WriterDelegate {
+	return &WriterDelegate{Channel: channel, Delegate: writer, Matcher: SpringBootApplicationStartupMatcher{Channel: channel}}
 }
 
-func (n SpringBootApplicationStartupNotifier) Check(p []byte) {
+func (n SpringBootApplicationStartupMatcher) Check(p []byte) {
 	if n.Notified {
 		return
 	}
@@ -27,7 +27,7 @@ func (n SpringBootApplicationStartupNotifier) Check(p []byte) {
 }
 
 func check(s interface{}, line string) {
-	field, ok := s.(SpringBootApplicationStartupNotifier)
+	field, ok := s.(SpringBootApplicationStartupMatcher)
 	if !ok {
 		panic(fmt.Sprintf("Error converting: %v\n", s))
 	}
