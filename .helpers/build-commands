@@ -30,9 +30,15 @@ _PWD=$(pwd)
 
 _build_command() {
 	echo -e "building command: $_COMMAND"
-		
-	_COMMAND_DIRECTORY=$(dirname $_COMMAND)
-	_EXECUTABLE=$(basename $_COMMAND_DIRECTORY)
+	
+	if [ ! -d $_COMMAND ]
+	then
+		_COMMAND_DIRECTORY=$(dirname $_COMMAND)
+		#_EXECUTABLE=$(basename $_COMMAND_DIRECTORY)
+	else
+		_COMMAND_DIRECTORY=$_COMMAND
+		#_EXECUTABLE=$(basename $_COMMAND_DIRECTORY)
+	fi
 	
 	cd $_COMMAND_DIRECTORY
 	format
