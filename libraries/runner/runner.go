@@ -22,9 +22,9 @@ func WithEnvironment(command *exec.Cmd, useExistingEnvironment bool, environment
 	command.Env = append(command.Env, environmentVariables...)
 }
 
-func WithWriter(command *exec.Cmd, writer *io.Writer) {
-	command.Stdout = *writer
-	command.Stderr = *writer
+func WithWriter(command *exec.Cmd, writer io.Writer) {
+	command.Stdout = writer
+	command.Stderr = writer
 }
 
 func WithWriters(command *exec.Cmd, writers ...io.Writer) {
