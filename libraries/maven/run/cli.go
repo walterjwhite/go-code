@@ -3,7 +3,7 @@ package run
 import (
 	"context"
 	"fmt"
-	"io"
+	//"io"
 	"io/ioutil"
 	"log"
 	"os"
@@ -42,8 +42,8 @@ func runApplication(ctx context.Context, index int, profile string, configuratio
 	runner.WithEnvironment(command, true, configuration.Environment...)
 
 	// TODO: configure this @ runtime, perhaps we're not using SpringBoot @ all
-	var writer io.Writer = writermatcher.New(notificationChannel, logFile)
-	runner.WithWriter(command, &writer)
+	writer := writermatcher.NewSpringBootApplicationStartupMatcher(notificationChannel, logFile)
+	runner.WithWriter(command, writer)
 
 	logging.Panic(runner.Start(command))
 
@@ -69,7 +69,7 @@ func getJarFile(application string) *string {
 	logging.Panic(err)
 
 	for _, f := range files {
-		if strings.Index(f.Name(), "jar") >= 0 && strings.Index(f.Name(), ".original") == -1 {
+		if strings.Contains(f.Name(), "jar") && !strings.Contains(f.Name(), ".original") {
 			jarFile := fmt.Sprintf("%s/target/%s", application, f.Name())
 			return &jarFile
 		}
@@ -87,7 +87,7 @@ func getLogFile(application string) *os.File {
 }
 
 func makeLogFile(logFile string) *os.File {
-	os.MkdirAll(filepath.Dir(logFile), os.ModePerm)
+	logging.Panic(os.MkdirAll(filepath.Dir(logFile), os.ModePerm))
 
 	outfile, err := os.Create(logFile)
 	logging.Panic(err)
