@@ -17,10 +17,15 @@ func Set(filename string) {
 func useLogFile(filename string) {
 	log.Printf("Writing logs to: %v\n", filename)
 	f, err := os.OpenFile(filename, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
-	if err != nil {
-		log.Fatalf("error opening file: %v\n", err)
-	}
+	Panic(err)
 
+	// TODO: ensure the file is closed
 	// defer f.Close()
 	log.SetOutput(f)
+}
+
+func Panic(err error) {
+	if err != nil {
+		panic(err)
+	}
 }

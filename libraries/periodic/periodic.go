@@ -3,6 +3,8 @@ package periodic
 import (
 	"context"
 	"time"
+
+	"github.com/walterjwhite/go-application/libraries/logging"
 )
 
 func Periodic(ctx context.Context, interval time.Duration, fn func() error) {
@@ -10,16 +12,12 @@ func Periodic(ctx context.Context, interval time.Duration, fn func() error) {
 	defer ticker.Stop()
 
 	// initial invocation
-	if err := fn(); err != nil {
-		panic(err)
-	}
+	logging.Panic(fn())
 
 	for {
 		select {
 		case <-ticker.C:
-			if err := fn(); err != nil {
-				panic(err)
-			}
+			logging.Panic(fn())
 		case <-ctx.Done():
 			return
 		}
@@ -28,9 +26,7 @@ func Periodic(ctx context.Context, interval time.Duration, fn func() error) {
 
 func GetInterval(intervalString string) time.Duration {
 	duration, err := time.ParseDuration(intervalString)
-	if err != nil {
-		panic(err)
-	}
-	
+	logging.Panic(fn())
+
 	return duration
 }

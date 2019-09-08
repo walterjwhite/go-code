@@ -5,5 +5,7 @@ github.com/mitchellh/go-homedir v1.1.0/go.mod h1:SfyaCUpYCn1Vlf4IUYiD9fPX4A5wJrk
 github.com/vova616/screenshot v0.0.0-20190211115255-f9547e483e0a h1:bDR1b8ylagDeiZJLd0QXit1Q5JuJujlvTwidz0ie7aE=
 github.com/vova616/screenshot v0.0.0-20190211115255-f9547e483e0a/go.mod h1:gjlNhAXON0uGGilpsAZpMx5bN1ZVavUlJETHif7w4HQ=
 github.com/walterjwhite/go-application v0.0.1 h1:naxdNkC2o68DYELOHIjmUwjANNyegCmBFJ+KVj6oOhA=
+github.com/walterjwhite/go-application/libraries/logging v0.0.0-20190907210437-b8e348e111bc h1:E/g+EF9zxf6UAcNfLMgnsD4UddfNj1yToZoZDOh5JKg=
+github.com/walterjwhite/go-application/libraries/logging v0.0.0-20190907210437-b8e348e111bc/go.mod h1:QhUzDkllcR89OKA19aGv91GE6r5WBifLHFKkG4Anqhg=
 github.com/walterjwhite/go-application/libraries/path v0.0.0-20190907162134-fdbbf7c9b99b h1:1jKtu+6/I9EfzbkuT6iMJpBvt/rvb9SUDMW665McQcQ=
 github.com/walterjwhite/go-application/libraries/path v0.0.0-20190907162134-fdbbf7c9b99b/go.mod h1:0HQmt9WjK6bk51ugtOlMRcXil2aNda6p2GZKilMxQ7A=

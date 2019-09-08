@@ -3,12 +3,13 @@ package database
 import (
 	//"github.com/walterjwhite/go-application/libraries/database"
 	"github.com/walterjwhite/go-application/libraries/monitor"
+	"github.com/walterjwhite/go-application/libraries/yamlhelper"
 )
 
 type DatabaseMonitorAction struct {
 	Description string
 
-	Query database.Query
+	Query Query
 
 	Action  *monitor.Action
 	Session *monitor.Session

@@ -1,6 +1,7 @@
 package yamlhelper
 
 import (
+	"github.com/walterjwhite/go-application/libraries/logging"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"log"
@@ -9,14 +10,15 @@ import (
 func Read(configurationFile string, out interface{}) {
 	log.Printf("reading: %v / %v\n", configurationFile, out)
 	yamlFile, err := ioutil.ReadFile(configurationFile)
-	if err != nil {
-		log.Fatalf("Error reading file: %v\n", err)
-	}
+	logging.Panic(err)
 
-	err = yaml.Unmarshal(yamlFile, out)
-	if err != nil {
-		log.Fatalf("Error unmarshalling file: %v / %v / %v\n", configurationFile, yamlFile, err)
-	}
+	logging.Panic(yaml.Unmarshal(yamlFile, out))
+	// TODO: should this be a separate exception?
+	/*
+		if err != nil {
+			log.Fatalf("Error unmarshalling file: %v / %v / %v\n", configurationFile, yamlFile, err)
+		}
+	*/
 
 	log.Printf("Read:\n%v\n", out)
 }

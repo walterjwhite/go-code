@@ -2,6 +2,7 @@ package screenshot
 
 import (
 	"github.com/vova616/screenshot"
+	"github.com/walterjwhite/go-application/libraries/logging"
 	"github.com/walterjwhite/go-application/libraries/path"
 	"image/png"
 	"log"
@@ -12,17 +13,13 @@ import (
 
 func Take(label string, detail string) {
 	img, err := screenshot.CaptureScreen()
-	if err != nil {
-		panic(err)
-	}
+	logging.Panic(err)
 
 	file := path.GetFile(label, "png", detail)
 
 	defer file.Close()
-	err = png.Encode(file, img)
-	if err != nil {
-		panic(err)
-	}
+
+	logging.Panic(png.Encode(file, img))
 
 	log.Printf("Captured screenshot: %v / %v", label, file.Name())
 }

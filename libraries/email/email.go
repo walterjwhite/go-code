@@ -3,8 +3,10 @@ package email
 import (
 	"crypto/tls"
 	"crypto/x509"
+	"fmt"
 	"io/ioutil"
-	"log"
+
+	"github.com/walterjwhite/go-application/libraries/logging"
 )
 
 var UserTlsConfig tls.Config
@@ -45,13 +47,19 @@ func (e *EmailSenderAccount) addCerts() {
 	}
 }
 
+type UnableToAddCertificateError struct {
+	CertificatePath string
+}
+
+func (e *UnableToAddCertificateError) Error() string {
+	return fmt.Sprintf("Failed to append root CA cert @ %v\n", e.CertificatePath)
+}
+
 func addCert(certificatePath string) {
 	pem, err := ioutil.ReadFile(certificatePath)
-	if err != nil {
-		log.Fatal(err)
-	}
+	logging.Panic(err)
 
 	if ok := rootCertPool.AppendCertsFromPEM(pem); !ok {
-		log.Fatalf("Failed to append root CA cert @ %v\n", certificatePath)
+		logging.Panic(&UnableToAddCertificateError{CertificatePath: certificatePath})
 	}
 }
