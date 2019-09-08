@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/walterjwhite/go-application/libraries/application"
+	"github.com/walterjwhite/go-application/libraries/logging"
 	"github.com/walterjwhite/go-application/libraries/maven"
 	"github.com/walterjwhite/go-application/libraries/maven/format"
 	"github.com/walterjwhite/go-application/libraries/path"
