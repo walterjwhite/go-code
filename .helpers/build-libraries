@@ -2,7 +2,7 @@
 
 source ./.helpers/libraries/format
 
-_GITHUB_MODULE_PATH=github.com/walterjwhite/go-application/libraries
+_GITHUB_MODULE_PATH=github.com/walterjwhite/go-application
 _PWD=$(pwd)
 
 _build_library() {
@@ -13,6 +13,7 @@ _build_library() {
 	then
 		echo -e "building library: $_LIBRARY"
 	
+		_clean
 		format
 		_lint
 		_setup_module
@@ -25,7 +26,7 @@ _build_library() {
 _setup_module() {
 	if [ ! -e go.mod ]
 	then
-		go mod init $_GITHUB_MODULE_PATH/$(basename $_LIBRARY)
+		go mod init $_GITHUB_MODULE_PATH/$_LIBRARY
 	fi
 }
 
@@ -38,6 +39,10 @@ _build_libraries() {
 
 _lint() {
 	golangci-lint run --fix ./
+}
+
+_clean() {
+	rm -f go.mod go.sum
 }
 
 if [ "$#" -eq "0" ]

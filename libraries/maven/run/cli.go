@@ -11,13 +11,13 @@ import (
 	"strings"
 
 	"github.com/walterjwhite/go-application/libraries/io/writermatcher"
-	"github.com/walterjwhite/go-application/libraries/notify"
+	//"github.com/walterjwhite/go-application/libraries/notify"
 	"github.com/walterjwhite/go-application/libraries/runner"
 	"github.com/walterjwhite/go-application/libraries/timestamp"
 	"path/filepath"
 )
 
-func runApplication(ctx context.Context, index int, profile string, configuration Configuration, application string, debug bool, notificationBuilder func(notification notify.Notification) notify.Notifier) *exec.Cmd {
+func runApplication(ctx context.Context, index int, profile string, configuration Configuration, application string, debug bool /*, notificationBuilder func(notification notify.Notification) notify.Notifier*/) *exec.Cmd {
 	log.Printf("Running Application: %v (%v)", application, profile)
 	log.Printf("Environment: %v", configuration.Environment)
 	log.Printf("JVMArguments: %v", configuration.Jvm)
@@ -45,7 +45,7 @@ func runApplication(ctx context.Context, index int, profile string, configuratio
 
 	logging.Panic(runner.Start(command))
 
-	go checkIfStarted(application, notificationChannel, notificationBuilder)
+	//go checkIfStarted(application, notificationChannel, notificationBuilder)
 
 	return command
 }

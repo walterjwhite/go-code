@@ -1,2 +1,4 @@
-github.com/walterjwhite/go-application/libraries/runner v0.0.0-20190907163545-9f751bc4eb10 h1:fAH+5DUBFicXNIyTlCrlSDjCQ6tTtFLU5feuMChWS20=
-github.com/walterjwhite/go-application/libraries/runner v0.0.0-20190907163545-9f751bc4eb10/go.mod h1:UU2suvGWUqsjuB5cxdy4Tz72y038OivtccfBGw5QY50=
+github.com/walterjwhite/go-application/libraries/logging v0.0.0-20190908114147-411d246ddec4 h1:PG6Gas2Zonobc6mgvBqhHqy/XOvKjXPfrUvekMs9Uh8=
+github.com/walterjwhite/go-application/libraries/logging v0.0.0-20190908114147-411d246ddec4/go.mod h1:QhUzDkllcR89OKA19aGv91GE6r5WBifLHFKkG4Anqhg=
+github.com/walterjwhite/go-application/libraries/runner v0.0.0-20190908114147-411d246ddec4 h1:wkjucrA1fg7i960YnL11CvTIh9msYdqgjyKj3a5JNkc=
+github.com/walterjwhite/go-application/libraries/runner v0.0.0-20190908114147-411d246ddec4/go.mod h1:UU2suvGWUqsjuB5cxdy4Tz72y038OivtccfBGw5QY50=
