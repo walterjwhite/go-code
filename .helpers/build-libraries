@@ -14,10 +14,10 @@ _build_library() {
 		echo -e "building library: $_LIBRARY"
 	
 		_clean
-		format
-		_lint
 		_setup_module
 		go build
+		format
+		_lint
 	fi
 	
 	cd $_PWD
