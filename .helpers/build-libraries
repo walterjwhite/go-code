@@ -18,6 +18,7 @@ _build_library() {
 		go build
 		format
 		_lint
+		_fetch_latest_package
 	fi
 	
 	cd $_PWD

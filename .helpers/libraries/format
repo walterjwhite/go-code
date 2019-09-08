@@ -14,3 +14,7 @@ _lint() {
 _clean() {
 	rm -f go.mod go.sum
 }
+
+_fetch_latest_package() {
+	go get -u $_GITHUB_MODULE_PATH/$_LIBRARY
+}
