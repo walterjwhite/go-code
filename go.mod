@@ -13,13 +13,14 @@ require (
 	github.com/walterjwhite/go-application/libraries/maven v0.0.0-20190908131603-42d51493b3cc
 	github.com/walterjwhite/go-application/libraries/maven/build v0.0.0-20190908143930-39c5cc2189ec
 	github.com/walterjwhite/go-application/libraries/maven/format v0.0.0-20190908143930-39c5cc2189ec
+	github.com/walterjwhite/go-application/libraries/maven/run v0.0.0-20190908145040-cecbec02c3a3
 	github.com/walterjwhite/go-application/libraries/monitor v0.0.0-20190908114147-411d246ddec4
 	github.com/walterjwhite/go-application/libraries/path v0.0.0-20190908131603-42d51493b3cc
 	github.com/walterjwhite/go-application/libraries/runner v0.0.0-20190908131603-42d51493b3cc
 	github.com/walterjwhite/go-application/libraries/screenshot v0.0.0-20190908131603-42d51493b3cc
 	github.com/walterjwhite/go-application/libraries/shutdown v0.0.0-20190907145257-2983bae739f3 // indirect
-	github.com/walterjwhite/go-application/libraries/timestamp v0.0.0-20190908114105-312d0be0480b
-	github.com/walterjwhite/go-application/libraries/yamlhelper v0.0.0-20190908114147-411d246ddec4
+	github.com/walterjwhite/go-application/libraries/timestamp v0.0.0-20190908131603-42d51493b3cc
+	github.com/walterjwhite/go-application/libraries/yamlhelper v0.0.0-20190908131603-42d51493b3cc
 	golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2
 	golang.org/x/net v0.0.0-20190827160401-ba9fcec4b297 // indirect
 	gopkg.in/yaml.v2 v2.2.2
