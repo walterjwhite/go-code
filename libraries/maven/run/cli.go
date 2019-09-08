@@ -43,10 +43,7 @@ func runApplication(ctx context.Context, index int, profile string, configuratio
 	var writer io.Writer = logFilter.NewSpringBootWriterFilter(notificationChannel, logFile)
 	runner.WithWriter(command, &writer)
 
-	err2 := runner.Start(command)
-	if err2 != nil {
-		log.Fatalf("Error running %v: %v\n", command, err2)
-	}
+	logging.Panic(runner.Start(command))
 
 	go checkIfStarted(application, notificationChannel, notificationBuilder)
 
@@ -57,11 +54,17 @@ func getDebugPort(index int) int {
 	return DebugPortStart + index
 }
 
+type NoApplicationArtifactError struct {
+	ApplicationName string
+}
+
+func (e *UnableToAddCertificateError) Error() string {
+	return fmt.Sprintf("No application artifact found for %s\n", e.ApplicationName)
+}
+
 func getJarFile(application string) *string {
 	files, err := ioutil.ReadDir(fmt.Sprintf("%s/target", application))
-	if err != nil {
-		log.Fatal(err)
-	}
+	logging.Panic(err)
 
 	for _, f := range files {
 		if strings.Index(f.Name(), "jar") >= 0 && strings.Index(f.Name(), ".original") == -1 {
@@ -70,7 +73,7 @@ func getJarFile(application string) *string {
 		}
 	}
 
-	log.Fatalf("No application artifact found for %s\n", application)
+	logging.Panic(&NoApplicationArtifactError{ApplicationName: application})
 	return nil
 }
 
@@ -85,9 +88,7 @@ func makeLogFile(logFile string) *os.File {
 	os.MkdirAll(filepath.Dir(logFile), os.ModePerm)
 
 	outfile, err := os.Create(logFile)
-	if err != nil {
-		panic(err)
-	}
+	logging.Panic(err)
 
 	return outfile
 }

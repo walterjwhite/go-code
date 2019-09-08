@@ -2,6 +2,7 @@ package path
 
 import (
 	"github.com/mitchellh/go-homedir"
+	"github.com/walterjwhite/go-application/libraries/logging"
 	"log"
 	"os"
 	"path/filepath"
@@ -20,18 +21,19 @@ func GetFile(label string, extension string, details ...string) *os.File {
 
 	if _, err := os.Stat(directory); os.IsNotExist(err) {
 		log.Printf("Creating directory: %v", directory)
-		err = os.MkdirAll(directory, os.ModePerm)
-		if err != nil {
-			log.Printf("Error creating directory: %v", filename)
-			log.Printf("Error creating directory (dir): %v", filepath.Dir(filename))
-			panic(err)
-		}
+		logging.Panic(os.MkdirAll(directory, os.ModePerm))
+
+		/*
+			if err != nil {
+				log.Printf("Error creating directory: %v", filename)
+				log.Printf("Error creating directory (dir): %v", filepath.Dir(filename))
+				panic(err)
+			}
+		*/
 	}
 
 	file, err := os.OpenFile(filename, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
-	if err != nil {
-		log.Panicf("Error creating file %v", err)
-	}
+	logging.Panic(err)
 
 	return file
 }
@@ -42,9 +44,7 @@ func getDirectory(filename string) string {
 
 func getFilenamePath(filename string) string {
 	filename, err := homedir.Expand(filename)
-	if err != nil {
-		panic(err)
-	}
+	logging.Panic(err)
 
 	return filename
 }

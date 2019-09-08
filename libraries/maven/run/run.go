@@ -4,6 +4,8 @@ import (
 	"context"
 	"os/exec"
 	//"libraries/notify"
+
+	"github.com/walterjwhite/go-application/libraries/logging"
 )
 
 func Run(ctx context.Context, profile string, debug bool /*, notificationBuilder func(notification notify.Notification) notify.Notifier*/) {
@@ -17,10 +19,8 @@ func Run(ctx context.Context, profile string, debug bool /*, notificationBuilder
 
 	for index, command := range commands {
 		_, err := command.Process.Wait()
-		if err != nil {
-			//var notifier notify.Notifier
-			//notifier = buildErrorNotification(c.Applications[index], err, notificationBuilder)
-			//notifier.Notify()
-		}
+
+		// TODO: push event to channel
+		logging.Panic(err)
 	}
 }
