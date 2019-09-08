@@ -37,14 +37,6 @@ _build_libraries() {
 	done
 }
 
-_lint() {
-	golangci-lint run --fix ./
-}
-
-_clean() {
-	rm -f go.mod go.sum
-}
-
 if [ "$#" -eq "0" ]
 then
 	_build_libraries $(find libraries -type d | sort -u)

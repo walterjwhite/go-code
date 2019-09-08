@@ -42,6 +42,7 @@ _build_command() {
 	
 	cd $_COMMAND_DIRECTORY
 	format
+	_lint
 	
 	go build -ldflags "$_OPTIONS"
 

@@ -6,3 +6,11 @@ format() {
 		gofmt -s -w $_SOURCE_FILE
 	done
 }
+
+_lint() {
+	golangci-lint run --fix ./
+}
+
+_clean() {
+	rm -f go.mod go.sum
+}
