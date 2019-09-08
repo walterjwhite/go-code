@@ -1,5 +1,5 @@
-github.com/walterjwhite/go-application/libraries/logging v0.0.0-20190907210437-b8e348e111bc h1:E/g+EF9zxf6UAcNfLMgnsD4UddfNj1yToZoZDOh5JKg=
-github.com/walterjwhite/go-application/libraries/logging v0.0.0-20190907210437-b8e348e111bc/go.mod h1:QhUzDkllcR89OKA19aGv91GE6r5WBifLHFKkG4Anqhg=
+github.com/walterjwhite/go-application/libraries/logging v0.0.0-20190908022120-708f33323123 h1:SxcWUEXMDwIp8PWjBb86YtblCGnfNjT6uOruvdxeCnI=
+github.com/walterjwhite/go-application/libraries/logging v0.0.0-20190908022120-708f33323123/go.mod h1:QhUzDkllcR89OKA19aGv91GE6r5WBifLHFKkG4Anqhg=
 gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405/go.mod h1:Co6ibVJAznAaIkqp8huTwlJQCZ016jof/cbN4VW5Yz0=
 gopkg.in/yaml.v2 v2.2.2 h1:ZCJp+EgiOT7lHqUV2J862kp8Qj64Jo6az82+3Td9dZw=
 gopkg.in/yaml.v2 v2.2.2/go.mod h1:hI93XBmqTisBFMUTm0b8Fm+jr3Dg1NNxqwp+5A1VGuI=
