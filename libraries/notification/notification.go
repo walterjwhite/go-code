@@ -21,3 +21,15 @@ type Notification struct {
 type Notifier interface {
 	Notify(notification Notification)
 }
+
+var notifier = New()
+
+func OnCompletion() {
+	if r := recover(); r != nil {
+		// exception
+		notifier.Notify(Notification{Title: "Error", Description: "Application execution completed abnormally.", Type: Error})
+	} else {
+		// normal
+		notifier.Notify(Notification{Title: "Success", Description: "Application execution completed normal.", Type: Info})
+	}
+}
