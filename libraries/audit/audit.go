@@ -14,6 +14,10 @@ import (
 	"github.com/walterjwhite/go-application/libraries/screenshot"
 )
 
+func init() {
+	path.WithSessionDirectory("~.audit")
+}
+
 // return code, output
 func Audit(command *exec.Cmd, label string) (int, string) {
 	logFile := path.GetFile(label, "log")
