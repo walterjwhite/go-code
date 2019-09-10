@@ -6,6 +6,7 @@ import (
 
 	"github.com/walterjwhite/go-application/libraries/identifier"
 	"github.com/walterjwhite/go-application/libraries/logging"
+	"github.com/walterjwhite/go-application/libraries/notification"
 	"github.com/walterjwhite/go-application/libraries/shutdown"
 )
 
@@ -20,6 +21,10 @@ func Configure() context.Context {
 	logging.Set(*logFile)
 
 	return ctx
+}
+
+func OnCompletion() {
+	notification.OnCompletion()
 }
 
 func Wait(ctx context.Context) {
