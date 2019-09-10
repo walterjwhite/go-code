@@ -15,7 +15,7 @@ import (
 )
 
 func init() {
-	path.WithSessionDirectory("~.audit")
+	path.WithSessionDirectory("~/.audit")
 }
 
 // return code, output
