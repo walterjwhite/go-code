@@ -1,6 +1,7 @@
 libraries/after
 libraries/identifier
 libraries/logging
+libraries/notification
 libraries/shutdown
 
 libraries/application

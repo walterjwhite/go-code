@@ -6,7 +6,7 @@ import (
 
 // *MUST* be injected at compile time
 var (
-	ApplicationVersion, BuildDate, GoVersion, OSArchitecture string
+	ApplicationName, ApplicationVersion, SCMId, BuildDate, GoVersion, OSArchitecture string
 )
 
 func Log() {
@@ -20,4 +20,8 @@ func Log() {
 
 func isConfigured() bool {
 	return len(ApplicationVersion) > 0 && len(BuildDate) > 0
+}
+
+func GetApplicationId() string {
+	return ApplicationName + "." + ApplicationVersion + "." + SCMId
 }
