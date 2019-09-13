@@ -2,4 +2,4 @@ module github.com/walterjwhite/go-application/libraries/email
 
 go 1.12
 
-require github.com/walterjwhite/go-application/libraries/logging v0.0.0-20190908220627-fb1ccc224845
+require github.com/walterjwhite/go-application/libraries/logging v0.0.0-20190911001459-f65b43345b0c

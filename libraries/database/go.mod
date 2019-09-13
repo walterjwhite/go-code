@@ -7,10 +7,10 @@ require (
 	github.com/jmoiron/sqlx v1.2.0
 	github.com/lib/pq v1.2.0 // indirect
 	github.com/mattn/go-sqlite3 v1.11.0 // indirect
-	github.com/walterjwhite/go-application/libraries/after v0.0.0-20190908220627-fb1ccc224845 // indirect
-	github.com/walterjwhite/go-application/libraries/logging v0.0.0-20190908220627-fb1ccc224845 // indirect
-	github.com/walterjwhite/go-application/libraries/monitor v0.0.0-20190908220627-fb1ccc224845
-	github.com/walterjwhite/go-application/libraries/periodic v0.0.0-20190908220627-fb1ccc224845 // indirect
-	github.com/walterjwhite/go-application/libraries/timestamp v0.0.0-20190908220627-fb1ccc224845 // indirect
-	github.com/walterjwhite/go-application/libraries/yamlhelper v0.0.0-20190908220627-fb1ccc224845
+	github.com/walterjwhite/go-application/libraries/after v0.0.0-20190911001459-f65b43345b0c // indirect
+	github.com/walterjwhite/go-application/libraries/logging v0.0.0-20190911001459-f65b43345b0c // indirect
+	github.com/walterjwhite/go-application/libraries/monitor v0.0.0-20190911001459-f65b43345b0c
+	github.com/walterjwhite/go-application/libraries/periodic v0.0.0-20190911001459-f65b43345b0c // indirect
+	github.com/walterjwhite/go-application/libraries/timestamp v0.0.0-20190911001459-f65b43345b0c // indirect
+	github.com/walterjwhite/go-application/libraries/yamlhelper v0.0.0-20190911001459-f65b43345b0c
 )
