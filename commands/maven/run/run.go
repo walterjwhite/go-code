@@ -16,7 +16,7 @@ var profile = flag.String("Profile", "default", "Profile to use to run the appli
 func main() {
 	ctx := application.Configure()
 
-	path.WithSessionDirectory("~/.audit/" + timestamp.Get())
+	path.WithSessionDirectory("~/.audit/maven/run/" + timestamp.Get())
 
 	run.Run(ctx, *profile, *debug)
 }

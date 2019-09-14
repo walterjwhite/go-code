@@ -28,7 +28,7 @@ func init() {
 func main() {
 	ctx := application.Configure()
 
-	path.WithSessionDirectory("~/.audit/" + timestamp.Get())
+	path.WithSessionDirectory("~/.audit/maven/format/" + timestamp.Get())
 
 	process(ctx)
 }

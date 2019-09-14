@@ -30,6 +30,6 @@ func OnCompletion() {
 		notifier.Notify(Notification{Title: "Error", Description: "Application execution completed abnormally.", Type: Error})
 	} else {
 		// normal
-		notifier.Notify(Notification{Title: "Success", Description: "Application execution completed normal.", Type: Info})
+		notifier.Notify(Notification{Title: "Success", Description: "Application execution completed normally.", Type: Info})
 	}
 }
