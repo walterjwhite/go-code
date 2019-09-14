@@ -23,6 +23,9 @@ func runApplication(ctx context.Context, index int, a Application) *exec.Cmd {
 	log.Printf("Matcher: %v", a.LogMatcher)
 
 	command := runner.Prepare(ctx, a.Command, a.Arguments...)
+
+	command.Dir = a.Name
+
 	notificationChannel := make(chan *string)
 
 	logFile := getLogFile(a.Name)
