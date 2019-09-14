@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"io"
 	"log"
 	"os"
 	"os/exec"
@@ -24,7 +25,7 @@ func runApplication(ctx context.Context, index int, a Application) *exec.Cmd {
 	command := runner.Prepare(ctx, a.Command, a.Arguments...)
 	notificationChannel := make(chan *string)
 
-	logFile := getLogFile(application)
+	logFile := getLogFile(a.Name)
 	runner.WithEnvironment(command, true, a.Environment...)
 
 	a.configureLogWatcher(notificationChannel, logFile, command)
@@ -36,13 +37,13 @@ func runApplication(ctx context.Context, index int, a Application) *exec.Cmd {
 	return command
 }
 
-func (a *Application) configureLogWatcher(notificationChannel chan *string, logFile string, command *exec.Cmd) {
+func (a *Application) configureLogWatcher(notificationChannel chan *string, writer io.Writer, command *exec.Cmd) {
 	if len(a.LogMatcher) > 0 {
 		if "spring-boot" == a.LogMatcher {
-			writer := writermatcher.NewSpringBootApplicationStartupMatcher(notificationChannel, &logFile)
+			writer := writermatcher.NewSpringBootApplicationStartupMatcher(notificationChannel, writer)
 			runner.WithWriter(command, writer)
 		} else if "npm" == a.LogMatcher {
-			writer := writermatcher.NewNPMStartupMatcher(notificationChannel, &logFile)
+			writer := writermatcher.NewNPMStartupMatcher(notificationChannel, writer)
 			runner.WithWriter(command, writer)
 		} else {
 			log.Printf("%v not matched, no log matcher configured.\n", a.LogMatcher)

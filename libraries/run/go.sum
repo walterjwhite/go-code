@@ -1,0 +1,16 @@
+github.com/walterjwhite/go-application/libraries/io/writermatcher v0.0.0-20190914103652-9ebff9763f2d h1:Ogt1g2/76vNxI+Imqx5vVgCKfcPTboTXHSniLvl9ru8=
+github.com/walterjwhite/go-application/libraries/io/writermatcher v0.0.0-20190914103652-9ebff9763f2d/go.mod h1:t+96xpBkPKeCGKsiez5Xi7o1RvGTVjBRqpdReVjFqJY=
+github.com/walterjwhite/go-application/libraries/logging v0.0.0-20190914012323-6f15a6baa74c/go.mod h1:QhUzDkllcR89OKA19aGv91GE6r5WBifLHFKkG4Anqhg=
+github.com/walterjwhite/go-application/libraries/logging v0.0.0-20190914030252-15aa585f2589/go.mod h1:QhUzDkllcR89OKA19aGv91GE6r5WBifLHFKkG4Anqhg=
+github.com/walterjwhite/go-application/libraries/logging v0.0.0-20190914103652-9ebff9763f2d h1:jQghpMitxNaJ65HZVheOq+TEkBYz15D1mnYhf//c/gk=
+github.com/walterjwhite/go-application/libraries/logging v0.0.0-20190914103652-9ebff9763f2d/go.mod h1:QhUzDkllcR89OKA19aGv91GE6r5WBifLHFKkG4Anqhg=
+github.com/walterjwhite/go-application/libraries/runner v0.0.0-20190914103652-9ebff9763f2d h1:p3PRfhzfPKxGCm9LqKJ/FQelxBgabpbQeBMa9j3xyGk=
+github.com/walterjwhite/go-application/libraries/runner v0.0.0-20190914103652-9ebff9763f2d/go.mod h1:UU2suvGWUqsjuB5cxdy4Tz72y038OivtccfBGw5QY50=
+github.com/walterjwhite/go-application/libraries/timestamp v0.0.0-20190914103652-9ebff9763f2d h1:H1DSeEbI0UNZ8Y0n0ZpYla1plqjVGOUDJyzDBNMJkEg=
+github.com/walterjwhite/go-application/libraries/timestamp v0.0.0-20190914103652-9ebff9763f2d/go.mod h1:am+q45EpcjNcfwWjAtyi2O90w6zroBmBIy87FMV2hbQ=
+github.com/walterjwhite/go-application/libraries/yamlhelper v0.0.0-20190914103652-9ebff9763f2d h1:feK4IfrXi0oWA9lbsztga/kH1RIIi9bwf5dnBGIJbcE=
+github.com/walterjwhite/go-application/libraries/yamlhelper v0.0.0-20190914103652-9ebff9763f2d/go.mod h1:QZV96sQMUMAVrEnobn3rU3ETJtmtmbefFB+4eU1ySoM=
+gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405/go.mod h1:Co6ibVJAznAaIkqp8huTwlJQCZ016jof/cbN4VW5Yz0=
+gopkg.in/check.v1 v1.0.0-20190902080502-41f04d3bba15/go.mod h1:Co6ibVJAznAaIkqp8huTwlJQCZ016jof/cbN4VW5Yz0=
+gopkg.in/yaml.v2 v2.2.2 h1:ZCJp+EgiOT7lHqUV2J862kp8Qj64Jo6az82+3Td9dZw=
+gopkg.in/yaml.v2 v2.2.2/go.mod h1:hI93XBmqTisBFMUTm0b8Fm+jr3Dg1NNxqwp+5A1VGuI=

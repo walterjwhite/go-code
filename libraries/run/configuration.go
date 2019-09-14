@@ -20,5 +20,5 @@ type Configuration struct {
 func (a *Application) getConf(application string) *Application {
 	yamlhelper.Read(fmt.Sprintf(".applications/%v.yaml", application), a)
 
-	return c
+	return a
 }
