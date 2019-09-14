@@ -2,5 +2,5 @@ github.com/TheCreeper/go-notify v0.0.0-20160203001056-b5cd14745a5c h1:Tqox6eMuiO
 github.com/TheCreeper/go-notify v0.0.0-20160203001056-b5cd14745a5c/go.mod h1:qVRPuzmYrIzygaEyuG6gRPIcxfdJ9gAeQ/FCOfYFPTU=
 github.com/godbus/dbus v4.1.0+incompatible h1:WqqLRTsQic3apZUK9qC5sGNfXthmPXzUZ7nQPrNITa4=
 github.com/godbus/dbus v4.1.0+incompatible/go.mod h1:/YcGZj5zSblfDWMMoOzV4fas9FZnQYTkDnsGvmh2Grw=
-github.com/walterjwhite/go-application/libraries/logging v0.0.0-20190914012323-6f15a6baa74c h1:WNAUAKMS5XpxhB1z3Y6rXBbrI1otxHCmlfVaW3y7w68=
-github.com/walterjwhite/go-application/libraries/logging v0.0.0-20190914012323-6f15a6baa74c/go.mod h1:QhUzDkllcR89OKA19aGv91GE6r5WBifLHFKkG4Anqhg=
+github.com/walterjwhite/go-application/libraries/logging v0.0.0-20190914104301-97a52aee9d24 h1:8p+8PsyqRnmTn/3dg33bEDtFwtSox4YqAuYAhnvWsgs=
+github.com/walterjwhite/go-application/libraries/logging v0.0.0-20190914104301-97a52aee9d24/go.mod h1:QhUzDkllcR89OKA19aGv91GE6r5WBifLHFKkG4Anqhg=

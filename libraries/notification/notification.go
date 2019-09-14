@@ -22,14 +22,14 @@ type Notifier interface {
 	Notify(notification Notification)
 }
 
-var notifier = New()
+var NotifierInstance = New()
 
 func OnCompletion() {
 	if r := recover(); r != nil {
 		// exception
-		notifier.Notify(Notification{Title: "Error", Description: "Application execution completed abnormally.", Type: Error})
+		NotifierInstance.Notify(Notification{Title: "Error", Description: "Application execution completed abnormally.", Type: Error})
 	} else {
 		// normal
-		notifier.Notify(Notification{Title: "Success", Description: "Application execution completed normally.", Type: Info})
+		NotifierInstance.Notify(Notification{Title: "Success", Description: "Application execution completed normally.", Type: Info})
 	}
 }
