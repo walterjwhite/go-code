@@ -35,7 +35,7 @@ func runApplication(ctx context.Context, index int, a Application) *exec.Cmd {
 
 	logging.Panic(runner.Start(command))
 
-	go monitorChannel(a.Name, notificationChannel)
+	go monitorChannel(ctx, a.Name, notificationChannel)
 
 	return command
 }
