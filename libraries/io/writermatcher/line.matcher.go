@@ -1,6 +1,8 @@
 package writermatcher
 
 import (
+	"fmt"
+	"github.com/walterjwhite/go-application/libraries/logging"
 	"io"
 	"strings"
 )
@@ -21,10 +23,18 @@ func (n LineMatcher) Check(p []byte) {
 	onEachLine(n, p, check)
 }
 
+type ConversionError struct {
+	Interface interface{}
+}
+
+func (ce *ConversionError) Error() string {
+	return fmt.Sprintf("Error converting: %v\n", ce.Interface)
+}
+
 func check(s interface{}, line string) {
 	field, ok := s.(LineMatcher)
 	if !ok {
-		panic(fmt.Sprintf("Error converting: %v\n", s))
+		logging.Panic(&ConversionError{Interface: s})
 	}
 
 	if strings.Contains(line, field.Line) {
@@ -41,9 +51,9 @@ func NewLineMatcher(channel chan *string, writer io.Writer, line string, notifyO
 }
 
 func NewSpringBootApplicationStartupMatcher(channel chan *string, writer io.Writer) *WriterDelegate {
-	return NewLineMatcher(channel, "Started Application in", true)
+	return NewLineMatcher(channel, writer, "Started Application in", true)
 }
 
 func NewNPMStartupMatcher(channel chan *string, writer io.Writer) *WriterDelegate {
-	return NewLineMatcher(channel, "webpack: Compiled successfully.", true)
+	return NewLineMatcher(channel, writer, "webpack: Compiled successfully.", true)
 }
