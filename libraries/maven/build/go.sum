@@ -1,6 +1,6 @@
-github.com/walterjwhite/go-application/libraries/logging v0.0.0-20190911001459-f65b43345b0c h1:YMuWTGWaKzg5P/piqpxkMr1KVY/JhncgM79U+BuA34g=
-github.com/walterjwhite/go-application/libraries/logging v0.0.0-20190911001459-f65b43345b0c/go.mod h1:QhUzDkllcR89OKA19aGv91GE6r5WBifLHFKkG4Anqhg=
-github.com/walterjwhite/go-application/libraries/maven v0.0.0-20190911001459-f65b43345b0c h1:gpLgHMbXdWdHuuVcEF96O9NKTFEJBMBADfThSIaSJqA=
-github.com/walterjwhite/go-application/libraries/maven v0.0.0-20190911001459-f65b43345b0c/go.mod h1:/E4fvAYzMS7CYoDz0wE2LGW6BVLXhtLj+lhqgo1yXDs=
-github.com/walterjwhite/go-application/libraries/runner v0.0.0-20190911001459-f65b43345b0c h1:fSQQ/XcmUKMv/+70oWO2IIlN/aOjRY5gIJoDdnUlZe4=
-github.com/walterjwhite/go-application/libraries/runner v0.0.0-20190911001459-f65b43345b0c/go.mod h1:UU2suvGWUqsjuB5cxdy4Tz72y038OivtccfBGw5QY50=
+github.com/walterjwhite/go-application/libraries/logging v0.0.0-20190914012323-6f15a6baa74c h1:WNAUAKMS5XpxhB1z3Y6rXBbrI1otxHCmlfVaW3y7w68=
+github.com/walterjwhite/go-application/libraries/logging v0.0.0-20190914012323-6f15a6baa74c/go.mod h1:QhUzDkllcR89OKA19aGv91GE6r5WBifLHFKkG4Anqhg=
+github.com/walterjwhite/go-application/libraries/maven v0.0.0-20190914012323-6f15a6baa74c h1:wyvQunErefFWZCySq2N0KJdgKsvbZ0FWpI3iHkooRAA=
+github.com/walterjwhite/go-application/libraries/maven v0.0.0-20190914012323-6f15a6baa74c/go.mod h1:/E4fvAYzMS7CYoDz0wE2LGW6BVLXhtLj+lhqgo1yXDs=
+github.com/walterjwhite/go-application/libraries/runner v0.0.0-20190914012323-6f15a6baa74c h1:9ZF76rDyuFx5wIGKpx5FlYJZI4iY5lozaketFURu90c=
+github.com/walterjwhite/go-application/libraries/runner v0.0.0-20190914012323-6f15a6baa74c/go.mod h1:UU2suvGWUqsjuB5cxdy4Tz72y038OivtccfBGw5QY50=

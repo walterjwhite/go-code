@@ -6,10 +6,10 @@ import (
 )
 
 type LineMatcher struct {
-	Channel  chan *string
-	
-	Line string
-	Notified bool
+	Channel chan *string
+
+	Line       string
+	Notified   bool
 	NotifyOnce bool
 }
 
@@ -31,11 +31,10 @@ func check(s interface{}, line string) {
 		if !field.Notified || !field.NotifyOnce {
 			field.Channel <- &line
 		}
-		
+
 		field.Notified = true
 	}
 }
-
 
 func NewLineMatcher(channel chan *string, writer io.Writer, line string, notifyOnce bool) *WriterDelegate {
 	return &WriterDelegate{Channel: channel, Delegate: writer, Matcher: LineMatcher{Channel: channel, NotifyOnce: notifyOnce, Line: line}}
