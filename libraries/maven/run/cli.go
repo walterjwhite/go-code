@@ -3,13 +3,10 @@ package run
 import (
 	"context"
 	"fmt"
-	//"io"
-	"io/ioutil"
+
 	"log"
 	"os"
 	"os/exec"
-
-	"strings"
 
 	"github.com/walterjwhite/go-application/libraries/io/writermatcher"
 	"github.com/walterjwhite/go-application/libraries/logging"
@@ -18,32 +15,19 @@ import (
 	"path/filepath"
 )
 
-func runApplication(ctx context.Context, index int, profile string, configuration Configuration, application string, debug bool /*, notificationBuilder func(notification notify.Notification) notify.Notifier*/) *exec.Cmd {
-	log.Printf("Running Application: %v (%v)", application, profile)
-	log.Printf("Environment: %v", configuration.Environment)
-	log.Printf("JVMArguments: %v", configuration.Jvm)
+func runApplication(ctx context.Context, index int, a Application) *exec.Cmd {
+	log.Printf("Running Application: %v (%v)", a.Name, a.Command)
+	log.Printf("Environment: %v", a.Environment)
+	log.Printf("Arguments: %v", a.Arguments)
+	log.Printf("Matcher: %v", a.LogMatcher)
 
-	arguments := make([]string, 0)
-	if debug {
-		arguments = append(arguments, fmt.Sprintf(DebugArguments, getDebugPort(index)))
-	}
-
-	for _, jvmArgument := range configuration.Jvm {
-		arguments = append(arguments, fmt.Sprintf("-D%v", jvmArgument))
-	}
-
-	arguments = append(arguments, "-jar")
-	arguments = append(arguments, *getJarFile(application))
-
-	command := runner.Prepare(ctx, "java", arguments...)
+	command := runner.Prepare(ctx, a.Command, a.Arguments...)
 	notificationChannel := make(chan *string)
 
 	logFile := getLogFile(application)
-	runner.WithEnvironment(command, true, configuration.Environment...)
+	runner.WithEnvironment(command, true, a.Environment...)
 
-	// TODO: configure this @ runtime, perhaps we're not using SpringBoot @ all
-	writer := writermatcher.NewSpringBootApplicationStartupMatcher(notificationChannel, logFile)
-	runner.WithWriter(command, writer)
+	a.configureLogWatcher(notificationChannel, logFile, command)
 
 	logging.Panic(runner.Start(command))
 
@@ -52,35 +36,22 @@ func runApplication(ctx context.Context, index int, profile string, configuratio
 	return command
 }
 
-func getDebugPort(index int) int {
-	return DebugPortStart + index
-}
-
-type NoApplicationArtifactFoundError struct {
-	ApplicationName string
-}
-
-func (e *NoApplicationArtifactFoundError) Error() string {
-	return fmt.Sprintf("No application artifact found for %s\n", e.ApplicationName)
-}
-
-func getJarFile(application string) *string {
-	files, err := ioutil.ReadDir(fmt.Sprintf("%s/target", application))
-	logging.Panic(err)
-
-	for _, f := range files {
-		if strings.Contains(f.Name(), "jar") && !strings.Contains(f.Name(), ".original") {
-			jarFile := fmt.Sprintf("%s/target/%s", application, f.Name())
-			return &jarFile
+func (a *Application) configureLogWatcher(notificationChannel chan *string, logFile string, command *exec.Cmd) {
+	if len(a.LogMatcher) > 0 {
+		if "spring-boot" == a.LogMatcher {
+			writer := writermatcher.NewSpringBootApplicationStartupMatcher(notificationChannel, &logFile)
+			runner.WithWriter(command, writer)
+		} else if "npm" == a.LogMatcher {
+			writer := writermatcher.NewNPMStartupMatcher(notificationChannel, &logFile)
+			runner.WithWriter(command, writer)
+		} else {
+			log.Printf("%v not matched, no log matcher configured.\n", a.LogMatcher)
 		}
 	}
-
-	logging.Panic(&NoApplicationArtifactFoundError{ApplicationName: application})
-	return nil
 }
 
 func getLogFile(application string) *os.File {
-	logFile := fmt.Sprintf("%s/target/logs/%v", application, timestamp.Get())
+	logFile := fmt.Sprintf("%s/.logs/%v", application, timestamp.Get())
 	log.Printf("writing logs to: %s", logFile)
 
 	return makeLogFile(logFile)

@@ -6,11 +6,11 @@ import (
 )
 
 type Application struct {
-	Name  string
-	Command string
-	Arguments []string
-	LogMatcher string
-	Environment  []string
+	Name        string
+	Command     string
+	Arguments   []string
+	LogMatcher  string
+	Environment []string
 }
 
 type Configuration struct {
