@@ -8,8 +8,7 @@ import (
 type linuxNotification struct{}
 
 func (n *linuxNotification) Notify(notification Notification) {
-	//ntf := notify.NewNotification(notification.Title, notification.Description)
-	ntf := notify.NewNotification("Title goes here:"+notification.Title, notification.Description)
+	ntf := notify.NewNotification(notification.Title, notification.Description)
 	ntf.AppIcon = notification.Icon
 	if len(notification.AudioFile) > 0 {
 		ntf.Hints = make(map[string]interface{})

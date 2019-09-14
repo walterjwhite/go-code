@@ -10,13 +10,13 @@ require (
 	github.com/walterjwhite/go-application/libraries/audit v0.0.0-20190908215948-473df8f9d550
 	github.com/walterjwhite/go-application/libraries/identifier v0.0.0-20190914012027-32377100165a // indirect
 	github.com/walterjwhite/go-application/libraries/io/writermatcher v0.0.0-20190908213804-7f40493dd999 // indirect
-	github.com/walterjwhite/go-application/libraries/logging v0.0.0-20190914012027-32377100165a
+	github.com/walterjwhite/go-application/libraries/logging v0.0.0-20190914012225-b460cc70a747
 	github.com/walterjwhite/go-application/libraries/maven v0.0.0-20190908131603-42d51493b3cc
 	github.com/walterjwhite/go-application/libraries/maven/build v0.0.0-20190908143930-39c5cc2189ec
 	github.com/walterjwhite/go-application/libraries/maven/format v0.0.0-20190908143930-39c5cc2189ec
 	github.com/walterjwhite/go-application/libraries/maven/run v0.0.0-20190908213804-7f40493dd999
 	github.com/walterjwhite/go-application/libraries/monitor v0.0.0-20190908114147-411d246ddec4
-	github.com/walterjwhite/go-application/libraries/notification v0.0.0-20190914012027-32377100165a // indirect
+	github.com/walterjwhite/go-application/libraries/notification v0.0.0-20190914012225-b460cc70a747 // indirect
 	github.com/walterjwhite/go-application/libraries/path v0.0.0-20190908215948-473df8f9d550
 	github.com/walterjwhite/go-application/libraries/runner v0.0.0-20190908215948-473df8f9d550
 	github.com/walterjwhite/go-application/libraries/screenshot v0.0.0-20190908215948-473df8f9d550
