@@ -39,6 +39,7 @@ func onShutdown(shutdownHandler ShutdownHandler, channel chan os.Signal, ctx con
 		// TODO: make this configurable, what exit code do we want?
 		os.Exit(1)
 	case <-ctx.Done():
+		close(channel)
 		log.Printf("Done\n")
 	}
 }
