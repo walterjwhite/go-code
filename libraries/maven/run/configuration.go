@@ -6,23 +6,19 @@ import (
 )
 
 type Application struct {
-	Index         int
-	Configuration Configuration
+	Name  string
+	Command string
+	Arguments []string
+	LogMatcher string
+	Environment  []string
 }
 
 type Configuration struct {
-	Applications []string
-	Environment  []string
-	Jvm          []string
-
-	DebugPorts []int
+	Applications []Application
 }
 
-const DebugArguments = "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=%d"
-const DebugPortStart = 5005
-
-func (c *Configuration) getConf(profile string) *Configuration {
-	yamlhelper.Read(fmt.Sprintf(".profiles/%v.yaml", profile), c)
+func (a *Application) getConf(application string) *Application {
+	yamlhelper.Read(fmt.Sprintf(".applications/%v.yaml", application), a)
 
 	return c
 }

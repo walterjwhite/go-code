@@ -8,15 +8,35 @@ import (
 	"github.com/walterjwhite/go-application/libraries/logging"
 )
 
-func Run(ctx context.Context, profile string, debug bool /*, notificationBuilder func(notification notify.Notification) notify.Notifier*/) {
-	var c Configuration
-	c.getConf(profile)
+func Run(ctx context.Context, applications []string) {
+	c := initialize(applications []string)
+	waitForAll(runAll(ctx, c))
+}
 
+func initialize() Configuration {
+	c := Configuration{}
+	
+	c.Applications = make([]Application, len(applications))
+	for index, application := range applications {
+		var a Application
+		a.getConf(application)
+		
+		c.Applications[index] = a
+	}
+	
+	return c
+}
+
+func runAll(ctx context.Context, c Configuration) []exec.Cmd {
 	commands := make([]exec.Cmd, 0)
 	for index, application := range c.Applications {
-		commands = append(commands, *runApplication(ctx, index, profile, c, application, debug /*, notificationBuilder*/))
+		commands = append(commands, *runApplication(ctx, index, profile, c, application))
 	}
+	
+	return commands
+}
 
+func waitForAll(commands []exec.Cmd) {
 	for _, command := range commands {
 		_, err := command.Process.Wait()
 

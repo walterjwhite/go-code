@@ -9,14 +9,17 @@ import (
 	"flag"
 )
 
-var debug = flag.Bool("Debug", false, "Whether maven should run with all the output or only WARN or higher")
-var profile = flag.String("Profile", "default", "Profile to use to run the application")
+var applications = flag.String("Applications", "default", "Comma-separated list of applications to run")
 
 // TODO: integrate win10 / dbus notifications
 func main() {
 	ctx := application.Configure()
 
-	path.WithSessionDirectory("~/.audit/maven/run/" + timestamp.Get())
+	path.WithSessionDirectory("~/.audit/run/" + timestamp.Get())
 
-	run.Run(ctx, *profile, *debug)
+	run.Run(ctx, getApplications(applications))
+}
+
+func getApplications(applicationsString *string) {
+	return strings.Split(*applicationsString, ",")
 }
