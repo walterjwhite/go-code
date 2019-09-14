@@ -1,30 +1,20 @@
 package run
 
-/*
-
 import (
 	"fmt"
+	"github.com/walterjwhite/go-application/libraries/notification"
 	"log"
-	"libraries/notify"
 )
 
-func buildErrorNotification(application string, err error, notificationBuilder func(notification notify.Notification) notify.Notifier) notify.Notifier {
-	log.Printf("Error: %v\n", err)
-	return notificationBuilder(notify.Notification{Id: "run", Title: fmt.Sprintf("%v Error", application), Details: fmt.Sprintf("%v", err)})
-}
-
-func checkIfStarted(application string, channel chan *string, notificationBuilder func(notification notify.Notification) notify.Notifier {
+// TODO: the channel is only sending the matching line
+// perhaps we should instead send a notification on the channel
+// then we can configure how we want to receive the notifications here, OS notification, email, sms, etc.
+func monitorChannel(application string, channel chan *string) {
 	for {
 		select {
-			case applicationStartedLine := <-channel:
+		case applicationStartedLine := <-channel:
 			log.Printf("Application Started: %v\n", applicationStartedLine)
-			notifyApplicationStarted(application, applicationStartedLine, notificationBuilder)
-			return
+			notification.NotifierInstance.Notify(notification.Notification{Title: fmt.Sprintf("run: %v", application), Description: *applicationStartedLine, Type: notification.Info})
 		}
 	}
 }
-
-func notifyApplicationStarted(application string, applicationStartedLine *string, notificationBuilder func(notification notify.Notification) notify.Notifier {
-	return notificationBuilder(notify.Notification{Id: "run", Title: fmt.Sprintf("%v Started", application), Details: *applicationStartedLine})
-}
-*/

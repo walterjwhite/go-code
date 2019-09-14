@@ -32,7 +32,7 @@ func runApplication(ctx context.Context, index int, a Application) *exec.Cmd {
 
 	logging.Panic(runner.Start(command))
 
-	//go checkIfStarted(application, notificationChannel, notificationBuilder)
+	go monitorChannel(a.Name, notificationChannel)
 
 	return command
 }
@@ -40,15 +40,15 @@ func runApplication(ctx context.Context, index int, a Application) *exec.Cmd {
 func (a *Application) configureLogWatcher(notificationChannel chan *string, writer io.Writer, command *exec.Cmd) {
 	if len(a.LogMatcher) > 0 {
 		if "spring-boot" == a.LogMatcher {
-			writer := writermatcher.NewSpringBootApplicationStartupMatcher(notificationChannel, writer)
-			runner.WithWriter(command, writer)
+			writer = writermatcher.NewSpringBootApplicationStartupMatcher(notificationChannel, writer)
 		} else if "npm" == a.LogMatcher {
-			writer := writermatcher.NewNPMStartupMatcher(notificationChannel, writer)
-			runner.WithWriter(command, writer)
+			writer = writermatcher.NewNPMStartupMatcher(notificationChannel, writer)
 		} else {
 			log.Printf("%v not matched, no log matcher configured.\n", a.LogMatcher)
 		}
 	}
+
+	runner.WithWriter(command, writer)
 }
 
 func getLogFile(application string) *os.File {
