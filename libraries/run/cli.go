@@ -17,11 +17,6 @@ import (
 )
 
 func runApplication(ctx context.Context, index int, a Application) *exec.Cmd {
-	log.Printf("Running Application: %v (%v)", a.Name, a.Command)
-	log.Printf("Environment: %v", a.Environment)
-	log.Printf("Arguments: %v", a.Arguments)
-	log.Printf("Matcher: %v", a.LogMatcher)
-
 	command := runner.Prepare(ctx, a.Command, a.Arguments...)
 
 	command.Dir = a.Name
@@ -32,6 +27,11 @@ func runApplication(ctx context.Context, index int, a Application) *exec.Cmd {
 	runner.WithEnvironment(command, true, a.Environment...)
 
 	a.configureLogWatcher(notificationChannel, logFile, command)
+
+	log.Printf("Running Application: %v (%v)", a.Name, a.Command)
+	log.Printf("Environment: %v", a.Environment)
+	log.Printf("Arguments: %v", a.Arguments)
+	log.Printf("Matcher: %v", a.LogMatcher)
 
 	logging.Panic(runner.Start(command))
 
