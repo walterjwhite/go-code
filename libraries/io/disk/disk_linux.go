@@ -33,7 +33,7 @@ func Usage(path string) *Disk {
 	used := stat.Blocks - stat.Bavail
 	fmt.Printf("used: %v\n", used)
 
-	usedRatio := (1.0 * used) / stat.Blocks
+	usedRatio := float64(used) / float64(stat.Blocks)
 	fmt.Printf("used ratio: %v\n", usedRatio)
 
 	usagePercentage := uint(100 * usedRatio)
