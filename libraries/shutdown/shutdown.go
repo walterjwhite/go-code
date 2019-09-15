@@ -1,7 +1,7 @@
 package shutdown
 
 import (
-	"golang.org/x/net/context"
+	"context"
 	"log"
 	"os"
 	"os/signal"

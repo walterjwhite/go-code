@@ -11,7 +11,8 @@ libraries/screenshot
 
 libraries/audit
 
-libraries/monitor
+# not ready yet
+#libraries/monitor
 
 libraries/periodic
 
@@ -22,10 +23,19 @@ libraries/database
 libraries/email
 
 libraries/io/writermatcher
+libraries/io/disk
 libraries/jwthelper
 
 libraries/maven
 libraries/maven/build
 libraries/maven/format
-libraries/maven/run
+libraries/run
 
+libraries/os/unix/health
+libraries/os/unix/tail
+libraries/os/unix/interfaces
+libraries/os/unix/service
+
+libraries/supervisor/data
+libraries/supervisor/server
+libraries/supervisor/client
