@@ -27,24 +27,15 @@ func Usage(path string) *Disk {
 
 	logging.Panic(syscall.Statfs(path, &stat))
 
-	fmt.Printf("blocks: %v\n", stat.Blocks)
-	fmt.Printf("free blocks: %v\n", stat.Bavail)
-
 	used := stat.Blocks - stat.Bavail
-	fmt.Printf("used: %v\n", used)
-
 	usedRatio := float64(used) / float64(stat.Blocks)
-	fmt.Printf("used ratio: %v\n", usedRatio)
-
-	usagePercentage := uint(100 * usedRatio)
+	usagePercentage := uint(round(100*usedRatio, roundOn, 0))
 
 	// TODO: configure units (bytes -> GB)
 	freeBytes := stat.Bavail * uint64(stat.Bsize)
 	prettyFreeBytes, prettyFreeUnits := Size(freeBytes)
 
 	free := fmt.Sprintf("%v %v", prettyFreeBytes, prettyFreeUnits)
-
-	//Bavail
 
 	return &Disk{MountPoint: path, UsagePercentage: usagePercentage, Free: free}
 }
