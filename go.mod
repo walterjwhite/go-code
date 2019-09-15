@@ -9,7 +9,8 @@ require (
 	github.com/walterjwhite/go-application/libraries/application v0.0.0-20190914012027-32377100165a
 	github.com/walterjwhite/go-application/libraries/audit v0.0.0-20190908215948-473df8f9d550
 	github.com/walterjwhite/go-application/libraries/identifier v0.0.0-20190914012027-32377100165a // indirect
-	github.com/walterjwhite/go-application/libraries/logging v0.0.0-20190914105732-9894932cf777
+	github.com/walterjwhite/go-application/libraries/io/disk v0.0.0-20190915151301-da0b36868d06
+	github.com/walterjwhite/go-application/libraries/logging v0.0.0-20190915151301-da0b36868d06
 	github.com/walterjwhite/go-application/libraries/maven v0.0.0-20190908131603-42d51493b3cc
 	github.com/walterjwhite/go-application/libraries/maven/build v0.0.0-20190908143930-39c5cc2189ec
 	github.com/walterjwhite/go-application/libraries/maven/format v0.0.0-20190908143930-39c5cc2189ec

@@ -16,6 +16,9 @@ _build_library() {
 		_clean
 		_setup_module
 		go build
+		# TODO: how to install this locally?
+		#go install
+		go fix
 		format
 		_lint
 		_fetch_latest_package

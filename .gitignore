@@ -1,1 +1,4 @@
-commands/examples/library-usage-01/library-usage-01
+*
+!*.go
+!*.gitignore
+!README
