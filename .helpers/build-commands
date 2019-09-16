@@ -44,7 +44,7 @@ _build_command() {
 	format
 	_lint
 	
-	go build -ldflags "$_OPTIONS"
+	go build -a -race -ldflags "$_OPTIONS"
 
 	cd $_PWD
 }

@@ -15,7 +15,7 @@ _build_library() {
 	
 		_clean
 		_setup_module
-		go build
+		go build -a -race
 		# TODO: how to install this locally?
 		#go install
 		go fix
