@@ -3,10 +3,10 @@ module github.com/walterjwhite/go-application/libraries/run
 go 1.12
 
 require (
-	github.com/walterjwhite/go-application/libraries/io/writermatcher v0.0.0-20190915185550-97c233358bc7
-	github.com/walterjwhite/go-application/libraries/logging v0.0.0-20190915185550-97c233358bc7
-	github.com/walterjwhite/go-application/libraries/notification v0.0.0-20190915185550-97c233358bc7
-	github.com/walterjwhite/go-application/libraries/runner v0.0.0-20190915185550-97c233358bc7
-	github.com/walterjwhite/go-application/libraries/timestamp v0.0.0-20190915185550-97c233358bc7
-	github.com/walterjwhite/go-application/libraries/yamlhelper v0.0.0-20190915185550-97c233358bc7
+	github.com/walterjwhite/go-application/libraries/io/writermatcher v0.0.0-20190916033306-80b4009af900
+	github.com/walterjwhite/go-application/libraries/logging v0.0.0-20190916033306-80b4009af900
+	github.com/walterjwhite/go-application/libraries/notification v0.0.0-20190916033306-80b4009af900
+	github.com/walterjwhite/go-application/libraries/runner v0.0.0-20190916033306-80b4009af900
+	github.com/walterjwhite/go-application/libraries/timestamp v0.0.0-20190916033306-80b4009af900
+	github.com/walterjwhite/go-application/libraries/yamlhelper v0.0.0-20190916033306-80b4009af900
 )
