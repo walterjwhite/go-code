@@ -1,5 +1,7 @@
 package secrets
 
+// is this useful?
+/*
 import (
 	"github.com/atotto/clipboard"
 	"github.com/walterjwhite/go-application/libraries/logging"
@@ -8,3 +10,4 @@ import (
 func CopyToClipboard(secret string) {
 	logging.Panic(clipboard.WriteAll(secret))
 }
+*/
