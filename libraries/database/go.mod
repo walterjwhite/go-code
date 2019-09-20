@@ -7,10 +7,10 @@ require (
 	github.com/jmoiron/sqlx v1.2.0
 	github.com/lib/pq v1.2.0 // indirect
 	github.com/mattn/go-sqlite3 v1.11.0 // indirect
-	github.com/walterjwhite/go-application/libraries/after v0.0.0-20190916033306-80b4009af900 // indirect
-	github.com/walterjwhite/go-application/libraries/logging v0.0.0-20190916033306-80b4009af900 // indirect
-	github.com/walterjwhite/go-application/libraries/monitor v0.0.0-20190916033306-80b4009af900
-	github.com/walterjwhite/go-application/libraries/periodic v0.0.0-20190916033306-80b4009af900 // indirect
-	github.com/walterjwhite/go-application/libraries/timestamp v0.0.0-20190916033306-80b4009af900 // indirect
-	github.com/walterjwhite/go-application/libraries/yamlhelper v0.0.0-20190916033306-80b4009af900
+	github.com/walterjwhite/go-application/libraries/after v0.0.0-20190920121053-1cd4475ce881 // indirect
+	github.com/walterjwhite/go-application/libraries/logging v0.0.0-20190920121053-1cd4475ce881 // indirect
+	github.com/walterjwhite/go-application/libraries/monitor v0.0.0-20190920121053-1cd4475ce881
+	github.com/walterjwhite/go-application/libraries/periodic v0.0.0-20190920121053-1cd4475ce881 // indirect
+	github.com/walterjwhite/go-application/libraries/timestamp v0.0.0-20190920121053-1cd4475ce881 // indirect
+	github.com/walterjwhite/go-application/libraries/yamlhelper v0.0.0-20190920121053-1cd4475ce881
 )

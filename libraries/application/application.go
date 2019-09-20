@@ -11,23 +11,23 @@ import (
 )
 
 var logFile = flag.String("Log", "", "The log file to write to")
+var Context = shutdown.Default()
 
 func Configure() context.Context {
 	identifier.Log()
-	ctx := shutdown.Default()
 
 	flag.Parse()
 
 	logging.Set(*logFile)
 
-	return ctx
+	return Context
 }
 
 func OnCompletion() {
 	notification.OnCompletion()
 }
 
-func Wait(ctx context.Context) {
+func Wait() {
 	// wait for CTRL+C (or context to expire)
-	<-ctx.Done()
+	<-Context.Done()
 }
