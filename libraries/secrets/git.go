@@ -12,25 +12,24 @@ type Session struct {
 	Path *string
 }
 
-func (s *SecretsConfiguration) Setup() {
-	setup := s.isSetup()
-	if setup {
+func setupRepository() {
+	if isRepositorySetup() {
 		return
 	}
 
-	cmd := exec.Command("git", "clone", s.RepositoryRemoteUri, s.RepositoryPath)
+	cmd := exec.Command("git", "clone", SecretsConfigurationInstance.RepositoryRemoteUri, SecretsConfigurationInstance.RepositoryPath)
 	stdoutStderr, err := cmd.CombinedOutput()
 	logging.Panic(err)
 
 	log.Printf("Setup secrets project: %s\n", stdoutStderr)
 }
 
-func (s *SecretsConfiguration) isSetup() bool {
-	if _, err := os.Stat(s.RepositoryPath); os.IsNotExist(err) {
-		log.Printf("Secrets !: %v\n", s.RepositoryPath)
+func isRepositorySetup() bool {
+	if _, err := os.Stat(SecretsConfigurationInstance.RepositoryPath); os.IsNotExist(err) {
+		log.Printf("Secrets !: %v\n", SecretsConfigurationInstance.RepositoryPath)
 		return false
 	}
 
-	log.Printf("Secrets: %v\n", s.RepositoryPath)
+	log.Printf("Secrets: %v\n", SecretsConfigurationInstance.RepositoryPath)
 	return true
 }

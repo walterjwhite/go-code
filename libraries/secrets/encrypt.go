@@ -13,6 +13,8 @@ const DateTimeLayout = "2006/01/02 15:04:05"
 func Encrypt(name *string, message *string, data []byte) {
 	log.Printf("processing secret: %v\n", *name)
 
+	setupEncryptionKey()
+
 	secretPath := getSecretPath(name)
 	secretValuePath := secretPath + "/value"
 

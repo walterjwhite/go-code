@@ -38,6 +38,10 @@ func init() {
 	SecretsConfigurationInstance.RepositoryPath = translatedRepositoryPath
 	logging.Panic(err)
 
+	setupRepository()
+}
+
+func setupEncryptionKey() {
 	scanner := bufio.NewScanner(os.Stdin)
 	if scanner.Scan() {
 		keyBytes := scanner.Bytes()
