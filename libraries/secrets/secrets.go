@@ -39,8 +39,10 @@ func init() {
 	logging.Panic(err)
 
 	scanner := bufio.NewScanner(os.Stdin)
+	keyBytes := scanner.Bytes()
+	keyBytes = append(keyBytes, '\n')
 	if scanner.Scan() {
-		SecretsConfigurationInstance.EncryptionConfiguration = encryption.EncryptionConfiguration{EncryptionKey: scanner.Bytes()}
+		SecretsConfigurationInstance.EncryptionConfiguration = encryption.EncryptionConfiguration{EncryptionKey: keyBytes}
 	} else {
 		logging.Panic(&NoEncryptionKeyProvided{})
 	}
