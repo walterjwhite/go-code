@@ -34,6 +34,9 @@ func init() {
 
 	yamlhelper.Read(filename, secretsConfiguration)
 
+	secretsConfiguration.RepositoryPath, err = homedir.Expand(secretsConfiguration.RepositoryPath)
+	logging.Panic(err)
+
 	scanner := bufio.NewScanner(os.Stdin)
 	if scanner.Scan() {
 		secretsConfiguration.EncryptionConfiguration = encryption.EncryptionConfiguration{EncryptionKey: scanner.Bytes()}
