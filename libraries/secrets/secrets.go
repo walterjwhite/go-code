@@ -23,24 +23,24 @@ func (e *NoEncryptionKeyProvided) Error() string {
 	return "No key provided"
 }
 
-var secretsConfiguration *SecretsConfiguration
+var SecretsConfigurationInstance *SecretsConfiguration
 
 // initialize the key
 func init() {
-	secretsConfiguration = &SecretsConfiguration{}
+	SecretsConfigurationInstance = &SecretsConfiguration{}
 
 	filename, err := homedir.Expand(secretConfigurationFilePath)
 	logging.Panic(err)
 
-	yamlhelper.Read(filename, secretsConfiguration)
+	yamlhelper.Read(filename, SecretsConfigurationInstance)
 
-	translatedRepositoryPath, err := homedir.Expand(secretsConfiguration.RepositoryPath)
-	secretsConfiguration.RepositoryPath = translatedRepositoryPath
+	translatedRepositoryPath, err := homedir.Expand(SecretsConfigurationInstance.RepositoryPath)
+	SecretsConfigurationInstance.RepositoryPath = translatedRepositoryPath
 	logging.Panic(err)
 
 	scanner := bufio.NewScanner(os.Stdin)
 	if scanner.Scan() {
-		secretsConfiguration.EncryptionConfiguration = encryption.EncryptionConfiguration{EncryptionKey: scanner.Bytes()}
+		SecretsConfigurationInstance.EncryptionConfiguration = encryption.EncryptionConfiguration{EncryptionKey: scanner.Bytes()}
 	} else {
 		logging.Panic(&NoEncryptionKeyProvided{})
 	}

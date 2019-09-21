@@ -22,7 +22,7 @@ func (e *NoSearchCriteriaError) Error() string {
 }
 
 func Find(patterns []string, callback func(filePath string)) {
-	doFind(secretsConfiguration.RepositoryPath, patterns, callback)
+	doFind(SecretsConfigurationInstance.RepositoryPath, patterns, callback)
 }
 
 func doFind(root string, patterns []string, callback func(filePath string)) {
@@ -46,7 +46,7 @@ func NewFind() []string {
 
 	patterns := flag.Args()
 
-	log.Printf("searching in: %v\n", secretsConfiguration.RepositoryPath)
+	log.Printf("searching in: %v\n", SecretsConfigurationInstance.RepositoryPath)
 	log.Printf("patterns: %v\n", patterns)
 
 	if len(patterns) == 0 {
