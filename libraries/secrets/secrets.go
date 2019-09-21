@@ -34,7 +34,8 @@ func init() {
 
 	yamlhelper.Read(filename, secretsConfiguration)
 
-	secretsConfiguration.RepositoryPath, err = homedir.Expand(secretsConfiguration.RepositoryPath)
+	translatedRepositoryPath, err := homedir.Expand(secretsConfiguration.RepositoryPath)
+	secretsConfiguration.RepositoryPath = translatedRepositoryPath
 	logging.Panic(err)
 
 	scanner := bufio.NewScanner(os.Stdin)
