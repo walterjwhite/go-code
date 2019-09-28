@@ -1,6 +1,11 @@
 github.com/TheCreeper/go-notify v0.0.0-20160203001056-b5cd14745a5c h1:Tqox6eMuiOwAJSNIs8N8bSQo95lyNmD6Td6QbTlCo9g=
 github.com/TheCreeper/go-notify v0.0.0-20160203001056-b5cd14745a5c/go.mod h1:qVRPuzmYrIzygaEyuG6gRPIcxfdJ9gAeQ/FCOfYFPTU=
+github.com/go-mail/gomail v2.3.1+incompatible h1:hPrvM8Ncd4AM/OUHssNc6vclHfPKVcV/JuIwbDkcSq8=
+github.com/go-mail/gomail v2.3.1+incompatible/go.mod h1:3QIXh5Fu0sf8i95raYpBqdBzROEbW00No9d24bcbPp0=
 github.com/godbus/dbus v4.1.0+incompatible h1:WqqLRTsQic3apZUK9qC5sGNfXthmPXzUZ7nQPrNITa4=
 github.com/godbus/dbus v4.1.0+incompatible/go.mod h1:/YcGZj5zSblfDWMMoOzV4fas9FZnQYTkDnsGvmh2Grw=
-github.com/walterjwhite/go-application/libraries/logging v0.0.0-20190920121053-1cd4475ce881 h1:oSq0ETj/MkW6f0HssQvFAGdNu/rWWxNlpi6s1nMGZz0=
-github.com/walterjwhite/go-application/libraries/logging v0.0.0-20190920121053-1cd4475ce881/go.mod h1:QhUzDkllcR89OKA19aGv91GE6r5WBifLHFKkG4Anqhg=
+github.com/walterjwhite/go-application/libraries/email v0.0.0-20190928021504-e7011e6bf7a5 h1:Q62PbRSCJpTOE/6QEP56fE2AAlyVZcA+ShMAa5hUPWg=
+github.com/walterjwhite/go-application/libraries/email v0.0.0-20190928021504-e7011e6bf7a5/go.mod h1:8leLQwfim2zn1ML8xp7OzQ2n8Or8Q2SuSCMLh8czFSY=
+github.com/walterjwhite/go-application/libraries/logging v0.0.0-20190921111345-d85dd077315f/go.mod h1:QhUzDkllcR89OKA19aGv91GE6r5WBifLHFKkG4Anqhg=
+github.com/walterjwhite/go-application/libraries/logging v0.0.0-20190928021504-e7011e6bf7a5 h1:i6UjKWm6UDYdV/nOgKxMi6xt6HY8cKooZGFWcJnARC0=
+github.com/walterjwhite/go-application/libraries/logging v0.0.0-20190928021504-e7011e6bf7a5/go.mod h1:QhUzDkllcR89OKA19aGv91GE6r5WBifLHFKkG4Anqhg=

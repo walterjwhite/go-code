@@ -41,9 +41,9 @@ func format(notification Notification) string {
 	return notification.ApplicationId + ":" + notification.Title + ":" + notification.Description
 }
 
-func New(ctx context.Context, targetServer string) Notifier {
+func NewRemoteNotification(ctx context.Context, targetServer string, timeWait uint) Notifier {
 	username, err := user.Current()
 	logging.Panic(err)
 
-	return &remoteNotification{Username: username, Server: targetServer, Context: ctx}
+	return &remoteNotification{Username: username, Server: targetServer, Context: ctx, TimeWait: timeWait}
 }
