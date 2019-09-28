@@ -4,6 +4,7 @@ libraries/logging
 
 libraries/notification
 libraries/shutdown
+libraries/timeout
 
 libraries/application
 libraries/download
