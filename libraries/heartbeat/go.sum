@@ -1,0 +1,6 @@
+github.com/walterjwhite/go-application/libraries/logging v0.0.0-20190928022546-d8b9d3b44c7d h1:Uwxw4KOaWu4odirlXenq/fxDZITX5kkXHzFjmGYxLkc=
+github.com/walterjwhite/go-application/libraries/logging v0.0.0-20190928022546-d8b9d3b44c7d/go.mod h1:QhUzDkllcR89OKA19aGv91GE6r5WBifLHFKkG4Anqhg=
+github.com/walterjwhite/go-application/libraries/logging v0.0.0-20190928041326-6a1a4d3f8ed1 h1:Bzuycq9Wh7jY5seymLsNThQQPDhBNo4rjYkfKnj83bo=
+github.com/walterjwhite/go-application/libraries/logging v0.0.0-20190928041326-6a1a4d3f8ed1/go.mod h1:QhUzDkllcR89OKA19aGv91GE6r5WBifLHFKkG4Anqhg=
+github.com/walterjwhite/go-application/libraries/periodic v0.0.0-20190928041326-6a1a4d3f8ed1 h1:S8JtDLYk2a6PVNTQtNrZbECiytZAiGVgGcvpGHKBHFI=
+github.com/walterjwhite/go-application/libraries/periodic v0.0.0-20190928041326-6a1a4d3f8ed1/go.mod h1:OpmsRBeqH0aXJkDbwBMVy1KmSIHuZT4gxZrgKJwO7zA=
