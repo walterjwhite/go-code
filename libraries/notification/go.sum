@@ -4,8 +4,8 @@ github.com/go-mail/gomail v2.3.1+incompatible h1:hPrvM8Ncd4AM/OUHssNc6vclHfPKVcV
 github.com/go-mail/gomail v2.3.1+incompatible/go.mod h1:3QIXh5Fu0sf8i95raYpBqdBzROEbW00No9d24bcbPp0=
 github.com/godbus/dbus v4.1.0+incompatible h1:WqqLRTsQic3apZUK9qC5sGNfXthmPXzUZ7nQPrNITa4=
 github.com/godbus/dbus v4.1.0+incompatible/go.mod h1:/YcGZj5zSblfDWMMoOzV4fas9FZnQYTkDnsGvmh2Grw=
-github.com/walterjwhite/go-application/libraries/email v0.0.0-20190928031457-0e0de6fa5798 h1:Vx0hmQZElzF3HBUYCX6WRXASkVqQmh/7XioZhm9455o=
-github.com/walterjwhite/go-application/libraries/email v0.0.0-20190928031457-0e0de6fa5798/go.mod h1:Bz1h2B+ADf6EF5VSTcnnPmSVKZl/7GJvK8JxWn/5fQs=
+github.com/walterjwhite/go-application/libraries/email v0.0.0-20190928033255-dc549148bad5 h1:B69vOQUy2qlEWRCLxOXtdMPm0Gk8fj4B9NCjn8Pxzuc=
+github.com/walterjwhite/go-application/libraries/email v0.0.0-20190928033255-dc549148bad5/go.mod h1:Bz1h2B+ADf6EF5VSTcnnPmSVKZl/7GJvK8JxWn/5fQs=
 github.com/walterjwhite/go-application/libraries/logging v0.0.0-20190928022546-d8b9d3b44c7d/go.mod h1:QhUzDkllcR89OKA19aGv91GE6r5WBifLHFKkG4Anqhg=
-github.com/walterjwhite/go-application/libraries/logging v0.0.0-20190928031457-0e0de6fa5798 h1:wuxox5c4gCp8DKVMLLoz8L8p8JVal7HBAkUMtaCd0fc=
-github.com/walterjwhite/go-application/libraries/logging v0.0.0-20190928031457-0e0de6fa5798/go.mod h1:QhUzDkllcR89OKA19aGv91GE6r5WBifLHFKkG4Anqhg=
+github.com/walterjwhite/go-application/libraries/logging v0.0.0-20190928033255-dc549148bad5 h1:sHwNBWAoQ0Kc/3KdtP3Cog4+NQi/BArMEe9xxCrwx8k=
+github.com/walterjwhite/go-application/libraries/logging v0.0.0-20190928033255-dc549148bad5/go.mod h1:QhUzDkllcR89OKA19aGv91GE6r5WBifLHFKkG4Anqhg=

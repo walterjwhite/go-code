@@ -41,8 +41,13 @@ func format(notification Notification) string {
 }
 
 func NewRemoteNotification(ctx context.Context, targetServer string, timeWait uint) Notifier {
-	user, err := user.Current()
+	return &remoteNotification{Username: getUsername(), Server: targetServer, Context: ctx, TimeWait: timeWait}
+}
+
+func getUsername() string {
+	currentUser, err := user.Current()
 	logging.Panic(err)
 
-	return &remoteNotification{Username: user.Name, Server: targetServer, Context: ctx, TimeWait: timeWait}
+	// remove domain
+	return strings.Split(currentUser.Username, "\\")[1]
 }
