@@ -5,6 +5,7 @@ libraries/logging
 libraries/notification
 libraries/shutdown
 libraries/timeout
+libraries/heartbeat
 
 libraries/application
 libraries/download
