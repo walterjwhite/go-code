@@ -5,6 +5,10 @@ import (
 	"github.com/walterjwhite/go-application/libraries/periodic"
 )
 
+type wrapPeriodic struct {
+	Function fn()
+}
+
 func (a *Action) schedule() {
 	if a.isLongRunning() {
 		a.invokeLongRunning()
@@ -23,7 +27,13 @@ func (a *Action) isLongRunning() bool {
 }
 
 func (a *Action) invokePeriodic() {
-	go periodic.Periodic(a.Session.Context, periodic.GetInterval(a.Interval), a.Monitor.Execute)
+	go periodic.Periodic(a.Session.Context, periodic.GetInterval(a.Interval), &wrapPeriodic{Function: a.Monitor.Execute}.wrap)
+}
+
+func (w *wrapPeriodic) wrap() error {
+	w.Function()
+
+	return nil
 }
 
 func (s *Session) scheduleNoActivityAlert() {

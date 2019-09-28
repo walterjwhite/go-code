@@ -1,0 +1,6 @@
+github.com/walterjwhite/go-application/libraries/download v0.0.0-20190928022546-d8b9d3b44c7d h1:tFCVWCveaPCy7VVAfI7Et0aIQf7h9h3lfA0s3KDg48c=
+github.com/walterjwhite/go-application/libraries/download v0.0.0-20190928022546-d8b9d3b44c7d/go.mod h1:ul0nsj8CY+9qB+pNoRHKe89Q1fGVKLroLGqgfc5uRYk=
+github.com/walterjwhite/go-application/libraries/logging v0.0.0-20190928021738-d11c92c7f1ea h1:gA14p8ojOtDsld2DReJGT4BKaIEQfkh+hKEto+5wMoU=
+github.com/walterjwhite/go-application/libraries/logging v0.0.0-20190928021738-d11c92c7f1ea/go.mod h1:QhUzDkllcR89OKA19aGv91GE6r5WBifLHFKkG4Anqhg=
+github.com/walterjwhite/go-application/libraries/logging v0.0.0-20190928022546-d8b9d3b44c7d h1:Uwxw4KOaWu4odirlXenq/fxDZITX5kkXHzFjmGYxLkc=
+github.com/walterjwhite/go-application/libraries/logging v0.0.0-20190928022546-d8b9d3b44c7d/go.mod h1:QhUzDkllcR89OKA19aGv91GE6r5WBifLHFKkG4Anqhg=

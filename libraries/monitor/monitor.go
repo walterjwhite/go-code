@@ -6,7 +6,7 @@ import (
 )
 
 type Monitor interface {
-	Execute() error
+	Execute()
 }
 
 func New(ctx context.Context, configurationFile string) *Session {

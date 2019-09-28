@@ -1,2 +1,2 @@
-github.com/walterjwhite/go-application/libraries/logging v0.0.0-20190920121053-1cd4475ce881 h1:oSq0ETj/MkW6f0HssQvFAGdNu/rWWxNlpi6s1nMGZz0=
-github.com/walterjwhite/go-application/libraries/logging v0.0.0-20190920121053-1cd4475ce881/go.mod h1:QhUzDkllcR89OKA19aGv91GE6r5WBifLHFKkG4Anqhg=
+github.com/walterjwhite/go-application/libraries/logging v0.0.0-20190928022546-d8b9d3b44c7d h1:Uwxw4KOaWu4odirlXenq/fxDZITX5kkXHzFjmGYxLkc=
+github.com/walterjwhite/go-application/libraries/logging v0.0.0-20190928022546-d8b9d3b44c7d/go.mod h1:QhUzDkllcR89OKA19aGv91GE6r5WBifLHFKkG4Anqhg=

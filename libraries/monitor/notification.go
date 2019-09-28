@@ -17,7 +17,7 @@ func NewNotificationEvent(session *Session, action *Action, details string) *Not
 	return &NotificationEvent{Session: *session, Action: *action, Details: details}
 }
 
-func getTitle(sessionDescription string, sessionActionDescription string, interval string) string {
+func GetTitle(sessionDescription string, sessionActionDescription string, interval string) string {
 	return fmt.Sprintf("%v / %v @ %v / %v\n", sessionDescription, sessionActionDescription, interval, timestamp.Get())
 }
 
