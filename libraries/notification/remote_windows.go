@@ -3,10 +3,9 @@ package notification
 import (
 	"github.com/walterjwhite/go-application/libraries/logging"
 	"github.com/walterjwhite/go-application/libraries/runner"
-	"gopkg.in/toast.v1"
 
 	"context"
-	"os/exec"
+	"fmt"
 	"os/user"
 )
 
@@ -38,12 +37,12 @@ func (n *remoteNotification) Notify(notification Notification) {
 }
 
 func format(notification Notification) string {
-	return notification.ApplicationId + ":" + notification.Title + ":" + notification.Description
+	return /*notification.ApplicationId + ":" + */ notification.Title + ":" + notification.Description
 }
 
 func NewRemoteNotification(ctx context.Context, targetServer string, timeWait uint) Notifier {
-	username, err := user.Current()
+	user, err := user.Current()
 	logging.Panic(err)
 
-	return &remoteNotification{Username: username, Server: targetServer, Context: ctx, TimeWait: timeWait}
+	return &remoteNotification{Username: user.Name, Server: targetServer, Context: ctx, TimeWait: timeWait}
 }
