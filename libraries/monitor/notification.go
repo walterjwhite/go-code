@@ -22,17 +22,13 @@ func GetTitle(sessionDescription string, sessionActionDescription string, interv
 }
 
 func (session *Session) watchChannel() {
-	for {
-		select {
-		case notification, ok := <-session.Channel:
-			if !ok {
-				log.Printf("Channel appears to be shutdown\n")
-				break
-			}
-
-			session.pushAlerts(notification)
-		}
+	notification, ok := <-session.Channel
+	if !ok {
+		log.Printf("Channel appears to be shutdown\n")
+		return
 	}
+
+	session.pushAlerts(notification)
 }
 
 func (session *Session) pushAlerts(notificationEvent *NotificationEvent) {

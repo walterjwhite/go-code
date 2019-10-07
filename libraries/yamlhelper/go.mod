@@ -3,7 +3,7 @@ module github.com/walterjwhite/go-application/libraries/yamlhelper
 go 1.12
 
 require (
-	github.com/walterjwhite/go-application/libraries/logging v0.0.0-20190928022546-d8b9d3b44c7d
+	github.com/walterjwhite/go-application/libraries/logging v0.0.0-20190928043406-90f191fd97ec
 	gopkg.in/check.v1 v1.0.0-20190902080502-41f04d3bba15 // indirect
 	gopkg.in/yaml.v2 v2.2.2
 )

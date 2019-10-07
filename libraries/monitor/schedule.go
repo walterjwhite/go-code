@@ -6,7 +6,7 @@ import (
 )
 
 type wrapPeriodic struct {
-	Function fn()
+	Function func()
 }
 
 func (a *Action) schedule() {
@@ -27,7 +27,9 @@ func (a *Action) isLongRunning() bool {
 }
 
 func (a *Action) invokePeriodic() {
-	go periodic.Periodic(a.Session.Context, periodic.GetInterval(a.Interval), &wrapPeriodic{Function: a.Monitor.Execute}.wrap)
+	wrappedPeriodic := &wrapPeriodic{Function: a.Monitor.Execute}
+
+	go periodic.Periodic(a.Session.Context, periodic.GetInterval(a.Interval), wrappedPeriodic.wrap)
 }
 
 func (w *wrapPeriodic) wrap() error {

@@ -45,3 +45,5 @@ libraries/os/unix/service
 libraries/supervisor/data
 libraries/supervisor/server
 libraries/supervisor/client
+
+libraries/elasticsearch
