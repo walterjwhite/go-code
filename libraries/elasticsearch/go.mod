@@ -37,7 +37,7 @@ require (
 	github.com/rogpeppe/go-internal v1.4.0 // indirect
 	github.com/streadway/amqp v0.0.0-20190827072141-edfb9018d271 // indirect
 	github.com/stretchr/objx v0.2.0 // indirect
-	github.com/walterjwhite/go-application/libraries/logging v0.0.0-20191007023748-794215e59b50
+	github.com/walterjwhite/go-application/libraries/logging v0.0.0-20191007030251-f6573b125502
 	go.opencensus.io v0.22.1 // indirect
 	golang.org/x/crypto v0.0.0-20191002192127-34f69633bfdc // indirect
 	golang.org/x/exp v0.0.0-20191002040644-a1355ae1e2c3 // indirect

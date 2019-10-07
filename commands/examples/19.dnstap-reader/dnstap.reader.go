@@ -24,7 +24,8 @@ func main() {
 	done := make(chan bool)
 
 	// make this configurable, user passes in an option(s)
-	dnstapProcessor := NewUniqueDomainsProcessor()
+	//dnstapProcessor := NewUniqueDomainsProcessor()
+	dnstapProcessor := NewElasticSearchProcessor()
 	//dnstapProcessor := NewUniqueResponsesProcessor()
 
 	// make this configurable, specify any number of filters, AND, OR them together ...
@@ -33,7 +34,7 @@ func main() {
 	filter := &TimeOfDayFilter{Start: TimeOfDay{Hour: 0, Minute: 0}, End: TimeOfDay{Hour: 7, Minute: 0}}
 
 	go i.ReadInto(outputChannel)
-	go process(&filter, dnstapProcessor, outputChannel, done)
+	go process(filter, dnstapProcessor, outputChannel, done)
 	i.Wait()
 
 	log.Println("@ the end")
@@ -41,7 +42,7 @@ func main() {
 	log.Println("now done")
 }
 
-func process(filter *Filter, dnstapProcessor DnstapProcessor, outputChannel chan []byte, done chan bool) {
+func process(filter Filter, dnstapProcessor DnstapProcessor, outputChannel chan []byte, done chan bool) {
 	log.Println("Processing file")
 	//	defer close(outputChannel)
 

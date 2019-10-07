@@ -4,15 +4,18 @@ import (
 	"context"
 	"fmt"
 	"github.com/walterjwhite/go-application/libraries/logging"
+	"log"
 	"strings"
 )
 
 func (c *NodeConfiguration) getDocumentTypeName(document interface{}) string {
-	return fmt.Sprintf("%T", document)
+	return strings.ToLower(strings.ReplaceAll(fmt.Sprintf("%T", document), "*", ""))
 }
 
 func (c *NodeConfiguration) prepareIndex(documentTypeName string) {
 	indexName := c.getIndexName(documentTypeName)
+
+	log.Printf("Index: %v/%v\n", documentTypeName, indexName)
 
 	if c.isIndexExisting(indexName) {
 		if !c.DropIndex {

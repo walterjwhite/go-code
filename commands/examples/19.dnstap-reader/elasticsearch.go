@@ -1,19 +1,17 @@
 package main
 
 import (
-	"time"
 	"fmt"
 	"github.com/dnstap/golang-dnstap"
-	"github.com/miekg/dns"
-	"github.com/walterjwhite/go-application/libraries/logging"
 	"github.com/walterjwhite/go-application/libraries/elasticsearch"
+	"log"
 	"net"
-	"strings"
+	"time"
 )
 
 type ElasticSearchProcessor struct {
 	ElasticSearchConfiguration *elasticsearch.NodeConfiguration
-	
+
 	batch *elasticsearch.MasterBatch
 }
 
@@ -25,21 +23,24 @@ func NewElasticSearchProcessor() *ElasticSearchProcessor {
 // processes a single record and internally flushes the batch as needed
 func (p *ElasticSearchProcessor) Process(dnstapRecord *dnstap.Dnstap) {
 	id := getMessageId(dnstapRecord)
+
+	log.Printf("ID: %v\n", id)
 	p.batch.Append(id, dnstapRecord)
 }
 
 func getMessageId(dnstapRecord *dnstap.Dnstap) string {
 	return fmt.Sprintf("%v.%v.%v", dnstapRecord.Message.Type,
 		net.IP(dnstapRecord.Message.QueryAddress).String(),
-		getTimestamp(dnstapRecord.Message.QueryTimeSec)
+		getTimestamp(dnstapRecord.Message.QueryTimeSec))
 }
 
 const timeFormat = "2006.01.02.15.04.05"
+
 func getTimestamp(secs *uint64) string {
 	if secs != nil {
-		return(time.Unix(int64(*secs), 0).Format(timeFormat))
+		return (time.Unix(int64(*secs), 0).Format(timeFormat))
 	}
-	
+
 	return ""
 }
 
