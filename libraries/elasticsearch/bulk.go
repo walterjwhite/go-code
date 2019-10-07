@@ -1,10 +1,10 @@
 package elasticsearch
 
 import (
-	"fmt"
-	"github.com/walterjwhite/go-application/libraries/logging"
-	"github.com/olivere/elastic/v7"
 	"context"
+	"fmt"
+	"github.com/olivere/elastic/v7"
+	"github.com/walterjwhite/go-application/libraries/logging"
 	"time"
 )
 
