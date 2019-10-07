@@ -1,5 +1,7 @@
-#*
+*
 !*.go
-!*.gitignore
+!.gitignore
 !README
-!**/*.go
+#!**/*.go
+!*/
+
