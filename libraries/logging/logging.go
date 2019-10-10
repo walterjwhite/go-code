@@ -27,7 +27,7 @@ func Configure() {
 }
 
 func getWriter() io.Writer {
-	if logFile != nil {
+	if len(*logFile) > 0 {
 		return prepareFile()
 	} else if *logStdOut {
 		return zerolog.ConsoleWriter{Out: os.Stdout}
