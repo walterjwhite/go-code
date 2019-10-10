@@ -1,7 +1,7 @@
 package identifier
 
 import (
-	"log"
+	"github.com/rs/zerolog/log"
 )
 
 // *MUST* be injected at compile time
@@ -11,10 +11,10 @@ var (
 
 func Log() {
 	if isConfigured() {
-		log.Printf("Application Version: %v\n", ApplicationVersion)
-		log.Printf("Built on: %v\n", BuildDate)
-		log.Printf("OSArchitecture: %v\n", OSArchitecture)
-		log.Printf("GoVersion: %v\n", GoVersion)
+		log.Info().Msgf("Application Version: %v\n", ApplicationVersion)
+		log.Info().Msgf("Built on: %v\n", BuildDate)
+		log.Info().Msgf("OSArchitecture: %v\n", OSArchitecture)
+		log.Info().Msgf("GoVersion: %v\n", GoVersion)
 	}
 }
 

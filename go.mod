@@ -22,14 +22,14 @@ require (
 	github.com/walterjwhite/go-application/libraries/after v0.0.0-20190920121053-1cd4475ce881
 	github.com/walterjwhite/go-application/libraries/application v0.0.0-20190920121053-1cd4475ce881
 	github.com/walterjwhite/go-application/libraries/audit v0.0.0-20190920121053-1cd4475ce881
-	github.com/walterjwhite/go-application/libraries/elasticsearch v0.0.0-20191007030251-f6573b125502
+	github.com/walterjwhite/go-application/libraries/elasticsearch v0.0.0-20191007032032-6d83bc8d3e40
 	github.com/walterjwhite/go-application/libraries/email v0.0.0-20190928020228-2292b1b212ca // indirect
 	github.com/walterjwhite/go-application/libraries/encryption v0.0.0-20190921111345-d85dd077315f // indirect
 	github.com/walterjwhite/go-application/libraries/heartbeat v0.0.0-20190928043200-d1bef1f0e2bd
 	github.com/walterjwhite/go-application/libraries/identifier v0.0.0-20190920121053-1cd4475ce881 // indirect
 	github.com/walterjwhite/go-application/libraries/io/disk v0.0.0-20190920121053-1cd4475ce881
 	github.com/walterjwhite/go-application/libraries/io/writermatcher v0.0.0-20190920121053-1cd4475ce881 // indirect
-	github.com/walterjwhite/go-application/libraries/logging v0.0.0-20191007030251-f6573b125502
+	github.com/walterjwhite/go-application/libraries/logging v0.0.0-20191007032032-6d83bc8d3e40
 	github.com/walterjwhite/go-application/libraries/maven v0.0.0-20190920121053-1cd4475ce881
 	github.com/walterjwhite/go-application/libraries/maven/build v0.0.0-20190920121053-1cd4475ce881
 	github.com/walterjwhite/go-application/libraries/maven/format v0.0.0-20190920121053-1cd4475ce881

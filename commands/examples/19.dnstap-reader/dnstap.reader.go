@@ -21,7 +21,6 @@ func main() {
 	logging.Panic(err)
 
 	outputChannel := make(chan []byte, 32)
-	done := make(chan bool)
 
 	// make this configurable, user passes in an option(s)
 	//dnstapProcessor := NewUniqueDomainsProcessor()
@@ -34,15 +33,13 @@ func main() {
 	filter := &TimeOfDayFilter{Start: TimeOfDay{Hour: 0, Minute: 0}, End: TimeOfDay{Hour: 7, Minute: 0}}
 
 	go i.ReadInto(outputChannel)
-	go process(filter, dnstapProcessor, outputChannel, done)
+	process(filter, dnstapProcessor, outputChannel)
 	i.Wait()
 
 	log.Println("@ the end")
-	<-done
-	log.Println("now done")
 }
 
-func process(filter Filter, dnstapProcessor DnstapProcessor, outputChannel chan []byte, done chan bool) {
+func process(filter Filter, dnstapProcessor DnstapProcessor, outputChannel chan []byte) {
 	log.Println("Processing file")
 	//	defer close(outputChannel)
 
@@ -61,8 +58,6 @@ func process(filter Filter, dnstapProcessor DnstapProcessor, outputChannel chan 
 
 	dnstapProcessor.Flush()
 	close(outputChannel)
-
-	done <- true
 }
 
 // goals
