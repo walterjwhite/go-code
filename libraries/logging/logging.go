@@ -10,7 +10,7 @@ import (
 )
 
 //var logDebug = flag.Bool("LogDebug", false, "LogDebug")
-var logLevel = flag.String("LogLevel", "INFO", "LogLevel")
+var logLevel = flag.String("LogLevel", "info", "LogLevel")
 var logStdOut = flag.Bool("LogStdOut", true, "LogStdOut")
 var logFile = flag.String("LogFile", "", "LogFile")
 var logCompress = flag.Bool("LogCompress", false, "LogCompress")
