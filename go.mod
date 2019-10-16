@@ -30,7 +30,7 @@ require (
 	github.com/walterjwhite/go-application/libraries/identifier v0.0.0-20191016025958-0f03fd925cb8 // indirect
 	github.com/walterjwhite/go-application/libraries/io/disk v0.0.0-20190920121053-1cd4475ce881
 	github.com/walterjwhite/go-application/libraries/io/writermatcher v0.0.0-20190920121053-1cd4475ce881 // indirect
-	github.com/walterjwhite/go-application/libraries/logging v0.0.0-20191016025253-a7d25665778c
+	github.com/walterjwhite/go-application/libraries/logging v0.0.0-20191016030920-c7c86d928497
 	github.com/walterjwhite/go-application/libraries/maven v0.0.0-20190920121053-1cd4475ce881
 	github.com/walterjwhite/go-application/libraries/maven/build v0.0.0-20190920121053-1cd4475ce881
 	github.com/walterjwhite/go-application/libraries/maven/format v0.0.0-20190920121053-1cd4475ce881
