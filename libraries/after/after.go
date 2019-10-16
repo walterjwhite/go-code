@@ -38,5 +38,6 @@ func (a *AfterDelay) onContextDone() {
 }
 
 func (a *AfterDelay) safeFunction() {
+	a.fired <- true
 	logging.Panic(a.function())
 }

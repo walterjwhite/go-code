@@ -11,12 +11,12 @@ import (
 func main() {
 	ctx := application.Configure()
 
-	after.After(ctx, 1*time.Second, afterOneSecond)
+	a1 := after.After(ctx, 1*time.Second, afterOneSecond)
 	//t2 := after.After(ctx, 1*time.Minute, afterOneMinute)
 	log.Info().Msg("Initialized timer")
 
-	//<-t1.C
-	//<-t2.C
+	a1.Wait()
+
 	log.Info().Msg("Timer is complete")
 }
 

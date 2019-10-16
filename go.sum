@@ -269,6 +269,8 @@ github.com/walterjwhite/go-application/libraries/after v0.0.0-20190915151906-63d
 github.com/walterjwhite/go-application/libraries/after v0.0.0-20190920121053-1cd4475ce881/go.mod h1:akH8b45N0Fx3zkSxfV4a7b1OLuQ0KCrTqqJPj2qoZvo=
 github.com/walterjwhite/go-application/libraries/after v0.0.0-20191016021012-6a18b24b2f15 h1:IYO7mRsvPaqNIN+rYJJvgapJs/gMscit1ai05N6Kevw=
 github.com/walterjwhite/go-application/libraries/after v0.0.0-20191016021012-6a18b24b2f15/go.mod h1:ipj3DZQ4DZoTD9AreXhuRw4xR/BQ18bdejRDREl+ZDI=
+github.com/walterjwhite/go-application/libraries/after v0.0.0-20191016023614-5c71384c46a1 h1:lOCZe6iBNRMIn1vxTR/umsIy6W0/d+2CZgiHTHxd1Ko=
+github.com/walterjwhite/go-application/libraries/after v0.0.0-20191016023614-5c71384c46a1/go.mod h1:6oYUsGpzzQUrZc0HMxJTWaWP02cZTQ8tdj5QGyxs71c=
 github.com/walterjwhite/go-application/libraries/application v0.0.0-20190907145257-2983bae739f3 h1:EgvVMzPS0q/00UYRTQPKDNp41M9jb6lbTbwbg3/KME0=
 github.com/walterjwhite/go-application/libraries/application v0.0.0-20190907145257-2983bae739f3/go.mod h1:VaoC9R2Fw/7ymeNXHdcFNk8G/tY2+35Xlxo3AacS4uk=
 github.com/walterjwhite/go-application/libraries/application v0.0.0-20190910021733-6ccb3c26143e h1:HYiye0XZjQAl0uvt8DqdKiFzAV5IKCbXRXX1d/2z7t8=
@@ -479,6 +481,8 @@ github.com/walterjwhite/go-application/libraries/logging v0.0.0-20191010102354-d
 github.com/walterjwhite/go-application/libraries/logging v0.0.0-20191010102354-d2e22e64c21a/go.mod h1:+RTZlgUVHIeszvC4NeHOxyQLikGJQ9Z9FwelcXbEMMQ=
 github.com/walterjwhite/go-application/libraries/logging v0.0.0-20191016021012-6a18b24b2f15 h1:C+Ep3HdiYBaMg0Ws4kSeOvbmDfXBejYIgGTDYBIlOH8=
 github.com/walterjwhite/go-application/libraries/logging v0.0.0-20191016021012-6a18b24b2f15/go.mod h1:+RTZlgUVHIeszvC4NeHOxyQLikGJQ9Z9FwelcXbEMMQ=
+github.com/walterjwhite/go-application/libraries/logging v0.0.0-20191016023614-5c71384c46a1 h1:c0qigiLpsXZy8eNaKMkEn8YZ9Bx7rWC1wmY70mSHVt8=
+github.com/walterjwhite/go-application/libraries/logging v0.0.0-20191016023614-5c71384c46a1/go.mod h1:+RTZlgUVHIeszvC4NeHOxyQLikGJQ9Z9FwelcXbEMMQ=
 github.com/walterjwhite/go-application/libraries/maven v0.0.0-20190908131603-42d51493b3cc h1:10F/CbD/3lhsUr+XGNKFi6JJ+AHNfcaNeuJ4MRN3j+U=
 github.com/walterjwhite/go-application/libraries/maven v0.0.0-20190908131603-42d51493b3cc/go.mod h1:8+RIUeydKMJ04BJfqlmfn6YlayGS0lHLp/EwsXCkpwE=
 github.com/walterjwhite/go-application/libraries/maven v0.0.0-20190916033306-80b4009af900/go.mod h1:/E4fvAYzMS7CYoDz0wE2LGW6BVLXhtLj+lhqgo1yXDs=

@@ -20,7 +20,7 @@ require (
 	github.com/rs/zerolog v1.15.0
 	github.com/undiabler/golang-whois v0.0.0-20180515150714-4c2dabddc647
 	github.com/vova616/screenshot v0.0.0-20190211115255-f9547e483e0a
-	github.com/walterjwhite/go-application/libraries/after v0.0.0-20191016021012-6a18b24b2f15
+	github.com/walterjwhite/go-application/libraries/after v0.0.0-20191016023614-5c71384c46a1
 	github.com/walterjwhite/go-application/libraries/application v0.0.0-20191010102354-d2e22e64c21a
 	github.com/walterjwhite/go-application/libraries/audit v0.0.0-20190920121053-1cd4475ce881
 	github.com/walterjwhite/go-application/libraries/elasticsearch v0.0.0-20191007032032-6d83bc8d3e40
@@ -30,7 +30,7 @@ require (
 	github.com/walterjwhite/go-application/libraries/identifier v0.0.0-20191010102354-d2e22e64c21a // indirect
 	github.com/walterjwhite/go-application/libraries/io/disk v0.0.0-20190920121053-1cd4475ce881
 	github.com/walterjwhite/go-application/libraries/io/writermatcher v0.0.0-20190920121053-1cd4475ce881 // indirect
-	github.com/walterjwhite/go-application/libraries/logging v0.0.0-20191016021012-6a18b24b2f15
+	github.com/walterjwhite/go-application/libraries/logging v0.0.0-20191016023614-5c71384c46a1
 	github.com/walterjwhite/go-application/libraries/maven v0.0.0-20190920121053-1cd4475ce881
 	github.com/walterjwhite/go-application/libraries/maven/build v0.0.0-20190920121053-1cd4475ce881
 	github.com/walterjwhite/go-application/libraries/maven/format v0.0.0-20190920121053-1cd4475ce881
