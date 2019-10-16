@@ -40,8 +40,8 @@ func (w *waitInstance) cancel() {
 func (w *waitInstance) monitorFunction() error {
 	if w.function() {
 		log.Info().Msg("Completed:")
-		w.cancel()
 		w.channel <- true
+		w.cancel()
 
 		return nil
 	}
