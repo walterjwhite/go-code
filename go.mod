@@ -76,7 +76,7 @@ require (
 	github.com/walterjwhite/go-application/libraries/shutdown v0.0.0-20191016032350-e560bc5ff85b // indirect
 	github.com/walterjwhite/go-application/libraries/timeout v0.0.0-20191016222525-396df93c593e
 	github.com/walterjwhite/go-application/libraries/timestamp v0.0.0-20191016032350-e560bc5ff85b
-	github.com/walterjwhite/go-application/libraries/wait v0.0.0-20191016222525-396df93c593e // indirect
+	github.com/walterjwhite/go-application/libraries/wait v0.0.0-20191016222525-396df93c593e
 	github.com/walterjwhite/go-application/libraries/yamlhelper v0.0.0-20191016222525-396df93c593e
 	golang.org/x/crypto v0.0.0-20191011191535-87dc89f01550
 	golang.org/x/exp v0.0.0-20191014171548-69215a2ee97e // indirect

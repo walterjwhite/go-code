@@ -18,11 +18,11 @@ type waitInstance struct {
 }
 
 // calls the function periodically with the given interval until it returns true, the call times out, or the context is Done
-func Wait(ctx context.Context, interval time.Duration, limit time.Duration, fn func() bool) {
+func Wait(ctx context.Context, interval time.Duration, limit time.Duration, userFunction func() bool) {
 	channel := make(chan bool)
 
-	w := &waitInstance{channel: channel, function: fn}
-	w.periodic = periodic.Periodic(ctx, interval, w.run)
+	w := &waitInstance{channel: channel, function: userFunction}
+	w.periodic = periodic.Periodic(ctx, interval, w.monitorFunction)
 
 	// wait until done
 	logging.Panic(timeout.Limit(w.doWait, limit, ctx))
@@ -37,7 +37,7 @@ func (w *waitInstance) cancel() {
 	w.periodic.Cancel()
 }
 
-func (w *waitInstance) run() error {
+func (w *waitInstance) monitorFunction() error {
 	if w.function() {
 		log.Info().Msg("Completed:")
 		w.cancel()
