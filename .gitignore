@@ -1,7 +1,9 @@
 *
 !*.go
+!*status.secret
 !.gitignore
 !README
 #!**/*.go
+#!**/status.secret
 !*/
 

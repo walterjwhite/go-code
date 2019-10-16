@@ -3,6 +3,8 @@ package after
 import (
 	"context"
 	"time"
+
+	"github.com/walterjwhite/go-application/libraries/logging"
 )
 
 type ErrorFunction struct {
@@ -11,12 +13,19 @@ type ErrorFunction struct {
 
 func After(ctx context.Context, delay time.Duration, fn func() error) *time.Timer {
 	errorFunction := ErrorFunction{Function: fn}
-	return time.AfterFunc(delay, errorFunction.function)
+
+	timer := time.AfterFunc(delay, errorFunction.function)
+	go cancel(ctx, timer)
+
+	return timer
+}
+
+func cancel(ctx context.Context, timer *time.Timer) {
+	<-ctx.Done()
+	timer.Stop()
 }
 
 func (f *ErrorFunction) function() {
 	err := f.Function()
-	if err != nil {
-		panic(err)
-	}
+	logging.Panic(err)
 }

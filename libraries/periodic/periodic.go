@@ -7,21 +7,28 @@ import (
 	"github.com/walterjwhite/go-application/libraries/logging"
 )
 
-func Periodic(ctx context.Context, interval time.Duration, fn func() error) {
+func Periodic(ctx context.Context, interval time.Duration, fn func() error) *time.Ticker {
 	ticker := time.NewTicker(interval)
-	defer ticker.Stop()
 
 	// initial invocation
 	logging.Panic(fn())
 
+	go run(fn, ticker)
+	go cancel(ctx, ticker)
+
+	return ticker
+}
+
+func run(fn func() error, ticker *time.Ticker) {
 	for {
-		select {
-		case <-ticker.C:
-			logging.Panic(fn())
-		case <-ctx.Done():
-			return
-		}
+		<-ticker.C
+		logging.Panic(fn())
 	}
+}
+
+func cancel(ctx context.Context, ticker *time.Ticker) {
+	<-ctx.Done()
+	ticker.Stop()
 }
 
 func GetInterval(intervalString string) time.Duration {
