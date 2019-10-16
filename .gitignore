@@ -1,5 +1,7 @@
 *
 !*.go
+!*.mod
+!*.sum
 !*status.secret
 !.gitignore
 !README
