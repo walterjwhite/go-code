@@ -27,7 +27,7 @@ require (
 	github.com/walterjwhite/go-application/libraries/email v0.0.0-20191010102354-d2e22e64c21a // indirect
 	github.com/walterjwhite/go-application/libraries/encryption v0.0.0-20190921111345-d85dd077315f // indirect
 	github.com/walterjwhite/go-application/libraries/heartbeat v0.0.0-20190928043200-d1bef1f0e2bd
-	github.com/walterjwhite/go-application/libraries/identifier v0.0.0-20191010102354-d2e22e64c21a // indirect
+	github.com/walterjwhite/go-application/libraries/identifier v0.0.0-20191016025958-0f03fd925cb8 // indirect
 	github.com/walterjwhite/go-application/libraries/io/disk v0.0.0-20190920121053-1cd4475ce881
 	github.com/walterjwhite/go-application/libraries/io/writermatcher v0.0.0-20190920121053-1cd4475ce881 // indirect
 	github.com/walterjwhite/go-application/libraries/logging v0.0.0-20191016025253-a7d25665778c

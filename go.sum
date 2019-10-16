@@ -355,6 +355,8 @@ github.com/walterjwhite/go-application/libraries/identifier v0.0.0-2019101010204
 github.com/walterjwhite/go-application/libraries/identifier v0.0.0-20191010102041-65def907edd6/go.mod h1:jED11WTW4iDQns1t72BxKQCgHPG5P3uq2IVL1s6Wcyc=
 github.com/walterjwhite/go-application/libraries/identifier v0.0.0-20191010102354-d2e22e64c21a h1:AJQfCYALmtgKIqtRIIZcs55+oAbL8N163bjigN9uYHk=
 github.com/walterjwhite/go-application/libraries/identifier v0.0.0-20191010102354-d2e22e64c21a/go.mod h1:jED11WTW4iDQns1t72BxKQCgHPG5P3uq2IVL1s6Wcyc=
+github.com/walterjwhite/go-application/libraries/identifier v0.0.0-20191016025958-0f03fd925cb8 h1:eRk0QH0cN0WImLkp6dLCU0RXMf7y/dbwSV5/I4OOAos=
+github.com/walterjwhite/go-application/libraries/identifier v0.0.0-20191016025958-0f03fd925cb8/go.mod h1:mAVPITUK3+Y8xW3UF2SeFkb3LOJEokVnzdREuOj1Qkc=
 github.com/walterjwhite/go-application/libraries/io/disk v0.0.0-20190915144104-f818c3f0da4b h1:Atum3wRJQKw8x25+j51DrmyY3U6ZTWuXXnMW20g4S6c=
 github.com/walterjwhite/go-application/libraries/io/disk v0.0.0-20190915144104-f818c3f0da4b/go.mod h1:wSOJ6pE8aJ+uNfdzuGkl1UewEfhc7jnthoeC5WvdWPY=
 github.com/walterjwhite/go-application/libraries/io/disk v0.0.0-20190915145839-14ad85875945 h1:uk4Q+8wVSqnA38qJW0CEi3Yh0QmO/Ja8L7+3Z9OlcAA=

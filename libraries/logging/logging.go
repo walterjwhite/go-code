@@ -7,10 +7,11 @@ import (
 	"github.com/rs/zerolog/log"
 	"io"
 	"os"
+	"time"
 )
 
 var (
-	logDateTimeFormat = flag.String("LogDateTimeFormat", "2006/01/02 15:04:05 Z07:00", "LogDateTimeFormat")
+	logDateTimeFormat = flag.String("LogDateTimeFormat", time.RFC3339 /*"2006/01/02 15:04:05 Z07:00"*/, "LogDateTimeFormat")
 
 	logLevel    = flag.String("LogLevel", "info", "LogLevel")
 	logStdOut   = flag.Bool("LogStdOut", true, "LogStdOut")
