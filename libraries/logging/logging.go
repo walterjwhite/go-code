@@ -9,16 +9,19 @@ import (
 	"os"
 )
 
-//var logDebug = flag.Bool("LogDebug", false, "LogDebug")
-var logLevel = flag.String("LogLevel", "info", "LogLevel")
-var logStdOut = flag.Bool("LogStdOut", true, "LogStdOut")
-var logFile = flag.String("LogFile", "", "LogFile")
-var logCompress = flag.Bool("LogCompress", false, "LogCompress")
+var (
+	logDateTimeFormat = flag.String("LogDateTimeFormat", "2006/01/02 15:04:05 Z07:00", "LogDateTimeFormat")
+
+	logLevel    = flag.String("LogLevel", "info", "LogLevel")
+	logStdOut   = flag.Bool("LogStdOut", true, "LogStdOut")
+	logFile     = flag.String("LogFile", "", "LogFile")
+	logCompress = flag.Bool("LogCompress", false, "LogCompress")
+)
 
 // 1. set time format
 // 2. set output & format
 func Configure() {
-	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
+	zerolog.TimeFieldFormat = *logDateTimeFormat
 
 	var f io.Writer = getWriter()
 	log.Logger = zerolog.New(f).With().Timestamp().Logger()
@@ -29,7 +32,8 @@ func Configure() {
 func getWriter() io.Writer {
 	if len(*logFile) > 0 {
 		return prepareFile()
-	} else if *logStdOut {
+	}
+	if *logStdOut {
 		return zerolog.ConsoleWriter{Out: os.Stdout}
 	}
 
@@ -50,15 +54,13 @@ func prepareFile() io.WriteCloser {
 	f, err := os.OpenFile(*logFile, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 	Panic(err)
 	defer func() {
-		err := f.Close()
-		Panic(err)
+		Panic(f.Close())
 	}()
 
 	if *logCompress {
 		f = zlib.NewWriter(f)
 		defer func() {
-			err := f.Close()
-			Panic(err)
+			Panic(f.Close())
 		}()
 	}
 
