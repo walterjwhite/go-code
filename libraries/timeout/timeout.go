@@ -1,6 +1,7 @@
 package timeout
 
 import (
+	"context"
 	"fmt"
 	"time"
 )
@@ -15,12 +16,18 @@ func (t *TimedExecution) Error() string {
 	return fmt.Sprintf("Invocation Timed Out after: %v\n", t.MaximumExecutionTime)
 }
 
-func Limit(function func(), maximumExecutionTime time.Duration) error {
-	t := &TimedExecution{MaximumExecutionTime: maximumExecutionTime, Function: function}
-	return t.Call()
+type ContextAbortedException struct{}
+
+func (c *ContextAbortedException) Error() string {
+	return "Context was aborted"
 }
 
-func (t *TimedExecution) Call() error {
+func Limit(function func(), maximumExecutionTime time.Duration, ctx context.Context) error {
+	t := &TimedExecution{MaximumExecutionTime: maximumExecutionTime, Function: function}
+	return t.call(ctx)
+}
+
+func (t *TimedExecution) call(ctx context.Context) error {
 	c1 := make(chan bool, 1)
 
 	go func() {
@@ -29,9 +36,12 @@ func (t *TimedExecution) Call() error {
 	}()
 
 	select {
+
 	case <-c1:
 		return nil
 	case <-time.After(t.MaximumExecutionTime):
 		return t
+	case <-ctx.Done():
+		return &ContextAbortedException{}
 	}
 }

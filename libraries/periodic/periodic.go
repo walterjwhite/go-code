@@ -7,7 +7,11 @@ import (
 	"github.com/walterjwhite/go-application/libraries/logging"
 )
 
-func Periodic(ctx context.Context, interval time.Duration, fn func() error) *time.Ticker {
+type PeriodicInstance struct {
+	ticker *time.Ticker
+}
+
+func Periodic(ctx context.Context, interval time.Duration, fn func() error) *PeriodicInstance {
 	ticker := time.NewTicker(interval)
 
 	// initial invocation
@@ -16,7 +20,11 @@ func Periodic(ctx context.Context, interval time.Duration, fn func() error) *tim
 	go run(fn, ticker)
 	go cancel(ctx, ticker)
 
-	return ticker
+	return &PeriodicInstance{ticker: ticker}
+}
+
+func (p *PeriodicInstance) Cancel() {
+	p.ticker.Stop()
 }
 
 func run(fn func() error, ticker *time.Ticker) {
