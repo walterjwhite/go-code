@@ -11,9 +11,8 @@ import (
 )
 
 type waitInstance struct {
-	periodic       *periodic.PeriodicInstance
-	timedExecution *timeout.TimedExecution
-	function       func() bool
+	periodic *periodic.PeriodicInstance
+	function func() bool
 
 	channel chan bool
 }
