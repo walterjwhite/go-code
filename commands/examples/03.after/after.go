@@ -12,12 +12,13 @@ func main() {
 	ctx := application.Configure()
 
 	a1 := after.After(ctx, 1*time.Second, afterOneSecond)
-	//t2 := after.After(ctx, 1*time.Minute, afterOneMinute)
+	a2 := after.After(ctx, 1*time.Minute, afterOneMinute)
 	log.Info().Msg("Initialized timer")
 
 	a1.Wait()
 
-	log.Info().Msg("Timer is complete")
+	log.Info().Msg("a1 Timer is complete, waiting on a2")
+	a2.Cancel()
 }
 
 func afterOneSecond() error {
