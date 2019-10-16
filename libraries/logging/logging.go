@@ -7,11 +7,10 @@ import (
 	"github.com/rs/zerolog/log"
 	"io"
 	"os"
-	"time"
 )
 
 var (
-	logDateTimeFormat = flag.String("LogDateTimeFormat", time.RFC3339 /*"2006/01/02 15:04:05 Z07:00"*/, "LogDateTimeFormat")
+	logDateTimeFormat = flag.String("LogDateTimeFormat", "2006/01/02 15:04:05 -0700", "LogDateTimeFormat")
 	logNoColor        = flag.Bool("LogNoColor", false, "LogNoColor")
 
 	logLevel    = flag.String("LogLevel", "info", "LogLevel")
@@ -35,11 +34,16 @@ func getWriter() io.Writer {
 	if len(*logFile) > 0 {
 		return prepareFile()
 	}
+
+	return zerolog.ConsoleWriter{Out: getOutputStream(), NoColor: *logNoColor, TimeFormat: *logDateTimeFormat}
+}
+
+func getOutputStream() *os.File {
 	if *logStdOut {
-		return zerolog.ConsoleWriter{Out: os.Stdout, NoColor: *logNoColor, TimeFormat: *logDateTimeFormat}
+		return os.Stdout
 	}
 
-	return zerolog.ConsoleWriter{Out: os.Stderr, NoColor: *logNoColor, TimeFormat: *logDateTimeFormat}
+	return os.Stderr
 }
 
 func setLogLevel() {
