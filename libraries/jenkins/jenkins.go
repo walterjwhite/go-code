@@ -2,7 +2,6 @@ package jenkins
 
 import (
 	"flag"
-	//"github.com/bndr/gojenkins"
 	"github.com/mitchellh/go-homedir"
 	"github.com/walterjwhite/go-application/libraries/logging"
 	"github.com/walterjwhite/go-application/libraries/yamlhelper"

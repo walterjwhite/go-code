@@ -2,10 +2,8 @@ package jenkins
 
 import (
 	"flag"
-	//"github.com/bndr/gojenkins"
 	"github.com/walterjwhite/go-application/libraries/logging"
 	"gopkg.in/bndr/gojenkins.v1"
-	"context"
 )
 
 var jenkinsJobName = flag.String("JenkinsJobName", "", "JenkinsJobName")
@@ -13,7 +11,6 @@ var jenkinsJobName = flag.String("JenkinsJobName", "", "JenkinsJobName")
 type JenkinsJob struct {
 	jenkinsInstance *JenkinsInstance
 	job             *gojenkins.Job
-	ctx context.Context
 }
 
 type NoJobNameSpecifiedError struct{}

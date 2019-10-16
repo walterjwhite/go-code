@@ -5,7 +5,6 @@ import (
 	"github.com/rs/zerolog/log"
 	"github.com/walterjwhite/go-application/libraries/logging"
 	"github.com/walterjwhite/go-application/libraries/wait"
-	"time"
 )
 
 func (j *JenkinsJob) Build(ctx context.Context) {
@@ -15,13 +14,13 @@ func (j *JenkinsJob) Build(ctx context.Context) {
 	logging.Panic(err)
 
 	log.Info().Msgf("%v - buildId: %v", j.job.GetName(), buildId)
-	
-	logging.Panic(wait.Wait(ctx, j.jenkinsInstance.buildCheckInterval, j.jenkinsInstance.buildTimeout, j.isDone))
+
+	wait.Wait(ctx, j.jenkinsInstance.buildCheckInterval, j.jenkinsInstance.buildTimeout, j.isDone)
 }
 
 func (j *JenkinsJob) isDone() bool {
 	running, err := j.job.IsRunning()
 	logging.Panic(err)
-	
+
 	return !running
 }
