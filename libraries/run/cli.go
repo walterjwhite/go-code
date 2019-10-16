@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/rs/zerolog/log"
 	"io"
-	"log"
 	"os"
 	"os/exec"
 
@@ -28,10 +28,10 @@ func runApplication(ctx context.Context, index int, a Application) *exec.Cmd {
 
 	a.configureLogWatcher(notificationChannel, logFile, command)
 
-	log.Printf("Running Application: %v (%v)", a.Name, a.Command)
-	log.Printf("Environment: %v", a.Environment)
-	log.Printf("Arguments: %v", a.Arguments)
-	log.Printf("Matcher: %v", a.LogMatcher)
+	log.Info().Msgf("Running Application: %v (%v)", a.Name, a.Command)
+	log.Info().Msgf("Environment: %v", a.Environment)
+	log.Info().Msgf("Arguments: %v", a.Arguments)
+	log.Info().Msgf("Matcher: %v", a.LogMatcher)
 
 	logging.Panic(runner.Start(command))
 
@@ -47,7 +47,7 @@ func (a *Application) configureLogWatcher(notificationChannel chan *string, writ
 		} else if "npm" == a.LogMatcher {
 			writer = writermatcher.NewNPMStartupMatcher(notificationChannel, writer)
 		} else {
-			log.Printf("%v not matched, no log matcher configured.\n", a.LogMatcher)
+			log.Info().Msgf("%v not matched, no log matcher configured.\n", a.LogMatcher)
 		}
 	}
 
@@ -56,7 +56,7 @@ func (a *Application) configureLogWatcher(notificationChannel chan *string, writ
 
 func getLogFile(application string) *os.File {
 	logFile := fmt.Sprintf("%s/.logs/%v", application, timestamp.Get())
-	log.Printf("writing logs to: %s", logFile)
+	log.Info().Msgf("writing logs to: %s", logFile)
 
 	return makeLogFile(logFile)
 }

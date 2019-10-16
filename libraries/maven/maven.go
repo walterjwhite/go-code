@@ -1,15 +1,17 @@
 package maven
 
-const COMMAND = "mvn"
+const (
+	command = "mvn"
 
-const QUIET_LOGS = "-Dorg.slf4j.simpleLogger.defaultLogLevel=WARN"
-const QUIET_TRANSFERS = "-ntp"
+	quietLogs      = "-Dorg.slf4j.simpleLogger.defaultLogLevel=WARN"
+	quietTransfers = "-ntp"
+)
 
 func GetCommandLine(arguments []string, debug *bool) (string, []string) {
 	if !*debug {
-		arguments = append(arguments, QUIET_LOGS)
-		arguments = append(arguments, QUIET_TRANSFERS)
+		arguments = append(arguments, quietLogs)
+		arguments = append(arguments, quietTransfers)
 	}
 
-	return COMMAND, arguments
+	return command, arguments
 }

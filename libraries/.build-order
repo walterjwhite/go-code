@@ -47,3 +47,4 @@ libraries/supervisor/server
 libraries/supervisor/client
 
 libraries/elasticsearch
+libraries/jenkins

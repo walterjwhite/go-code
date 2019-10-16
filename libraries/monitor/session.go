@@ -2,6 +2,7 @@ package monitor
 
 import (
 	"context"
+	"github.com/walterjwhite/go-application/libraries/after"
 	"time"
 )
 
@@ -39,5 +40,5 @@ type Alert struct {
 type NoActivity struct {
 	Interval    string
 	Description string
-	Timer       *time.Timer
+	After       *after.AfterDelay
 }

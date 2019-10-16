@@ -2,6 +2,7 @@ package secrets
 
 import (
 	"bufio"
+	"flag"
 	"github.com/mitchellh/go-homedir"
 	"github.com/walterjwhite/go-application/libraries/encryption"
 	"github.com/walterjwhite/go-application/libraries/logging"
@@ -17,7 +18,7 @@ type SecretsConfiguration struct {
 
 type NoEncryptionKeyProvided struct{}
 
-const secretConfigurationFilePath = "~/.secrets.yaml"
+var secretConfigurationFilePath = flag.String("SecretsConfigurationFilePath", "~/.secrets.yaml", "SecretsConfigurationFilePath")
 
 func (e *NoEncryptionKeyProvided) Error() string {
 	return "No key provided"
@@ -29,7 +30,7 @@ var SecretsConfigurationInstance *SecretsConfiguration
 func init() {
 	SecretsConfigurationInstance = &SecretsConfiguration{}
 
-	filename, err := homedir.Expand(secretConfigurationFilePath)
+	filename, err := homedir.Expand(*secretConfigurationFilePath)
 	logging.Panic(err)
 
 	yamlhelper.Read(filename, SecretsConfigurationInstance)

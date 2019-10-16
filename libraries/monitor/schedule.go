@@ -39,9 +39,9 @@ func (w *wrapPeriodic) wrap() error {
 }
 
 func (s *Session) scheduleNoActivityAlert() {
-	if s.NoActivity.Timer != nil {
-		s.NoActivity.Timer.Stop()
+	if s.NoActivity.After != nil {
+		s.NoActivity.After.Cancel()
 	}
 
-	s.NoActivity.Timer = after.After(s.Context, periodic.GetInterval(s.NoActivity.Interval), s.NoActivityAlert)
+	s.NoActivity.After = after.After(s.Context, periodic.GetInterval(s.NoActivity.Interval), s.NoActivityAlert)
 }
