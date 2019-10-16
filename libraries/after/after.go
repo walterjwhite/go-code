@@ -7,25 +7,36 @@ import (
 	"github.com/walterjwhite/go-application/libraries/logging"
 )
 
-type ErrorFunction struct {
-	Function func() error
+type AfterDelay struct {
+	ctx   context.Context
+	timer *time.Timer
+
+	function func() error
+	fired    chan bool
 }
 
-func After(ctx context.Context, delay time.Duration, fn func() error) *time.Timer {
-	errorFunction := ErrorFunction{Function: fn}
+func After(ctx context.Context, delay time.Duration, fn func() error) *AfterDelay {
+	afterDelay := &AfterDelay{ctx: ctx, function: fn, fired: make(chan bool)}
+	afterDelay.timer = time.AfterFunc(delay, afterDelay.safeFunction)
 
-	timer := time.AfterFunc(delay, errorFunction.function)
-	go cancel(ctx, timer)
+	go afterDelay.onContextDone()
 
-	return timer
+	return afterDelay
 }
 
-func cancel(ctx context.Context, timer *time.Timer) {
-	<-ctx.Done()
-	timer.Stop()
+func (a *AfterDelay) Wait() {
+	<-a.fired
 }
 
-func (f *ErrorFunction) function() {
-	err := f.Function()
-	logging.Panic(err)
+func (a *AfterDelay) Cancel() {
+	a.timer.Stop()
+}
+
+func (a *AfterDelay) onContextDone() {
+	<-a.ctx.Done()
+	a.Cancel()
+}
+
+func (a *AfterDelay) safeFunction() {
+	logging.Panic(a.function())
 }
