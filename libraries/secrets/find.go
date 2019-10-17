@@ -3,8 +3,8 @@ package secrets
 import (
 	"errors"
 	"flag"
+	"github.com/rs/zerolog/log"
 	"io/ioutil"
-	"log"
 
 	"strings"
 
@@ -12,7 +12,7 @@ import (
 )
 
 func Find(patterns []string, callback func(filePath string)) {
-	doFind(SecretsConfigurationInstance.repositoryPath, patterns, callback)
+	doFind(SecretsConfigurationInstance.RepositoryPath, patterns, callback)
 }
 
 func doFind(root string, patterns []string, callback func(filePath string)) {
@@ -38,8 +38,8 @@ func NewFind() []string {
 
 	patterns := flag.Args()
 
-	log.Printf("searching in: %v\n", SecretsConfigurationInstance.repositoryPath)
-	log.Printf("patterns: %v\n", patterns)
+	log.Debug().Msgf("searching in: %v", SecretsConfigurationInstance.RepositoryPath)
+	log.Debug().Msgf("patterns: %v", patterns)
 
 	if len(patterns) == 0 {
 		logging.Panic(errors.New("You must specify at least one pattern to search."))

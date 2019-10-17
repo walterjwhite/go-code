@@ -1,8 +1,8 @@
 package secrets
 
 import (
+	"github.com/rs/zerolog/log"
 	"github.com/walterjwhite/go-application/libraries/logging"
-	"log"
 	"os"
 	"os/exec"
 	"time"
@@ -21,14 +21,14 @@ func Encrypt(name *string, message *string, data []byte) {
 
 	SecretsConfigurationInstance.encryptionConfiguration.EncryptFile(secretValuePath, data)
 
-	log.Printf("Stored secret in %v (%v)\n", secretValuePath, len(data))
+	log.Debug().Msgf("Stored secret in %v (%v)", secretValuePath, len(data))
 
 	putLastUpdated(secretPath)
 	commit(secretPath, message)
 }
 
 func getSecretPath(name *string) string {
-	secretPath := SecretsConfigurationInstance.repositoryPath + "/" + *name
+	secretPath := SecretsConfigurationInstance.RepositoryPath + "/" + *name
 	logging.Panic(os.MkdirAll(secretPath, 0755))
 
 	return secretPath
@@ -46,7 +46,7 @@ func putLastUpdated(secretPath string) {
 	_, err = f.Write(lastUpdated)
 	logging.Panic(err)
 
-	log.Printf("Stored last updated in %v (%v)\n", secretLastUpdatedPath, lastUpdated)
+	log.Debug().Msgf("Stored last updated in %v (%v)", secretLastUpdatedPath, lastUpdated)
 }
 
 func getDateTimeLastUpdated() []byte {
@@ -58,7 +58,7 @@ func getDateTimeLastUpdated() []byte {
 
 func commit(secretPath string, message *string) {
 	cmd := exec.Command("git", "add", secretPath)
-	cmd.Dir = SecretsConfigurationInstance.repositoryPath
+	cmd.Dir = SecretsConfigurationInstance.RepositoryPath
 
 	stdoutStderr, err := cmd.CombinedOutput()
 	log.Printf("%s\n", stdoutStderr)
@@ -66,17 +66,17 @@ func commit(secretPath string, message *string) {
 	logging.Panic(err)
 
 	cmd = exec.Command("git", "commit", secretPath, "-m", *message)
-	cmd.Dir = SecretsConfigurationInstance.repositoryPath
+	cmd.Dir = SecretsConfigurationInstance.RepositoryPath
 	stdoutStderr, err = cmd.CombinedOutput()
-	log.Printf("%s\n", stdoutStderr)
+	log.Debug().Msgf("%s", stdoutStderr)
 
 	logging.Panic(err)
 
 	cmd = exec.Command("git", "push")
-	cmd.Dir = SecretsConfigurationInstance.repositoryPath
+	cmd.Dir = SecretsConfigurationInstance.RepositoryPath
 
 	stdoutStderr, err = cmd.CombinedOutput()
 	logging.Panic(err)
 
-	log.Printf("Added secret:\n%s\n", stdoutStderr)
+	log.Debug().Msgf("Added secret:\n%s", stdoutStderr)
 }

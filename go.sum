@@ -405,6 +405,9 @@ github.com/walterjwhite/go-application/libraries/encryption v0.0.0-2019092111134
 github.com/walterjwhite/go-application/libraries/encryption v0.0.0-20190928043406-90f191fd97ec/go.mod h1:RgSguJVzNhICmGk/vW13vGewGaclc7/wjWidVu22vtA=
 github.com/walterjwhite/go-application/libraries/encryption v0.0.0-20191016032350-e560bc5ff85b/go.mod h1:RNNpW/W45HLChX/dSWHpgzm9DchMxOjAIEOhJtAns1Y=
 github.com/walterjwhite/go-application/libraries/encryption v0.0.0-20191016231652-295166390adb/go.mod h1:zUNvcUhq/5gLRTc1fjoPROl/6jRPrhMPI8d97wc4nv8=
+github.com/walterjwhite/go-application/libraries/encryption v0.0.0-20191017010846-bf564ac9a8fb/go.mod h1:ZH0qn9kTz4R3COeEnC1DUEultxfwiNMv/XJSo05N3kw=
+github.com/walterjwhite/go-application/libraries/encryption v0.0.0-20191017011225-ff72e04d4778 h1:AKK+ZwUbbokpAC932NuGjLMf7LhUGv72zUlC7WIjmMQ=
+github.com/walterjwhite/go-application/libraries/encryption v0.0.0-20191017011225-ff72e04d4778/go.mod h1:ZH0qn9kTz4R3COeEnC1DUEultxfwiNMv/XJSo05N3kw=
 github.com/walterjwhite/go-application/libraries/heartbeat v0.0.0-20190928042922-d7014e7d1f94 h1:1oCclvPMjpVagKAqxh0GHt6ZjCEEP+bLK2JGqh8btyc=
 github.com/walterjwhite/go-application/libraries/heartbeat v0.0.0-20190928042922-d7014e7d1f94/go.mod h1:kIHyovrr/ZTLtfqTMOASPwX3uw/nUiEB0uAxPtmy+90=
 github.com/walterjwhite/go-application/libraries/heartbeat v0.0.0-20190928043200-d1bef1f0e2bd h1:obbUghutfDvGWi/TjwoSIz58mofmzpXy7vIoSddh90M=
@@ -469,6 +472,8 @@ github.com/walterjwhite/go-application/libraries/jenkins v0.0.0-20191016222525-3
 github.com/walterjwhite/go-application/libraries/jenkins v0.0.0-20191016222525-396df93c593e/go.mod h1:11wjz0pWZgIt2H2CLjSiIKI+QDV0ve9haRJmvNbO0gw=
 github.com/walterjwhite/go-application/libraries/jenkins v0.0.0-20191016231652-295166390adb h1:TrT1Z1zP7zxG4eys245rFK4IDMBBlgMAi3QZvGuNO7c=
 github.com/walterjwhite/go-application/libraries/jenkins v0.0.0-20191016231652-295166390adb/go.mod h1:11wjz0pWZgIt2H2CLjSiIKI+QDV0ve9haRJmvNbO0gw=
+github.com/walterjwhite/go-application/libraries/jenkins v0.0.0-20191017011225-ff72e04d4778 h1:gb+wIRHKMMbLye7byU3cn3+ta9m0r6P71f/30lSA5DY=
+github.com/walterjwhite/go-application/libraries/jenkins v0.0.0-20191017011225-ff72e04d4778/go.mod h1:p9yXPgXenVPl+srWQ9U+usdNGjkcinRlkDDknxXVKyo=
 github.com/walterjwhite/go-application/libraries/logging v0.0.0-20190907145257-2983bae739f3 h1:h/Wi9NecHfJPMnvv3yAlaDyGh1RRJM8H1FDX3KophaU=
 github.com/walterjwhite/go-application/libraries/logging v0.0.0-20190907145257-2983bae739f3/go.mod h1:eT1gabHFI1zsMFXK/q0+Klg7S0KIWpnlToO2uF+20Mw=
 github.com/walterjwhite/go-application/libraries/logging v0.0.0-20190907210437-b8e348e111bc/go.mod h1:QhUzDkllcR89OKA19aGv91GE6r5WBifLHFKkG4Anqhg=
@@ -598,6 +603,9 @@ github.com/walterjwhite/go-application/libraries/logging v0.0.0-20191016222525-3
 github.com/walterjwhite/go-application/libraries/logging v0.0.0-20191016230221-e15bc56d5fbb/go.mod h1:f1Xc23sdH3ghe2CdcJ5W0YGW+6c9RZRrWv7h7Zjc4L8=
 github.com/walterjwhite/go-application/libraries/logging v0.0.0-20191016231652-295166390adb h1:39iwBYtxcxZhF/HJx8nCMvE3YTs/nP5cc3OD4nLS+3k=
 github.com/walterjwhite/go-application/libraries/logging v0.0.0-20191016231652-295166390adb/go.mod h1:f1Xc23sdH3ghe2CdcJ5W0YGW+6c9RZRrWv7h7Zjc4L8=
+github.com/walterjwhite/go-application/libraries/logging v0.0.0-20191017010846-bf564ac9a8fb/go.mod h1:KyeGehaXW8xaoSKjpIQvWZ2ElMiebgdB3DrTjFLlV2c=
+github.com/walterjwhite/go-application/libraries/logging v0.0.0-20191017011225-ff72e04d4778 h1:pHMzEGT/ehF8GtrKZbFu0ABY9FXSWKPKWpFi2algE40=
+github.com/walterjwhite/go-application/libraries/logging v0.0.0-20191017011225-ff72e04d4778/go.mod h1:KyeGehaXW8xaoSKjpIQvWZ2ElMiebgdB3DrTjFLlV2c=
 github.com/walterjwhite/go-application/libraries/maven v0.0.0-20190908131603-42d51493b3cc h1:10F/CbD/3lhsUr+XGNKFi6JJ+AHNfcaNeuJ4MRN3j+U=
 github.com/walterjwhite/go-application/libraries/maven v0.0.0-20190908131603-42d51493b3cc/go.mod h1:8+RIUeydKMJ04BJfqlmfn6YlayGS0lHLp/EwsXCkpwE=
 github.com/walterjwhite/go-application/libraries/maven v0.0.0-20190916033306-80b4009af900/go.mod h1:/E4fvAYzMS7CYoDz0wE2LGW6BVLXhtLj+lhqgo1yXDs=
@@ -686,6 +694,9 @@ github.com/walterjwhite/go-application/libraries/periodic v0.0.0-20191016222525-
 github.com/walterjwhite/go-application/libraries/periodic v0.0.0-20191016230221-e15bc56d5fbb/go.mod h1:GB07wK3xACJlOW1arzTlItZp/ctey/DD1chnvwEMUf4=
 github.com/walterjwhite/go-application/libraries/periodic v0.0.0-20191016231652-295166390adb h1:r7Sgh5csVSwNqIRaOA+uq+QnOZnGBpF+/TdO3u7wniA=
 github.com/walterjwhite/go-application/libraries/periodic v0.0.0-20191016231652-295166390adb/go.mod h1:GB07wK3xACJlOW1arzTlItZp/ctey/DD1chnvwEMUf4=
+github.com/walterjwhite/go-application/libraries/periodic v0.0.0-20191017010846-bf564ac9a8fb/go.mod h1:eOSuFygGMiVrk40EuRLwsAU/hHb2W5rV/hkQw50c76Y=
+github.com/walterjwhite/go-application/libraries/periodic v0.0.0-20191017011225-ff72e04d4778 h1:lSPjyN6IzLJUdoxwLqiecsNS4iXE9FjoeGDXtfAXoTs=
+github.com/walterjwhite/go-application/libraries/periodic v0.0.0-20191017011225-ff72e04d4778/go.mod h1:eOSuFygGMiVrk40EuRLwsAU/hHb2W5rV/hkQw50c76Y=
 github.com/walterjwhite/go-application/libraries/run v0.0.0-20190914105815-a7829be4b963 h1:0JYy11u/TBE9AOn4BBWBjGkyE9edLpjANf1eLq0ofvA=
 github.com/walterjwhite/go-application/libraries/run v0.0.0-20190914105815-a7829be4b963/go.mod h1:+XsvHavpk+CgttacwMzb6lRSf9aG0urSSsZz7dDrbCM=
 github.com/walterjwhite/go-application/libraries/run v0.0.0-20190920121053-1cd4475ce881/go.mod h1:nU1Ah/hiqm0xZ0dIXbsfw8Igr4snIz/VSIruTIpBtG4=
@@ -746,6 +757,9 @@ github.com/walterjwhite/go-application/libraries/secrets v0.0.0-20190921111345-d
 github.com/walterjwhite/go-application/libraries/secrets v0.0.0-20190921111345-d85dd077315f/go.mod h1:Nlh9wzdwZ0KaoxjEBDC6cwVqccgphOwJ+7j204U19VM=
 github.com/walterjwhite/go-application/libraries/secrets v0.0.0-20191016032350-e560bc5ff85b/go.mod h1:f39btZrmPV7Z2M7jpzuMg2NWKHj1ePKyA2r7qDSdEx4=
 github.com/walterjwhite/go-application/libraries/secrets v0.0.0-20191016231652-295166390adb/go.mod h1:0A+gomkAdEYlBzGn3Mb7mAxSV/jNVKGi92v9IPWkjlk=
+github.com/walterjwhite/go-application/libraries/secrets v0.0.0-20191017010846-bf564ac9a8fb/go.mod h1:Ngprem106FOUHe1/WYfFjE6gf690iy9vAHRY0JlSVnw=
+github.com/walterjwhite/go-application/libraries/secrets v0.0.0-20191017011225-ff72e04d4778 h1:AuB6XbBkeBi6yVCiEeVyTrd4ogYhOy4EFwOcwzBJJ18=
+github.com/walterjwhite/go-application/libraries/secrets v0.0.0-20191017011225-ff72e04d4778/go.mod h1:Ngprem106FOUHe1/WYfFjE6gf690iy9vAHRY0JlSVnw=
 github.com/walterjwhite/go-application/libraries/shutdown v0.0.0-20190907145257-2983bae739f3 h1:7MtKebSLyi+aO6vjYiOxUtLYPXYA/LOkucoY8tGYvtY=
 github.com/walterjwhite/go-application/libraries/shutdown v0.0.0-20190907145257-2983bae739f3/go.mod h1:QycOiJK6vO3rLRelPjbs1usU/wmkYOk5sKVMLOKSKYY=
 github.com/walterjwhite/go-application/libraries/shutdown v0.0.0-20190910021253-d3612deb69ff/go.mod h1:fvSh3xOzxHr5jH9TygbNpZmOtPVgAQ6fWoH0J2rcneE=
@@ -782,6 +796,9 @@ github.com/walterjwhite/go-application/libraries/timeout v0.0.0-20191016230221-e
 github.com/walterjwhite/go-application/libraries/timeout v0.0.0-20191016230221-e15bc56d5fbb/go.mod h1:wOGV9H2v3UASM84Z1E8uS8MZGUiQZw/LNbNcJcdECS0=
 github.com/walterjwhite/go-application/libraries/timeout v0.0.0-20191016231652-295166390adb h1:wqWCQejySL7UVu4iOFKDlgBDGJydbbaAq8WJfGNg8Mk=
 github.com/walterjwhite/go-application/libraries/timeout v0.0.0-20191016231652-295166390adb/go.mod h1:wOGV9H2v3UASM84Z1E8uS8MZGUiQZw/LNbNcJcdECS0=
+github.com/walterjwhite/go-application/libraries/timeout v0.0.0-20191017010846-bf564ac9a8fb/go.mod h1:wOGV9H2v3UASM84Z1E8uS8MZGUiQZw/LNbNcJcdECS0=
+github.com/walterjwhite/go-application/libraries/timeout v0.0.0-20191017011225-ff72e04d4778 h1:etDWToLGQdj4IBjctE1bNHGlprKwD7Eh2q23HWVy34U=
+github.com/walterjwhite/go-application/libraries/timeout v0.0.0-20191017011225-ff72e04d4778/go.mod h1:wOGV9H2v3UASM84Z1E8uS8MZGUiQZw/LNbNcJcdECS0=
 github.com/walterjwhite/go-application/libraries/timestamp v0.0.0-20190908114105-312d0be0480b h1:YtWU/8GnUogQBIhWcepoWp3Wx4J3z0zDwxaWUKgj8S4=
 github.com/walterjwhite/go-application/libraries/timestamp v0.0.0-20190908114105-312d0be0480b/go.mod h1:am+q45EpcjNcfwWjAtyi2O90w6zroBmBIy87FMV2hbQ=
 github.com/walterjwhite/go-application/libraries/timestamp v0.0.0-20190908131603-42d51493b3cc h1:KiVhFFUj9uPRJ7ysxVw2S8r9T1Jh2CZo3oGGk9g2FOE=
@@ -804,6 +821,9 @@ github.com/walterjwhite/go-application/libraries/wait v0.0.0-20191016222525-396d
 github.com/walterjwhite/go-application/libraries/wait v0.0.0-20191016222525-396df93c593e/go.mod h1:Di3hQ7Vg2T7CqLb5vOQ0AIiuroykxa3U1qh9sZgHelo=
 github.com/walterjwhite/go-application/libraries/wait v0.0.0-20191016231652-295166390adb h1:brfBk6+9XaH4d5RwLjxsToZeoL1Dq4mvoFtMGDYUEDg=
 github.com/walterjwhite/go-application/libraries/wait v0.0.0-20191016231652-295166390adb/go.mod h1:bvmPc4/FJ2Q13gX9wo0SjXn+xgrsVwvOExeB5UhHmEQ=
+github.com/walterjwhite/go-application/libraries/wait v0.0.0-20191017010846-bf564ac9a8fb/go.mod h1:6ctUvZGQW7nY5y25Q0eO8JobZcIsnZ520shMWdni6lk=
+github.com/walterjwhite/go-application/libraries/wait v0.0.0-20191017011225-ff72e04d4778 h1:aa3YPEkhSVLRqpmOU3enoPQo7dl0wIo3mNBu+clB9UE=
+github.com/walterjwhite/go-application/libraries/wait v0.0.0-20191017011225-ff72e04d4778/go.mod h1:6ctUvZGQW7nY5y25Q0eO8JobZcIsnZ520shMWdni6lk=
 github.com/walterjwhite/go-application/libraries/yamlhelper v0.0.0-20190908114105-312d0be0480b/go.mod h1:5Zj+3VbrZcGhx52L338m0ae4r5TFH9IkQ1bUoiU9HD0=
 github.com/walterjwhite/go-application/libraries/yamlhelper v0.0.0-20190908114147-411d246ddec4 h1:D/GuIwRChlTvxpMdkoi5OlMeb+ONEBw7LItn11uof4o=
 github.com/walterjwhite/go-application/libraries/yamlhelper v0.0.0-20190908114147-411d246ddec4/go.mod h1:5Zj+3VbrZcGhx52L338m0ae4r5TFH9IkQ1bUoiU9HD0=
@@ -853,6 +873,9 @@ github.com/walterjwhite/go-application/libraries/yamlhelper v0.0.0-2019101622252
 github.com/walterjwhite/go-application/libraries/yamlhelper v0.0.0-20191016222525-396df93c593e/go.mod h1:cRWQd5qhwHeIVRJ+5c3Td2pOFvLhXHa089/GQFhVQY8=
 github.com/walterjwhite/go-application/libraries/yamlhelper v0.0.0-20191016231652-295166390adb h1:HPB1mZn98W62ZNeyRglJ93LrI12ZnLp4kyso3ile+/A=
 github.com/walterjwhite/go-application/libraries/yamlhelper v0.0.0-20191016231652-295166390adb/go.mod h1:cRWQd5qhwHeIVRJ+5c3Td2pOFvLhXHa089/GQFhVQY8=
+github.com/walterjwhite/go-application/libraries/yamlhelper v0.0.0-20191017010846-bf564ac9a8fb/go.mod h1:pOEjYwDjDvQG0nQ/fxkXj22JJwbE+/JhjN2eF2024L0=
+github.com/walterjwhite/go-application/libraries/yamlhelper v0.0.0-20191017011225-ff72e04d4778 h1:nKNGzCWPSDB9liKMtimfAnLmlJsYc+iAciKRpCgeDEE=
+github.com/walterjwhite/go-application/libraries/yamlhelper v0.0.0-20191017011225-ff72e04d4778/go.mod h1:pOEjYwDjDvQG0nQ/fxkXj22JJwbE+/JhjN2eF2024L0=
 github.com/willf/bitset v1.1.9/go.mod h1:RjeCKbqT1RxIR/KWY6phxZiaY1IyutSBfGjNPySAYV4=
 github.com/willf/bitset v1.1.10/go.mod h1:RjeCKbqT1RxIR/KWY6phxZiaY1IyutSBfGjNPySAYV4=
 github.com/xdg/scram v0.0.0-20180814205039-7eeb5667e42c/go.mod h1:lB8K/P019DLNhemzwFU4jHLhdvlE6uDZjXFejJXr49I=

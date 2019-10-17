@@ -12,8 +12,8 @@ import (
 
 type SecretsConfiguration struct {
 	encryptionConfiguration encryption.EncryptionConfiguration
-	repositoryRemoteUri     string
-	repositoryPath          string
+	RepositoryRemoteUri     string
+	RepositoryPath          string
 }
 
 type NoEncryptionKeyProvided struct{}
@@ -35,8 +35,8 @@ func initialize() {
 
 	yamlhelper.Read(filename, SecretsConfigurationInstance)
 
-	translatedRepositoryPath, err := homedir.Expand(SecretsConfigurationInstance.repositoryPath)
-	SecretsConfigurationInstance.repositoryPath = translatedRepositoryPath
+	translatedRepositoryPath, err := homedir.Expand(SecretsConfigurationInstance.RepositoryPath)
+	SecretsConfigurationInstance.RepositoryPath = translatedRepositoryPath
 	logging.Panic(err)
 
 	setupRepository()

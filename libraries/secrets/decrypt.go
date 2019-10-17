@@ -1,12 +1,12 @@
 package secrets
 
 import (
-	"log"
+	"github.com/rs/zerolog/log"
 	"strings"
 )
 
 func Decrypt(secretPath string) string {
-	log.Printf("processing secret: %v\n", secretPath)
+	log.Debug().Msgf("processing secret: %v", secretPath)
 
 	initialize()
 	setupEncryptionKey()
