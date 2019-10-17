@@ -28,6 +28,10 @@ var SecretsConfigurationInstance *SecretsConfiguration
 
 // initialize the key
 func initialize() {
+	if SecretsConfigurationInstance != nil {
+		return
+	}
+
 	SecretsConfigurationInstance = &SecretsConfiguration{}
 
 	filename, err := homedir.Expand(*secretConfigurationFilePath)
