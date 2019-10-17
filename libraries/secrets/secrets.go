@@ -11,9 +11,9 @@ import (
 )
 
 type SecretsConfiguration struct {
-	EncryptionConfiguration encryption.EncryptionConfiguration
-	RepositoryRemoteUri     string
-	RepositoryPath          string
+	encryptionConfiguration encryption.EncryptionConfiguration
+	repositoryRemoteUri     string
+	repositoryPath          string
 }
 
 type NoEncryptionKeyProvided struct{}
@@ -27,7 +27,7 @@ func (e *NoEncryptionKeyProvided) Error() string {
 var SecretsConfigurationInstance *SecretsConfiguration
 
 // initialize the key
-func init() {
+func initialize() {
 	SecretsConfigurationInstance = &SecretsConfiguration{}
 
 	filename, err := homedir.Expand(*secretConfigurationFilePath)
@@ -35,8 +35,8 @@ func init() {
 
 	yamlhelper.Read(filename, SecretsConfigurationInstance)
 
-	translatedRepositoryPath, err := homedir.Expand(SecretsConfigurationInstance.RepositoryPath)
-	SecretsConfigurationInstance.RepositoryPath = translatedRepositoryPath
+	translatedRepositoryPath, err := homedir.Expand(SecretsConfigurationInstance.repositoryPath)
+	SecretsConfigurationInstance.repositoryPath = translatedRepositoryPath
 	logging.Panic(err)
 
 	setupRepository()
@@ -48,7 +48,7 @@ func setupEncryptionKey() {
 		keyBytes := scanner.Bytes()
 		keyBytes = append(keyBytes, '\n')
 
-		SecretsConfigurationInstance.EncryptionConfiguration = encryption.EncryptionConfiguration{EncryptionKey: keyBytes}
+		SecretsConfigurationInstance.encryptionConfiguration = encryption.EncryptionConfiguration{EncryptionKey: keyBytes}
 	} else {
 		logging.Panic(&NoEncryptionKeyProvided{})
 	}

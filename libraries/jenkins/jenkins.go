@@ -4,6 +4,7 @@ import (
 	"flag"
 	"github.com/mitchellh/go-homedir"
 	"github.com/walterjwhite/go-application/libraries/logging"
+	"github.com/walterjwhite/go-application/libraries/secrets"
 	"github.com/walterjwhite/go-application/libraries/yamlhelper"
 	"gopkg.in/bndr/gojenkins.v1"
 	"time"
@@ -31,6 +32,8 @@ func New() *JenkinsInstance {
 	yamlhelper.Read(expandedJenkinsConfigurationFile, j)
 
 	// decrypt username and password
+	j.username = secrets.Decrypt(j.username)
+	j.password = secrets.Decrypt(j.password)
 
 	j.jenkins = gojenkins.CreateJenkins(j.url, j.username, j.password)
 

@@ -13,12 +13,13 @@ const DateTimeLayout = "2006/01/02 15:04:05"
 func Encrypt(name *string, message *string, data []byte) {
 	log.Printf("processing secret: %v\n", *name)
 
+	initialize()
 	setupEncryptionKey()
 
 	secretPath := getSecretPath(name)
 	secretValuePath := secretPath + "/value"
 
-	SecretsConfigurationInstance.EncryptionConfiguration.EncryptFile(secretValuePath, data)
+	SecretsConfigurationInstance.encryptionConfiguration.EncryptFile(secretValuePath, data)
 
 	log.Printf("Stored secret in %v (%v)\n", secretValuePath, len(data))
 
@@ -27,7 +28,7 @@ func Encrypt(name *string, message *string, data []byte) {
 }
 
 func getSecretPath(name *string) string {
-	secretPath := SecretsConfigurationInstance.RepositoryPath + "/" + *name
+	secretPath := SecretsConfigurationInstance.repositoryPath + "/" + *name
 	logging.Panic(os.MkdirAll(secretPath, 0755))
 
 	return secretPath
@@ -57,7 +58,7 @@ func getDateTimeLastUpdated() []byte {
 
 func commit(secretPath string, message *string) {
 	cmd := exec.Command("git", "add", secretPath)
-	cmd.Dir = SecretsConfigurationInstance.RepositoryPath
+	cmd.Dir = SecretsConfigurationInstance.repositoryPath
 
 	stdoutStderr, err := cmd.CombinedOutput()
 	log.Printf("%s\n", stdoutStderr)
@@ -65,14 +66,14 @@ func commit(secretPath string, message *string) {
 	logging.Panic(err)
 
 	cmd = exec.Command("git", "commit", secretPath, "-m", *message)
-	cmd.Dir = SecretsConfigurationInstance.RepositoryPath
+	cmd.Dir = SecretsConfigurationInstance.repositoryPath
 	stdoutStderr, err = cmd.CombinedOutput()
 	log.Printf("%s\n", stdoutStderr)
 
 	logging.Panic(err)
 
 	cmd = exec.Command("git", "push")
-	cmd.Dir = SecretsConfigurationInstance.RepositoryPath
+	cmd.Dir = SecretsConfigurationInstance.repositoryPath
 
 	stdoutStderr, err = cmd.CombinedOutput()
 	logging.Panic(err)

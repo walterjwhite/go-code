@@ -8,16 +8,12 @@ import (
 	"github.com/walterjwhite/go-application/libraries/logging"
 )
 
-type Session struct {
-	Path *string
-}
-
 func setupRepository() {
 	if isRepositorySetup() {
 		return
 	}
 
-	cmd := exec.Command("git", "clone", SecretsConfigurationInstance.RepositoryRemoteUri, SecretsConfigurationInstance.RepositoryPath)
+	cmd := exec.Command("git", "clone", SecretsConfigurationInstance.repositoryRemoteUri, SecretsConfigurationInstance.repositoryPath)
 	stdoutStderr, err := cmd.CombinedOutput()
 	logging.Panic(err)
 
@@ -25,11 +21,11 @@ func setupRepository() {
 }
 
 func isRepositorySetup() bool {
-	if _, err := os.Stat(SecretsConfigurationInstance.RepositoryPath); os.IsNotExist(err) {
-		log.Printf("Secrets !: %v\n", SecretsConfigurationInstance.RepositoryPath)
+	if _, err := os.Stat(SecretsConfigurationInstance.repositoryPath); os.IsNotExist(err) {
+		log.Printf("Secrets !: %v\n", SecretsConfigurationInstance.repositoryPath)
 		return false
 	}
 
-	log.Printf("Secrets: %v\n", SecretsConfigurationInstance.RepositoryPath)
+	log.Printf("Secrets: %v\n", SecretsConfigurationInstance.repositoryPath)
 	return true
 }

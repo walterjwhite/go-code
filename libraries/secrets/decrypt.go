@@ -8,8 +8,9 @@ import (
 func Decrypt(secretPath string) string {
 	log.Printf("processing secret: %v\n", secretPath)
 
+	initialize()
 	setupEncryptionKey()
 
-	data := SecretsConfigurationInstance.EncryptionConfiguration.DecryptFile(secretPath)
+	data := SecretsConfigurationInstance.encryptionConfiguration.DecryptFile(secretPath)
 	return strings.TrimSpace(string(data[:]))
 }

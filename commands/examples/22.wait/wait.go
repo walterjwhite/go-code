@@ -15,7 +15,7 @@ func main() {
 	ctx := application.Configure()
 
 	interval := 1 * time.Second
-	limit := 1 * time.Minute
+	limit := 2 * time.Second
 	d := &data{index: 0}
 
 	wait.Wait(ctx, interval, limit, d.f)
