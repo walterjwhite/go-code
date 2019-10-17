@@ -11,9 +11,9 @@ import (
 )
 
 type JenkinsInstance struct {
-	url      string
-	username string
-	password string
+	Url      string
+	Username string
+	Password string
 
 	buildTimeout       time.Duration
 	buildCheckInterval time.Duration
@@ -32,10 +32,10 @@ func New() *JenkinsInstance {
 	yamlhelper.Read(expandedJenkinsConfigurationFile, j)
 
 	// decrypt username and password
-	j.username = secrets.Decrypt(j.username)
-	j.password = secrets.Decrypt(j.password)
+	j.Username = secrets.Decrypt(j.Username)
+	j.Password = secrets.Decrypt(j.Password)
 
-	j.jenkins = gojenkins.CreateJenkins(j.url, j.username, j.password)
+	j.jenkins = gojenkins.CreateJenkins(j.Url, j.Username, j.Password)
 
 	_, err = j.jenkins.Init()
 	logging.Panic(err)
