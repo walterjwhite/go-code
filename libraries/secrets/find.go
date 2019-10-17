@@ -33,9 +33,6 @@ func doFind(root string, patterns []string, callback func(filePath string)) {
 }
 
 func NewFind() []string {
-	// this should NOT be needed
-	//flag.Parse()
-
 	patterns := flag.Args()
 
 	log.Debug().Msgf("searching in: %v", SecretsConfigurationInstance.RepositoryPath)

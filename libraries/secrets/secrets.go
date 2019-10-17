@@ -2,6 +2,7 @@ package secrets
 
 import (
 	"bufio"
+	"errors"
 	"flag"
 	"github.com/mitchellh/go-homedir"
 	"github.com/walterjwhite/go-application/libraries/encryption"
@@ -11,18 +12,12 @@ import (
 )
 
 type SecretsConfiguration struct {
-	encryptionConfiguration encryption.EncryptionConfiguration
+	encryptionConfiguration *encryption.EncryptionConfiguration
 	RepositoryRemoteUri     string
 	RepositoryPath          string
 }
 
-type NoEncryptionKeyProvided struct{}
-
 var secretConfigurationFilePath = flag.String("SecretsConfigurationFilePath", "~/.secrets.yaml", "SecretsConfigurationFilePath")
-
-func (e *NoEncryptionKeyProvided) Error() string {
-	return "No key provided"
-}
 
 var SecretsConfigurationInstance *SecretsConfiguration
 
@@ -47,14 +42,18 @@ func initialize() {
 }
 
 func setupEncryptionKey() {
+	if SecretsConfigurationInstance.encryptionConfiguration != nil {
+		return
+	}
+
 	scanner := bufio.NewScanner(os.Stdin)
 	if scanner.Scan() {
 		keyBytes := scanner.Bytes()
 		keyBytes = append(keyBytes, '\n')
 
-		SecretsConfigurationInstance.encryptionConfiguration = encryption.EncryptionConfiguration{EncryptionKey: keyBytes}
+		SecretsConfigurationInstance.encryptionConfiguration = &encryption.EncryptionConfiguration{EncryptionKey: keyBytes}
 	} else {
-		logging.Panic(&NoEncryptionKeyProvided{})
+		logging.Panic(errors.New("No encryption key provided"))
 	}
 
 	logging.Panic(scanner.Err())
