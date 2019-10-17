@@ -41,13 +41,13 @@ require (
 	github.com/walterjwhite/go-application/libraries/audit v0.0.0-20191016231652-295166390adb
 	github.com/walterjwhite/go-application/libraries/elasticsearch v0.0.0-20191016231652-295166390adb
 	github.com/walterjwhite/go-application/libraries/email v0.0.0-20191016231652-295166390adb // indirect
-	github.com/walterjwhite/go-application/libraries/encryption v0.0.0-20191017012019-3dba804d6495 // indirect
+	github.com/walterjwhite/go-application/libraries/encryption v0.0.0-20191017013233-a71e80716380 // indirect
 	github.com/walterjwhite/go-application/libraries/heartbeat v0.0.0-20191016231652-295166390adb
 	github.com/walterjwhite/go-application/libraries/identifier v0.0.0-20191016231652-295166390adb // indirect
 	github.com/walterjwhite/go-application/libraries/io/disk v0.0.0-20191016231652-295166390adb
 	github.com/walterjwhite/go-application/libraries/io/writermatcher v0.0.0-20191016231652-295166390adb // indirect
-	github.com/walterjwhite/go-application/libraries/jenkins v0.0.0-20191017011225-ff72e04d4778
-	github.com/walterjwhite/go-application/libraries/logging v0.0.0-20191017012019-3dba804d6495
+	github.com/walterjwhite/go-application/libraries/jenkins v0.0.0-20191017013233-a71e80716380
+	github.com/walterjwhite/go-application/libraries/logging v0.0.0-20191017013233-a71e80716380
 	github.com/walterjwhite/go-application/libraries/maven v0.0.0-20191016231652-295166390adb
 	github.com/walterjwhite/go-application/libraries/maven/build v0.0.0-20191016231652-295166390adb
 	github.com/walterjwhite/go-application/libraries/maven/format v0.0.0-20191016231652-295166390adb
@@ -55,16 +55,16 @@ require (
 	github.com/walterjwhite/go-application/libraries/monitor v0.0.0-20191016231652-295166390adb
 	github.com/walterjwhite/go-application/libraries/notification v0.0.0-20191016231652-295166390adb // indirect
 	github.com/walterjwhite/go-application/libraries/path v0.0.0-20191016231652-295166390adb
-	github.com/walterjwhite/go-application/libraries/periodic v0.0.0-20191017011225-ff72e04d4778 // indirect
+	github.com/walterjwhite/go-application/libraries/periodic v0.0.0-20191017013233-a71e80716380 // indirect
 	github.com/walterjwhite/go-application/libraries/run v0.0.0-20191016231652-295166390adb
 	github.com/walterjwhite/go-application/libraries/runner v0.0.0-20191016231652-295166390adb
 	github.com/walterjwhite/go-application/libraries/screenshot v0.0.0-20191016231652-295166390adb
-	github.com/walterjwhite/go-application/libraries/secrets v0.0.0-20191017012019-3dba804d6495
+	github.com/walterjwhite/go-application/libraries/secrets v0.0.0-20191017013233-a71e80716380
 	github.com/walterjwhite/go-application/libraries/shutdown v0.0.0-20191016231652-295166390adb // indirect
-	github.com/walterjwhite/go-application/libraries/timeout v0.0.0-20191017011225-ff72e04d4778
+	github.com/walterjwhite/go-application/libraries/timeout v0.0.0-20191017013233-a71e80716380
 	github.com/walterjwhite/go-application/libraries/timestamp v0.0.0-20191016231652-295166390adb
-	github.com/walterjwhite/go-application/libraries/wait v0.0.0-20191017011225-ff72e04d4778
-	github.com/walterjwhite/go-application/libraries/yamlhelper v0.0.0-20191017012019-3dba804d6495
+	github.com/walterjwhite/go-application/libraries/wait v0.0.0-20191017013233-a71e80716380
+	github.com/walterjwhite/go-application/libraries/yamlhelper v0.0.0-20191017013233-a71e80716380
 	golang.org/x/crypto v0.0.0-20191011191535-87dc89f01550
 	gopkg.in/yaml.v2 v2.2.4
 )

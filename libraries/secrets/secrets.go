@@ -8,6 +8,7 @@ import (
 	"github.com/walterjwhite/go-application/libraries/logging"
 	"github.com/walterjwhite/go-application/libraries/yamlhelper"
 	"os"
+	"path/filepath"
 )
 
 type SecretsConfiguration struct {
@@ -58,4 +59,12 @@ func setupEncryptionKey() {
 	}
 
 	logging.Panic(scanner.Err())
+}
+
+func getAbsolute(secretPath string) string {
+	if _, err := os.Stat(secretPath); os.IsNotExist(err) {
+		return filepath.Join(SecretsConfigurationInstance.RepositoryPath, secretPath)
+	}
+
+	return secretPath
 }

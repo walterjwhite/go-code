@@ -7,7 +7,6 @@ import (
 	"github.com/walterjwhite/go-application/libraries/secrets"
 	"github.com/walterjwhite/go-application/libraries/yamlhelper"
 	"gopkg.in/bndr/gojenkins.v1"
-	"path/filepath"
 	"time"
 )
 
@@ -33,8 +32,8 @@ func New() *JenkinsInstance {
 	yamlhelper.Read(expandedJenkinsConfigurationFile, j)
 
 	// decrypt username and password
-	j.Username = secrets.Decrypt(filepath.Join(secrets.SecretsConfigurationInstance.RepositoryPath, j.Username))
-	j.Password = secrets.Decrypt(filepath.Join(secrets.SecretsConfigurationInstance.RepositoryPath, j.Password))
+	j.Username = secrets.Decrypt(j.Username)
+	j.Password = secrets.Decrypt(j.Password)
 
 	j.jenkins = gojenkins.CreateJenkins(j.Url, j.Username, j.Password)
 

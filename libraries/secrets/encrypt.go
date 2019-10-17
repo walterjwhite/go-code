@@ -5,6 +5,7 @@ import (
 	"github.com/walterjwhite/go-application/libraries/logging"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"time"
 )
 
@@ -17,7 +18,7 @@ func Encrypt(name *string, message *string, data []byte) {
 	setupEncryptionKey()
 
 	secretPath := getSecretPath(name)
-	secretValuePath := secretPath + "/value"
+	secretValuePath := filepath.Join(secretPath, "value")
 
 	SecretsConfigurationInstance.encryptionConfiguration.EncryptFile(secretValuePath, data)
 
@@ -28,14 +29,14 @@ func Encrypt(name *string, message *string, data []byte) {
 }
 
 func getSecretPath(name *string) string {
-	secretPath := SecretsConfigurationInstance.RepositoryPath + "/" + *name
+	secretPath := filepath.Join(SecretsConfigurationInstance.RepositoryPath, *name)
 	logging.Panic(os.MkdirAll(secretPath, 0755))
 
 	return secretPath
 }
 
 func putLastUpdated(secretPath string) {
-	secretLastUpdatedPath := secretPath + "/last-updated"
+	secretLastUpdatedPath := filepath.Join(secretPath, "last-updated")
 
 	f, err := os.Create(secretLastUpdatedPath)
 	logging.Panic(err)
