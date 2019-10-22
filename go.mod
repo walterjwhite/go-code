@@ -65,6 +65,7 @@ require (
 	github.com/walterjwhite/go-application/libraries/timestamp v0.0.0-20191016231652-295166390adb
 	github.com/walterjwhite/go-application/libraries/wait v0.0.0-20191017014823-2ebdf5d8432f
 	github.com/walterjwhite/go-application/libraries/yamlhelper v0.0.0-20191017022008-949090b970b5
+	github.com/walterjwhite/go-hi v0.0.0-20190907020539-f7e46ec88820
 	golang.org/x/crypto v0.0.0-20191011191535-87dc89f01550
 	gopkg.in/yaml.v2 v2.2.4
 )

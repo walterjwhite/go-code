@@ -3,7 +3,7 @@ package database
 import (
 	"fmt"
 	"github.com/jmoiron/sqlx"
-	"log"
+	"github.com/walterjwhite/go-application/libraries/logging"
 )
 
 // TODO: this is specific to Oracle, generalize this
@@ -18,9 +18,7 @@ type ConnectionConfiguration struct {
 
 func (configuration *ConnectionConfiguration) Connect() *sqlx.DB {
 	db, err := sqlx.Open(configuration.DriverName, configuration.getConnectionString())
-	if err != nil {
-		log.Fatalf("Error connecting: %v\n", err)
-	}
+	logging.Panic(err)
 
 	testConnection(db)
 
@@ -33,7 +31,5 @@ func (configuration *ConnectionConfiguration) getConnectionString() string {
 
 func testConnection(db *sqlx.DB) {
 	err := db.Ping()
-	if err != nil {
-		log.Fatalf("Error testing connection: %v\n", err)
-	}
+	logging.Panic(err)
 }

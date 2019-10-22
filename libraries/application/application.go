@@ -21,11 +21,9 @@ func Configure() context.Context {
 	return Context
 }
 
-func OnCompletion() {
-	notification.OnCompletion()
-}
-
 func Wait() {
 	// wait for CTRL+C (or context to expire)
 	<-Context.Done()
+
+	notification.OnCompletion()
 }

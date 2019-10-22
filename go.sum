@@ -328,6 +328,7 @@ github.com/walterjwhite/go-application/libraries/after v0.0.0-20191016023614-5c7
 github.com/walterjwhite/go-application/libraries/after v0.0.0-20191016024017-f66dc0dce0ba h1:11eWpMEWAhcomH4WuPhA0rg3gL3Kec5JO/qBOl/PoUw=
 github.com/walterjwhite/go-application/libraries/after v0.0.0-20191016024017-f66dc0dce0ba/go.mod h1:3++giAOnEKY3CD3QjLfzhDcbt+z0IUuELoerUXKtpU0=
 github.com/walterjwhite/go-application/libraries/after v0.0.0-20191016032350-e560bc5ff85b/go.mod h1:3++giAOnEKY3CD3QjLfzhDcbt+z0IUuELoerUXKtpU0=
+github.com/walterjwhite/go-application/libraries/after v0.0.0-20191016231652-295166390adb h1:Ma/DmfJwSFQK8mZB16uNT6h9GatbAgDdhsxOX3yB/UY=
 github.com/walterjwhite/go-application/libraries/after v0.0.0-20191016231652-295166390adb/go.mod h1:8F5zWdM0MVMLWCryqo6QggZZZInkQAjcdnPgrNqhpNI=
 github.com/walterjwhite/go-application/libraries/application v0.0.0-20190907145257-2983bae739f3 h1:EgvVMzPS0q/00UYRTQPKDNp41M9jb6lbTbwbg3/KME0=
 github.com/walterjwhite/go-application/libraries/application v0.0.0-20190907145257-2983bae739f3/go.mod h1:VaoC9R2Fw/7ymeNXHdcFNk8G/tY2+35Xlxo3AacS4uk=
@@ -935,6 +936,8 @@ github.com/walterjwhite/go-application/libraries/yamlhelper v0.0.0-2019101701542
 github.com/walterjwhite/go-application/libraries/yamlhelper v0.0.0-20191017015424-e4ed25bbbf63/go.mod h1:pOEjYwDjDvQG0nQ/fxkXj22JJwbE+/JhjN2eF2024L0=
 github.com/walterjwhite/go-application/libraries/yamlhelper v0.0.0-20191017022008-949090b970b5 h1:6MhNdzxGiCWw3Ybt4ColGp7VOoeQttdemmOYObH9S8k=
 github.com/walterjwhite/go-application/libraries/yamlhelper v0.0.0-20191017022008-949090b970b5/go.mod h1:67m3k4FZl7cq9jp0YFyKGvW7oj5C+vtTeUmm1PjJd2E=
+github.com/walterjwhite/go-hi v0.0.0-20190907020539-f7e46ec88820 h1:QpM4w5JNkPEmxCnhIdjo8Wguh6piH0CBGbt2VKsI/m8=
+github.com/walterjwhite/go-hi v0.0.0-20190907020539-f7e46ec88820/go.mod h1:tzt4yv1Gu0GHvklIWTB+i4Q1bbW+jKv2t+WV6bPriBg=
 github.com/willf/bitset v1.1.9/go.mod h1:RjeCKbqT1RxIR/KWY6phxZiaY1IyutSBfGjNPySAYV4=
 github.com/willf/bitset v1.1.10/go.mod h1:RjeCKbqT1RxIR/KWY6phxZiaY1IyutSBfGjNPySAYV4=
 github.com/xdg/scram v0.0.0-20180814205039-7eeb5667e42c/go.mod h1:lB8K/P019DLNhemzwFU4jHLhdvlE6uDZjXFejJXr49I=

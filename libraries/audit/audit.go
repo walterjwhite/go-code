@@ -14,6 +14,8 @@ import (
 	"github.com/walterjwhite/go-application/libraries/screenshot"
 )
 
+//var auditPath = flag.String("AuditPath", "~/.audit", "AuditPath")
+
 func init() {
 	path.WithSessionDirectory("~/.audit")
 }

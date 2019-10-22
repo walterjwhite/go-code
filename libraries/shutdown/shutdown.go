@@ -2,7 +2,7 @@ package shutdown
 
 import (
 	"context"
-	"log"
+	"github.com/rs/zerolog/log"
 	"os"
 	"os/signal"
 )
@@ -40,10 +40,10 @@ func onShutdown(shutdownHandler ShutdownHandler, channel chan os.Signal, ctx con
 		os.Exit(1)
 	case <-ctx.Done():
 		close(channel)
-		log.Printf("Done\n")
+		log.Info().Msg("Done")
 	}
 }
 
 func (defaultShutdownHandler *defaultShutdownHandler) OnShutdown(signal os.Signal) {
-	log.Printf("Shutting down: %s\n", signal)
+	log.Info().Msgf("Shutting down: %s", signal)
 }

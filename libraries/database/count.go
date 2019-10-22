@@ -1,7 +1,7 @@
 package database
 
 import (
-	"log"
+	"github.com/walterjwhite/go-application/libraries/logging"
 )
 
 type CountQuery struct {
@@ -14,9 +14,7 @@ func (q *CountQuery) Count() {
 
 	// automatically inject parameters
 	rows, err := q.Query.Database.Query(q.Query.Query, q.Query.Parameters)
-	if err != nil {
-		log.Fatalf("Error querying: %v / %v\n", q.Query.Query, err)
-	}
+	logging.Panic(err)
 
 	defer rows.Close()
 
@@ -24,9 +22,7 @@ func (q *CountQuery) Count() {
 	if rows.Next() {
 		var count int
 		err = rows.Scan(&count)
-		if err != nil {
-			log.Printf("Error scanning rows: %v\n", err)
-		}
+		logging.Panic(err)
 
 		q.RecordCount = count
 	}

@@ -9,7 +9,7 @@ require (
 	github.com/Shopify/sarama v1.24.0 // indirect
 	github.com/alecthomas/units v0.0.0-20190924025748-f65c72e2690d // indirect
 	github.com/apache/thrift v0.13.0 // indirect
-	github.com/aws/aws-sdk-go v1.25.14 // indirect
+	github.com/aws/aws-sdk-go v1.25.15 // indirect
 	github.com/creack/pty v1.1.9 // indirect
 	github.com/eapache/go-resiliency v1.2.0 // indirect
 	github.com/frankban/quicktest v1.5.0 // indirect
@@ -34,18 +34,18 @@ require (
 	github.com/onsi/gomega v1.7.0 // indirect
 	github.com/openzipkin/zipkin-go v0.2.2 // indirect
 	github.com/pierrec/lz4 v2.3.0+incompatible // indirect
-	github.com/prometheus/client_golang v1.2.0 // indirect
+	github.com/prometheus/client_golang v1.2.1 // indirect
 	github.com/rcrowley/go-metrics v0.0.0-20190826022208-cac0b30c2563 // indirect
 	github.com/rogpeppe/go-internal v1.5.0 // indirect
 	github.com/streadway/amqp v0.0.0-20190827072141-edfb9018d271 // indirect
 	github.com/stretchr/objx v0.2.0 // indirect
-	github.com/walterjwhite/go-application/libraries/logging v0.0.0-20191016231652-295166390adb
+	github.com/walterjwhite/go-application/libraries/logging v0.0.0-20191017022218-7145173788f1
 	go.opencensus.io v0.22.1 // indirect
 	golang.org/x/exp v0.0.0-20191014171548-69215a2ee97e // indirect
 	golang.org/x/image v0.0.0-20191009234506-e7c1f5e7dbb8 // indirect
 	golang.org/x/mobile v0.0.0-20191002175909-6d0d39b2ca82 // indirect
 	golang.org/x/time v0.0.0-20190921001708-c4c64cad1fd0 // indirect
-	golang.org/x/tools v0.0.0-20191016232927-02335f11d598 // indirect
+	golang.org/x/tools v0.0.0-20191017205301-920acffc3e65 // indirect
 	google.golang.org/appengine v1.6.5 // indirect
 	google.golang.org/grpc v1.24.0 // indirect
 	gopkg.in/check.v1 v1.0.0-20190902080502-41f04d3bba15 // indirect

@@ -3,6 +3,6 @@ module github.com/walterjwhite/go-application/libraries/io/writermatcher
 go 1.12
 
 require (
-	github.com/walterjwhite/go-application/libraries/logging v0.0.0-20191016231652-295166390adb
-	golang.org/x/tools v0.0.0-20191016230601-5bac78f585c2 // indirect
+	github.com/walterjwhite/go-application/libraries/logging v0.0.0-20191017022218-7145173788f1
+	golang.org/x/tools v0.0.0-20191017205301-920acffc3e65 // indirect
 )
