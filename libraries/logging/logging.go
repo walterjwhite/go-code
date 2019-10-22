@@ -3,10 +3,13 @@ package logging
 import (
 	"compress/zlib"
 	"flag"
+	//"fmt"
 	"github.com/rs/zerolog"
+	//"github.com/rs/zerolog/diode"
 	"github.com/rs/zerolog/log"
 	"io"
 	"os"
+	//"time"
 )
 
 var (
@@ -25,7 +28,8 @@ func Configure() {
 	zerolog.TimeFieldFormat = *logDateTimeFormat
 
 	var f io.Writer = getWriter()
-	log.Logger = zerolog.New(f).With().Timestamp().Logger()
+	//log.Logger = zerolog.New(diode.NewWriter(f, 1000, 10*time.Millisecond, onMissedMessages)).With().Timestamp().Logger()
+	log.Logger = zerolog.New(zerolog.SyncWriter(f)).With().Timestamp().Logger()
 
 	setLogLevel()
 }
@@ -37,6 +41,12 @@ func getWriter() io.Writer {
 
 	return zerolog.ConsoleWriter{Out: getOutputStream(), NoColor: *logNoColor, TimeFormat: *logDateTimeFormat}
 }
+
+/*
+func onMissedMessages(missed int) {
+	fmt.Printf("Logger Dropped %d messages", missed)
+}
+*/
 
 func getOutputStream() *os.File {
 	if *logStdOut {

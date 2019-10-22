@@ -1,49 +1,43 @@
 package shutdown
 
 import (
-	"context"
-	"github.com/rs/zerolog/log"
+	"github.com/walterjwhite/go-application/libraries/application"
 	"os"
 	"os/signal"
+	"sync"
 )
 
 type ShutdownHandler interface {
-	OnShutdown(signal os.Signal)
+	OnShutdown()
+	OnContextClosed()
 }
 
-type defaultShutdownHandler struct {
+var shutdownHooksGroup = sync.WaitGroup{}
+var registerContextCleanupOnce sync.Once
+
+func Add(shutdownHandler ShutdownHandler) {
+	shutdownHooksGroup.Add(1)
+
+	osSignalChannel := make(chan os.Signal, 1)
+	signal.Notify(osSignalChannel, os.Interrupt)
+
+	go handleShutdown(osSignalChannel, shutdownHandler)
+
+	go registerContextCleanupOnce.Do(cleanup)
 }
 
-func Default() context.Context {
-	return Register(&defaultShutdownHandler{})
-}
-
-func Register(shutdownHandler ShutdownHandler) context.Context {
-	ctx, cancel := context.WithCancel(context.Background())
-
-	channel := make(chan os.Signal, 1)
-	signal.Notify(channel, os.Interrupt)
-
-	go onShutdown(shutdownHandler, channel, ctx, cancel)
-
-	return ctx
-}
-
-func onShutdown(shutdownHandler ShutdownHandler, channel chan os.Signal, ctx context.Context, cancel context.CancelFunc) {
+func handleShutdown(osSignalChannel chan os.Signal, shutdownHandler ShutdownHandler) {
 	select {
-	case s := <-channel:
-		shutdownHandler.OnShutdown(s)
-		signal.Stop(channel)
-		cancel()
-
-		// TODO: make this configurable, what exit code do we want?
-		os.Exit(1)
-	case <-ctx.Done():
-		close(channel)
-		log.Info().Msg("Done")
+	case <-osSignalChannel:
+		shutdownHandler.OnShutdown()
+	case <-application.Context.Done():
+		shutdownHandler.OnContextClosed()
 	}
+
+	shutdownHooksGroup.Done()
 }
 
-func (defaultShutdownHandler *defaultShutdownHandler) OnShutdown(signal os.Signal) {
-	log.Info().Msgf("Shutting down: %s", signal)
+func cleanup() {
+	shutdownHooksGroup.Wait()
+	application.Cancel()
 }

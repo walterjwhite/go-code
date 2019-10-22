@@ -1,9 +1,10 @@
 package path
 
 import (
+	"errors"
 	"github.com/mitchellh/go-homedir"
+	"github.com/rs/zerolog/log"
 	"github.com/walterjwhite/go-application/libraries/logging"
-	"log"
 	"os"
 	"path/filepath"
 	"strings"
@@ -20,7 +21,7 @@ func GetFile(label string, extension string, details ...string) *os.File {
 	directory := getDirectory(filename)
 
 	if _, err := os.Stat(directory); os.IsNotExist(err) {
-		log.Printf("Creating directory: %v", directory)
+		log.Debug().Msgf("Creating directory: %v", directory)
 		logging.Panic(os.MkdirAll(directory, os.ModePerm))
 
 		/*
@@ -51,7 +52,7 @@ func getFilenamePath(filename string) string {
 
 func getFilename(label string, extension string, details ...string) string {
 	if len(SessionDirectory) == 0 {
-		panic("Session Directory was not initialized")
+		logging.Panic(errors.New("Session Directory was not initialized"))
 	}
 
 	filenameWithPrefix := getFilenameWithPrefix(extension, details...)

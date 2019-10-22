@@ -1,28 +1,43 @@
 package main
 
 import (
+	"errors"
 	"flag"
 	"io/ioutil"
 	"strings"
-	
-	"github.com/walterjwhite/go-application/libraries/secrets"
+
+	"github.com/walterjwhite/go-application/libraries/application"
+	"github.com/walterjwhite/go-application/libraries/encryption"
+	"github.com/walterjwhite/go-application/libraries/logging"
+	//"github.com/walterjwhite/go-application/libraries/secrets"
 )
 
 var filename = flag.String("filename", "", "filename to decrypt")
-var out = flag.String("out", "", "outfile")
+var overwriteExisting = flag.Bool("overwriteExisting", false, "overwriteExisting")
 
 func main() {
 	_ = application.Configure()
-	data := secrets.DecryptFile(getOutfile())
-	
-	logging.Panic(ioutil.WriteFile(outputFilename, data, 0644))
+
+	validateArgumentsFilename()
+
+	e := encryption.New()
+	data := e.DecryptFile(*filename)
+
+	logging.Panic(ioutil.WriteFile(getOutfile(), data, 0644))
+}
+
+func validateArgumentsFilename() {
+	if len(*filename) == 0 {
+		logging.Panic(errors.New("Specify a filename"))
+	}
 }
 
 func getOutfile() string {
-	var outputFilename string
-    if len(*out) > 0 {
-       return *out
-    }
-    
-    return strings.Replace(*filename, ".encrypted", ".decrypted", 1)
+	o := strings.Replace(*filename, ".encrypted", ".decrypted", 1)
+
+	if o == *filename && !*overwriteExisting {
+		logging.Panic(errors.New("The output filename is the same as the input filename and overwriteExisting is false"))
+	}
+
+	return o
 }

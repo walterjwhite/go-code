@@ -1,15 +1,18 @@
 package main
 
 import (
-	"strings"
-	"strconv"
 	"github.com/gdamore/tcell"
 	"github.com/rivo/tview"
+	"strconv"
+	"strings"
+
+	"github.com/walterjwhite/go-application/libraries/application"
+	"github.com/walterjwhite/go-application/libraries/logging"
 )
 
 var a tview.Application
 
-func onChange(/*a *tview.Application*/) {
+func onChange( /*a *tview.Application*/ ) {
 	a.Draw()
 }
 
@@ -21,8 +24,8 @@ func buildServiceTable() *tview.Table {
 	for r := 0; r < rows; r++ {
 		for c := 0; c < cols; c++ {
 			tableCell := tview.NewTableCell(content[word]).
-					SetAlign(tview.AlignLeft)
-			
+				SetAlign(tview.AlignLeft)
+
 			if r == 0 {
 				// SetAttributes sets the cell's text attributes. You can combine different
 				// attributes using bitmask operations:
@@ -30,25 +33,25 @@ func buildServiceTable() *tview.Table {
 				//   cell.SetAttributes(tcell.AttrUnderline | tcell.AttrBold)
 				tableCell.SetAttributes(tcell.AttrUnderline | tcell.AttrBold)
 			}
-			
+
 			if c == 1 && r > 0 {
-				if strings.Index(content[word], "started") >= 0 {
+				if strings.Contains(content[word], "started") {
 					tableCell.SetBackgroundColor(tcell.ColorGreen)
-				} else if strings.Index(content[word], "stopping") >= 0 || strings.Index(content[word], "starting") >= 0{
+				} else if strings.Contains(content[word], "stopping") || strings.Contains(content[word], "starting") {
 					tableCell.SetBackgroundColor(tcell.ColorYellow)
 				} else {
 					tableCell.SetBackgroundColor(tcell.ColorRed)
 				}
-				
+
 				tableCell.SetTextColor(tcell.ColorBlack)
 			}
-			
+
 			table.SetCell(r, c, tableCell)
-			
+
 			word = (word + 1) % len(content)
 		}
 	}
-	
+
 	return table
 }
 
@@ -60,27 +63,27 @@ func buildInterfaceTable() *tview.Table {
 	for r := 0; r < rows; r++ {
 		for c := 0; c < cols; c++ {
 			tableCell := tview.NewTableCell(content[word]).
-					SetAlign(tview.AlignLeft)
-			
+				SetAlign(tview.AlignLeft)
+
 			if r == 0 {
 				tableCell.SetAttributes(tcell.AttrUnderline | tcell.AttrBold)
 			}
-			
+
 			if c == 2 && r > 0 {
-				if strings.Index(content[word], "UP") >= 0 {
+				if strings.Contains(content[word], "UP") {
 					tableCell.SetBackgroundColor(tcell.ColorGreen)
 				} else {
 					tableCell.SetBackgroundColor(tcell.ColorRed)
 				}
-				
+
 				tableCell.SetTextColor(tcell.ColorBlack)
 			}
-			
+
 			table.SetCell(r, c, tableCell)
 			word = (word + 1) % len(content)
 		}
 	}
-	
+
 	return table
 }
 
@@ -92,17 +95,17 @@ func buildNetworkStatusTable() *tview.Table {
 	for r := 0; r < rows; r++ {
 		for c := 0; c < cols; c++ {
 			tableCell := tview.NewTableCell(content[word]).
-					SetAlign(tview.AlignLeft)
-			
+				SetAlign(tview.AlignLeft)
+
 			if r == 0 {
 				tableCell.SetAttributes(tcell.AttrUnderline | tcell.AttrBold)
 			}
-			
+
 			table.SetCell(r, c, tableCell)
 			word = (word + 1) % len(content)
 		}
 	}
-	
+
 	return table
 }
 
@@ -114,18 +117,18 @@ func buildDiskTable() *tview.Table {
 	for r := 0; r < rows; r++ {
 		for c := 0; c < cols; c++ {
 			tableCell := tview.NewTableCell(content[word]).
-					SetAlign(tview.AlignLeft)
-			
+				SetAlign(tview.AlignLeft)
+
 			if r == 0 {
 				tableCell.SetAttributes(tcell.AttrUnderline | tcell.AttrBold)
 			}
-			
+
 			if c == 1 && r > 0 {
 				i, err := strconv.ParseInt(content[word], 10, 16)
 				if err != nil {
 					panic("Error")
 				}
-				
+
 				if i <= 25 {
 					tableCell.SetBackgroundColor(tcell.ColorGreen)
 				} else if i <= 50 {
@@ -133,19 +136,21 @@ func buildDiskTable() *tview.Table {
 				} else {
 					tableCell.SetBackgroundColor(tcell.ColorRed)
 				}
-				
+
 				tableCell.SetTextColor(tcell.ColorBlack)
 			}
-			
+
 			table.SetCell(r, c, tableCell)
 			word = (word + 1) % len(content)
 		}
 	}
-	
+
 	return table
 }
 
 func main() {
+	application.Configure()
+
 	newPrimitive := func(text string) *tview.TextView {
 		return tview.NewTextView().
 			//SetTextAlign(tview.AlignCenter).
@@ -153,7 +158,7 @@ func main() {
 			SetText(text).
 			SetChangedFunc(onChange)
 	}
-	
+
 	//interfaces := newPrimitive("lw: 173.75.130.27\nll: 192.168.55.1\nwl: 192.168.56.1\n")
 
 	grid := tview.NewGrid().
@@ -165,33 +170,28 @@ func main() {
 		AddItem(newPrimitive("Date: 2019/03/22 10:45 AM"), 0, 0, 1, 1, 2, 0, false).
 		AddItem(newPrimitive("Built on: 2019/03/01 11:01 PM"), 0, 1, 1, 1, 2, 0, false).
 		AddItem(newPrimitive("up: 4 days"), 0, 2, 1, 1, 2, 0, false).
-		
 		AddItem(buildServiceTable(), 1, 0, 3, 2, 20, 100, false).
-		
 		AddItem(buildInterfaceTable(), 1, 2, 1, 1, 0, 50, false).
 		AddItem(buildNetworkStatusTable(), 2, 2, 1, 1, 0, 50, false).
 		AddItem(buildDiskTable(), 3, 2, 1, 1, 0, 50, false).
-		
 		AddItem(newPrimitive("syslog / dmesg output\nline1\nline2\nline3\nline4\nline5"), 4, 0, 1, 3, 5, 0, false)
-	
+
 	// update the text in parallel (working)
 	/*
-	go func() {
-		index := 0
-		for index < 1000 {
-			//main.SetText(main.GetText(true) + fmt.Sprintf("(%d)", index))
-			//main.SetText(fmt.Sprintf("(%d)", index))
-			main.Clear().Write([]byte(fmt.Sprintf("(%d)", index)))
-			index += 1
-			
-			time.Sleep(1 * time.Second)
-		}
-	}()
+		go func() {
+			index := 0
+			for index < 1000 {
+				//main.SetText(main.GetText(true) + fmt.Sprintf("(%d)", index))
+				//main.SetText(fmt.Sprintf("(%d)", index))
+				main.Clear().Write([]byte(fmt.Sprintf("(%d)", index)))
+				index += 1
+
+				time.Sleep(1 * time.Second)
+			}
+		}()
 	*/
 
-	if err := a.SetRoot(grid, true).Run(); err != nil {
-		panic(err)
-	}
+	logging.Panic(a.SetRoot(grid, true).Run())
 }
 
 func init() {

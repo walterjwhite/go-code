@@ -3,8 +3,8 @@ package elasticsearch
 import (
 	"context"
 	"fmt"
-	"github.com/olivere/elastic/v7"
 	"github.com/walterjwhite/go-application/libraries/logging"
+	"gopkg.in/olivere/elastic.v7"
 	"time"
 )
 

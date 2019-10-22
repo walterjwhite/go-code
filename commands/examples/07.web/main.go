@@ -1,10 +1,11 @@
 package main
 
 import (
-	"log"
-	
-	"net/http"
+	"github.com/rs/zerolog/log"
+	"github.com/walterjwhite/go-application/libraries/logging"
+
 	"github.com/ddo/rq"
+	"net/http"
 )
 
 func main() {
@@ -12,18 +13,12 @@ func main() {
 
 	// send with golang default HTTP client
 	req, err := r.ParseRequest()
-	
-	if err != nil {
-		panic(err)
-	}
-	
+	logging.Panic(err)
+
 	res, err := http.DefaultClient.Do(req)
-	
-	if err != nil {
-		panic(err)
-	}
-	
+	logging.Panic(err)
+
 	defer res.Body.Close()
-	
-	log.Printf("Response:\n%v\n", res)
+
+	log.Info().Msgf("Response:\n%v", res)
 }

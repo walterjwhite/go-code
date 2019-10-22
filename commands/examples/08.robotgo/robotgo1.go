@@ -2,16 +2,22 @@ package main
 
 import (
 	"github.com/go-vgo/robotgo"
+	"github.com/rs/zerolog/log"
+	"github.com/walterjwhite/go-application/libraries/application"
 	"time"
 )
 
 func main() {
+	application.Configure()
+
 	for {
 		//robotgo.MoveMouseSmooth(100, 200, 1.0, 100.0)
+		log.Debug().Msgf("Moving mouse to: %v, %v", 1700, 200)
 		robotgo.MoveMouse(1700, 200)
 
 		time.Sleep(1 * time.Second)
 
+		log.Debug().Msgf("Moving mouse to: %v, %v", 1800, 200)
 		robotgo.MoveMouse(1800, 200)
 
 		time.Sleep(1 * time.Second)

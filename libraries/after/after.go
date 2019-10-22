@@ -2,42 +2,39 @@ package after
 
 import (
 	"context"
-	"time"
-
 	"github.com/walterjwhite/go-application/libraries/logging"
+	"time"
 )
 
 type AfterDelay struct {
-	ctx   context.Context
-	timer *time.Timer
+	ctx    context.Context
+	cancel context.CancelFunc
+	timer  *time.Timer
 
 	function func() error
-	fired    chan bool
 }
 
 func After(ctx context.Context, delay time.Duration, fn func() error) *AfterDelay {
-	afterDelay := &AfterDelay{ctx: ctx, function: fn, fired: make(chan bool)}
-	afterDelay.timer = time.AfterFunc(delay, afterDelay.safeFunction)
+	acontext, acancel := context.WithCancel(ctx)
 
-	go afterDelay.onContextDone()
+	afterDelay := &AfterDelay{ctx: acontext, cancel: acancel, function: fn}
+	afterDelay.timer = time.AfterFunc(delay, afterDelay.safeFunction)
 
 	return afterDelay
 }
 
 func (a *AfterDelay) Wait() {
-	<-a.fired
+	<-a.ctx.Done()
 }
 
 func (a *AfterDelay) Cancel() {
+	defer a.cancel()
+
 	a.timer.Stop()
 }
 
-func (a *AfterDelay) onContextDone() {
-	<-a.ctx.Done()
-	a.Cancel()
-}
-
 func (a *AfterDelay) safeFunction() {
-	a.fired <- true
+	defer a.cancel()
+
 	logging.Panic(a.function())
 }

@@ -8,6 +8,9 @@ import (
 
 	"github.com/gdamore/tcell"
 	"github.com/rivo/tview"
+
+	"github.com/walterjwhite/go-application/libraries/application"
+	"github.com/walterjwhite/go-application/libraries/logging"
 )
 
 const corporate = `Leverage agile frameworks to provide a robust synopsis for high level overviews. Iterative approaches to corporate strategy foster collaborative thinking to 
@@ -19,6 +22,8 @@ immersion along the information highway will close the loop on focusing solely o
 [yellow]Press Enter, then Tab/Backtab for word selections`
 
 func main() {
+	application.Configure()
+
 	app := tview.NewApplication()
 	textView := tview.NewTextView().
 		SetDynamicColors(true).
@@ -62,8 +67,5 @@ func main() {
 		}
 	})
 	textView.SetBorder(true)
-	if err := app.SetRoot(textView, true).Run(); err != nil {
-		panic(err)
-	}
+	logging.Panic(app.SetRoot(textView, true).Run())
 }
-

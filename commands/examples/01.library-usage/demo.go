@@ -5,6 +5,6 @@ import (
 )
 
 func main() {
-	ctx := application.Configure()
-	application.Wait(ctx)
+	application.Configure()
+	application.Wait()
 }

@@ -21,11 +21,14 @@ type waitInstance struct {
 func Wait(ctx context.Context, interval time.Duration, limit time.Duration, userFunction func() bool) {
 	channel := make(chan bool)
 
+	wctx, cancel := context.WithCancel(ctx)
+	defer cancel()
+
 	w := &waitInstance{channel: channel, function: userFunction}
-	w.periodic = periodic.Periodic(ctx, interval, w.monitorFunction)
+	w.periodic = periodic.Periodic(wctx, interval, w.monitorFunction)
 
 	// wait until done
-	logging.Panic(timeout.Limit(w.doWait, limit, ctx))
+	logging.Panic(timeout.Limit(w.doWait, limit, wctx))
 }
 
 func (w *waitInstance) doWait() {

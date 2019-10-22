@@ -13,7 +13,7 @@ func Decrypt(secretPath string) string {
 	initialize()
 	setupEncryptionKey()
 
-	data := SecretsConfigurationInstance.encryptionConfiguration.DecryptFile(getAbsolute(secretPath))
+	data := SecretsConfigurationInstance.EncryptionConfiguration.DecryptFile(getAbsolute(secretPath))
 	return strings.TrimSpace(string(data[:]))
 }
 

@@ -2,14 +2,14 @@ package runner
 
 import (
 	"context"
+	"github.com/rs/zerolog/log"
 	"io"
-	"log"
 	"os"
 	"os/exec"
 )
 
 func Prepare(ctx context.Context, command string, arguments ...string) *exec.Cmd {
-	log.Printf("running %v %v with %v", command, arguments, ctx)
+	log.Debug().Msgf("running %v %v with %v", command, arguments, ctx)
 
 	return exec.CommandContext(ctx, command, arguments...)
 }
@@ -41,7 +41,7 @@ func doRun(command *exec.Cmd) (int, error) {
 		return -1, err
 	}
 
-	log.Printf("subprocess %d\n", command.Process.Pid)
+	log.Debug().Msgf("subprocess %d", command.Process.Pid)
 
 	err = command.Wait()
 	if err != nil {

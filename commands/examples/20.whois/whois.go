@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/undiabler/golang-whois"
+	whois "github.com/undiabler/golang-whois"
 	"github.com/walterjwhite/go-application/libraries/application"
 	"github.com/walterjwhite/go-application/libraries/logging"
 

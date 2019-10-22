@@ -41,7 +41,7 @@ func periodic(ctx context.Context, fn func() error, runOnce bool) {
 			return
 		case <-timer.C:
 			run(fn)
-			
+
 			// after we're done with this iteration, schedule a new one
 			periodic(ctx, refreshAll, false)
 		}

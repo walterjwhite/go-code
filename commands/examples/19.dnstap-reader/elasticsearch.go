@@ -38,7 +38,7 @@ func NewElasticSearchProcessor() *ElasticSearchProcessor {
 // processes a single record and internally flushes the batch as needed
 func (p *ElasticSearchProcessor) Process(dnstapRecord *dnstap.Dnstap) {
 	clientAddress := getClientAddress(dnstapRecord)
-	id := getMessageId(dnstapRecord)
+	id := getMessageId(dnstapRecord, clientAddress)
 
 	log.Printf("ID: %v\n", id)
 	p.batch.Append(id, build(dnstapRecord, clientAddress))
@@ -59,12 +59,12 @@ func isRequest(dnstapRecord *dnstap.Dnstap) bool {
 	return false
 }
 
-func build(dnstapRecord *dnstap.Dnstap, clientAddress string) {
+func build(dnstapRecord *dnstap.Dnstap, clientAddress string) interface{} {
 	if isRequest(dnstapRecord) {
-		buildRequest(dnstapRecord, clientAddress)
+		return buildRequest(dnstapRecord, clientAddress)
 	}
 
-	return buildResponse(dnstapRecord)
+	return buildResponse(dnstapRecord, clientAddress)
 }
 
 func buildRequest(dnstapRecord *dnstap.Dnstap, clientAddress string) *DnsQueryRequest {
@@ -77,7 +77,8 @@ func buildResponse(dnstapRecord *dnstap.Dnstap, clientAddress string) *DnsQueryR
 
 func getTime(timeSeconds *uint64) *time.Time {
 	if timeSeconds != nil {
-		return &time.Unix(int64(*timeSeconds), 0)
+		t := time.Unix(int64(*timeSeconds), 0)
+		return &t
 	}
 
 	return nil

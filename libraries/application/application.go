@@ -4,26 +4,28 @@ import (
 	"context"
 	"flag"
 
+	"github.com/rs/zerolog/log"
 	"github.com/walterjwhite/go-application/libraries/identifier"
 	"github.com/walterjwhite/go-application/libraries/logging"
-	"github.com/walterjwhite/go-application/libraries/notification"
-	"github.com/walterjwhite/go-application/libraries/shutdown"
 )
 
-var Context = shutdown.Default()
+var (
+	Context context.Context
+	Cancel  context.CancelFunc
+)
 
-func Configure() context.Context {
+func init() {
+	Context, Cancel = context.WithCancel(context.Background())
+}
+
+func Configure() {
 	flag.Parse()
 
 	logging.Configure()
 	identifier.Log()
-
-	return Context
 }
 
 func Wait() {
-	// wait for CTRL+C (or context to expire)
 	<-Context.Done()
-
-	notification.OnCompletion()
+	log.Info().Msg("Context Done")
 }

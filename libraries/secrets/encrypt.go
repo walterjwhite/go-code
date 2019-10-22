@@ -20,7 +20,7 @@ func Encrypt(name *string, message *string, data []byte) {
 	secretPath := getSecretPath(name)
 	secretValuePath := filepath.Join(secretPath, "value")
 
-	SecretsConfigurationInstance.encryptionConfiguration.EncryptFile(secretValuePath, data)
+	SecretsConfigurationInstance.EncryptionConfiguration.EncryptFile(secretValuePath, data)
 
 	log.Debug().Msgf("Stored secret in %v (%v)", secretValuePath, len(data))
 

@@ -11,10 +11,10 @@ var (
 
 func Log() {
 	if isConfigured() {
-		log.Info().Msgf("Application Version: %v", ApplicationVersion)
-		log.Info().Msgf("Built on: %v", BuildDate)
-		log.Info().Msgf("OSArchitecture: %v", OSArchitecture)
-		log.Info().Msgf("GoVersion: %v", GoVersion)
+		log.Debug().Msgf("Application Version: %v", ApplicationVersion)
+		log.Debug().Msgf("Built on: %v", BuildDate)
+		log.Debug().Msgf("OSArchitecture: %v", OSArchitecture)
+		log.Debug().Msgf("GoVersion: %v", GoVersion)
 	} else {
 		log.Warn().Msg("Application was not built properly to log application version, build date, etc., check compilation")
 	}

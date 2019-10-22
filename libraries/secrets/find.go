@@ -35,12 +35,14 @@ func doFind(root string, patterns []string, callback func(filePath string)) {
 func NewFind() []string {
 	patterns := flag.Args()
 
-	log.Debug().Msgf("searching in: %v", SecretsConfigurationInstance.RepositoryPath)
-	log.Debug().Msgf("patterns: %v", patterns)
-
 	if len(patterns) == 0 {
 		logging.Panic(errors.New("You must specify at least one pattern to search."))
 	}
+
+	initialize()
+
+	log.Debug().Msgf("searching in: %v", SecretsConfigurationInstance.RepositoryPath)
+	log.Debug().Msgf("patterns: %v", patterns)
 
 	return patterns
 }

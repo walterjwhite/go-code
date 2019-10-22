@@ -1,9 +1,9 @@
 package main
 
 import (
+	"github.com/rs/zerolog/log"
 	"github.com/walterjwhite/go-application/libraries/application"
 	"github.com/walterjwhite/go-application/libraries/heartbeat"
-	"log"
 	"time"
 )
 
@@ -19,10 +19,10 @@ func heartbeatAware() {
 
 func longRunningCall() {
 	time.Sleep(5 * time.Second)
-	log.Println("Completed Execution")
+	log.Info().Msg("Completed Execution")
 }
 
 func heartbeater() error {
-	log.Println("heartbeater")
+	log.Debug().Msg("heartbeater")
 	return nil
 }

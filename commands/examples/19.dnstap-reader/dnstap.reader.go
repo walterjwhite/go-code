@@ -1,30 +1,37 @@
 package main
 
 import (
+	"flag"
 	"github.com/dnstap/golang-dnstap"
 	"github.com/golang/protobuf/proto"
+	"github.com/rs/zerolog/log"
 	"github.com/walterjwhite/go-application/libraries/application"
 	"github.com/walterjwhite/go-application/libraries/logging"
-	"log"
 	//"time"
+	"errors"
 	"runtime"
 )
+
+var DnsTapFilename = flag.String("DnsTapFilename", "", "DnsTapFilename")
 
 func main() {
 	application.Configure()
 
+	if len(*DnsTapFilename) == 0 {
+		logging.Panic(errors.New("DnsTapFilename is required"))
+	}
+
 	runtime.GOMAXPROCS(runtime.NumCPU())
 
-	// TODO: configure this
-	fname := "/tmp/dnstap.example"
-	i, err := dnstap.NewFrameStreamInputFromFilename(fname)
+	i, err := dnstap.NewFrameStreamInputFromFilename(*DnsTapFilename)
 	logging.Panic(err)
 
 	outputChannel := make(chan []byte, 32)
+	o := make(chan bool)
 
 	// make this configurable, user passes in an option(s)
-	//dnstapProcessor := NewUniqueDomainsProcessor()
-	dnstapProcessor := NewElasticSearchProcessor()
+	dnstapProcessor := NewUniqueDomainsProcessor()
+	//dnstapProcessor := NewElasticSearchProcessor()
 	//dnstapProcessor := NewUniqueResponsesProcessor()
 
 	// make this configurable, specify any number of filters, AND, OR them together ...
@@ -33,14 +40,16 @@ func main() {
 	filter := &TimeOfDayFilter{Start: TimeOfDay{Hour: 0, Minute: 0}, End: TimeOfDay{Hour: 7, Minute: 0}}
 
 	go i.ReadInto(outputChannel)
-	process(filter, dnstapProcessor, outputChannel)
+	go process(filter, dnstapProcessor, outputChannel, o)
 	i.Wait()
+	<-o
 
-	log.Println("@ the end")
+	log.Info().Msg("@ the end")
 }
 
-func process(filter Filter, dnstapProcessor DnstapProcessor, outputChannel chan []byte) {
-	log.Println("Processing file")
+// the channel isn't closed meaning this for loop never terminates
+func process(filter Filter, dnstapProcessor DnstapProcessor, outputChannel chan []byte, o chan bool) {
+	log.Info().Msg("Processing file")
 	//	defer close(outputChannel)
 
 	dt := &dnstap.Dnstap{}
@@ -54,10 +63,11 @@ func process(filter Filter, dnstapProcessor DnstapProcessor, outputChannel chan 
 		}
 	}
 
-	log.Println("Processed file")
+	log.Info().Msg("Processed file")
 
 	dnstapProcessor.Flush()
-	close(outputChannel)
+	o <- true
+	//close(outputChannel)
 }
 
 // goals

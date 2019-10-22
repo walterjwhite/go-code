@@ -3,30 +3,40 @@ package main
 import (
 	"github.com/walterjwhite/go-application/libraries/after"
 	"github.com/walterjwhite/go-application/libraries/application"
+	"github.com/walterjwhite/go-application/libraries/shutdown"
 
 	"github.com/rs/zerolog/log"
 	"time"
 )
 
+type afterFunction struct {
+	message string
+}
+
 func main() {
-	ctx := application.Configure()
+	application.Configure()
 
-	a1 := after.After(ctx, 1*time.Second, afterOneSecond)
-	a2 := after.After(ctx, 1*time.Minute, afterOneMinute)
-	log.Info().Msg("Initialized timer")
+	a1f := &afterFunction{message: "after 1 minute has elapsed"}
+	a := after.After(application.Context, 1*time.Second, a1f.afterPeriod)
+	log.Debug().Msg("Initialized timer")
 
-	a1.Wait()
+	shutdown.Add(&afterShutdownHandler{})
 
-	log.Info().Msg("a1 Timer is complete, waiting on a2")
-	a2.Cancel()
+	//application.Wait()
+	a.Wait()
 }
 
-func afterOneSecond() error {
-	log.Info().Msg("after 1 second has elapsed")
+func (a *afterFunction) afterPeriod() error {
+	log.Info().Msg(a.message)
 	return nil
 }
 
-func afterOneMinute() error {
-	log.Info().Msg("after 1 minute has elapsed")
-	return nil
+type afterShutdownHandler struct{}
+
+func (a *afterShutdownHandler) OnShutdown() {
+	log.Info().Msg("On shutdown")
+}
+
+func (a *afterShutdownHandler) OnContextClosed() {
+	log.Info().Msg("On context closed")
 }

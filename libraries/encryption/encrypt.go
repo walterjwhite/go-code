@@ -10,7 +10,7 @@ import (
 )
 
 func (c *EncryptionConfiguration) Encrypt(data []byte) []byte {
-	block, err := aes.NewCipher(c.EncryptionKey)
+	block, err := aes.NewCipher(c.encryptionKey)
 	logging.Panic(err)
 
 	gcm, err := cipher.NewGCM(block)

@@ -2,17 +2,12 @@ package timeout
 
 import (
 	"context"
+	"errors"
 	"time"
 )
 
 type TimedExecution struct {
 	function func()
-}
-
-type ContextAbortedException struct{}
-
-func (c *ContextAbortedException) Error() string {
-	return "Context was aborted"
 }
 
 func Limit(function func(), maximumExecutionTime time.Duration, parentContext context.Context) error {
@@ -24,7 +19,7 @@ func Limit(function func(), maximumExecutionTime time.Duration, parentContext co
 }
 
 func (t *TimedExecution) call(ctx context.Context) error {
-	invocationCompletedChannel := make(chan bool, 1)
+	invocationCompletedChannel := make(chan bool)
 
 	go func() {
 		t.function()
@@ -36,6 +31,6 @@ func (t *TimedExecution) call(ctx context.Context) error {
 	case <-invocationCompletedChannel:
 		return nil
 	case <-ctx.Done():
-		return &ContextAbortedException{}
+		return errors.New("Context was aborted")
 	}
 }

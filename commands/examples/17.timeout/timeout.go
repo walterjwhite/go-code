@@ -2,10 +2,10 @@ package main
 
 import (
 	"context"
+	"github.com/rs/zerolog/log"
 	"github.com/walterjwhite/go-application/libraries/application"
 	"github.com/walterjwhite/go-application/libraries/logging"
 	"github.com/walterjwhite/go-application/libraries/timeout"
-	"log"
 	"time"
 )
 
@@ -21,5 +21,5 @@ func timeConstrainedLongRunningCall(ctx context.Context) {
 
 func longRunningCall() {
 	time.Sleep(1 * time.Second)
-	log.Println("Completed Execution")
+	log.Info().Msg("Completed Execution")
 }
