@@ -14,9 +14,11 @@ var isDisplayOnStdOut = flag.Bool("StdOut", false, "display secret on StdOut")
 
 // TODO: add support for flags
 // instead of specifying the key type (email, user, pass), use a flag instead (-e, -u, -p)
-func main() {
-	_ = application.Configure()
+func init() {
+	application.Configure()
+}
 
+func main() {
 	secrets.Find(secrets.NewFind(), decryptOnMatch)
 }
 

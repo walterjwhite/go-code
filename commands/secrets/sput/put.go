@@ -25,15 +25,19 @@ func (e NoNameError) Error() string {
 	return "No name was provided."
 }
 
-var name = flag.String("name", "", "Secret key name (hierarchy to key, excluding trailing /value, ie. /email/gmail.com/personal/email-address)")
-var message = flag.String("message", "", "Commit message")
-var source = flag.String("source", "", "source file")
+var (
+	name = flag.String("name", "", "Secret key name (hierarchy to key, excluding trailing /value, ie. /email/gmail.com/personal/email-address)")
+	message = flag.String("message", "", "Commit message")
+	source = flag.String("source", "", "source file")
+)
+
+func init() {
+	application.Configure()
+}
 
 // TODO: add support for flags
 // instead of specifying the key type (email, user, pass), use a flag instead (-e, -u, -p)
 func main() {
-	_ = application.Configure()
-
 	validatePut(name, message, source)
 
 	data, err := ioutil.ReadFile(*source)

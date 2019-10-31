@@ -11,9 +11,11 @@ import (
 
 // TODO: add support for flags
 // instead of specifying the key type (email, user, pass), use a flag instead (-e, -u, -p)
-func main() {
+func init() {
 	application.Configure()
+}
 
+func main() {
 	secrets.Find(secrets.NewFind(), printOnMatch)
 }
 
