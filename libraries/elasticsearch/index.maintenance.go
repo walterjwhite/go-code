@@ -36,7 +36,15 @@ func (c *NodeConfiguration) isIndexExisting(indexName string) bool {
 }
 
 func (c *NodeConfiguration) createIndex(indexName string) {
-	/*result*/ _, err := c.Client.CreateIndex(indexName).Do(context.Background())
+	createIndexService := c.Client.CreateIndex(indexName)
+
+	mapping, exists := c.Mappings[indexName]
+	if exists {
+		createIndexService.BodyString(mapping)
+	}
+
+	/*result*/
+	_, err := createIndexService.Do(context.Background())
 	logging.Panic(err)
 }
 

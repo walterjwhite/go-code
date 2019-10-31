@@ -10,6 +10,7 @@ type NodeConfiguration struct {
 
 	IndexPrefix string
 	DropIndex   bool
+	Mappings    map[string]string
 }
 
 // unnecessary, this is the default
