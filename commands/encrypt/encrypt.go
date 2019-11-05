@@ -14,9 +14,11 @@ import (
 var filename = flag.String("filename", "", "filename to encrypt")
 var overwriteExisting = flag.Bool("overwriteExisting", false, "overwriteExisting")
 
-func main() {
-	_ = application.Configure()
+func init() {
+	application.Configure()
+}
 
+func main() {
 	validateArgumentsFilename()
 
 	e := encryption.New()
