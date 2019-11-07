@@ -21,9 +21,11 @@ Capitalize on low hanging fruit to identify a ballpark value added activity to b
 immersion along the information highway will close the loop on focusing solely on the bottom line.
 [yellow]Press Enter, then Tab/Backtab for word selections`
 
-func main() {
+func init() {
 	application.Configure()
+}
 
+func main() {
 	app := tview.NewApplication()
 	textView := tview.NewTextView().
 		SetDynamicColors(true).

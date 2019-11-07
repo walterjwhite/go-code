@@ -10,11 +10,15 @@ import (
 	"strings"
 )
 
-var mountPoints = flag.String("MountPoints", "/", "MountPoints to query")
+var (
+	mountPoints = flag.String("MountPoints", "/", "MountPoints to query")
+)
+
+func init() {
+	application.Configure()
+}
 
 func main() {
-	application.Configure()
-
 	for _, mountPoint := range getMountPoints(*mountPoints) {
 		diskUsage := disk.Usage(mountPoint)
 		log.Printf("%v disk: %v / %v\n", diskUsage.MountPoint, diskUsage.UsagePercentage, diskUsage.Free)

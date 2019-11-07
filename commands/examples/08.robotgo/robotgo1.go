@@ -7,9 +7,11 @@ import (
 	"time"
 )
 
-func main() {
+func init() {
 	application.Configure()
+}
 
+func main() {
 	for {
 		//robotgo.MoveMouseSmooth(100, 200, 1.0, 100.0)
 		log.Debug().Msgf("Moving mouse to: %v, %v", 1700, 200)

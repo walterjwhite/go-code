@@ -8,9 +8,11 @@ import (
 	"github.com/walterjwhite/go-application/libraries/application"
 )
 
-func main() {
+func init() {
 	application.Configure()
+}
 
+func main() {
 	scanner := bufio.NewScanner(os.Stdin)
 	scanner.Scan()
 	keyBytes := scanner.Bytes()

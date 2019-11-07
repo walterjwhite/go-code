@@ -12,9 +12,11 @@ func onChange( /*a *tview.Application*/ ) {
 	a.Draw()
 }
 
-func main() {
+func init() {
 	application.Configure()
+}
 
+func main() {
 	newPrimitive := func(text string) *tview.TextView {
 		return tview.NewTextView().
 			//SetTextAlign(tview.AlignCenter).

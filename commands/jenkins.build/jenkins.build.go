@@ -5,10 +5,12 @@ import (
 	"github.com/walterjwhite/go-application/libraries/jenkins"
 )
 
-func main() {
-	ctx := application.Configure()
+func init() {
+	application.Configure()
+}
 
+func main() {
 	j := jenkins.New()
 	job := j.GetCLIJob()
-	job.Build(ctx)
+	job.Build(application.Context)
 }

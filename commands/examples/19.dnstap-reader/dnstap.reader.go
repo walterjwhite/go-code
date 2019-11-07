@@ -12,11 +12,15 @@ import (
 	"runtime"
 )
 
-var DnsTapFilename = flag.String("DnsTapFilename", "", "DnsTapFilename")
+var (
+	DnsTapFilename = flag.String("DnsTapFilename", "", "DnsTapFilename")
+)
+
+func init() {
+	application.Configure()
+}
 
 func main() {
-	application.Configure()
-
 	if len(*DnsTapFilename) == 0 {
 		logging.Panic(errors.New("DnsTapFilename is required"))
 	}

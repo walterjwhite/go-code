@@ -13,9 +13,11 @@ type afterFunction struct {
 	message string
 }
 
-func main() {
+func init() {
 	application.Configure()
+}
 
+func main() {
 	a1f := &afterFunction{message: "after 1 minute has elapsed"}
 	a := after.After(application.Context, 1*time.Second, a1f.afterPeriod)
 	log.Debug().Msg("Initialized timer")

@@ -7,9 +7,11 @@ import (
 	"time"
 )
 
-func main() {
+func init() {
 	application.Configure()
+}
 
+func main() {
 	heartbeatAware()
 }
 

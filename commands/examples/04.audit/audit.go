@@ -9,9 +9,11 @@ import (
 	"github.com/walterjwhite/go-application/libraries/runner"
 )
 
-func main() {
-	ctx := application.Configure()
+func init() {
+	application.Configure()
+}
 
+func main() {
 	if len(flag.Args()) == 0 {
 		logging.Panic(errors.New("No arguments passed"))
 	}
@@ -20,7 +22,7 @@ func main() {
 	arguments := flag.Args()[1:]
 
 	// log arguments
-	cmd := runner.Prepare(ctx, command, arguments...)
+	cmd := runner.Prepare(application.Context, command, arguments...)
 
 	audit.Audit(cmd, "audit")
 }

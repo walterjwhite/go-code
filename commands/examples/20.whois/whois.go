@@ -13,14 +13,20 @@ import (
 	"time"
 )
 
-const outputDirectory = "/tmp/whois/"
-const timeout = 15 * time.Second
+const (
+	outputDirectory = "/tmp/whois/"
+	timeout         = 15 * time.Second
+)
 
-var inputFilename = flag.String("input", "", "input filename")
+var (
+	inputFilename = flag.String("input", "", "input filename")
+)
+
+func init() {
+	application.Configure()
+}
 
 func main() {
-	application.Configure()
-
 	if len(*inputFilename) == 0 {
 		log.Println("Input filename is required")
 		os.Exit(1)

@@ -148,9 +148,11 @@ func buildDiskTable() *tview.Table {
 	return table
 }
 
-func main() {
+func init() {
 	application.Configure()
+}
 
+func main() {
 	newPrimitive := func(text string) *tview.TextView {
 		return tview.NewTextView().
 			//SetTextAlign(tview.AlignCenter).

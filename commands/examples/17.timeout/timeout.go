@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"github.com/rs/zerolog/log"
 	"github.com/walterjwhite/go-application/libraries/application"
 	"github.com/walterjwhite/go-application/libraries/logging"
@@ -9,14 +8,16 @@ import (
 	"time"
 )
 
-func main() {
-	ctx := application.Configure()
-
-	timeConstrainedLongRunningCall(ctx)
+func init() {
+	application.Configure()
 }
 
-func timeConstrainedLongRunningCall(ctx context.Context) {
-	logging.Panic(timeout.Limit(longRunningCall, 3*time.Second, ctx))
+func main() {
+	timeConstrainedLongRunningCall()
+}
+
+func timeConstrainedLongRunningCall() {
+	logging.Panic(timeout.Limit(longRunningCall, 3*time.Second, application.Context))
 }
 
 func longRunningCall() {

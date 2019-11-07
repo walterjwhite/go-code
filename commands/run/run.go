@@ -10,15 +10,19 @@ import (
 	"strings"
 )
 
-var applications = flag.String("Applications", "default", "Comma-separated list of applications to run")
+var (
+	applications = flag.String("Applications", "default", "Comma-separated list of applications to run")
+)
+
+func init() {
+	application.Configure()
+}
 
 // TODO: integrate win10 / dbus notifications
 func main() {
-	ctx := application.Configure()
-
 	path.WithSessionDirectory("~/.audit/run/" + timestamp.Get())
 
-	run.Run(ctx, getApplications(applications))
+	run.Run(application.Context, getApplications(applications))
 }
 
 func getApplications(applicationsString *string) []string {

@@ -9,13 +9,17 @@ import (
 	"flag"
 )
 
-var debug = flag.Bool("Debug", false, "Whether maven should run with all the output or only WARN or higher")
+var (
+	debug = flag.Bool("Debug", false, "Whether maven should run with all the output or only WARN or higher")
+)
+
+func init() {
+	application.Configure()
+}
 
 // TODO: integrate win10 / dbus notifications
 func main() {
-	ctx := application.Configure()
-
 	path.WithSessionDirectory("~/.audit/maven/build/" + timestamp.Get())
 
-	build.Build(ctx, debug)
+	build.Build(application.Context, debug)
 }

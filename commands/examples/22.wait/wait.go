@@ -11,14 +11,16 @@ type data struct {
 	index int
 }
 
-func main() {
-	ctx := application.Configure()
+func init() {
+	application.Configure()
+}
 
+func main() {
 	interval := 1 * time.Second
 	limit := 2 * time.Second
 	d := &data{index: 0}
 
-	wait.Wait(ctx, interval, limit, d.f)
+	wait.Wait(application.Context, interval, limit, d.f)
 }
 
 func (d *data) f() bool {

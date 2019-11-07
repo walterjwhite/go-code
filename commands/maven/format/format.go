@@ -9,16 +9,19 @@ import (
 	"github.com/walterjwhite/go-application/libraries/runner"
 	"github.com/walterjwhite/go-application/libraries/timestamp"
 
-	"context"
 	"flag"
 	"fmt"
 )
 
-var debug = flag.Bool("Debug", false, "Whether maven should run with all the output or only WARN or higher")
-var enabledLanguages = [len(format.Languages)]*bool{}
-var hasLanguageEnabled = false
+var (
+	debug              = flag.Bool("Debug", false, "Whether maven should run with all the output or only WARN or higher")
+	enabledLanguages   = [len(format.Languages)]*bool{}
+	hasLanguageEnabled = false
+)
 
 func init() {
+	application.Configure()
+
 	for i := 0; i < len(format.Languages); i++ {
 		enabledLanguages[i] = flag.Bool(format.Languages[i].Name, false, fmt.Sprintf("Format only %v code\n", format.Languages[i].Name))
 	}
@@ -26,14 +29,12 @@ func init() {
 
 // TODO: integrate win10 / dbus notifications
 func main() {
-	ctx := application.Configure()
-
 	path.WithSessionDirectory("~/.audit/maven/format/" + timestamp.Get())
 
-	process(ctx)
+	process()
 }
 
-func process(ctx context.Context) {
+func process() {
 	for i := 0; i < len(format.Languages); i++ {
 		if *enabledLanguages[i] {
 			hasLanguageEnabled = true
@@ -49,7 +50,7 @@ func process(ctx context.Context) {
 				_, arguments = maven.GetCommandLine(arguments, debug)
 			}
 
-			_, err := runner.Run(ctx, command, arguments...)
+			_, err := runner.Run(application.Context, command, arguments...)
 			logging.Panic(err)
 		}
 	}

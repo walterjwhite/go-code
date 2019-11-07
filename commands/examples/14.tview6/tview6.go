@@ -6,9 +6,11 @@ import (
 	"github.com/walterjwhite/go-application/libraries/logging"
 )
 
-func main() {
+func init() {
 	application.Configure()
+}
 
+func main() {
 	app := tview.NewApplication()
 	flex := tview.NewFlex().
 		AddItem(tview.NewFlex().SetDirection(tview.FlexRow).

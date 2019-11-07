@@ -13,7 +13,7 @@ import (
 func monitorChannel(ctx context.Context, application string, channel chan *string) {
 	select {
 	case applicationStartedLine := <-channel:
-		log.Info().Msgf("Application Started: %v\n", applicationStartedLine)
+		log.Info().Msgf("Application Started: %v\n", *applicationStartedLine)
 		notification.NotifierInstance.Notify(notification.Notification{Title: fmt.Sprintf("run: %v", application), Description: *applicationStartedLine, Type: notification.Info})
 	case <-ctx.Done():
 		close(channel)

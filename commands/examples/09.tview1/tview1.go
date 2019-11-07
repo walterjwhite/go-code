@@ -6,9 +6,11 @@ import (
 	"github.com/walterjwhite/go-application/libraries/logging"
 )
 
-func main() {
+func init() {
 	application.Configure()
+}
 
+func main() {
 	box := tview.NewBox().SetBorder(true).SetTitle("Hello, world!")
 	logging.Panic(tview.NewApplication().SetRoot(box, true).Run())
 }

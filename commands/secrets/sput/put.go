@@ -26,9 +26,9 @@ func (e NoNameError) Error() string {
 }
 
 var (
-	name = flag.String("name", "", "Secret key name (hierarchy to key, excluding trailing /value, ie. /email/gmail.com/personal/email-address)")
+	name    = flag.String("name", "", "Secret key name (hierarchy to key, excluding trailing /value, ie. /email/gmail.com/personal/email-address)")
 	message = flag.String("message", "", "Commit message")
-	source = flag.String("source", "", "source file")
+	source  = flag.String("source", "", "source file")
 )
 
 func init() {

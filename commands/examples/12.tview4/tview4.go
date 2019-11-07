@@ -10,9 +10,11 @@ import (
 	"github.com/walterjwhite/go-application/libraries/logging"
 )
 
-func main() {
+func init() {
 	application.Configure()
+}
 
+func main() {
 	app := tview.NewApplication()
 	table := tview.NewTable()
 	lorem := strings.Split("Service Status IP:Port unbound started 192.168.55.1:53,192.168.56.1:53 atd stopped N/A dhcpd crashed N/A dnscrypt-proxy started 127.0.0.1:5300", " ")

@@ -12,8 +12,10 @@ import (
 	//"github.com/walterjwhite/go-application/libraries/secrets"
 )
 
-var filename = flag.String("filename", "", "filename to decrypt")
-var overwriteExisting = flag.Bool("overwriteExisting", false, "overwriteExisting")
+var (
+	filename          = flag.String("filename", "", "filename to decrypt")
+	overwriteExisting = flag.Bool("overwriteExisting", false, "overwriteExisting")
+)
 
 func init() {
 	application.Configure()

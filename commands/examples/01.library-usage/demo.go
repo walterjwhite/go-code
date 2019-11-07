@@ -4,7 +4,10 @@ import (
 	"github.com/walterjwhite/go-application/libraries/application"
 )
 
-func main() {
+func init() {
 	application.Configure()
+}
+
+func main() {
 	application.Wait()
 }

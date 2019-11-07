@@ -16,13 +16,17 @@ import (
 	"github.com/walterjwhite/go-application/libraries/logging"
 )
 
-var host = flag.String("Host", "", "Hostname to connect")
-var port = flag.Int("Port", 22, "Port SSH daemon is listening")
-var user = flag.String("User", "", "Remote user")
+var (
+	host = flag.String("Host", "", "Hostname to connect")
+	port = flag.Int("Port", 22, "Port SSH daemon is listening")
+	user = flag.String("User", "", "Remote user")
+)
+
+func init() {
+	application.Configure()
+}
 
 func main() {
-	application.Configure()
-
 	cmd := "ps"
 
 	// get host public key

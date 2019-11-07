@@ -11,8 +11,10 @@ import (
 	"github.com/walterjwhite/go-application/libraries/logging"
 )
 
-var filename = flag.String("filename", "", "filename to encrypt")
-var overwriteExisting = flag.Bool("overwriteExisting", false, "overwriteExisting")
+var (
+	filename          = flag.String("filename", "", "filename to encrypt")
+	overwriteExisting = flag.Bool("overwriteExisting", false, "overwriteExisting")
+)
 
 func init() {
 	application.Configure()
