@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"flag"
+	"github.com/rs/zerolog/log"
 	"github.com/walterjwhite/go-application/libraries/application"
 	"github.com/walterjwhite/go-application/libraries/jenkins"
 	"github.com/walterjwhite/go-application/libraries/logging"
@@ -22,6 +23,8 @@ func init() {
 	property.Load(jenkinsInstance, "")
 
 	validate()
+
+	log.Info().Msgf("Looking for job: %v", *jenkinsJobFlag)
 }
 
 func main() {
