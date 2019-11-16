@@ -1,17 +1,34 @@
 package jenkins
 
 import (
-	"flag"
-	"github.com/mitchellh/go-homedir"
 	"github.com/walterjwhite/go-application/libraries/logging"
-	"github.com/walterjwhite/go-application/libraries/secrets"
-	"github.com/walterjwhite/go-application/libraries/yamlhelper"
+
 	"gopkg.in/bndr/gojenkins.v1"
 	"time"
 )
+/*
+type JenkinsCredentials struct {
+	Username string
+	Password string
+}
+*/
+
+func (c *JenkinsInstance) HasDefault() bool {
+	return false
+}
+
+func (c *JenkinsInstance) Refreshable() bool {
+	return false
+}
+
+func (c *JenkinsInstance) EncryptedFields() []string {
+	//return []string{"JenkinsCredentials.Username", "JenkinsCredentials.Password"}
+	return []string{"Username", "Password"}
+}
 
 type JenkinsInstance struct {
-	Url      string
+	Url                string
+	//JenkinsCredentials *JenkinsCredentials
 	Username string
 	Password string
 
@@ -21,24 +38,13 @@ type JenkinsInstance struct {
 	jenkins *gojenkins.Jenkins
 }
 
-var jenkinsConfigurationFile = flag.String("JenkinsConfigurationFile", "~/.jenkins.yaml", "JenkinsConfigurationFile")
+func (i *JenkinsInstance) setup() {
+	if i.jenkins != nil {
+		return
+	}
 
-func New() *JenkinsInstance {
-	j := &JenkinsInstance{}
+	i.jenkins = gojenkins.CreateJenkins(i.Url, i.Username, i.Password)
 
-	expandedJenkinsConfigurationFile, err := homedir.Expand(*jenkinsConfigurationFile)
+	_, err := i.jenkins.Init()
 	logging.Panic(err)
-
-	yamlhelper.Read(expandedJenkinsConfigurationFile, j)
-
-	// decrypt username and password
-	j.Username = secrets.Decrypt(j.Username)
-	j.Password = secrets.Decrypt(j.Password)
-
-	j.jenkins = gojenkins.CreateJenkins(j.Url, j.Username, j.Password)
-
-	_, err = j.jenkins.Init()
-	logging.Panic(err)
-
-	return j
 }

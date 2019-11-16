@@ -15,7 +15,7 @@ import (
 type ShutdownRequest struct {
 	DryRun bool
 	Timeout time.Duration
-	SHutdownAction ShutdownAction
+	ShutdownAction ShutdownAction
 }
 
 type Shutdowner interface {
@@ -25,7 +25,7 @@ type Shutdowner interface {
 
 func (r *ShutdownRequest) Execute() {
 	if r.DryRun {
-		r.doDryRUn()
+		r.doDryRun()
 		return
 	}
 	

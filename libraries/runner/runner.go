@@ -62,21 +62,9 @@ func Run(ctx context.Context, command string, arguments ...string) (int, error) 
 }
 
 func Start(command *exec.Cmd) error {
-	err := command.Start()
-	if err != nil {
-		log.Print(err)
-		return err
-	}
-
-	return nil
+	return command.Start()
 }
 
 func Wait(command *exec.Cmd) error {
-	err := command.Wait()
-	if err != nil {
-		log.Print(err)
-		return err
-	}
-
-	return nil
+	return command.Wait()
 }

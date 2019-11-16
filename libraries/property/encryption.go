@@ -1,13 +1,24 @@
 package property
 
 import (
+	"github.com/rs/zerolog/log"
+	"github.com/walterjwhite/go-application/libraries/encryption"
+	"github.com/walterjwhite/go-application/libraries/logging"
 	"reflect"
+	"encoding/base64"
+)
+
+var (
+	e *encryption.EncryptionConfiguration
 )
 
 // support strings only
 func handleEncryptedProperties(config Configuration) {
+	log.Info().Msg("Handling encrypted properties (if any)")
 	if config.EncryptedFields() != nil {
-		val := reflect.ValueOf(&config).Elem()
+		setupEncryption()
+
+		val := reflect.ValueOf(config).Elem()
 
 		for _, fieldName := range config.EncryptedFields() {
 			setFieldValue(config, val, fieldName)
@@ -15,9 +26,24 @@ func handleEncryptedProperties(config Configuration) {
 	}
 }
 
+func setupEncryption() {
+	if e == nil {
+		log.Info().Msg("Setting up encryption instance")
+
+		e = encryption.New()
+	}
+}
+
 func setFieldValue(config Configuration, value reflect.Value, fieldName string) {
+	log.Info().Msgf("decrypting: %v: %v / %v", value, fieldName, config)
+	
 	f := value.FieldByName(fieldName)
-	decrypted := e.Decrypt(f.Bytes())
+	data, err := base64.StdEncoding.DecodeString(f.String())
+	logging.Panic(err)
+	
+	decrypted := e.Decrypt(data)
 
 	f.SetString(string(decrypted))
 }
+
+

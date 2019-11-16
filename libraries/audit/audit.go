@@ -2,7 +2,6 @@ package audit
 
 import (
 	"bytes"
-	"io/ioutil"
 
 	"os"
 	"os/exec"
@@ -21,12 +20,14 @@ func init() {
 }
 
 // return code, output
-func Audit(command *exec.Cmd, label string) (int, string) {
+func Execute(command *exec.Cmd, label string) (int, string) {
 	logFile := path.GetFile(label, "log")
+	defer logFile.Close()
 
 	var buffer bytes.Buffer
 
-	logging.Panic(ioutil.WriteFile(logFile.Name(), []byte(strings.Join(command.Args, " ")+"\n\n"), os.ModePerm))
+	_, err := logFile.Write([]byte(strings.Join(command.Args, " ") + "\n\n"))
+	logging.Panic(err)
 
 	runner.WithWriters(command, logFile, os.Stdout, &buffer)
 
@@ -34,5 +35,6 @@ func Audit(command *exec.Cmd, label string) (int, string) {
 	logging.Panic(command.Run())
 
 	screenshot.Take(label, "1.after")
+
 	return 0, buffer.String()
 }

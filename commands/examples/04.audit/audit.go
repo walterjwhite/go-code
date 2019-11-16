@@ -24,5 +24,5 @@ func main() {
 	// log arguments
 	cmd := runner.Prepare(application.Context, command, arguments...)
 
-	audit.Audit(cmd, "audit")
+	audit.Execute(cmd, "audit")
 }

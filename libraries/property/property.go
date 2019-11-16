@@ -2,7 +2,6 @@ package property
 
 import (
 	"github.com/rs/zerolog/log"
-	"github.com/walterjwhite/go-application/libraries/encryption"
 )
 
 type Configuration interface {
@@ -18,7 +17,6 @@ type ConfigurationReader interface {
 
 var (
 	registry []ConfigurationReader
-	e        *encryption.EncryptionConfiguration
 )
 
 func init() {
@@ -27,8 +25,6 @@ func init() {
 	registry = append(registry, &defaultConfigurationReader{})
 	registry = append(registry, &envConfigurationReader{})
 	registry = append(registry, &cliConfigurationReader{})
-
-	e = encryption.New()
 }
 
 func Load(config Configuration, prefix string) {
