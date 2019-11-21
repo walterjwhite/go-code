@@ -14,10 +14,10 @@ type CraigslistPost struct {
 	PostalCode string
 
 	/*
-	Make      string
-	Model     string
-	Size      string
-	Condition ConditionType
+		Make      string
+		Model     string
+		Size      string
+		Condition ConditionType
 	*/
 	Script []string
 	// images to attach

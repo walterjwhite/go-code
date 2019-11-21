@@ -1,11 +1,11 @@
 package property
 
 import (
+	"encoding/base64"
 	"github.com/rs/zerolog/log"
 	"github.com/walterjwhite/go-application/libraries/encryption"
 	"github.com/walterjwhite/go-application/libraries/logging"
 	"reflect"
-	"encoding/base64"
 )
 
 var (
@@ -36,14 +36,12 @@ func setupEncryption() {
 
 func setFieldValue(config Configuration, value reflect.Value, fieldName string) {
 	log.Info().Msgf("decrypting: %v: %v / %v", value, fieldName, config)
-	
+
 	f := value.FieldByName(fieldName)
 	data, err := base64.StdEncoding.DecodeString(f.String())
 	logging.Panic(err)
-	
+
 	decrypted := e.Decrypt(data)
 
 	f.SetString(string(decrypted))
 }
-
-

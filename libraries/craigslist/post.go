@@ -16,8 +16,8 @@ const (
 
 var (
 	minimumDelayBetweenActionsFlag = flag.Int("CraigslistMinimumDelayBetweenActions", 250, "Minimum Delay between actions (ms)")
-	deviationBetweenActionsFlag = flag.Int("CraigslisDeviationBetweenActions", 2500, "Deviation between actions (ms)")
-	
+	deviationBetweenActionsFlag    = flag.Int("CraigslisDeviationBetweenActions", 2500, "Deviation between actions (ms)")
+
 	//delayBetweenActions     time.Duration
 	delay *RandomDelay
 )
@@ -26,14 +26,14 @@ func init() {
 	//var err error
 
 	delay = &RandomDelay{MinimumDelay: *minimumDelayBetweenActionsFlag, Deviation: *deviationBetweenActionsFlag}
-	
+
 	//delayBetweenActions, err = time.ParseDuration(*delayBetweenActionsFlag)
 	//logging.Panic(err)
 }
 
 func (p *CraigslistPost) Create(ctx context.Context) {
 	log.Info().Msgf("post: %v", p)
-	
+
 	p.execute(ctx, chromedp.Navigate(craigslistBasePostUrl+p.Region))
 
 	p.execute(ctx, p.doForSaleBy()...)

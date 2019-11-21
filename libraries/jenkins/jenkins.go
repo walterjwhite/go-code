@@ -3,9 +3,11 @@ package jenkins
 import (
 	"github.com/walterjwhite/go-application/libraries/logging"
 
-	"gopkg.in/bndr/gojenkins.v1"
+	//"github.com/bndr/gojenkins"
+	"github.com/pushyzheng/gojenkins"
 	"time"
 )
+
 /*
 type JenkinsCredentials struct {
 	Username string
@@ -27,7 +29,7 @@ func (c *JenkinsInstance) EncryptedFields() []string {
 }
 
 type JenkinsInstance struct {
-	Url                string
+	Url string
 	//JenkinsCredentials *JenkinsCredentials
 	Username string
 	Password string
@@ -43,7 +45,7 @@ func (i *JenkinsInstance) setup() {
 		return
 	}
 
-	i.jenkins = gojenkins.CreateJenkins(i.Url, i.Username, i.Password)
+	i.jenkins = gojenkins.CreateJenkins(nil, i.Url, i.Username, i.Password)
 
 	_, err := i.jenkins.Init()
 	logging.Panic(err)
