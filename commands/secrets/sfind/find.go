@@ -16,7 +16,7 @@ func init() {
 }
 
 func main() {
-	secrets.Find(secrets.NewFind(), printOnMatch)
+	secrets.Find(printOnMatch, secrets.NewFind()...)
 }
 
 func printOnMatch(filePath string) {

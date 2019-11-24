@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"flag"
 	"io/ioutil"
 
@@ -8,22 +9,6 @@ import (
 	"github.com/walterjwhite/go-application/libraries/logging"
 	"github.com/walterjwhite/go-application/libraries/secrets"
 )
-
-type NoSecretDataError struct{}
-type NoCommitMessageError struct{}
-type NoNameError struct{}
-
-func (e NoSecretDataError) Error() string {
-	return "No secret data was provided."
-}
-
-func (e NoCommitMessageError) Error() string {
-	return "No commit message was provided."
-}
-
-func (e NoNameError) Error() string {
-	return "No name was provided."
-}
 
 var (
 	name    = flag.String("name", "", "Secret key name (hierarchy to key, excluding trailing /value, ie. /email/gmail.com/personal/email-address)")
@@ -48,14 +33,14 @@ func main() {
 
 func validatePut(name *string, message *string, source *string) {
 	if len(*name) == 0 {
-		logging.Panic(&NoNameError{})
+		logging.Panic(errors.New("No name was provided."))
 	}
 
 	if len(*message) == 0 {
-		logging.Panic(&NoCommitMessageError{})
+		logging.Panic(errors.New("No commit message was provided."))
 	}
 
 	if len(*source) == 0 {
-		logging.Panic(&NoSecretDataError{})
+		logging.Panic(errors.New("No secret data was provided."))
 	}
 }

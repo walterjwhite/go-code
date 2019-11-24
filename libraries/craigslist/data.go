@@ -1,5 +1,9 @@
 package craigslist
 
+import (
+	"github.com/walterjwhite/go-application/libraries/chromedpexecutor"
+)
+
 type CraigslistPost struct {
 	Region string
 
@@ -28,4 +32,6 @@ type CraigslistPost struct {
 	ReceiveTexts     bool
 	ReceiveCalls     bool
 	PhoneContactName string
+
+	session *chromedpexecutor.ChromeDPSession
 }

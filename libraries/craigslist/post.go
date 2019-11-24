@@ -4,7 +4,9 @@ import (
 	"context"
 	"flag"
 	"github.com/chromedp/chromedp"
-	"github.com/walterjwhite/go-application/libraries/logging"
+	//"github.com/walterjwhite/go-application/libraries/logging"
+	"github.com/walterjwhite/go-application/libraries/chromedpexecutor"
+	"github.com/walterjwhite/go-application/libraries/sleep"
 
 	"github.com/rs/zerolog/log"
 	//"os"
@@ -16,16 +18,17 @@ const (
 
 var (
 	minimumDelayBetweenActionsFlag = flag.Int("CraigslistMinimumDelayBetweenActions", 250, "Minimum Delay between actions (ms)")
-	deviationBetweenActionsFlag    = flag.Int("CraigslisDeviationBetweenActions", 2500, "Deviation between actions (ms)")
+	deviationBetweenActionsFlag    = flag.Int("CraigslisDeviationBetweenActions", 5000, "Deviation between actions (ms)")
+	devToolsWsUrlFlag              = flag.String("DevToolsWsUrl", "", "Dev Tools WS URL")
 
 	//delayBetweenActions     time.Duration
-	delay *RandomDelay
+	delay *sleep.RandomDelay
 )
 
 func init() {
 	//var err error
 
-	delay = &RandomDelay{MinimumDelay: *minimumDelayBetweenActionsFlag, Deviation: *deviationBetweenActionsFlag}
+	delay = &sleep.RandomDelay{MinimumDelay: *minimumDelayBetweenActionsFlag, Deviation: *deviationBetweenActionsFlag}
 
 	//delayBetweenActions, err = time.ParseDuration(*delayBetweenActionsFlag)
 	//logging.Panic(err)
@@ -34,15 +37,17 @@ func init() {
 func (p *CraigslistPost) Create(ctx context.Context) {
 	log.Info().Msgf("post: %v", p)
 
-	p.execute(ctx, chromedp.Navigate(craigslistBasePostUrl+p.Region))
+	p.session = chromedpexecutor.New(ctx, *devToolsWsUrlFlag, delay)
 
-	p.execute(ctx, p.doForSaleBy()...)
-	p.execute(ctx, p.doCategory()...)
+	p.session.Execute(chromedp.Navigate(craigslistBasePostUrl + p.Region))
 
-	p.execute(ctx, p.doPostDetails()...)
-	p.execute(ctx, p.doPhone()...)
-	p.execute(ctx, p.doMedia()...)
-	p.execute(ctx, p.publish()...)
+	p.session.Execute(p.doForSaleBy()...)
+	p.session.Execute(p.doCategory()...)
+
+	p.session.Execute(p.doPostDetails()...)
+	p.session.Execute(p.doPhone()...)
+	p.session.Execute(p.doMedia()...)
+	p.session.Execute(p.publish()...)
 }
 
 func (p *CraigslistPost) publish() []chromedp.Action {
@@ -51,17 +56,6 @@ func (p *CraigslistPost) publish() []chromedp.Action {
 
 // TODO: this is generic code, unrelated to craigslist
 // move this out into chromedp helper ...
-func (p *CraigslistPost) execute(ctx context.Context, actions ...chromedp.Action) {
-
-	for i, action := range actions {
-		log.Info().Msgf("running %v", action)
-		logging.Panic(chromedp.Run(ctx, action))
-
-		if i < (len(actions) - 1) {
-			delay.Wait()
-		}
-	}
-}
 
 func (p *CraigslistPost) HasDefault() bool {
 	return false
@@ -73,4 +67,8 @@ func (p *CraigslistPost) Refreshable() bool {
 
 func (p *CraigslistPost) EncryptedFields() []string {
 	return nil
+}
+
+func Wait() {
+	delay.Wait()
 }

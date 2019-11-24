@@ -19,7 +19,7 @@ func init() {
 }
 
 func main() {
-	secrets.Find(secrets.NewFind(), decryptOnMatch)
+	secrets.Find(decryptOnMatch, secrets.NewFind()...)
 }
 
 func decryptOnMatch(secretPath string) {

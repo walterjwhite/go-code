@@ -1,10 +1,9 @@
-package craigslist
+package sleep
 
 import (
-	"math/rand"
 	"time"
 
-	//"github.com/walterjwhite/go-application/libraries/logging"
+	"github.com/walterjwhite/go-application/libraries/random"
 
 	"github.com/rs/zerolog/log"
 )
@@ -23,10 +22,7 @@ type Waiter interface {
 }
 
 func (d *RandomDelay) Wait() {
-	rand.Seed(time.Now().UnixNano())
-	n := rand.Intn(d.Deviation) + d.MinimumDelay
-
-	doWait(n)
+	doWait(random.Of(d.Deviation) + d.MinimumDelay)
 }
 
 func (d *FixedDelay) Wait() {
