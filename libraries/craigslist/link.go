@@ -10,7 +10,7 @@ import (
 func Accept(ctx context.Context, url string) {
 	log.Info().Msgf("accept post: %v", url)
 
-	s := chromedpexecutor.New(ctx, *devToolsWsUrlFlag, delay)
+	s := chromedpexecutor.New(ctx)
 	defer s.Cancel()
 
 	s.Execute(chromedp.Navigate(url))

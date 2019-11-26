@@ -89,10 +89,12 @@ func Panic(err error) {
 	}
 }
 
-/*
-func Warn(err error) {
+func Warn(err error, isError bool) {
 	if err != nil {
-		log.Warn().Msg(err)
+		if isError {
+			Panic(err)
+		} else {
+			log.Warn().Msg(err.Error())
+		}
 	}
 }
-*/

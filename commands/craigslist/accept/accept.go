@@ -32,7 +32,7 @@ func main() {
 func onFile(filePath string) {
 	// attempt to rate-limit posts
 	craigslist.Wait()
-	
+
 	url, err := ioutil.ReadFile(filePath)
 	logging.Panic(err)
 

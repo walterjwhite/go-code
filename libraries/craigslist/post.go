@@ -37,7 +37,7 @@ func init() {
 func (p *CraigslistPost) Create(ctx context.Context) {
 	log.Info().Msgf("post: %v", p)
 
-	p.session = chromedpexecutor.New(ctx, *devToolsWsUrlFlag, delay)
+	p.session = chromedpexecutor.New(ctx)
 
 	p.session.Execute(chromedp.Navigate(craigslistBasePostUrl + p.Region))
 
