@@ -19,19 +19,20 @@ type RebaseRequest struct {
 	// return back to normal
 	originalBranchName string
 
-	projectName   string
-	patchFileName string
+	//projectName string
+
+	//patchFileName string
 
 	successful bool
 }
 
-func (r *RebaseRequest) Rebase(ctx context.Context) {
+func (r *RebaseRequest) Rebase(ctx context.Context, projectDirectory string) {
 	if !r.canOperate(ctx) {
 		log.Error().Msg("Please commit your changes before attempting to rebase.")
 	}
 
 	r.sourceBranchName = GetSourceBranch(r.BranchName)
-	r.originalBranchName = GetCurrentBranch()
+	r.originalBranchName = GetCurrentBranch(projectDirectory)
 
 	// return back to normal
 	defer r.restore(ctx)
@@ -59,8 +60,8 @@ func (r *RebaseRequest) canOperate(ctx context.Context) bool {
 
 	cmd := runner.Prepare(ctx, "git", "status", "-s")
 	runner.WithWriter(cmd, &buffer)
-	logging.Panic(runner.Start(cmd))
-	logging.Panic(runner.Wait(cmd))
+	logging.Panic(cmd.Start())
+	logging.Panic(cmd.Wait())
 
 	scanner := bufio.NewScanner( /*output*/ &buffer)
 	for scanner.Scan() {

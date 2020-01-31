@@ -23,6 +23,7 @@ type DatabaseMonitorActionEvent struct {
 func NewMonitor(action *monitor.Action, session *monitor.Session) DatabaseMonitorAction {
 	var databaseMonitorAction DatabaseMonitorAction
 
+	// TODO: this is configuration, this should be provided by another package
 	yamlhelper.Read(action.Reference, &databaseMonitorAction)
 
 	databaseMonitorAction.Action = action

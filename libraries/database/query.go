@@ -1,13 +1,14 @@
 package database
 
 import (
+	"database/sql"
 	"github.com/jmoiron/sqlx"
-	"log"
+	"github.com/walterjwhite/go-application/libraries/logging"
 )
 
 type Query struct {
-	Query      string
-	Parameters []string
+	QueryString string
+	Parameters  []string
 
 	Database                *sqlx.DB
 	ConnectionConfiguration ConnectionConfiguration
@@ -25,14 +26,28 @@ func (q *Query) Select(dest interface{}) {
 	defer q.Database.DB.Close()
 
 	if q.Parameters != nil {
-		err := q.Database.Select(dest, q.Query, q.Parameters)
-		if err != nil {
-			log.Fatalf("Error querying: %v / %v\n", q.Query, err)
-		}
+		logging.Panic(q.Database.Select(dest, q.QueryString, q.Parameters))
 	} else {
-		err := q.Database.Select(dest, q.Query)
-		if err != nil {
-			log.Fatalf("Error querying: %v / %v\n", q.Query, err)
-		}
+		logging.Panic(q.Database.Select(dest, q.QueryString))
 	}
+}
+
+func (q *Query) Query() (*sql.Rows, error) {
+	q.connect()
+
+	if q.Parameters != nil {
+		return q.Database.Query(q.QueryString, q.Parameters)
+	}
+
+	return q.Database.Query(q.QueryString)
+}
+
+func (q *Query) Queryx() (*sqlx.Rows, error) {
+	q.connect()
+
+	if q.Parameters != nil {
+		return q.Database.Queryx(q.QueryString, q.Parameters)
+	}
+
+	return q.Database.Queryx(q.QueryString)
 }

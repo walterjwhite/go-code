@@ -7,7 +7,7 @@ import (
 type EmailNotification struct {
 	EmailSenderAccount *email.EmailSenderAccount
 
-	EmailMessage email.EmailMessage
+	EmailMessage *email.EmailMessage
 }
 
 func (n *EmailNotification) Notify(notification Notification) {

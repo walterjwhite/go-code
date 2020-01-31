@@ -35,8 +35,8 @@ func (r *ArchiveRequest) ArchiveBranch(ctx context.Context) {
 
 	cmd := runner.Prepare(ctx, "git", "diff", r.SourceBranchName, r.BranchName)
 	runner.WithWriter(cmd, f)
-	logging.Panic(runner.Start(cmd))
-	logging.Panic(runner.Wait(cmd))
+	logging.Panic(cmd.Start())
+	logging.Panic(cmd.Wait())
 
 	r.dropBranch(ctx)
 }

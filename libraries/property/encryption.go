@@ -1,47 +1,37 @@
 package property
 
 import (
-	"encoding/base64"
 	"github.com/rs/zerolog/log"
-	"github.com/walterjwhite/go-application/libraries/encryption"
-	"github.com/walterjwhite/go-application/libraries/logging"
+	"github.com/walterjwhite/go-application/libraries/secrets"
 	"reflect"
 )
 
-var (
-	e *encryption.EncryptionConfiguration
-)
+type encryptionReader struct{}
 
-// support strings only
-func handleEncryptedProperties(config Configuration) {
-	log.Info().Msg("Handling encrypted properties (if any)")
-	if config.EncryptedFields() != nil {
-		setupEncryption()
+type SecretPropertyConfiguration interface {
+	EncryptedFields() []string
+}
 
+func (e *encryptionReader) Load(config interface{}, prefix string) {
+	//if ! config instanceof SecretPropertyConfiguration {
+	secretPropertyConfiguration, ok := config.(SecretPropertyConfiguration)
+	if !ok {
+		return
+	}
+
+	if secretPropertyConfiguration.EncryptedFields() != nil {
+		log.Debug().Msg("Handling encrypted properties")
 		val := reflect.ValueOf(config).Elem()
 
-		for _, fieldName := range config.EncryptedFields() {
-			setFieldValue(config, val, fieldName)
+		for _, fieldName := range secretPropertyConfiguration.EncryptedFields() {
+			setFieldValue(secretPropertyConfiguration, val, fieldName)
 		}
 	}
 }
 
-func setupEncryption() {
-	if e == nil {
-		log.Info().Msg("Setting up encryption instance")
-
-		e = encryption.New()
-	}
-}
-
-func setFieldValue(config Configuration, value reflect.Value, fieldName string) {
-	log.Info().Msgf("decrypting: %v: %v / %v", value, fieldName, config)
-
+func setFieldValue(config SecretPropertyConfiguration, value reflect.Value, fieldName string) {
 	f := value.FieldByName(fieldName)
-	data, err := base64.StdEncoding.DecodeString(f.String())
-	logging.Panic(err)
+	decrypted := secrets.Decrypt(f.String())
 
-	decrypted := e.Decrypt(data)
-
-	f.SetString(string(decrypted))
+	f.SetString(decrypted)
 }

@@ -17,3 +17,12 @@ func Read(configurationFile string, out interface{}) {
 
 	log.Debug().Msgf("Read:\n%v", out)
 }
+
+func Write(in interface{}, outFile string) {
+	buf, err := yaml.Marshal(in)
+	logging.Panic(err)
+
+	logging.Panic(ioutil.WriteFile(outFile, buf /*os.ModePerm*/, 0644))
+
+	log.Debug().Msgf("Wrote:\n%v", outFile)
+}

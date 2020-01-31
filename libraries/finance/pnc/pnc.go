@@ -24,14 +24,6 @@ type PNCSession struct {
 	chromedpsession *chromedpexecutor.ChromeDPSession
 }
 
-func (c *PNCCredentials) HasDefault() bool {
-	return false
-}
-
-func (c *PNCCredentials) Refreshable() bool {
-	return false
-}
-
 func (c *PNCCredentials) EncryptedFields() []string {
 	return []string{"Username", "Password"}
 }

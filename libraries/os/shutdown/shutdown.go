@@ -3,18 +3,18 @@ package shutdown
 import (
 	"github.com/rs/zerolog/log"
 	"time"
-	)
-	
-	type ShutdownAction int
-	
-	const (
-	Reboot ShutdownAction = 0
+)
+
+type ShutdownAction int
+
+const (
+	Reboot   ShutdownAction = 0
 	Poweroff ShutdownAction = 1
-	)
-	
+)
+
 type ShutdownRequest struct {
-	DryRun bool
-	Timeout time.Duration
+	DryRun         bool
+	Timeout        time.Duration
 	ShutdownAction ShutdownAction
 }
 
@@ -28,7 +28,7 @@ func (r *ShutdownRequest) Execute() {
 		r.doDryRun()
 		return
 	}
-	
+
 	r.run()
 }
 

@@ -8,5 +8,6 @@ const (
 	pin
 	phoneNumber
 	key
+	account-number
 )
 */

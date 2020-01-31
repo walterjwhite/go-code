@@ -1,29 +1,36 @@
 package email
 
 import (
-	gomail "github.com/go-mail/gomail"
+	"github.com/emersion/go-message/mail"
+	sendmail "github.com/go-mail/gomail"
 	"github.com/walterjwhite/go-application/libraries/logging"
 )
 
-func (e *EmailSenderAccount) Send(emailMessage EmailMessage) {
-	m := gomail.NewMessage()
+func (e *EmailSenderAccount) Send(emailMessage *EmailMessage) {
+	m := sendmail.NewMessage()
 
-	m.SetHeader("From", e.EmailAddress)
+	setEmailAddressHeader(m, "From", e.EmailAddress)
 
-	setHeader(m, "To", emailMessage.To...)
-	setHeader(m, "Cc", emailMessage.Cc...)
-	setHeader(m, "Bcc", emailMessage.Bcc...)
+	setEmailAddressHeader(m, "To", emailMessage.To...)
+	setEmailAddressHeader(m, "Cc", emailMessage.Cc...)
+	setEmailAddressHeader(m, "Bcc", emailMessage.Bcc...)
 
 	m.SetHeader("Subject", emailMessage.Subject)
 	m.SetBody("text/html", emailMessage.Body)
 
-	d := gomail.NewDialer(e.Server.Host, e.Server.Port, e.Username, e.Password)
-	d.SSL = false
-	d.TLSConfig = &UserTlsConfig
+	d := sendmail.NewDialer(e.SmtpServer.Host, e.SmtpServer.Port, e.Username, e.Password)
+	d.SSL = true
+	//d.TLSConfig = &UserTlsConfig
 	logging.Panic(d.DialAndSend(m))
 }
 
-func setHeader(m *gomail.Message, headerName string, value ...string) {
+func setEmailAddressHeader(m *sendmail.Message, headerName string, emailAddresses ...*mail.Address) {
+	for _, emailAddress := range emailAddresses {
+		setHeader(m, headerName, emailAddress.Address)
+	}
+}
+
+func setHeader(m *sendmail.Message, headerName string, value ...string) {
 	if len(value) > 0 {
 		m.SetHeader(headerName, value...)
 	}

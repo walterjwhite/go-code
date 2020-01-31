@@ -25,6 +25,11 @@ func init() {
 	application.Configure()
 }
 
+// TODO:
+// 1. read IMAP messages
+// 2. automatically accept posts
+// 3. move confirmation emails to another folder
+// 4. automatically respond back confirming whether an item exists?
 func main() {
 	foreachfile.Execute(*craigslistPostLinkDirectoryRootFlag, onFile)
 }

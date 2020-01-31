@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"strings"
 
+	"github.com/rs/zerolog/log"
 	"github.com/walterjwhite/go-application/libraries/application"
 	"github.com/walterjwhite/go-application/libraries/encryption"
 	"github.com/walterjwhite/go-application/libraries/logging"
@@ -13,7 +14,8 @@ import (
 )
 
 var (
-	filename          = flag.String("filename", "", "filename to decrypt")
+	filename = flag.String("filename", "", "filename to decrypt")
+	//output            = flag.String("output", "", "output filename")
 	overwriteExisting = flag.Bool("overwriteExisting", false, "overwriteExisting")
 )
 
@@ -37,11 +39,22 @@ func validateArgumentsFilename() {
 }
 
 func getOutfile() string {
-	o := strings.Replace(*filename, ".encrypted", ".decrypted", 1)
+	o := doGetOutfile()
+
+	log.Info().Msgf("Writing decrypted contents to: %v", o)
 
 	if o == *filename && !*overwriteExisting {
 		logging.Panic(errors.New("The output filename is the same as the input filename and overwriteExisting is false"))
 	}
 
+	log.Info().Msgf("Writing decrypted contents to: %v", o)
 	return o
+}
+
+func doGetOutfile() string {
+	/*if len(*output) > 0 {
+		return *output
+	}*/
+
+	return strings.Replace(*filename, ".encrypted", ".decrypted", 1)
 }

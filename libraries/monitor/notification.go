@@ -2,7 +2,7 @@ package monitor
 
 import (
 	"fmt"
-	"github.com/walterjwhite/go-application/libraries/timestamp"
+	"github.com/walterjwhite/go-application/libraries/timeformatter/timestamp"
 	"log"
 )
 

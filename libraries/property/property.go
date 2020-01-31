@@ -4,36 +4,27 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-type Configuration interface {
-	HasDefault() bool
-	Refreshable() bool
-	//Encrypted() bool
-	EncryptedFields() []string
-}
-
 type ConfigurationReader interface {
 	Load(config interface{}, prefix string)
 }
 
 var (
-	registry []ConfigurationReader
+	readerRegistry []ConfigurationReader
 )
 
 func init() {
-	registry = make([]ConfigurationReader, 0)
+	readerRegistry = make([]ConfigurationReader, 0)
 
-	registry = append(registry, &defaultConfigurationReader{})
-	registry = append(registry, &envConfigurationReader{})
-	registry = append(registry, &cliConfigurationReader{})
+	readerRegistry = append(readerRegistry, &defaultConfigurationReader{})
+	readerRegistry = append(readerRegistry, &envConfigurationReader{})
+	readerRegistry = append(readerRegistry, &cliConfigurationReader{})
+	readerRegistry = append(readerRegistry, &cliConfigurationReader{})
+
+	readerRegistry = append(readerRegistry, &encryptionReader{})
 }
 
-func Load(config Configuration, prefix string) {
-	doLoad(config, prefix)
-	handleEncryptedProperties(config)
-}
-
-func doLoad(config Configuration, prefix string) {
-	for index, value := range registry {
+func Load(config interface{}, prefix string) {
+	for index, value := range readerRegistry {
 		log.Info().Msgf("reading: %v via %T", index, value)
 		value.Load(config, prefix)
 	}

@@ -6,6 +6,7 @@ import (
 
 	"strings"
 
+	"github.com/rs/zerolog/log"
 	"github.com/walterjwhite/go-application/libraries/logging"
 )
 
@@ -39,6 +40,7 @@ func doFile(filePath string, callback func(filePath string), patterns ...string)
 		return
 	}
 
+	log.Debug().Msgf("calling callback on: %v :%v", filePath, patterns)
 	callback(filePath)
 }
 
@@ -48,10 +50,10 @@ func matchesPattern(filePath string, patterns ...string) bool {
 	}
 
 	for _, pattern := range patterns {
-		if strings.Contains(filePath, pattern) {
-			return true
+		if !strings.Contains(filePath, pattern) {
+			return false
 		}
 	}
 
-	return false
+	return true
 }

@@ -36,7 +36,7 @@ func doRun(command *exec.Cmd) (int, error) {
 	command.Stderr = os.Stderr
 	command.Stdout = os.Stdout
 
-	err := Start(command)
+	err := command.Start()
 	if err != nil {
 		return -1, err
 	}
@@ -59,12 +59,4 @@ func doRun(command *exec.Cmd) (int, error) {
 
 func Run(ctx context.Context, command string, arguments ...string) (int, error) {
 	return doRun(Prepare(ctx, command, arguments...))
-}
-
-func Start(command *exec.Cmd) error {
-	return command.Start()
-}
-
-func Wait(command *exec.Cmd) error {
-	return command.Wait()
 }

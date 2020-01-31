@@ -19,7 +19,7 @@ const (
 var (
 	minimumDelayBetweenActionsFlag = flag.Int("CraigslistMinimumDelayBetweenActions", 250, "Minimum Delay between actions (ms)")
 	deviationBetweenActionsFlag    = flag.Int("CraigslisDeviationBetweenActions", 5000, "Deviation between actions (ms)")
-	devToolsWsUrlFlag              = flag.String("DevToolsWsUrl", "", "Dev Tools WS URL")
+	//devToolsWsUrlFlag              = flag.String("DevToolsWsUrl", "", "Dev Tools WS URL")
 
 	//delayBetweenActions     time.Duration
 	delay *sleep.RandomDelay
@@ -52,21 +52,6 @@ func (p *CraigslistPost) Create(ctx context.Context) {
 
 func (p *CraigslistPost) publish() []chromedp.Action {
 	return []chromedp.Action{chromedp.Click("//*[@id=\"publish_top\"]/button")}
-}
-
-// TODO: this is generic code, unrelated to craigslist
-// move this out into chromedp helper ...
-
-func (p *CraigslistPost) HasDefault() bool {
-	return false
-}
-
-func (p *CraigslistPost) Refreshable() bool {
-	return false
-}
-
-func (p *CraigslistPost) EncryptedFields() []string {
-	return nil
 }
 
 func Wait() {

@@ -30,6 +30,5 @@ func (configuration *ConnectionConfiguration) getConnectionString() string {
 }
 
 func testConnection(db *sqlx.DB) {
-	err := db.Ping()
-	logging.Panic(err)
+	logging.Panic(db.Ping())
 }

@@ -5,8 +5,6 @@ import (
 	"flag"
 
 	"github.com/rs/zerolog/log"
-	"github.com/walterjwhite/go-application/libraries/identifier"
-	"github.com/walterjwhite/go-application/libraries/logging"
 )
 
 var (
@@ -21,8 +19,8 @@ func init() {
 func Configure() {
 	flag.Parse()
 
-	logging.Configure()
-	identifier.Log()
+	configureLogging()
+	logIdentifier()
 }
 
 func Wait() {

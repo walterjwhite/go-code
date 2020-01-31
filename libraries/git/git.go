@@ -11,21 +11,23 @@ import (
 	"bufio"
 	"bytes"
 	"context"
-	"errors"
+	//"errors"
 	"fmt"
 	"time"
 )
 
-func GetCurrentBranch() string {
+func GetCurrentBranch(projectDirectory string) string {
 	ctx, cancel := context.WithTimeout(application.Context, 5*time.Second)
 	defer cancel()
 
 	cmd := runner.Prepare( /*application.Context*/ ctx, "git", "branch")
+	cmd.Dir = projectDirectory
+
 	var b bytes.Buffer
 
 	runner.WithWriter(cmd, &b)
-	logging.Panic(runner.Start(cmd))
-	logging.Panic(runner.Wait(cmd))
+	logging.Panic(cmd.Start())
+	logging.Panic(cmd.Wait())
 
 	//output := string(b)
 
@@ -42,8 +44,8 @@ func GetCurrentBranch() string {
 	// <owner>/<source>/ticket-#
 	// walterjwhite/dev/jira-123
 
-	logging.Panic(errors.New("Unable to parse: "))
-	return ""
+	//logging.Panic(errors.New("Unable to parse branch (has repository been initialized?): "))
+	return "master"
 }
 
 func GetOwner() string {
@@ -67,8 +69,9 @@ func GetTicketId(currentBranchName string) string {
 	return ""
 }
 
-func FormatCommitMessage(messageTemplate *string, message string) string {
-	currentBranchName := GetCurrentBranch()
+// TODO: generalize this
+func FormatCommitMessage(projectDirectory string, messageTemplate *string, message string) string {
+	currentBranchName := GetCurrentBranch(projectDirectory)
 	ticketId := GetTicketId(currentBranchName)
 
 	if len(ticketId) == 0 {

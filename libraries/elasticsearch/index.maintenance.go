@@ -3,29 +3,35 @@ package elasticsearch
 import (
 	"context"
 	"fmt"
+	"github.com/rs/zerolog/log"
+	"github.com/walterjwhite/go-application/libraries/document"
 	"github.com/walterjwhite/go-application/libraries/logging"
-	"log"
+	"github.com/walterjwhite/go-application/libraries/typename"
 	"strings"
 )
 
-func (c *NodeConfiguration) getDocumentTypeName(document interface{}) string {
-	return strings.ToLower(strings.ReplaceAll(fmt.Sprintf("%T", document), "*", ""))
-}
+func (c *NodeConfiguration) PrepareIndex(document document.Document) (string, string) {
+	documentTypeName, indexName := c.getIndexName(document)
 
-func (c *NodeConfiguration) prepareIndex(documentTypeName string) {
-	indexName := c.getIndexName(documentTypeName)
+	_, exists := c.Indexes[documentTypeName]
+	if !exists {
+		log.Info().Msgf("Index: %v/%v\n", documentTypeName, indexName)
 
-	log.Printf("Index: %v/%v\n", documentTypeName, indexName)
-
-	if c.isIndexExisting(indexName) {
-		if !c.DropIndex {
-			return
-		}
-
-		c.deleteIndex(indexName)
+		c.doPrepareIndex(indexName)
+		c.Indexes[documentTypeName] = true
 	}
 
-	c.createIndex(indexName)
+	return documentTypeName, indexName
+}
+
+func (c *NodeConfiguration) doPrepareIndex(indexName string) {
+	if c.isIndexExisting(indexName) {
+		if c.DropIndex {
+			c.deleteIndex(indexName)
+		}
+	} else {
+		c.createIndex(indexName)
+	}
 }
 
 func (c *NodeConfiguration) isIndexExisting(indexName string) bool {
@@ -53,8 +59,13 @@ func (c *NodeConfiguration) deleteIndex(indexName string) {
 	logging.Panic(err)
 }
 
-func (c *NodeConfiguration) getIndexName(documentTypeName string) string {
-	if len(c.IndexPrefix) > 0 /* != nil*/ {
+func (c *NodeConfiguration) getIndexName(document document.Document) (string, string) {
+	documentTypeName := typename.Get(document)
+	return documentTypeName, c.getFullIndexName(documentTypeName)
+}
+
+func (c *NodeConfiguration) getFullIndexName(documentTypeName string) string {
+	if len(c.IndexPrefix) > 0 {
 		return strings.ToLower(fmt.Sprintf("%v.%v", c.IndexPrefix, documentTypeName))
 	}
 

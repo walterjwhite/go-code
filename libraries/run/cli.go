@@ -12,7 +12,7 @@ import (
 	"github.com/walterjwhite/go-application/libraries/io/writermatcher"
 	"github.com/walterjwhite/go-application/libraries/logging"
 	"github.com/walterjwhite/go-application/libraries/runner"
-	"github.com/walterjwhite/go-application/libraries/timestamp"
+	"github.com/walterjwhite/go-application/libraries/timeformatter/timestamp"
 	"path/filepath"
 )
 
@@ -33,7 +33,7 @@ func runApplication(ctx context.Context, index int, a Application) *exec.Cmd {
 	log.Info().Msgf("Arguments: %v", a.Arguments)
 	log.Info().Msgf("Matcher: %v", a.LogMatcher)
 
-	logging.Panic(runner.Start(command))
+	logging.Panic(command.Start())
 
 	go monitorChannel(ctx, a.Name, notificationChannel)
 

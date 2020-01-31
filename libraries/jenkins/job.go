@@ -2,8 +2,8 @@ package jenkins
 
 import (
 	//"github.com/bndr/gojenkins"
-	"github.com/pushyzheng/gojenkins"
 	"github.com/walterjwhite/go-application/libraries/logging"
+	"gopkg.in/bndr/gojenkins.v1"
 
 	"context"
 	"github.com/rs/zerolog/log"
