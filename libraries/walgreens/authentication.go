@@ -1,9 +1,9 @@
 package walgreens
 
 import (
+	"context"
 	"github.com/chromedp/chromedp"
 	"github.com/walterjwhite/go-application/libraries/chromedpexecutor"
-	"context"
 )
 
 func (s *Session) Authenticate(ctx context.Context) {
@@ -11,15 +11,15 @@ func (s *Session) Authenticate(ctx context.Context) {
 
 	// no need to wait
 	s.chromedpsession.Waiter = nil
-	
+
 	s.chromedpsession.Execute(chromedp.Navigate(uri))
 
-/*
-	s.chromedpsession.Execute(
-		//chromedp.Click("//*[@id=\"signin-btn-header-2\"]"))
-		chromedp.Click("/html/body/header/div/div[1]/div/section/div/nav[1]/div/div/div[1]/a/span[2]"),
-		chromedp.Click("/html/body/header/div/div[1]/div/section/div/nav[1]/div/div/div[1]/ul/li[1]/a[1]/strong"))
-		*/
+	/*
+		s.chromedpsession.Execute(
+			//chromedp.Click("//*[@id=\"signin-btn-header-2\"]"))
+			chromedp.Click("/html/body/header/div/div[1]/div/section/div/nav[1]/div/div/div[1]/a/span[2]"),
+			chromedp.Click("/html/body/header/div/div[1]/div/section/div/nav[1]/div/div/div[1]/ul/li[1]/a[1]/strong"))
+	*/
 
 	// username
 	s.chromedpsession.Execute(

@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	logoutButton = "/html/body/div/header/div[1]/span/a"
+	logoutButton  = "/html/body/div/header/div[1]/span/a"
 	usernameField = "//*[@id=\"userid-content\"]"
 	passwordField = "//*[@id=\"password-content\"]"
 )
@@ -20,7 +20,7 @@ func (s *DiscoverSession) Authenticate(ctx context.Context) {
 	}
 
 	s.chromedpsession = chromedpexecutor.New(ctx)
-	
+
 	// no need to wait
 	s.chromedpsession.Waiter = nil
 

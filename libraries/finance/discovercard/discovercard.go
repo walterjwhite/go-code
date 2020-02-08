@@ -15,7 +15,7 @@ const (
 func (s *DiscoverSession) GetBalance(ctx context.Context) {
 	s.Authenticate(ctx)
 
-	defer s.Logout(ctx)
+	defer s.Logout()
 	s.navigateToCreditCardActivity(ctx)
 }
 

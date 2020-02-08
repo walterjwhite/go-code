@@ -1,9 +1,10 @@
 package stdin
 
 import (
-"bufio"
-"github.com/walterjwhite/go-application/libraries/logging"
-"fmt"
+	"bufio"
+	"fmt"
+	"github.com/walterjwhite/go-application/libraries/logging"
+	"os"
 )
 
 type Key struct {

@@ -5,8 +5,8 @@ import (
 	"github.com/mitchellh/go-homedir"
 	"github.com/rs/zerolog/log"
 	"github.com/walterjwhite/go-application/libraries/logging"
-	"github.com/walterjwhite/go-application/libraries/yamlhelper"
 	"github.com/walterjwhite/go-application/libraries/typename"
+	"github.com/walterjwhite/go-application/libraries/yamlhelper"
 	"os"
 	"path/filepath"
 )

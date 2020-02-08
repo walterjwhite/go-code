@@ -1,12 +1,11 @@
 package ssh
 
 import (
+	"crypto/sha256"
 	"fmt"
 	"github.com/rs/zerolog/log"
 	"github.com/walterjwhite/go-application/libraries/logging"
 	"golang.org/x/crypto/ssh/agent"
-	//"io/ioutil"
-	"crypto/sha256"
 	"net"
 	"os"
 )
@@ -41,6 +40,7 @@ func (c *Conf) GetDecryptionKey() []byte {
 	return getUsableKey(c.getDecryptionKey().Blob)
 }
 
+// TODO: select the key to use (flag, configuration?)
 func (c *Conf) getDecryptionKey() *agent.Key {
 	keys, err := c.agentClient.List()
 	logging.Panic(err)

@@ -3,6 +3,7 @@ package secrets
 import (
 	"github.com/rs/zerolog/log"
 	"github.com/walterjwhite/go-application/libraries/logging"
+	"io/ioutil"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -15,12 +16,12 @@ func Encrypt(name *string, message *string, data []byte) {
 	log.Printf("processing secret: %v\n", *name)
 
 	initialize()
-	setupEncryptionKey()
 
 	secretPath := getSecretPath(name)
 	secretValuePath := filepath.Join(secretPath, "value")
 
-	SecretsConfigurationInstance.EncryptionConfiguration.EncryptFile(secretValuePath, data)
+	encrypted := SecretsConfigurationInstance.EncryptionConfiguration.Encrypt(data)
+	logging.Panic(ioutil.WriteFile(getAbsolute(secretValuePath), encrypted, 0644))
 
 	log.Debug().Msgf("Stored secret in %v (%v)", secretValuePath, len(data))
 

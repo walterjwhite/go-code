@@ -6,12 +6,9 @@ type Encryption interface {
 }
 
 type Encrypter interface {
-	//EncryptFile(filename string, data []byte)
-	Encrypt(plaintext []byte) (encrypted, salt []byte)
-	EncryptFile(inFilename, outFilename, saltFile string)
+	Encrypt(plaintext []byte) []byte
 }
 
 type Decrypter interface {
-	Decrypt(encrypted, salt []byte) []byte
-	DecryptFile(inFilename, outFilename, saltFile string)
+	Decrypt(encrypted []byte) []byte
 }

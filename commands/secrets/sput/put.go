@@ -29,6 +29,10 @@ func main() {
 	logging.Panic(err)
 
 	secrets.Encrypt(name, message, data)
+
+	// todo: delete the source file on exit
+	// defer delete(source)
+	// TODO: create a temporary file, ask the user to enter in the secret, press CTRL+D, read, then delete that file on exit
 }
 
 func validatePut(name *string, message *string, source *string) {
