@@ -1,25 +1,17 @@
 package encryption
 
-import (
-	"bufio"
-	"errors"
-	"github.com/walterjwhite/go-application/libraries/logging"
-	"os"
-)
-
-type EncryptionConfiguration struct {
-	encryptionKey []byte
+type Encryption interface {
+	GetDecryptionKey() []byte
+	GetEncryptionKey() []byte
 }
 
-func New() *EncryptionConfiguration {
-	scanner := bufio.NewScanner(os.Stdin)
-	if scanner.Scan() {
-		keyBytes := scanner.Bytes()
-		keyBytes = append(keyBytes, '\n')
+type Encrypter interface {
+	//EncryptFile(filename string, data []byte)
+	Encrypt(plaintext []byte) (encrypted, salt []byte)
+	EncryptFile(inFilename, outFilename, saltFile string)
+}
 
-		return &EncryptionConfiguration{encryptionKey: keyBytes}
-	}
-
-	logging.Panic(errors.New("No encryption key provided"))
-	return nil
+type Decrypter interface {
+	Decrypt(encrypted, salt []byte) []byte
+	DecryptFile(inFilename, outFilename, saltFile string)
 }

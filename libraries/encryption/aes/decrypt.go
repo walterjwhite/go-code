@@ -1,13 +1,13 @@
-package encryption
+package aes
 
 import (
-	"crypto/aes"
+	aesl "crypto/aes"
 	"crypto/cipher"
 	"github.com/walterjwhite/go-application/libraries/logging"
 )
 
-func (c *EncryptionConfiguration) Decrypt(data []byte) []byte {
-	block, err := aes.NewCipher(c.encryptionKey)
+func (c *Configuration) Decrypt(data []byte) []byte {
+	block, err := aesl.NewCipher(c.Encryption.GetDecryptionKey())
 	logging.Panic(err)
 
 	gcm, err := cipher.NewGCM(block)
