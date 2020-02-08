@@ -14,11 +14,11 @@ type AfterDelay struct {
 	function func() error
 }
 
-func After(ctx context.Context, delay time.Duration, fn func() error) *AfterDelay {
+func After(ctx context.Context, delay *time.Duration, fn func() error) *AfterDelay {
 	acontext, acancel := context.WithCancel(ctx)
 
 	afterDelay := &AfterDelay{ctx: acontext, cancel: acancel, function: fn}
-	afterDelay.timer = time.AfterFunc(delay, afterDelay.safeFunction)
+	afterDelay.timer = time.AfterFunc(*delay, afterDelay.safeFunction)
 
 	return afterDelay
 }

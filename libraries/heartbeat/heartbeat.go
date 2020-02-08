@@ -8,7 +8,7 @@ import (
 )
 
 type HeartbeatInstance struct {
-	Interval time.Duration
+	Interval *time.Duration
 
 	// Function to invoke every interval
 	HeartbeatFunction func() error
@@ -17,7 +17,7 @@ type HeartbeatInstance struct {
 	Function func()
 }
 
-func Heartbeat(function func(), heartbeatFunction func() error, interval time.Duration) {
+func Heartbeat(function func(), heartbeatFunction func() error, interval *time.Duration) {
 	h := &HeartbeatInstance{Interval: interval, HeartbeatFunction: heartbeatFunction, Function: function}
 	h.Call()
 }

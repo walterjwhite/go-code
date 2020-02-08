@@ -7,16 +7,16 @@ import (
 )
 
 var (
-	s *discovercard.DiscoverCardSession
+	s *discovercard.DiscoverSession
 )
 
 func init() {
 	application.Configure()
 
-	s = &discovercard.DiscoverCardSession{Credentials: &discovercard.WebCredentials{}}
+	s = &discovercard.DiscoverSession{Credentials: &discovercard.WebCredentials{}}
 	property.Load(s.Credentials, "")
 }
 
 func main() {
-	s.GetBalance(application.Context)
+	s.Authenticate(application.Context)
 }

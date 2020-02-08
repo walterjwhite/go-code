@@ -10,8 +10,8 @@ type TimedExecution struct {
 	function func()
 }
 
-func Limit(function func(), maximumExecutionTime time.Duration, parentContext context.Context) error {
-	ctx, cancel := context.WithTimeout(parentContext, maximumExecutionTime)
+func Limit(function func(), maximumExecutionTime *time.Duration, parentContext context.Context) error {
+	ctx, cancel := context.WithTimeout(parentContext, *maximumExecutionTime)
 	defer cancel()
 
 	t := &TimedExecution{function: function}

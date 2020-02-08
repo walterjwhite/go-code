@@ -13,10 +13,10 @@ var (
 func init() {
 	application.Configure()
 
-	s = &pnc.PNCSession{Credentials: &pnc.PNCCredentials{}}
+	s = &pnc.PNCSession{Credentials: &pnc.Credentials{}}
 	property.Load(s.Credentials, "")
 }
 
 func main() {
-	s.GetBalance(application.Context)
+	s.Authenticate(application.Context)
 }

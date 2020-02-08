@@ -2,46 +2,79 @@ package periodic
 
 import (
 	"context"
-	"time"
-
 	"github.com/walterjwhite/go-application/libraries/logging"
+	"sync"
+	"time"
 )
 
 type PeriodicInstance struct {
+	function func() error
+
 	ticker *time.Ticker
+
+	ctx            context.Context
+	cancelFunction context.CancelFunc
+	mutex          *sync.RWMutex
+	runCount       int
 }
 
-func Periodic(ctx context.Context, interval time.Duration, fn func() error) *PeriodicInstance {
-	ticker := time.NewTicker(interval)
+func Periodic(parentContext context.Context, interval *time.Duration, fn func() error) *PeriodicInstance {
+	ticker := time.NewTicker(*interval)
+
+	ctx, cancel := context.WithCancel(parentContext)
+
+	p := &PeriodicInstance{function: fn, ticker: ticker, ctx: ctx, cancelFunction: cancel, mutex: &sync.RWMutex{}}
 
 	// initial invocation
-	logging.Panic(fn())
+	p.tryRun()
 
-	go run(fn, ticker)
-	go cancel(ctx, ticker)
+	go p.run()
+	go p.cancel()
 
-	return &PeriodicInstance{ticker: ticker}
+	return p
 }
 
 func (p *PeriodicInstance) Cancel() {
 	p.ticker.Stop()
 }
 
-func run(fn func() error, ticker *time.Ticker) {
+func (p *PeriodicInstance) run() {
 	for {
-		<-ticker.C
-		logging.Panic(fn())
+		<-p.ticker.C
+		p.tryRun()
 	}
 }
 
-func cancel(ctx context.Context, ticker *time.Ticker) {
-	<-ctx.Done()
-	ticker.Stop()
+func (p *PeriodicInstance) tryRun() {
+	p.mutex.RLock()
+	count := p.runCount
+	p.mutex.RUnlock()
+
+	if count == 0 {
+		p.doRun()
+	}
 }
 
-func GetInterval(intervalString string) time.Duration {
+func (p *PeriodicInstance) doRun() {
+	p.mutex.Lock()
+	defer p.mutex.Unlock()
+
+	p.runCount++
+
+	logging.Panic(p.function())
+	p.runCount--
+}
+
+func (p *PeriodicInstance) cancel() {
+	<-p.ctx.Done()
+	p.ticker.Stop()
+
+	p.cancelFunction()
+}
+
+func GetInterval(intervalString string) *time.Duration {
 	duration, err := time.ParseDuration(intervalString)
 	logging.Panic(err)
 
-	return duration
+	return &duration
 }

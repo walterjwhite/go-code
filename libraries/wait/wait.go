@@ -18,7 +18,7 @@ type waitInstance struct {
 }
 
 // calls the function periodically with the given interval until it returns true, the call times out, or the context is Done
-func Wait(ctx context.Context, interval time.Duration, limit time.Duration, userFunction func() bool) {
+func Wait(ctx context.Context, interval *time.Duration, limit *time.Duration, userFunction func() bool) {
 	channel := make(chan bool)
 
 	wctx, cancel := context.WithCancel(ctx)

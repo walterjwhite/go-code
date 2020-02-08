@@ -6,9 +6,9 @@ import (
 	"github.com/rs/zerolog/log"
 	"github.com/walterjwhite/go-application/libraries/logging"
 	"github.com/walterjwhite/go-application/libraries/yamlhelper"
+	"github.com/walterjwhite/go-application/libraries/typename"
 	"os"
 	"path/filepath"
-	"reflect"
 )
 
 type defaultConfigurationReader struct{}
@@ -22,17 +22,8 @@ func (d *defaultConfigurationReader) Load(config interface{}, prefix string) {
 	defaultsBasePath, err := homedir.Expand(*basePath)
 	logging.Panic(err)
 
-	f := &fileConfigurationReader{Filename: filepath.Join(defaultsBasePath, prefix, getTypeName(config)+".yaml")}
+	f := &fileConfigurationReader{Filename: filepath.Join(defaultsBasePath, prefix, typename.Get(config)+".yaml")}
 	f.Load(config, prefix)
-}
-
-func getTypeName(config interface{}) string {
-	t := reflect.TypeOf(config)
-	if t.Kind() == reflect.Ptr {
-		return t.Elem().Name()
-	}
-
-	return t.Name()
 }
 
 type fileConfigurationReader struct {

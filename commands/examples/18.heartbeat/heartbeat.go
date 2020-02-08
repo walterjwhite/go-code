@@ -16,7 +16,8 @@ func main() {
 }
 
 func heartbeatAware() {
-	heartbeat.Heartbeat(longRunningCall, heartbeater, 1*time.Second)
+	t := 1 * time.Second
+	heartbeat.Heartbeat(longRunningCall, heartbeater, &t)
 }
 
 func longRunningCall() {

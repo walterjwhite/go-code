@@ -3,40 +3,27 @@ package gateway
 import (
 	"context"
 	"github.com/chromedp/chromedp"
+	"github.com/rs/zerolog/log"
 	"github.com/walterjwhite/go-application/libraries/periodic"
 )
 
-const (
-	allAppsButtonXpath = "//*[@id=\"allAppsBtn\"]"
-	desktopButtonXpath = "/html/body/section[3]/div[2]/header/section/a[2]/span"
-)
-
-// periodically click on the apps / desktops
 func (s *Session) tickle(ctx context.Context) {
+	log.Info().Msg("tickle")
+
 	if s.Tickle.periodicInstance != nil {
+		log.Info().Msg("tickle exists")
+
 		s.Tickle.periodicInstance.Cancel()
 		s.Tickle.periodicInstance = nil
 	}
 
-	// TODO: 1 set a timer and periodically call doTickle
 	s.Tickle.periodicInstance = periodic.Periodic(ctx, s.Tickle.TickleInterval, s.doTickle)
+	log.Info().Msgf("tickle instance: %v", s.Tickle.periodicInstance)
 }
 
 func (s *Session) doTickle() error {
-	// click a link periodically
-	s.chromedpsession.Execute([]chromedp.Action{
-		chromedp.Click(s.getAndSetTickleButton())}...)
+	log.Info().Msgf("tickling: %v", s.Endpoint.Uri)
+	s.chromedpsession.Execute(chromedp.Navigate(s.Endpoint.Uri))
 
 	return nil
-}
-
-func (s *Session) getAndSetTickleButton() string {
-	l := s.Tickle.lastTickledAll
-	s.Tickle.lastTickledAll = !s.Tickle.lastTickledAll
-
-	if l {
-		return desktopButtonXpath
-	}
-
-	return allAppsButtonXpath
 }

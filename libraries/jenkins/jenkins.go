@@ -26,8 +26,8 @@ type JenkinsInstance struct {
 	Username string
 	Password string
 
-	buildTimeout       time.Duration
-	buildCheckInterval time.Duration
+	BuildTimeout       *time.Duration
+	BuildCheckInterval *time.Duration
 
 	jenkins *gojenkins.Jenkins
 }

@@ -5,10 +5,12 @@ import (
 	"errors"
 	"flag"
 	"github.com/chromedp/chromedp"
+	"github.com/mitchellh/go-homedir"
 	"github.com/rs/zerolog/log"
 	"github.com/walterjwhite/go-application/libraries/logging"
 	"github.com/walterjwhite/go-application/libraries/sleep"
-	"time"
+	"io/ioutil"
+	"os"
 )
 
 type ChromeDPSession struct {
@@ -19,14 +21,9 @@ type ChromeDPSession struct {
 	CancelContext   context.CancelFunc
 }
 
-type TimeLimitedChromeAction struct {
-	Action      chromedp.Action
-	Limit       time.Duration
-	IsException bool
-}
-
 var (
-	devToolsWsUrlFlag = flag.String("DevToolsWSUrl", "", "Dev Tools WS URL")
+	devToolsWsUrlFlag  = flag.String("DevToolsWSUrl", "", "Dev Tools WS URL")
+	devToolsWsFileFlag = flag.String("DevToolsWSFile", "~/.remote-browser-sessions", "Remote Browser Session File")
 
 	// TODO: add flags to tweak the deviation and minimum wait times
 	// OR if a fixed delay is preferred
@@ -38,6 +35,19 @@ func init() {
 }
 
 func New(ctx context.Context) *ChromeDPSession {
+	// check if the file exists
+	f, err := homedir.Expand(*devToolsWsFileFlag)
+	logging.Panic(err)
+
+	_, err = os.Stat(f)
+	if err == nil {
+		data, err := ioutil.ReadFile(f)
+		logging.Panic(err)
+
+		dataString := string(data)
+		devToolsWsUrlFlag = &dataString
+	}
+
 	if len(*devToolsWsUrlFlag) == 0 {
 		logging.Panic(errors.New("Please specify the DevToolsWSUrl"))
 	}
@@ -61,21 +71,6 @@ func (s *ChromeDPSession) Execute(actions ...chromedp.Action) {
 
 func (s *ChromeDPSession) doWait(i int, actions ...chromedp.Action) {
 	if s.Waiter != nil {
-		if i < (len(actions) - 1) {
-			s.Waiter.Wait()
-		}
-	}
-}
-
-func (s *ChromeDPSession) ExecuteTimeLimited(actions ...TimeLimitedChromeAction) {
-	for i, action := range actions {
-		log.Info().Msgf("running %v", action)
-
-		ctx, cancel := context.WithTimeout(s.Context, action.Limit)
-		defer cancel()
-
-		logging.Warn(chromedp.Run(ctx, action.Action), action.IsException)
-
 		if i < (len(actions) - 1) {
 			s.Waiter.Wait()
 		}

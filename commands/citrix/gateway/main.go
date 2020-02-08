@@ -11,7 +11,8 @@ import (
 )
 
 var (
-	tokenFlag      = flag.String("Token", "", "RSA Token")
+	tokenFlag = flag.String("Token", "", "RSA Token")
+	// TODO: randomize the interval, configure minimum interval and deviation ...
 	tickleInterval = flag.String("TickleInterval", "1m", "Tickle Interval")
 	session        = &gateway.Session{}
 )
@@ -27,25 +28,12 @@ func init() {
 	i, err := time.ParseDuration(*tickleInterval)
 	logging.Panic(err)
 
-	session.Tickle = &gateway.Tickle{TickleInterval: i}
+	session.Tickle = &gateway.Tickle{TickleInterval: &i}
 }
 
 func main() {
-	/*
-		s := gateway.Session{
-			Credentials: &gateway.Credentials{
-				Domain: "<DOMAIN>", Username: "<USERNAME>", Password: "<PASSWORD>", Pin: "<PIN>",
-			},
-			Endpoint: &gateway.Endpoint{
-				Uri:              "<URI>",
-				UsernameXPath:    "//*[@id=\"Enter user name\"]",
-				PasswordXPath:    "//*[@id=\"passwd\"]",
-				TokenXPath:       "//*[@id=\"passwd1\"]",
-				LoginButtonXPath: "//*[@id=\"Log_On\"]",
-			},
-		}
-	*/
-
 	session.Token = *tokenFlag
-	session.Authenticate(application.Context)
+	session.Run(application.Context)
+
+	application.Wait()
 }

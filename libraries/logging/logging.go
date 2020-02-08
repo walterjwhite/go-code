@@ -10,11 +10,13 @@ func Panic(err error) {
 	}
 }
 
-func Warn(err error, isError bool) {
+func Warn(err error, isError bool, message ...string) {
 	if err != nil {
 		if isError {
+			log.Error().Msgf("%v", message)
 			Panic(err)
 		} else {
+			log.Warn().Msgf("%v", message)
 			log.Warn().Msg(err.Error())
 		}
 	}

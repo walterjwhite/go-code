@@ -33,7 +33,9 @@ func (j *JenkinsJob) Build(ctx context.Context) {
 
 	log.Info().Msgf("%v - buildId: %v", j.job.GetName(), buildId)
 
-	wait.Wait(ctx, j.jenkinsInstance.buildCheckInterval, j.jenkinsInstance.buildTimeout, j.isDone)
+	if j.jenkinsInstance.BuildCheckInterval != nil && j.jenkinsInstance.BuildTimeout != nil {
+		wait.Wait(ctx, j.jenkinsInstance.BuildCheckInterval, j.jenkinsInstance.BuildTimeout, j.isDone)
+	}
 }
 
 func (j *JenkinsJob) isDone() bool {

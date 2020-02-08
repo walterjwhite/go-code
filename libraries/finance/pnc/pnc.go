@@ -13,44 +13,19 @@ const (
 )
 
 // TODO: generalize this ...
-type PNCCredentials struct {
+type Credentials struct {
 	Username string
 	Password string
 }
 
 type PNCSession struct {
-	Credentials *PNCCredentials
+	Credentials *Credentials
 
 	chromedpsession *chromedpexecutor.ChromeDPSession
 }
 
-func (c *PNCCredentials) EncryptedFields() []string {
-	return []string{"Username", "Password"}
-}
-
-func (s *PNCSession) Login(ctx context.Context) {
-	s.chromedpsession = chromedpexecutor.New(ctx)
-
-	//defer s.Cancel()
-
-	s.chromedpsession.Execute(
-		chromedp.Navigate(url),
-		chromedp.SendKeys("//*[@id=\"userId\"]", s.Credentials.Username),
-		chromedp.SendKeys("//*[@id=\"passwordInputField\"]", s.Credentials.Password),
-		chromedp.Click("//*[@id=\"olb-btn\"]"),
-	)
-}
-
-func (s *PNCSession) Logout() {
-	defer s.chromedpsession.Cancel()
-
-	s.chromedpsession.Execute(chromedp.Click("//*[@id=\"topLinks\"]/ul/li[3]/a"))
-}
-
 func (s *PNCSession) GetBalance(ctx context.Context) {
-	if s.chromedpsession == nil {
-		s.Login(ctx)
-	}
+	s.Authenticate(ctx)
 
 	defer s.Logout()
 

@@ -14,6 +14,10 @@ type Session struct {
 
 	Tickle *Tickle
 
+	UseLightVersion bool
+
+	PostAuthenticationActions []string
+
 	chromedpsession *chromedpexecutor.ChromeDPSession
 }
 
@@ -32,11 +36,11 @@ type Endpoint struct {
 	PasswordXPath    string
 	TokenXPath       string
 	LoginButtonXPath string
+
+	AuthenticationDelay *time.Duration
 }
 
 type Tickle struct {
-	TickleInterval   time.Duration
+	TickleInterval   *time.Duration
 	periodicInstance *periodic.PeriodicInstance
-
-	lastTickledAll bool
 }

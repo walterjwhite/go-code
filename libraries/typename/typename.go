@@ -6,5 +6,5 @@ import (
 )
 
 func Get(data interface{}) string {
-	return strings.ToLower(strings.ReplaceAll(fmt.Sprintf("%T", data), "*", ""))
+	return strings.ReplaceAll(fmt.Sprintf("%T", data), "*", "")
 }

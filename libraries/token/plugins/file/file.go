@@ -12,8 +12,8 @@ import (
 /* Attempts to read the specified file, periodically polling <Interval> and waiting at most <Timeout>*/
 type FileReader struct {
 	Filename string
-	Timeout  time.Duration
-	Interval time.Duration
+	Timeout  *time.Duration
+	Interval *time.Duration
 	Context  context.Context
 }
 

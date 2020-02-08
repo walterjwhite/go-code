@@ -60,7 +60,7 @@ func (c *NodeConfiguration) deleteIndex(indexName string) {
 }
 
 func (c *NodeConfiguration) getIndexName(document document.Document) (string, string) {
-	documentTypeName := typename.Get(document)
+	documentTypeName := strings.ToLower(typename.Get(document))
 	return documentTypeName, c.getFullIndexName(documentTypeName)
 }
 
