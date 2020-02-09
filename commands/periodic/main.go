@@ -15,6 +15,8 @@ var (
 	rootDirectoryFlag = flag.String("RootDirectory", ".", "Root Directory to scan files")
 	intervalFlag      = flag.String("Interval", "1m", "Interval between execution")
 	patternStringFlag = flag.String("Patterns", "", "Patterns")
+	commandFlag       = flag.String("Cmd", "", "Command")
+	argumentsFlag     = flag.String("Arguments", "", "Arguments")
 )
 
 func init() {
@@ -42,6 +44,20 @@ func getPatterns() []string {
 }
 
 func exec(filePath string) {
-	_, err := runner.Run(application.Context, filePath)
+	var cmd string
+	var arguments []string
+
+	if len(*commandFlag) > 0 {
+		cmd = *commandFlag
+
+		if len(*argumentsFlag) > 0 {
+			arguments = append(arguments, strings.Split(*argumentsFlag, ",")...)
+			arguments = append(arguments, filePath)
+		}
+	} else {
+		cmd = filePath
+	}
+
+	_, err := runner.Run(application.Context, cmd, arguments...)
 	logging.Panic(err)
 }
