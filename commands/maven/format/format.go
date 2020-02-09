@@ -7,7 +7,7 @@ import (
 	"github.com/walterjwhite/go-application/libraries/maven/format"
 	"github.com/walterjwhite/go-application/libraries/path"
 	"github.com/walterjwhite/go-application/libraries/runner"
-	"github.com/walterjwhite/go-application/libraries/timestamp"
+	"github.com/walterjwhite/go-application/libraries/timeformatter/timestamp"
 
 	"flag"
 	"fmt"
