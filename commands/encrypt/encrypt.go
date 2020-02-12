@@ -7,26 +7,28 @@ import (
 	"strings"
 
 	"github.com/walterjwhite/go-application/libraries/application"
-	"github.com/walterjwhite/go-application/libraries/encryption"
+	"github.com/walterjwhite/go-application/libraries/encryption/aes"
+	"github.com/walterjwhite/go-application/libraries/encryption/providers/ssh"
 	"github.com/walterjwhite/go-application/libraries/logging"
 )
 
 var (
 	filename          = flag.String("filename", "", "filename to encrypt")
 	overwriteExisting = flag.Bool("overwriteExisting", false, "overwriteExisting")
+	aesConfiguration  *aes.Configuration
 )
 
 func init() {
+	aesConfiguration = &aes.Configuration{Encryption: ssh.Instance}
+
 	application.Configure()
 }
 
 func main() {
 	validateArgumentsFilename()
 
-	e := encryption.New()
 	data, _ := ioutil.ReadFile(*filename)
-
-	e.EncryptFile(getOutfile(), data)
+	logging.Panic(ioutil.WriteFile(getOutfile(), aesConfiguration.Encrypt(data), 0644))
 }
 
 func validateArgumentsFilename() {

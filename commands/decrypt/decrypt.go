@@ -8,7 +8,8 @@ import (
 
 	"github.com/rs/zerolog/log"
 	"github.com/walterjwhite/go-application/libraries/application"
-	"github.com/walterjwhite/go-application/libraries/encryption"
+	"github.com/walterjwhite/go-application/libraries/encryption/aes"
+	"github.com/walterjwhite/go-application/libraries/encryption/providers/ssh"
 	"github.com/walterjwhite/go-application/libraries/logging"
 	//"github.com/walterjwhite/go-application/libraries/secrets"
 )
@@ -17,19 +18,20 @@ var (
 	filename = flag.String("filename", "", "filename to decrypt")
 	//output            = flag.String("output", "", "output filename")
 	overwriteExisting = flag.Bool("overwriteExisting", false, "overwriteExisting")
+	aesConfiguration  *aes.Configuration
 )
 
 func init() {
+	aesConfiguration = &aes.Configuration{Encryption: ssh.Instance}
+
 	application.Configure()
 }
 
 func main() {
 	validateArgumentsFilename()
 
-	e := encryption.New()
-	data := e.DecryptFile(*filename)
-
-	logging.Panic(ioutil.WriteFile(getOutfile(), data, 0644))
+	data, _ := ioutil.ReadFile(*filename)
+	logging.Panic(ioutil.WriteFile(getOutfile(), aesConfiguration.Decrypt(data), 0644))
 }
 
 func validateArgumentsFilename() {
