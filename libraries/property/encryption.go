@@ -31,7 +31,10 @@ func (e *encryptionReader) Load(config interface{}, prefix string) {
 
 func setFieldValue(config SecretPropertyConfiguration, value reflect.Value, fieldName string) {
 	f := value.FieldByName(fieldName)
-	decrypted := secrets.Decrypt(f.String())
 
-	f.SetString(decrypted)
+	if len(f.String()) > 0 {
+		decrypted := secrets.Decrypt(f.String())
+
+		f.SetString(decrypted)
+	}
 }

@@ -6,6 +6,10 @@ import (
 	"time"
 )
 
+type TokenProvider interface {
+	Get() string
+}
+
 type Session struct {
 	Credentials *Credentials
 	Endpoint    *Endpoint
@@ -16,9 +20,14 @@ type Session struct {
 
 	UseLightVersion bool
 
-	PostAuthenticationActions []string
+	PostAuthenticationActions []Action
 
 	chromedpsession *chromedpexecutor.ChromeDPSession
+}
+
+type Action struct {
+	Name    string
+	Actions []string
 }
 
 type Credentials struct {

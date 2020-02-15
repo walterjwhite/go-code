@@ -17,17 +17,17 @@ func init() {
 
 func main() {
 	interval := 1 * time.Second
-	limit := 2 * time.Second
+	limit := 5 * time.Second
 	d := &data{index: 0}
 
-	wait.Wait(application.Context, interval, limit, d.f)
+	wait.Wait(application.Context, &interval, &limit, d.f)
 }
 
 func (d *data) f() bool {
 	defer d.increment()
 
 	log.Info().Msgf("checking: %v", d.index)
-	return d.index > 5
+	return d.index > 2
 }
 
 func (d *data) increment() {

@@ -1,10 +1,9 @@
 package craigslist
 
 import (
-	"fmt"
 	"github.com/chromedp/chromedp"
-	"github.com/walterjwhite/go-application/libraries/logging"
-	"strings"
+
+	"github.com/walterjwhite/go-application/libraries/chromedpexecutor"
 )
 
 func (p *CraigslistPost) doPostDetails() []chromedp.Action {
@@ -44,21 +43,8 @@ func (p *CraigslistPost) doScript() []chromedp.Action {
 
 	actions := make([]chromedp.Action, 0)
 	for _, script := range p.Script {
-		actions = append(actions, getScript(script))
+		actions = append(actions, chromedpexecutor.GetScript(script))
 	}
 
 	return actions
-}
-
-func getScript(line string) chromedp.Action {
-	arguments := strings.Split(line, ",")
-
-	if arguments[0] == "Click" {
-		return chromedp.Click(arguments[1])
-	} else if arguments[0] == "SendKeys" {
-		return chromedp.SendKeys(arguments[1], arguments[2])
-	}
-
-	logging.Panic(fmt.Errorf("Unsupported action: %v", arguments[0]))
-	return nil
 }

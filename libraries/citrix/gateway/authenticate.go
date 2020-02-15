@@ -2,7 +2,6 @@ package gateway
 
 import (
 	"context"
-
 	"fmt"
 	"github.com/chromedp/chromedp"
 	"github.com/rs/zerolog/log"
@@ -16,7 +15,7 @@ func (s *Session) Authenticate(ctx context.Context) {
 		logging.Panic(fmt.Errorf("Please enter the 6-digit token: %v", s.Token))
 	}
 
-	s.chromedpsession = chromedpexecutor.New(ctx)
+	s.chromedpsession = chromedpexecutor.LaunchRemoteBrowser(ctx)
 
 	// no need to wait
 	s.chromedpsession.Waiter = nil
@@ -28,9 +27,13 @@ func (s *Session) Authenticate(ctx context.Context) {
 	s.chromedpsession.Execute(
 		chromedp.SendKeys(s.Endpoint.UsernameXPath, s.Credentials.Domain+"\\"+s.Credentials.Username),
 		chromedp.SendKeys(s.Endpoint.PasswordXPath, s.Credentials.Password),
-		chromedp.SendKeys(s.Endpoint.TokenXPath, s.Credentials.Pin+s.Token),
+		chromedp.SendKeys(s.Endpoint.TokenXPath, s.getToken()),
 		chromedp.Click(s.Endpoint.LoginButtonXPath),
 	)
+}
+
+func (s *Session) getToken() string {
+	return s.Credentials.Pin + s.Token
 }
 
 // TODO: configure this

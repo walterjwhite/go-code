@@ -4,7 +4,10 @@ import (
 	"context"
 	"fmt"
 	"github.com/chromedp/chromedp"
+	"github.com/walterjwhite/go-application/libraries/chromedpexecutor"
 	"github.com/walterjwhite/go-application/libraries/logging"
+
+	"github.com/rs/zerolog/log"
 	"time"
 )
 
@@ -25,10 +28,32 @@ func (s *Session) Run(ctx context.Context) {
 	// with a 5-second delay after the fact before allowing subsequent execution
 	s.tickle(ctx)
 
+	// TODO: configure this
 	time.Sleep(5 * time.Second)
 
-	s.launchDesktop()
-	s.launchRemoteDesktop()
+	s.runPostAuthenticationActions(ctx)
+}
+
+func (s *Session) runPostAuthenticationActions(ctx context.Context) {
+	/*
+		s.launchDesktop()
+		s.launchRemoteDesktop()
+	*/
+
+	if len(s.PostAuthenticationActions) > 0 {
+		for i, a := range s.PostAuthenticationActions {
+			if i > 0 {
+				// TODO: configure this
+				time.Sleep(5 * time.Second)
+
+				log.Debug().Msgf("executing: %v", a.Name)
+
+				for _, action := range a.Actions {
+					s.chromedpsession.Execute(chromedpexecutor.GetScript(action))
+				}
+			}
+		}
+	}
 }
 
 func (s *Session) RunWith(ctx context.Context, fn func()) {
