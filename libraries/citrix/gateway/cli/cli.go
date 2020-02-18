@@ -1,21 +1,20 @@
 package cli
 
 import (
-	"flag"
-	"github.com/walterjwhite/go-application/libraries/citrix/gateway"
+    "flag"
 )
 
 type Provider struct {
 }
 
 var (
-	tokenFlag = flag.String("Token", "", "RSA Token")
+    tokenFlag = flag.String("Token", "", "RSA Token")
 )
 
 func New() *Provider {
-	return &Provider{}
+    return &Provider{}
 }
 
-func (p *Provider) Get() [] /*6*/ int {
-	return gateway.Get(*tokenFlag)
+func (p *Provider) Get() string {
+    return *tokenFlag
 }

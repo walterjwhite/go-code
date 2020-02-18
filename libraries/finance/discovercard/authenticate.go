@@ -19,7 +19,7 @@ func (s *DiscoverSession) Authenticate(ctx context.Context) {
 		s.Logout()
 	}
 
-	s.chromedpsession = chromedpexecutor.New(ctx)
+	s.chromedpsession = chromedpexecutor.LaunchRemoteBrowser(ctx)
 
 	// no need to wait
 	s.chromedpsession.Waiter = nil

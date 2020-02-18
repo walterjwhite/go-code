@@ -13,6 +13,7 @@ type Rule struct {
 	Matcher        Matcher
 	Actions        []Action
 	FallbackAction Action
+	MatchType MatchType
 }
 
 type CriteriaType int
@@ -42,7 +43,14 @@ type GroupRule struct {
 }
 
 func (r *GroupRule) Matches(data interface{}) bool {
-	switch r.CriteriaType {
+	for i,rule := range r.Rules {
+		
+	}
+	
+}
+
+func (r *Rule) Matches(data interface{}) bool {
+	switch r.MatchType {
 	case EqualsIgnoreCase:
 		return true
 	case Equals:

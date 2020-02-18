@@ -4,7 +4,7 @@ import (
 	"github.com/walterjwhite/go-application/libraries/application"
 	"github.com/walterjwhite/go-application/libraries/path"
 	"github.com/walterjwhite/go-application/libraries/run"
-	"github.com/walterjwhite/go-application/libraries/timestamp"
+	"github.com/walterjwhite/go-application/libraries/timeformatter/timestamp"
 
 	"flag"
 	"strings"

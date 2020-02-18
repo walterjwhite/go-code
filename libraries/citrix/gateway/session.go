@@ -35,11 +35,6 @@ func (s *Session) Run(ctx context.Context) {
 }
 
 func (s *Session) runPostAuthenticationActions(ctx context.Context) {
-	/*
-		s.launchDesktop()
-		s.launchRemoteDesktop()
-	*/
-
 	if len(s.PostAuthenticationActions) > 0 {
 		for i, a := range s.PostAuthenticationActions {
 			if i > 0 {

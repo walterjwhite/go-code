@@ -45,3 +45,17 @@ func (r *AttributeRule) Matches(data interface{}) bool {
 	}
 	emailMessage.
 }
+
+rule:
+ ordering: int
+ name: string
+ rule: rule/group rule
+ actions: []action
+
+attribute rule:
+ field: enum
+ values: []string
+
+group rule:
+ criteria type:
+ rules: []rule

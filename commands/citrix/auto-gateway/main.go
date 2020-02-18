@@ -25,16 +25,16 @@ func init() {
 
 	// configure email
 	property.Load(emailInstance, "")
-	log.Info().Msgf("emailInstance: %s", *emailInstance)
+	log.Info().Msgf("emailInstance: %v", *emailInstance)
 
 	property.Load(emailInstance.EmailSenderAccount, "")
-	log.Info().Msgf("emailInstance: %s", *emailInstance.EmailSenderAccount)
+	log.Info().Msgf("emailInstance: %v", *emailInstance.EmailSenderAccount)
 
 	property.Load(session, "")
 
-	log.Info().Msgf("session: %s", *session)
+	log.Info().Msgf("session: %v", *session)
 	property.Load(session.Credentials, "")
-	log.Info().Msgf("session: %s", *session)
+	log.Info().Msgf("session: %v", *session)
 
 	i, err := time.ParseDuration(*tickleInterval)
 	logging.Panic(err)

@@ -1,4 +1,4 @@
-package pnc
+package vanguard
 
 import (
 	"context"
@@ -8,16 +8,18 @@ import (
 )
 
 const (
-	logoutButton = "//*[@id=\"topLinks\"]/ul/li[3]/a"
+	logoutButton = "//*[@id=\"globalNavUtilityBar\"]/div/div/ul/li[5]/a/span"
 
-	usernameField = "//*[@id=\"userId\"]"
-	passwordField = "//*[@id=\"passwordInputField\"]"
+	personalInvestors = "/html/body/app-root/app-home-page/homepage-get-started/section/div/div/aside/div/div/ul/app-triage/li[1]/div/span[1]"
+
+	usernameField = "//*[@id=\"username\"]"
+	passwordField = "//*[@id=\"password\"]"
 	//loginButton   = "//*[@id=\"olb-btn\"]"
 )
 
 // this works partially
 // need to reimplement detecting secret questions and then auto-supplying the answers
-func (s *PNCSession) Authenticate(ctx context.Context) {
+func (s *VanguardSession) Authenticate(ctx context.Context) {
 	if s.chromedpsession != nil {
 		s.Logout()
 	}
@@ -31,6 +33,15 @@ func (s *PNCSession) Authenticate(ctx context.Context) {
 
 	s.chromedpsession.Execute(
 		chromedp.Navigate(url),
+		chromedp.Click(personalInvestors),
+	)
+	
+	s.chromedpsession.ExecuteTimeLimited(
+		chromedpexecutor.TimeLimitedChromeAction{Action: chromedp.WaitVisible(usernameField),
+			Limit: 5 * time.Second, IsException: true, Message: "Login Form is visible"},
+	)
+	
+	s.chromedpsession.Execute(
 		chromedp.SendKeys(usernameField, s.Credentials.Username),
 		chromedp.SendKeys(passwordField, s.Credentials.Password),
 		chromedp.Submit(passwordField),
@@ -42,7 +53,7 @@ func (s *PNCSession) Authenticate(ctx context.Context) {
 	)
 }
 
-func (s *PNCSession) Logout() {
+func (s *VanguardSession) Logout() {
 	defer s.chromedpsession.Cancel()
 
 	s.chromedpsession.Execute(chromedp.Click(logoutButton))
