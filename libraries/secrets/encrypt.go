@@ -19,11 +19,13 @@ func Encrypt(name *string, message *string, data []byte) {
 
 	secretPath := getSecretPath(name)
 	secretValuePath := filepath.Join(secretPath, "value")
+	
+	log.Debug().Msgf("writing to: %v / %v", secretPath, secretValuePath)
 
 	encrypted := SecretsConfigurationInstance.EncryptionConfiguration.Encrypt(data)
-	logging.Panic(ioutil.WriteFile(getAbsolute(secretValuePath), encrypted, 0644))
+	logging.Panic(ioutil.WriteFile(secretValuePath, encrypted, 0644))
 
-	log.Debug().Msgf("Stored secret in %v (%v)", secretValuePath, len(data))
+	log.Debug().Msgf("Stored secret in %v (%v)", secretPath, len(data))
 
 	putLastUpdated(secretPath)
 	commit(secretPath, message)

@@ -9,22 +9,27 @@ import (
 	"github.com/walterjwhite/go-application/libraries/logging"
 )
 
+const (
+	menuButtonXpath   = "//*[@id=\"userMenuBtn\"]/p"
+	logoffButtonXpath = "//*[@id=\"menuLogOffBtn\"]"
+)
+
 // authenticate and nothing more
 func (s *Session) Authenticate(ctx context.Context) {
 	if len(s.Token) != 6 {
 		logging.Panic(fmt.Errorf("Please enter the 6-digit token: %v", s.Token))
 	}
 
-	s.chromedpsession = chromedpexecutor.LaunchRemoteBrowser(ctx)
+	s.ChromeDPSession = chromedpexecutor.LaunchRemoteBrowser(ctx)
 
 	// no need to wait
-	s.chromedpsession.Waiter = nil
+	s.ChromeDPSession.Waiter = nil
 
-	s.chromedpsession.Execute(chromedp.Navigate(s.Endpoint.Uri))
+	s.ChromeDPSession.Execute(chromedp.Navigate(s.Endpoint.Uri))
 
 	log.Debug().Msgf("pin: %v%v", s.Credentials.Pin, s.Token)
 
-	s.chromedpsession.Execute(
+	s.ChromeDPSession.Execute(
 		chromedp.SendKeys(s.Endpoint.UsernameXPath, s.Credentials.Domain+"\\"+s.Credentials.Username),
 		chromedp.SendKeys(s.Endpoint.PasswordXPath, s.Credentials.Password),
 		chromedp.SendKeys(s.Endpoint.TokenXPath, s.getToken()),
@@ -38,13 +43,13 @@ func (s *Session) getToken() string {
 
 // TODO: configure this
 func (s *Session) Logout() {
-	s.chromedpsession.Execute(
-		chromedp.Click("//*[@id=\"userMenuBtn\"]/p"),
-		chromedp.Click("//*[@id=\"menuLogOffBtn\"]"),
+	s.ChromeDPSession.Execute(
+		chromedp.Click(menuButtonXpath),
+		chromedp.Click(logoffButtonXpath),
 	)
 }
 
 // TODO: configure this
 func (s *Session) isAuthenticated() bool {
-	return s.chromedpsession.Exists("//*[@id=\"userMenuBtn\"]/p")
+	return s.ChromeDPSession.Exists(menuButtonXpath)
 }

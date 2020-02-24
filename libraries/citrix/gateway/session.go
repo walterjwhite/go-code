@@ -44,7 +44,7 @@ func (s *Session) runPostAuthenticationActions(ctx context.Context) {
 				log.Debug().Msgf("executing: %v", a.Name)
 
 				for _, action := range a.Actions {
-					s.chromedpsession.Execute(chromedpexecutor.GetScript(action))
+					s.ChromeDPSession.Execute(chromedpexecutor.GetScript(action))
 				}
 			}
 		}
@@ -58,13 +58,18 @@ func (s *Session) RunWith(ctx context.Context, fn func()) {
 	fn()
 }
 
+const (
+	menuChangeClientButtonXpath = "//*[@id=\"menuChangeClientBtn\"]"
+	useLightVersionXpath        = "//*[@id=\"changeclient-use-light-version\"]"
+)
+
 // TODO: configure this - post sign-in actions ...
 func (s *Session) useLightVersion() {
 	if s.UseLightVersion {
-		s.chromedpsession.Execute(
-			chromedp.Click("//*[@id=\"userMenuBtn\"]/p"),
-			chromedp.Click("//*[@id=\"menuChangeClientBtn\"]"),
-			chromedp.Click("//*[@id=\"changeclient-use-light-version\"]"),
+		s.ChromeDPSession.Execute(
+			chromedp.Click(menuButtonXpath),
+			chromedp.Click(menuChangeClientButtonXpath),
+			chromedp.Click(useLightVersionXpath),
 		)
 	}
 }

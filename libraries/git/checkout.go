@@ -28,7 +28,7 @@ func Checkout(parentContext context.Context, projectName string /*branchName, ta
 		}
 	}
 
-	//_, err := runner.Run(ctx, "checkout-project", projectName)
-	_, err := runner.Run(ctx, "git", arguments...)
+	_, err := runner.Run(ctx, "checkout-project", projectName)
+	//_, err := runner.Run(ctx, "git", arguments...)
 	logging.Panic(err)
 }

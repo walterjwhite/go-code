@@ -22,7 +22,7 @@ type Session struct {
 
 	PostAuthenticationActions []Action
 
-	chromedpsession *chromedpexecutor.ChromeDPSession
+	ChromeDPSession *chromedpexecutor.ChromeDPSession
 }
 
 type Action struct {

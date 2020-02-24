@@ -4,7 +4,6 @@ import (
 	"github.com/rs/zerolog/log"
 	"github.com/walterjwhite/go-application/libraries/logging"
 	"io/ioutil"
-	"os"
 	"path/filepath"
 	"strings"
 )
@@ -22,9 +21,5 @@ func Decrypt(secretPath string) string {
 }
 
 func getAbsolute(secretPath string) string {
-	if _, err := os.Stat(secretPath); os.IsNotExist(err) {
-		return filepath.Join(SecretsConfigurationInstance.RepositoryPath, secretPath, "value")
-	}
-
-	return secretPath
+	return filepath.Join(SecretsConfigurationInstance.RepositoryPath, secretPath, "value")
 }
