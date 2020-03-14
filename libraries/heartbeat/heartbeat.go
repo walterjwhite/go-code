@@ -26,6 +26,6 @@ func (h *HeartbeatInstance) Call() {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	go periodic.Periodic(ctx, h.Interval, h.HeartbeatFunction)
+	go periodic.Now(ctx, h.Interval, h.HeartbeatFunction)
 	h.Function()
 }

@@ -1,11 +1,11 @@
 package secrets
 
 import (
+	"github.com/mitchellh/go-homedir"
 	"github.com/rs/zerolog/log"
+	"github.com/walterjwhite/go-application/libraries/logging"
 	"os"
 	"os/exec"
-
-	"github.com/walterjwhite/go-application/libraries/logging"
 )
 
 func setupRepository() {
@@ -13,7 +13,10 @@ func setupRepository() {
 		return
 	}
 
-	cmd := exec.Command("git", "clone", SecretsConfigurationInstance.RepositoryRemoteUri, SecretsConfigurationInstance.RepositoryPath)
+	target, err := homedir.Expand(SecretsConfigurationInstance.RepositoryPath)
+	logging.Panic(err)
+
+	cmd := exec.Command("git", "clone", SecretsConfigurationInstance.RepositoryRemoteUri, target)
 	stdoutStderr, err := cmd.CombinedOutput()
 	logging.Panic(err)
 

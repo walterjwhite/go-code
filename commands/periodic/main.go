@@ -24,7 +24,7 @@ func init() {
 }
 
 func main() {
-	periodic.Periodic(application.Context, periodic.GetInterval(*intervalFlag), runIteration)
+	periodic.Now(application.Context, periodic.GetInterval(*intervalFlag), runIteration)
 
 	application.Wait()
 }

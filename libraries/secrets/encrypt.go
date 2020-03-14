@@ -1,6 +1,7 @@
 package secrets
 
 import (
+	"encoding/base64"
 	"github.com/rs/zerolog/log"
 	"github.com/walterjwhite/go-application/libraries/logging"
 	"io/ioutil"
@@ -19,16 +20,26 @@ func Encrypt(name *string, message *string, data []byte) {
 
 	secretPath := getSecretPath(name)
 	secretValuePath := filepath.Join(secretPath, "value")
-	
+
 	log.Debug().Msgf("writing to: %v / %v", secretPath, secretValuePath)
 
-	encrypted := SecretsConfigurationInstance.EncryptionConfiguration.Encrypt(data)
+	encrypted := DoEncrypt(data)
 	logging.Panic(ioutil.WriteFile(secretValuePath, encrypted, 0644))
 
 	log.Debug().Msgf("Stored secret in %v (%v)", secretPath, len(data))
 
 	putLastUpdated(secretPath)
 	commit(secretPath, message)
+}
+
+func DoEncrypt(data []byte) []byte {
+	initialize()
+
+	return SecretsConfigurationInstance.EncryptionConfiguration.Encrypt(data)
+}
+
+func Base64(data []byte) string {
+	return base64.StdEncoding.EncodeToString(data)
 }
 
 func getSecretPath(name *string) string {

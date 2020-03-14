@@ -22,19 +22,15 @@ func (s *Session) Run(ctx context.Context) {
 	}
 
 	s.useLightVersion()
-
-	// simply reload the page
-	// TODO: block if tickling is active
-	// with a 5-second delay after the fact before allowing subsequent execution
 	s.tickle(ctx)
-
-	// TODO: configure this
-	time.Sleep(5 * time.Second)
 
 	s.runPostAuthenticationActions(ctx)
 }
 
 func (s *Session) runPostAuthenticationActions(ctx context.Context) {
+	// TODO: configure this
+	//time.Sleep(5 * time.Second)
+
 	if len(s.PostAuthenticationActions) > 0 {
 		for i, a := range s.PostAuthenticationActions {
 			if i > 0 {

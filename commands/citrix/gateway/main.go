@@ -22,9 +22,9 @@ func init() {
 	application.Configure()
 	property.Load(session, "")
 
-	log.Info().Msgf("session: %s", *session)
+	log.Info().Msgf("session: %v", *session)
 	property.Load(session.Credentials, "")
-	log.Info().Msgf("session: %s", *session)
+	log.Info().Msgf("session: %v", *session)
 
 	i, err := time.ParseDuration(*tickleInterval)
 	logging.Panic(err)

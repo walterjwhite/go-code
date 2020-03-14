@@ -33,7 +33,7 @@ func setFieldValue(config SecretPropertyConfiguration, value reflect.Value, fiel
 	f := value.FieldByName(fieldName)
 
 	if len(f.String()) > 0 {
-		decrypted := secrets.Decrypt(f.String())
+		decrypted := secrets.Decrypt(f.String() + "/value")
 
 		f.SetString(decrypted)
 	}

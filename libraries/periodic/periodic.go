@@ -18,7 +18,11 @@ type PeriodicInstance struct {
 	runCount       int
 }
 
-func Periodic(parentContext context.Context, interval *time.Duration, fn func() error) *PeriodicInstance {
+func Now(parentContext context.Context, interval *time.Duration, fn func() error) *PeriodicInstance {
+	return Periodic(parentContext, interval, true, fn)
+}
+
+func Periodic(parentContext context.Context, interval *time.Duration, runImmediately bool, fn func() error) *PeriodicInstance {
 	ticker := time.NewTicker(*interval)
 
 	ctx, cancel := context.WithCancel(parentContext)

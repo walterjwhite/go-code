@@ -29,7 +29,7 @@ func (a *Action) isLongRunning() bool {
 func (a *Action) invokePeriodic() {
 	wrappedPeriodic := &wrapPeriodic{Function: a.Monitor.Execute}
 
-	go periodic.Periodic(a.Session.Context, periodic.GetInterval(a.Interval), wrappedPeriodic.wrap)
+	go periodic.Now(a.Session.Context, periodic.GetInterval(a.Interval), wrappedPeriodic.wrap)
 }
 
 func (w *wrapPeriodic) wrap() error {

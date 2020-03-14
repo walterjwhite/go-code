@@ -35,12 +35,12 @@ func (s *VanguardSession) Authenticate(ctx context.Context) {
 		chromedp.Navigate(url),
 		chromedp.Click(personalInvestors),
 	)
-	
+
 	s.chromedpsession.ExecuteTimeLimited(
 		chromedpexecutor.TimeLimitedChromeAction{Action: chromedp.WaitVisible(usernameField),
 			Limit: 5 * time.Second, IsException: true, Message: "Login Form is visible"},
 	)
-	
+
 	s.chromedpsession.Execute(
 		chromedp.SendKeys(usernameField, s.Credentials.Username),
 		chromedp.SendKeys(passwordField, s.Credentials.Password),
