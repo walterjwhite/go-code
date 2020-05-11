@@ -39,9 +39,7 @@ func (s *Session) runPostAuthenticationActions(ctx context.Context) {
 
 				log.Debug().Msgf("executing: %v", a.Name)
 
-				for _, action := range a.Actions {
-					s.ChromeDPSession.Execute(chromedpexecutor.GetScript(action))
-				}
+				s.ChromeDPSession.Execute(chromedpexecutor.ParseActions(a.Actions...)...)
 			}
 		}
 	}

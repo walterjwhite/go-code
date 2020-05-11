@@ -41,10 +41,5 @@ func (p *CraigslistPost) doScript() []chromedp.Action {
 		return nil
 	}
 
-	actions := make([]chromedp.Action, 0)
-	for _, script := range p.Script {
-		actions = append(actions, chromedpexecutor.GetScript(script))
-	}
-
-	return actions
+	return chromedpexecutor.ParseActions(p.Script...)
 }

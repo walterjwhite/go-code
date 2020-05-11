@@ -1,84 +1,77 @@
 package git
 
 import (
-	"github.com/rs/zerolog/log"
-	"github.com/walterjwhite/go-application/libraries/application"
-	"github.com/walterjwhite/go-application/libraries/logging"
-	"github.com/walterjwhite/go-application/libraries/runner"
-	"os/user"
-	"strings"
-
-	"bufio"
-	"bytes"
-	"context"
-	//"errors"
 	"fmt"
-	"time"
+	"github.com/mitchellh/go-homedir"
+	"github.com/walterjwhite/go-application/libraries/logging"
+	"gopkg.in/src-d/go-git.v4"
+	"os"
+	"path/filepath"
 )
 
-func GetCurrentBranch(projectDirectory string) string {
-	ctx, cancel := context.WithTimeout(application.Context, 5*time.Second)
-	defer cancel()
-
-	cmd := runner.Prepare( /*application.Context*/ ctx, "git", "branch")
-	cmd.Dir = projectDirectory
-
-	var b bytes.Buffer
-
-	runner.WithWriter(cmd, &b)
-	logging.Panic(cmd.Start())
-	logging.Panic(cmd.Wait())
-
-	//output := string(b)
-
-	//log.Info().Msgf("output: %v", output)
-
-	scanner := bufio.NewScanner( /*output*/ &b)
-	for scanner.Scan() {
-		line := scanner.Text()
-		if strings.HasPrefix(line, "*") {
-			return strings.TrimPrefix(line, "* ")
-		}
-	}
-	// naming convention
-	// <owner>/<source>/ticket-#
-	// walterjwhite/dev/jira-123
-
-	//logging.Panic(errors.New("Unable to parse branch (has repository been initialized?): "))
-	return "master"
-}
-
-func GetOwner() string {
-	currentUser, err := user.Current()
+func InitCurrentWDWorkTree() *WorkTreeConfig {
+	wd, err := os.Getwd()
 	logging.Panic(err)
 
-	return currentUser.Username
+	return InitWorkTree(wd)
 }
 
-func GetSourceBranch(currentBranchName string) string {
-	return strings.Split(currentBranchName, "/")[1]
+func InitWorkTreeIn(path string) *WorkTreeConfig {
+	return InitWorkTree(getGitDir(path))
 }
 
-func GetTicketId(currentBranchName string) string {
-	log.Info().Msgf("current branch: %v", currentBranchName)
+func getGitDir(path string) string {
+	// check if .git is present
+	gitDir := filepath.Join(path, ".git")
+	_, err := os.Stat(gitDir)
+	if os.IsNotExist(err) {
+		parent := filepath.Dir(path)
+		if parent == path {
+			logging.Panic(fmt.Errorf("Unable to locate git directory in: %v", path))
+		}
 
-	if strings.Contains(currentBranchName, "/") {
-		return strings.Split(currentBranchName, "/")[2]
+		return getGitDir(parent)
 	}
 
-	return ""
+	return path
 }
 
-// TODO: generalize this
-func FormatCommitMessage(projectDirectory string, messageTemplate *string, message string) string {
-	currentBranchName := GetCurrentBranch(projectDirectory)
-	ticketId := GetTicketId(currentBranchName)
+func InitWorkTree(path string) *WorkTreeConfig {
+	return doInit(path, filepath.Join(path, ".git"), false)
+}
 
-	if len(ticketId) == 0 {
-		return message
+func InitBare(path string) *WorkTreeConfig {
+	return doInit(path, path, true)
+}
+
+func doInit(path, gitDir string, bare bool) *WorkTreeConfig {
+	expandedPath, err := homedir.Expand(path)
+	logging.Panic(err)
+
+	c := &WorkTreeConfig{Path: expandedPath}
+
+	_, err = os.Stat(gitDir)
+	if os.IsNotExist(err) {
+		c.doInitRepository(git.PlainInit(expandedPath, bare))
+	} else {
+		c.doInitRepository(git.PlainOpen(expandedPath))
 	}
 
-	formattedMessage := fmt.Sprintf(*messageTemplate, ticketId, message)
-	log.Debug().Msgf("using %v as the commit message", formattedMessage)
-	return formattedMessage
+	if !bare {
+		c.doInitWorkTree()
+	}
+
+	return c
+}
+
+func (c *WorkTreeConfig) doInitRepository(r *git.Repository, err error) {
+	logging.Panic(err)
+	c.R = r
+}
+
+func (c *WorkTreeConfig) doInitWorkTree() {
+	w, err := c.R.Worktree()
+	logging.Panic(err)
+
+	c.W = w
 }

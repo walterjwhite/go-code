@@ -5,16 +5,16 @@ import (
 	"time"
 
 	"github.com/walterjwhite/go-application/libraries/logging"
-	"github.com/walterjwhite/go-application/libraries/runner"
+	"github.com/walterjwhite/go-application/libraries/timeout"
+
+	"gopkg.in/src-d/go-git.v4"
 )
 
-func Push(parentContext context.Context, projectDirectory string) {
-	ctx, cancel := context.WithTimeout(parentContext, 30*time.Second)
-	defer cancel()
+func (c *WorkTreeConfig) Push(parentCtx context.Context) {
+	d := 30 * time.Second
+	timeout.Limit(c.doPush, &d, parentCtx)
+}
 
-	cmd := runner.Prepare(ctx, "git", "push")
-	cmd.Dir = projectDirectory
-
-	logging.Panic(cmd.Start())
-	logging.Panic(cmd.Wait())
+func (c *WorkTreeConfig) doPush() {
+	logging.Panic(c.R.Push(&git.PushOptions{}))
 }

@@ -7,6 +7,8 @@ import (
 )
 
 func (i *Instance) Create(projectKey, summary, description, issueTypeName string) *jiral.Issue {
+	i.setupAuth()
+
 	issue := &jiral.Issue{Fields: &jiral.IssueFields{
 		Project:     jiral.Project{Key: projectKey},
 		Summary:     summary,

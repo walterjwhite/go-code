@@ -41,21 +41,14 @@ func init() {
 }
 
 func IsRemoteBrowserRunning() bool {
-	_, err := os.Stat(*devToolsWsFileFlag)
-	if err == nil {
-		getURLFromFile()
-
-		return len(*devToolsWsUrlFlag) > 0
-	}
-
-	return false
+	getURLFromFile()
+	return len(*devToolsWsUrlFlag) > 0
 }
 
 func LaunchRemoteBrowser(ctx context.Context) *ChromeDPSession {
 	if cmd != nil {
-		// kill the cmd
-		//cmd.Wait()
 		logging.Panic(cmd.Process.Kill())
+		cmd = nil
 	}
 
 	if !IsRemoteBrowserRunning() {
@@ -70,7 +63,9 @@ func LaunchRemoteBrowser(ctx context.Context) *ChromeDPSession {
 }
 
 func New(ctx context.Context) *ChromeDPSession {
-	getURLFromFile()
+	if len(*devToolsWsFileFlag) == 0 {
+		getURLFromFile()
+	}
 
 	if len(*devToolsWsUrlFlag) == 0 {
 		logging.Panic(errors.New("Please specify the DevToolsWSUrl"))
@@ -96,6 +91,9 @@ func getURLFromFile() {
 
 		dataString := strings.TrimSpace(string(data))
 		devToolsWsUrlFlag = &dataString
+
+		log.Info().Msgf("URL: %v", dataString)
+		log.Info().Msgf("URL: %v", *devToolsWsUrlFlag)
 	}
 }
 

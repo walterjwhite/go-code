@@ -3,6 +3,7 @@ package runner
 import (
 	"context"
 	"github.com/rs/zerolog/log"
+	"github.com/walterjwhite/go-application/libraries/logging"
 	"io"
 	"os"
 	"os/exec"
@@ -59,4 +60,9 @@ func doRun(command *exec.Cmd) (int, error) {
 
 func Run(ctx context.Context, command string, arguments ...string) (int, error) {
 	return doRun(Prepare(ctx, command, arguments...))
+}
+
+func Panic(ctx context.Context, cmd *exec.Cmd) {
+	logging.Panic(cmd.Start())
+	logging.Panic(cmd.Wait())
 }

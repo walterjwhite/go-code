@@ -1,7 +1,6 @@
 package property
 
 import (
-	"flag"
 	"github.com/mitchellh/go-homedir"
 	"github.com/rs/zerolog/log"
 	"github.com/walterjwhite/go-application/libraries/logging"
@@ -11,29 +10,16 @@ import (
 	"path/filepath"
 )
 
-type defaultConfigurationReader struct{}
-
-var (
-	basePath = flag.String("PropertyBasePath", "~/.defaults", "PropertyBasePath")
-	//filePath = flag.String("PropertyFilePath", "", "PropertyFilePath")
+const (
+	defaultsPath = "~/.defaults"
 )
 
-func (d *defaultConfigurationReader) Load(config interface{}, prefix string) {
-	defaultsBasePath, err := homedir.Expand(*basePath)
-	logging.Panic(err)
+func (c *Configuration) LoadFile(config interface{}, prefix string) {
+	filename := c.getFile(config, prefix)
 
-	f := &fileConfigurationReader{Filename: filepath.Join(defaultsBasePath, prefix, typename.Get(config)+".yaml")}
-	f.Load(config, prefix)
-}
-
-type fileConfigurationReader struct {
-	Filename string
-}
-
-func (f *fileConfigurationReader) Load(config interface{}, prefix string) {
-	finfo, err := os.Stat(f.Filename)
+	finfo, err := os.Stat(filename)
 	if os.IsNotExist(err) {
-		log.Warn().Msgf("%v does not exist", f.Filename)
+		log.Warn().Msgf("%v does not exist", filename)
 		return
 	}
 
@@ -41,5 +27,16 @@ func (f *fileConfigurationReader) Load(config interface{}, prefix string) {
 		return
 	}
 
-	yamlhelper.Read(f.Filename, config)
+	yamlhelper.Read(filename, config)
+}
+
+func (c *Configuration) getFile(config interface{}, prefix string) string {
+	if len(c.Path) == 0 {
+		path, err := homedir.Expand(defaultsPath)
+		logging.Panic(err)
+
+		return filepath.Join(path, prefix, typename.Get(config)+".yaml")
+	}
+
+	return c.Path
 }

@@ -6,13 +6,11 @@ import (
 	"reflect"
 )
 
-type encryptionReader struct{}
-
 type SecretPropertyConfiguration interface {
 	EncryptedFields() []string
 }
 
-func (e *encryptionReader) Load(config interface{}, prefix string) {
+func LoadEncrypted(config interface{}, prefix string) {
 	//if ! config instanceof SecretPropertyConfiguration {
 	secretPropertyConfiguration, ok := config.(SecretPropertyConfiguration)
 	if !ok {

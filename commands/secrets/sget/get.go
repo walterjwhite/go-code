@@ -19,6 +19,8 @@ func init() {
 }
 
 func main() {
+	defer application.OnEnd()
+
 	secrets.Find(decryptOnMatch, secrets.NewFind()...)
 }
 

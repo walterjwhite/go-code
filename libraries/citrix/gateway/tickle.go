@@ -18,8 +18,12 @@ func (s *Session) tickle(ctx context.Context) {
 	}
 
 	// do not tickle immediately
-	s.Tickle.periodicInstance = periodic.Periodic(ctx, s.Tickle.TickleInterval, false, s.doTickle)
-	log.Debug().Msgf("tickle instance: %v", s.Tickle.periodicInstance)
+	if s.Tickle != nil && s.Tickle.TickleInterval.Seconds() > 0 {
+		s.Tickle.periodicInstance = periodic.Periodic(ctx, s.Tickle.TickleInterval, false, s.doTickle)
+		log.Debug().Msgf("tickle instance: %v", s.Tickle.periodicInstance)
+	} else {
+		log.Debug().Msgf("not tickling: %v (seconds)", s.Tickle.TickleInterval.Seconds())
+	}
 }
 
 func (s *Session) doTickle() error {

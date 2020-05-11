@@ -4,35 +4,22 @@ import (
 	"github.com/walterjwhite/go-application/libraries/logging"
 
 	"gopkg.in/bndr/gojenkins.v1"
-	//"github.com/pushyzheng/gojenkins"
-	"time"
 )
 
-/*
-type JenkinsCredentials struct {
-	Username string
-	Password string
-}
-*/
-
-func (c *JenkinsInstance) EncryptedFields() []string {
-	//return []string{"JenkinsCredentials.Username", "JenkinsCredentials.Password"}
+func (c *Instance) EncryptedFields() []string {
 	return []string{"Username", "Password"}
 }
 
-type JenkinsInstance struct {
+type Instance struct {
 	Url string
-	//JenkinsCredentials *JenkinsCredentials
+
 	Username string
 	Password string
-
-	BuildTimeout       *time.Duration
-	BuildCheckInterval *time.Duration
 
 	jenkins *gojenkins.Jenkins
 }
 
-func (i *JenkinsInstance) setup() {
+func (i *Instance) setup() {
 	if i.jenkins != nil {
 		return
 	}

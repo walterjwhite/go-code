@@ -1,31 +1,24 @@
 package property
 
-import (
-	"github.com/rs/zerolog/log"
-)
+type Configuration struct {
+	Path string
+}
 
+// TODO: allow other sources (REDIS, etcd, etc.)
+// TODO: allow writing properties
 type ConfigurationReader interface {
 	Load(config interface{}, prefix string)
 }
 
-var (
-	readerRegistry []ConfigurationReader
-)
+func (c *Configuration) Load(config interface{}, prefix string) {
+	c.LoadFile(config, prefix)
 
-func init() {
-	readerRegistry = make([]ConfigurationReader, 0)
-
-	readerRegistry = append(readerRegistry, &defaultConfigurationReader{})
-	readerRegistry = append(readerRegistry, &envConfigurationReader{})
-	readerRegistry = append(readerRegistry, &cliConfigurationReader{})
-	readerRegistry = append(readerRegistry, &cliConfigurationReader{})
-
-	readerRegistry = append(readerRegistry, &encryptionReader{})
+	LoadEnv(config, prefix)
+	LoadCli(config, prefix)
+	LoadEncrypted(config, prefix)
 }
 
 func Load(config interface{}, prefix string) {
-	for index, value := range readerRegistry {
-		log.Info().Msgf("reading: %v via %T", index, value)
-		value.Load(config, prefix)
-	}
+	c := &Configuration{}
+	c.Load(config, prefix)
 }

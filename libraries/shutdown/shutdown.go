@@ -1,7 +1,8 @@
 package shutdown
 
 import (
-	"github.com/walterjwhite/go-application/libraries/application"
+	//"github.com/walterjwhite/go-application/libraries/application"
+	"context"
 	"os"
 	"os/signal"
 	"sync"
@@ -12,32 +13,37 @@ type ShutdownHandler interface {
 	OnContextClosed()
 }
 
-var shutdownHooksGroup = sync.WaitGroup{}
-var registerContextCleanupOnce sync.Once
+var (
+	shutdownHooksGroup = sync.WaitGroup{}
+	//registerContextCleanupOnce sync.Once
+)
 
-func Add(shutdownHandler ShutdownHandler) {
+func Add(ctx context.Context, shutdownHandler ShutdownHandler) {
 	shutdownHooksGroup.Add(1)
 
 	osSignalChannel := make(chan os.Signal, 1)
 	signal.Notify(osSignalChannel, os.Interrupt)
 
-	go handleShutdown(osSignalChannel, shutdownHandler)
+	go handleShutdown(ctx, osSignalChannel, shutdownHandler)
 
-	go registerContextCleanupOnce.Do(cleanup)
+	// was this necessary?
+	//go registerContextCleanupOnce.Do(cleanup)
 }
 
-func handleShutdown(osSignalChannel chan os.Signal, shutdownHandler ShutdownHandler) {
+func handleShutdown(ctx context.Context, osSignalChannel chan os.Signal, shutdownHandler ShutdownHandler) {
 	select {
 	case <-osSignalChannel:
 		shutdownHandler.OnShutdown()
-	case <-application.Context.Done():
+	case <-ctx.Done():
 		shutdownHandler.OnContextClosed()
 	}
 
 	shutdownHooksGroup.Done()
 }
 
+/*
 func cleanup() {
 	shutdownHooksGroup.Wait()
-	application.Cancel()
+	//application.Cancel()
 }
+*/

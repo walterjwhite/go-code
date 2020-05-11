@@ -8,8 +8,8 @@ import (
 )
 
 var (
-	lengthFlag       = flag.Int("length", 32, "Length of random string to produce")
-	characterSetFlag = flag.String("charset", "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", "Character Set")
+	lengthFlag       = flag.Int("l", 32, "Length of random string to produce")
+	characterSetFlag = flag.String("c", "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", "Character Set")
 )
 
 func init() {
@@ -17,5 +17,7 @@ func init() {
 }
 
 func main() {
+	defer application.OnEnd()
+
 	fmt.Println(random.StringWithCharset(*lengthFlag, *characterSetFlag))
 }

@@ -14,7 +14,7 @@ import (
 var (
 
 	// TODO: randomize the interval, configure minimum interval and deviation ...
-	tickleInterval = flag.String("TickleInterval", "3m", "Tickle Interval")
+	tickleInterval = flag.String("TickleInterval", "", "Tickle Interval, disabled")
 	session        = &gateway.Session{}
 )
 
@@ -26,10 +26,12 @@ func init() {
 	property.Load(session.Credentials, "")
 	log.Info().Msgf("session: %v", *session)
 
-	i, err := time.ParseDuration(*tickleInterval)
-	logging.Panic(err)
+	if len(*tickleInterval) > 0 {
+		i, err := time.ParseDuration(*tickleInterval)
+		logging.Panic(err)
 
-	session.Tickle = &gateway.Tickle{TickleInterval: &i}
+		session.Tickle = &gateway.Tickle{TickleInterval: &i}
+	}
 }
 
 func main() {

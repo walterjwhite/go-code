@@ -1,34 +1,41 @@
 package run
 
 import (
-	"flag"
-	"fmt"
-	"github.com/mitchellh/go-homedir"
-	"github.com/walterjwhite/go-application/libraries/logging"
-	"github.com/walterjwhite/go-application/libraries/yamlhelper"
-	"path/filepath"
+	"github.com/walterjwhite/go-application/libraries/property"
 )
 
-type Application struct {
-	Name        string
-	Command     string
-	Arguments   []string
-	LogMatcher  string
-	Environment []string
+type ApplicationConfigurer interface {
+	Load(a *Application, prefix string)
 }
 
-type Configuration struct {
-	Applications []Application
+type config struct{}
+
+var (
+	Configurer ApplicationConfigurer
+)
+
+func New(applications ...string) *Instance {
+	setup()
+
+	i := &Instance{}
+
+	i.Applications = make([]*Application, len(applications))
+	for index, application := range applications {
+		var a *Application
+
+		Configurer.Load(a, application)
+		i.Applications[index] = a
+	}
+
+	return i
 }
 
-var applicationsPath = flag.String("RunApplicationsPath", "~/.applications", "RunApplicationsPath")
+func (c *config) Load(a *Application, prefix string) {
+	property.Load(a, prefix)
+}
 
-func (a *Application) getConf(application string) *Application {
-	f := filepath.Join(*applicationsPath, fmt.Sprintf("%v.yaml", application))
-	f, err := homedir.Expand(f)
-	logging.Panic(err)
-
-	yamlhelper.Read(f, a)
-
-	return a
+func setup() {
+	if Configurer == nil {
+		Configurer = &config{}
+	}
 }

@@ -6,6 +6,8 @@ import (
 )
 
 func (i *Instance) Get(issueId string) *jiral.Issue {
+	i.setupAuth()
+
 	issue, _, err := i.client.Issue.Get(issueId, nil)
 	logging.Panic(err)
 

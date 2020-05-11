@@ -4,19 +4,36 @@ import (
 	"context"
 	"time"
 
-	"github.com/rs/zerolog/log"
+	"github.com/tcnksm/go-gitconfig"
 	"github.com/walterjwhite/go-application/libraries/logging"
-	"github.com/walterjwhite/go-application/libraries/runner"
+	"github.com/walterjwhite/go-application/libraries/timeout"
+	"gopkg.in/src-d/go-git.v4"
+	"gopkg.in/src-d/go-git.v4/plumbing/object"
 )
 
-func Commit(parentContext context.Context, projectDirectory string, messageTemplate *string, commitMessage string) {
-	ctx, cancel := context.WithTimeout(parentContext, 30*time.Second)
-	defer cancel()
+type commit struct {
+	Message        string
+	WorkTreeConfig *WorkTreeConfig
+}
 
-	log.Info().Msgf("args: %v / %v", *messageTemplate, commitMessage)
-	cmd := runner.Prepare(ctx, "git", "commit", "-m", FormatCommitMessage(projectDirectory, messageTemplate, commitMessage))
-	cmd.Dir = projectDirectory
+// TODO: reintroduce timeouts ...
+func (c *WorkTreeConfig) Commit(parentCtx context.Context, commitMessage string) {
+	commitConfig := &commit{Message: commitMessage, WorkTreeConfig: c}
 
-	logging.Panic(cmd.Start())
-	logging.Panic(cmd.Wait())
+	d := 30 * time.Second
+
+	timeout.Limit(commitConfig.doCommit, &d, parentCtx)
+}
+
+func (c *commit) doCommit() {
+	// TODO: get the signature from the environment
+	username, err := gitconfig.Username()
+	logging.Panic(err)
+
+	email, err := gitconfig.Email()
+	logging.Panic(err)
+
+	_, err = c.WorkTreeConfig.W.Commit(c.Message, &git.CommitOptions{Author: &object.Signature{Name: username, Email: email, When: time.Now()}})
+
+	logging.Panic(err)
 }

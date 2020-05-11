@@ -2,35 +2,31 @@ package timeout
 
 import (
 	"context"
-	"errors"
+
+	"fmt"
+	"github.com/walterjwhite/go-application/libraries/logging"
 	"time"
 )
 
-type TimedExecution struct {
-	function func()
-}
-
-func Limit(function func(), maximumExecutionTime *time.Duration, parentContext context.Context) error {
+func Limit(function func(), maximumExecutionTime *time.Duration, parentContext context.Context) {
 	ctx, cancel := context.WithTimeout(parentContext, *maximumExecutionTime)
 	defer cancel()
 
-	t := &TimedExecution{function: function}
-	return t.call(ctx)
+	doLimit(ctx, function)
 }
 
-func (t *TimedExecution) call(ctx context.Context) error {
+func doLimit(ctx context.Context, function func()) {
 	invocationCompletedChannel := make(chan bool)
 
 	go func() {
-		t.function()
+		function()
 		invocationCompletedChannel <- true
 	}()
 
 	select {
-
 	case <-invocationCompletedChannel:
-		return nil
+		return
 	case <-ctx.Done():
-		return errors.New("Context was aborted")
+		logging.Panic(fmt.Errorf("Context was aborted"))
 	}
 }

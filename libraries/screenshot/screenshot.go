@@ -1,39 +1,54 @@
 package screenshot
 
 import (
-	"github.com/rs/zerolog/log"
 	"github.com/vova616/screenshot"
 	"github.com/walterjwhite/go-application/libraries/logging"
-	//"github.com/walterjwhite/go-application/libraries/path"
-	// poor performance ~ 9 seconds on Linux?
-	//"image/png"
-	"bytes"
+
 	"flag"
+	"image"
 	"image/jpeg"
 	"os"
 )
 
 var (
-	jpegQualityFlag = flag.Int("ScreenshotJpegQuality", 90, "JPEG Quality (1 - 100)")
+	jpegQualityFlag = flag.Int("ScreenshotJpegQuality", 50, "JPEG Quality (1 - 100)")
 )
+
+type Instance struct {
+	filename string
+
+	channel chan bool
+	image   *image.RGBA
+}
 
 // TODO: currently only taking PNG screenshots
 // support other formats
-
-func Take(filename string) {
-	file, err := os.OpenFile(filename, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
-	logging.Panic(err)
-	defer file.Close()
+func Take(filename string) *Instance {
+	i := &Instance{filename: filename}
+	i.channel = make(chan bool, 1)
 
 	img, err := screenshot.CaptureScreen()
 	logging.Panic(err)
 
-	buffer := new(bytes.Buffer)
-	logging.Panic( /*png*/ jpeg.Encode(buffer, img, &jpeg.Options{Quality: *jpegQualityFlag}))
+	i.image = img
 
-	//logging.Panic(png.Encode(file, img))
-	_, err = file.Write(buffer.Bytes())
+	// write async as encoding is slow ...
+	go i.write()
+
+	return i
+}
+
+func (i *Instance) write() {
+	file, err := os.OpenFile(i.filename, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 	logging.Panic(err)
+	defer file.Close()
 
-	log.Debug().Msgf("Captured screenshot: %v", filename)
+	logging.Panic( /*png*/ jpeg.Encode(file, i.image, &jpeg.Options{Quality: *jpegQualityFlag}))
+
+	i.channel <- true
+}
+
+func (i *Instance) Wait() {
+	<-i.channel
+	close(i.channel)
 }
