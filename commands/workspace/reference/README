@@ -1,0 +1,49 @@
+###################
+# goals
+1. capture knowledge / information / processes / etc (not secrets)
+2. easily search and find information
+  ie. 1. compile a Java application
+      2. ssh to box
+      3. submit PPM timesheet
+      4. configure CUPS printer on windows
+3. aggregate sources - multiple references to search across
+      1. local
+      2. github
+4. make utilities portable
+  go does this
+  shell scripts are slower and not as reliable (especially if they include multiple libraries)
+5. capture browser history?
+
+###################
+# supported actions
+1. create (create new empty reference workspace)
+2. index (index workspace(s))
+3. search (search workspace(s))
+4. git clone (git clone reference workspace)
+5. git add
+6. git commit
+7. git push
+8. git pull
+9. restore
+    restore references from configuration file (operating-systems/freebsd, operating-systems/linux, programming/java)
+
+###################
+# supported content
+1. plain-text files
+2. PDFs
+    exported webpages
+    need to index these to be able to search through them
+3. terminal screen captures
+
+###################
+# workflow
+1. init references
+2. add content
+  URL
+  plain-text description of problem and solution
+  PDF export
+
+  ###################
+  # alternatives
+  1. git hooks with codesearch ()
+  2. shell script to standardize reference setup

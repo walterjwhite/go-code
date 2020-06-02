@@ -16,7 +16,7 @@ func (p *CraigslistPost) doPostDetails() []chromedp.Action {
 	actions = append(actions, chromedp.SendKeys("//*[@id=\"new-edit\"]/div/div[1]/label[2]/label/input", p.Price))
 
 	// city or neighborhood
-	actions = append(actions, chromedp.SendKeys("//*[@id=\"GeographicArea\"]", p.City))
+	actions = append(actions, chromedp.SendKeys("//*[@id=\"geographic_area\"]", p.City))
 
 	// postal code
 	actions = append(actions, chromedp.SendKeys("//*[@id=\"postal_code\"]", p.PostalCode))

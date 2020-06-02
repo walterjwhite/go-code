@@ -28,7 +28,8 @@ func Get() *Workspace {
 	logging.Panic(err)
 
 	// remove workspace prefix
-	if strings.Index(currentWorkingDirectory, Config.WorkspaceWorkPath) == 0 {
+	prefixIndex := strings.Index(currentWorkingDirectory, Config.WorkspaceWorkPath)
+	if prefixIndex == 0 {
 		relativePath := strings.Replace(currentWorkingDirectory, Config.WorkspaceWorkPath, "", 1)
 		parts := strings.Split(relativePath, string(os.PathSeparator))
 
@@ -40,7 +41,7 @@ func Get() *Workspace {
 		return &Workspace{Name: parts[1], WorkTreeConfig: git.InitWorkTree(filepath.Join(Config.WorkspaceWorkPath, parts[1]))}
 	}
 
-	logging.Panic(fmt.Errorf("GetWorkspace *MUST* be called within a workspace"))
+	logging.Panic(fmt.Errorf("GetWorkspace *MUST* be called within a workspace %d:%s", prefixIndex, currentWorkingDirectory))
 	return nil
 }
 
@@ -53,8 +54,9 @@ func GetAll() []*Workspace {
 	workspaces := make([]*Workspace, 0)
 	for _, file := range files {
 		if file.IsDir() {
-			logging.Panic(os.Chdir(filepath.Join(Config.WorkspaceWorkPath, file.Name())))
-			workspaces = append(workspaces, Get())
+			//logging.Panic(os.Chdir(filepath.Join(Config.WorkspaceWorkPath, file.Name())))
+			// workspaces = append(workspaces, Get())
+			workspaces = append(workspaces, Init(file.Name()))
 		}
 	}
 

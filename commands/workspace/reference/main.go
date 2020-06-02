@@ -11,7 +11,7 @@ import (
 )
 
 var (
-	allFlag = flag.Bool("a", false, "Search all references")
+	currentFlag = flag.Bool("c", false, "Search current reference only")
 )
 
 func init() {
@@ -31,6 +31,9 @@ func main() {
 		do(workspace.Archive, flag.Args()[1:])
 	// TODO: implement
 	// case "commit":
+	// 	do(workspace.Archive, flag.Args()[1:])
+	// TODO: implement, pulls from origin and then runs index on updated workspace
+	// case "update":
 	// 	do(workspace.Archive, flag.Args()[1:])
 	case "index":
 		index()

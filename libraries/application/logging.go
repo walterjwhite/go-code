@@ -18,7 +18,7 @@ var (
 	logDateTimeFormat = flag.String("LogDateTimeFormat", "2006/01/02 15:04:05 -0700", "LogDateTimeFormat")
 	logNoColor        = flag.Bool("LogNoColor", false, "LogNoColor")
 
-	logLevel    = flag.String("LogLevel", "info", "LogLevel")
+	logLevel    = flag.String("LogLevel", "error", "LogLevel")
 	logStdOut   = flag.Bool("LogStdOut", true, "LogStdOut")
 	logFile     = flag.String("LogFile", "", "LogFile")
 	logCompress = flag.Bool("LogCompress", false, "LogCompress")
