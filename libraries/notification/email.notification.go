@@ -1,7 +1,7 @@
 package notification
 
 import (
-	"github.com/walterjwhite/go-application/libraries/email"
+	"github.com/walterjwhite/go-application/libraries/net/email"
 )
 
 type EmailNotification struct {

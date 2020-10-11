@@ -2,7 +2,7 @@ package main
 
 import (
 	"github.com/walterjwhite/go-application/libraries/git/plugins/codesearch"
-	"github.com/walterjwhite/go-application/libraries/workspace"
+	"github.com/walterjwhite/go-application/libraries/utils/workspace"
 
 	"flag"
 	"github.com/walterjwhite/go-application/libraries/application"

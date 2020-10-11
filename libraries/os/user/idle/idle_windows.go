@@ -1,7 +1,7 @@
 package idle
 
 import (
-	"github.com/walterjwhite/go-application/libraries/logging"
+	"github.com/walterjwhite/go-application/libraries/application/logging"
 	"syscall"
 	"time"
 	"unsafe"

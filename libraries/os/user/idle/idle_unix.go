@@ -1,8 +1,9 @@
 package idle
 
 import (
-	"github.com/walterjwhite/go-application/libraries/logging"
-	"github.com/walterjwhite/go-application/libraries/runner"
+	"github.com/walterjwhite/go-application/libraries/application/logging"
+	"github.com/walterjwhite/go-application/libraries/utils/runner"
+	"os/exec"
 
 	"bytes"
 	"context"
@@ -12,7 +13,7 @@ import (
 )
 
 func IdleTime(ctx context.Context) time.Duration {
-	cmd := runner.Prepare(ctx, "xprintidle")
+	cmd := exec.CommandContext(ctx, "xprintidle")
 
 	buffer := new(bytes.Buffer)
 

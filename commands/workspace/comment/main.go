@@ -6,7 +6,7 @@ import (
 	"github.com/walterjwhite/go-application/libraries/application"
 	"github.com/walterjwhite/go-application/libraries/git"
 	"github.com/walterjwhite/go-application/libraries/git/plugins/comment"
-	"github.com/walterjwhite/go-application/libraries/logging"
+	"github.com/walterjwhite/go-application/libraries/application/logging"
 	"os"
 )
 

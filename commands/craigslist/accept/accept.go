@@ -8,10 +8,10 @@ import (
 	"time"
 
 	"github.com/walterjwhite/go-application/libraries/application"
-	"github.com/walterjwhite/go-application/libraries/craigslist"
-	"github.com/walterjwhite/go-application/libraries/foreachfile"
+	"github.com/walterjwhite/go-application/libraries/utils/foreachfile"
+	"github.com/walterjwhite/go-application/libraries/utils/web/chromedpexecutor/plugins/craigslist"
 
-	"github.com/walterjwhite/go-application/libraries/logging"
+	"github.com/walterjwhite/go-application/libraries/application/logging"
 )
 
 // approve post

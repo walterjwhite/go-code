@@ -5,7 +5,8 @@ import (
 	"flag"
 
 	"github.com/rs/zerolog/log"
-	"github.com/walterjwhite/go-application/libraries/shutdown"
+	"github.com/walterjwhite/go-application/libraries/application/shutdown"
+	"os"
 	"sync"
 )
 
@@ -28,28 +29,26 @@ func Configure() {
 	logIdentifier()
 
 	logStart()
+	shutdown.Add(Context, &defaultHandler{})
 }
 
 func logStart() {
 	if !*noAuditFlag {
 		log.Info().Msg("Application started")
-
-		shutdown.Add(Context, &auditHandler{})
 	}
 }
 
-// call via defer
 func OnEnd() {
-	go endCall.Do(doEnd)
+	endCall.Do(doEnd)
 }
 
-type auditHandler struct{}
+type defaultHandler struct{}
 
-func (a *auditHandler) OnShutdown() {
+func (a *defaultHandler) OnShutdown() {
 	OnEnd()
 }
 
-func (a *auditHandler) OnContextClosed() {
+func (a *defaultHandler) OnContextClosed() {
 	OnEnd()
 }
 
@@ -59,6 +58,7 @@ func doEnd() {
 	}
 
 	Cancel()
+	os.Exit(0)
 }
 
 func Wait() {

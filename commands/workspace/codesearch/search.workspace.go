@@ -2,10 +2,10 @@ package main
 
 import (
 	"github.com/rs/zerolog/log"
-	"github.com/walterjwhite/go-application/libraries/foreachfile"
-	"github.com/walterjwhite/go-application/libraries/workspace"
-	"github.com/walterjwhite/go-application/libraries/workspace/task/plugins"
-	"github.com/walterjwhite/go-application/libraries/workspace/task/plugins/codesearch"
+	"github.com/walterjwhite/go-application/libraries/utils/foreachfile"
+	"github.com/walterjwhite/go-application/libraries/utils/workspace"
+	"github.com/walterjwhite/go-application/libraries/utils/workspace/task/plugins"
+	"github.com/walterjwhite/go-application/libraries/utils/workspace/task/plugins/codesearch"
 
 	"flag"
 	"github.com/walterjwhite/go-application/libraries/application"

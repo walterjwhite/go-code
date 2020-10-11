@@ -5,8 +5,8 @@ import (
 
 	"fmt"
 	"github.com/walterjwhite/go-application/libraries/application"
-	"github.com/walterjwhite/go-application/libraries/logging"
-	"github.com/walterjwhite/go-application/libraries/runner"
+	"github.com/walterjwhite/go-application/libraries/application/logging"
+	"github.com/walterjwhite/go-application/libraries/utils/runner"
 )
 
 func (r *ShutdownRequest) log() {

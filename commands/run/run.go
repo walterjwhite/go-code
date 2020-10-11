@@ -3,10 +3,14 @@ package main
 import (
 	"github.com/walterjwhite/go-application/libraries/application"
 	//"github.com/walterjwhite/go-application/libraries/path"
-	"github.com/walterjwhite/go-application/libraries/run"
-	//"github.com/walterjwhite/go-application/libraries/timeformatter/timestamp"
+	"github.com/walterjwhite/go-application/libraries/utils/run"
+	//"github.com/walterjwhite/go-application/libraries/time/timeformatter/timestamp"
 
 	"flag"
+)
+
+var (
+	profileFlag = flag.String("p", "default", "profile")
 )
 
 func init() {
@@ -18,5 +22,6 @@ func main() {
 	// TODO: this is deprecated, integrate with task API
 	//path.WithSessionDirectory("~/.audit/run/" + timestamp.Get())
 
-	run.Run(application.Context, flag.Args())
+	i := run.New(flag.Args()...)
+	i.Run(application.Context, *profileFlag)
 }

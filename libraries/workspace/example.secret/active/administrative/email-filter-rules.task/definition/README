@@ -1,3 +1,0 @@
-audit email filter rules
-ensure each rule is working and is ordered accordingly
-email should only go to catch all as a last resort

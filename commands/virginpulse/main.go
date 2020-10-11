@@ -4,7 +4,7 @@ import (
 	"github.com/rs/zerolog/log"
 	"github.com/walterjwhite/go-application/libraries/application"
 
-	"github.com/walterjwhite/go-application/libraries/property"
+	"github.com/walterjwhite/go-application/libraries/application/property"
 	"github.com/walterjwhite/go-application/libraries/virginpulse"
 )
 

@@ -2,15 +2,15 @@ package main
 
 import (
 	"github.com/rs/zerolog/log"
-	"github.com/walterjwhite/go-application/libraries/workspace"
-	"github.com/walterjwhite/go-application/libraries/workspace/task"
+	"github.com/walterjwhite/go-application/libraries/utils/workspace"
+	"github.com/walterjwhite/go-application/libraries/utils/workspace/task"
 
 	//"github.com/rs/zerolog/log"
 	"flag"
 	"fmt"
 	"github.com/walterjwhite/go-application/libraries/application"
 	"github.com/walterjwhite/go-application/libraries/git/plugins/comment"
-	"github.com/walterjwhite/go-application/libraries/logging"
+	"github.com/walterjwhite/go-application/libraries/application/logging"
 	"os"
 	"path/filepath"
 )

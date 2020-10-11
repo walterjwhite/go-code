@@ -1,11 +1,11 @@
 package main
 
 import (
-	"github.com/walterjwhite/go-application/libraries/workspace/task/plugins"
-	"github.com/walterjwhite/go-application/libraries/workspace/task/plugins/cli"
+	"github.com/walterjwhite/go-application/libraries/utils/workspace/task/plugins"
+	"github.com/walterjwhite/go-application/libraries/utils/workspace/task/plugins/cli"
 
 	"github.com/walterjwhite/go-application/libraries/application"
-	"github.com/walterjwhite/go-application/libraries/logging"
+	"github.com/walterjwhite/go-application/libraries/application/logging"
 
 	"flag"
 	"fmt"

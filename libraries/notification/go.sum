@@ -1,0 +1,5 @@
+github.com/TheCreeper/go-notify v0.0.0-20160203001056-b5cd14745a5c h1:Tqox6eMuiOwAJSNIs8N8bSQo95lyNmD6Td6QbTlCo9g=
+github.com/TheCreeper/go-notify v0.0.0-20160203001056-b5cd14745a5c/go.mod h1:qVRPuzmYrIzygaEyuG6gRPIcxfdJ9gAeQ/FCOfYFPTU=
+github.com/godbus/dbus v4.1.0+incompatible h1:WqqLRTsQic3apZUK9qC5sGNfXthmPXzUZ7nQPrNITa4=
+github.com/godbus/dbus v4.1.0+incompatible/go.mod h1:/YcGZj5zSblfDWMMoOzV4fas9FZnQYTkDnsGvmh2Grw=
+github.com/walterjwhite/go-application v0.0.1 h1:naxdNkC2o68DYELOHIjmUwjANNyegCmBFJ+KVj6oOhA=

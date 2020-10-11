@@ -1,12 +1,1 @@
-*
-!*.go
-!*.mod
-!*.sum
-!*status.secret
-!.gitignore
-!README
-#!**/*.go
-#!**/status.secret
-!*/
-
 .csearch

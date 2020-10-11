@@ -3,8 +3,8 @@ package main
 import (
 	"flag"
 	"github.com/walterjwhite/go-application/libraries/application"
-	"github.com/walterjwhite/go-application/libraries/workspace/task/plugins"
-	"github.com/walterjwhite/go-application/libraries/workspace/task/plugins/jira"
+	"github.com/walterjwhite/go-application/libraries/utils/workspace/task/plugins"
+	"github.com/walterjwhite/go-application/libraries/utils/workspace/task/plugins/jira"
 )
 
 var (

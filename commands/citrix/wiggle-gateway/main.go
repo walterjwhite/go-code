@@ -6,10 +6,10 @@ import (
 	"github.com/chromedp/chromedp/kb"
 	"github.com/rs/zerolog/log"
 	"github.com/walterjwhite/go-application/libraries/application"
-	"github.com/walterjwhite/go-application/libraries/citrix/gateway"
-	"github.com/walterjwhite/go-application/libraries/citrix/gateway/cli"
-	"github.com/walterjwhite/go-application/libraries/logging"
-	"github.com/walterjwhite/go-application/libraries/property"
+	"github.com/walterjwhite/go-application/libraries/application/logging"
+	"github.com/walterjwhite/go-application/libraries/application/property"
+	"github.com/walterjwhite/go-application/libraries/utils/web/chromedpexecutor/plugins/gateway"
+	"github.com/walterjwhite/go-application/libraries/utils/web/chromedpexecutor/plugins/gateway/cli"
 	"time"
 )
 

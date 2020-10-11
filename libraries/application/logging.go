@@ -10,7 +10,7 @@ import (
 	"io"
 	"os"
 	//"time"
-	"github.com/walterjwhite/go-application/libraries/logging"
+	"github.com/walterjwhite/go-application/libraries/application/logging"
 )
 
 // TODO: support properties?

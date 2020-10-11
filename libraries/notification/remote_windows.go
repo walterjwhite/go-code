@@ -1,8 +1,8 @@
 package notification
 
 import (
-	"github.com/walterjwhite/go-application/libraries/logging"
-	"github.com/walterjwhite/go-application/libraries/runner"
+	"github.com/walterjwhite/go-application/libraries/application/logging"
+	"github.com/walterjwhite/go-application/libraries/utils/runner"
 
 	"context"
 	"fmt"

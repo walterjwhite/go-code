@@ -4,10 +4,10 @@ import (
 	"flag"
 
 	"github.com/walterjwhite/go-application/libraries/application"
-	"github.com/walterjwhite/go-application/libraries/craigslist"
-	"github.com/walterjwhite/go-application/libraries/foreachfile"
+	"github.com/walterjwhite/go-application/libraries/utils/foreachfile"
+	"github.com/walterjwhite/go-application/libraries/utils/web/chromedpexecutor/plugins/craigslist"
 
-	"github.com/walterjwhite/go-application/libraries/yamlhelper"
+	"github.com/walterjwhite/go-application/libraries/io/yaml"
 )
 
 var (

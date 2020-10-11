@@ -4,7 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"github.com/walterjwhite/go-application/libraries/application"
-	"github.com/walterjwhite/go-application/libraries/random"
+	"github.com/walterjwhite/go-application/libraries/security/random"
 )
 
 var (

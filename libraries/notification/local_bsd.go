@@ -2,7 +2,7 @@ package notification
 
 import (
 	"github.com/TheCreeper/go-notify"
-	"github.com/walterjwhite/go-application/libraries/logging"
+	"github.com/walterjwhite/go-application/libraries/application/logging"
 )
 
 type bsdNotification struct{}

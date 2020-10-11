@@ -2,7 +2,7 @@ package writermatcher
 
 import (
 	"fmt"
-	"github.com/walterjwhite/go-application/libraries/logging"
+	"github.com/walterjwhite/go-application/libraries/application/logging"
 	"io"
 	"strings"
 )

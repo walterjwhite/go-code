@@ -1,0 +1,63 @@
+package chromedpexecutor
+
+import (
+	"context"
+
+	"github.com/chromedp/cdproto/page"
+	"github.com/chromedp/chromedp"
+	"io/ioutil"
+	"math"
+
+	"github.com/chromedp/cdproto/emulation"
+	"github.com/rs/zerolog/log"
+	"github.com/walterjwhite/go-application/libraries/application/logging"
+)
+
+// TODO: this does not work and just hangs
+func (s *ChromeDPSession) Screenshot(filename string) {
+	var buf []byte
+
+	log.Info().Msgf("capturing screenshot: %v", filename)
+	//logging.Panic(chromedp.Run(s.Context, fullScreenshot(90, &buf)))
+	s.Execute(chromedp.CaptureScreenshot(&buf))
+
+	log.Info().Msgf("took screenshot - writing to: %v", filename)
+
+	logging.Panic(ioutil.WriteFile(filename, buf, 0644))
+	log.Info().Msgf("captured screenshot: %v", filename)
+}
+
+func FullScreenshot(quality int64, res *[]byte) chromedp.Tasks {
+	return chromedp.Tasks{
+		chromedp.ActionFunc(func(ctx context.Context) error {
+			// get layout metrics
+			_, _, contentSize, err := page.GetLayoutMetrics().Do(ctx)
+			logging.Panic(err)
+
+			width, height := int64(math.Ceil(contentSize.Width)), int64(math.Ceil(contentSize.Height))
+
+			// force viewport emulation
+			err = emulation.SetDeviceMetricsOverride(width, height, 1, false).
+				WithScreenOrientation(&emulation.ScreenOrientation{
+					Type:  emulation.OrientationTypePortraitPrimary,
+					Angle: 0,
+				}).
+				Do(ctx)
+			logging.Panic(err)
+
+			// capture screenshot
+			*res, err = page.CaptureScreenshot().
+				WithQuality(quality).
+				WithClip(&page.Viewport{
+					X:      contentSize.X,
+					Y:      contentSize.Y,
+					Width:  contentSize.Width,
+					Height: contentSize.Height,
+					Scale:  1,
+				}).Do(ctx)
+			logging.Panic(err)
+
+			return nil
+		}),
+	}
+}

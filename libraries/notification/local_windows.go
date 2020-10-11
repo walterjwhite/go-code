@@ -1,8 +1,8 @@
 package notification
 
 import (
+	"github.com/walterjwhite/go-application/libraries/application/logging"
 	"github.com/walterjwhite/go-application/libraries/identifier"
-	"github.com/walterjwhite/go-application/libraries/logging"
 	"gopkg.in/toast.v1"
 )
 

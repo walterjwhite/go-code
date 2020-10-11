@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/walterjwhite/go-application/libraries/workspace/task/plugins"
-	"github.com/walterjwhite/go-application/libraries/workspace/task/plugins/codesearch"
+	"github.com/walterjwhite/go-application/libraries/utils/workspace/task/plugins"
+	"github.com/walterjwhite/go-application/libraries/utils/workspace/task/plugins/codesearch"
 
 	"flag"
 	"github.com/walterjwhite/go-application/libraries/application"

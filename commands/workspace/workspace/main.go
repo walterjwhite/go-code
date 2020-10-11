@@ -1,14 +1,14 @@
 package main
 
 import (
-	"github.com/walterjwhite/go-application/libraries/workspace"
+	"github.com/walterjwhite/go-application/libraries/utils/workspace"
 
 	//"github.com/rs/zerolog/log"
 	"context"
 	"flag"
 	"fmt"
 	"github.com/walterjwhite/go-application/libraries/application"
-	"github.com/walterjwhite/go-application/libraries/logging"
+	"github.com/walterjwhite/go-application/libraries/application/logging"
 )
 
 func init() {

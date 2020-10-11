@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/walterjwhite/go-application/libraries/workspace"
+	"github.com/walterjwhite/go-application/libraries/utils/workspace"
 )
 
 func doSearchAll() {
