@@ -5,9 +5,9 @@ import (
 	"github.com/vrischmann/envconfig"
 )
 
-func LoadEnv(config interface{}, prefix string) {
-	if len(prefix) > 0 {
-		err := envconfig.InitWithPrefix(config, prefix)
+func (c *Configuration) LoadEnv(config interface{}) {
+	if len(c.Path) > 0 {
+		err := envconfig.InitWithPrefix(config, c.Path)
 		log.Warn().Msgf("Error reading properties from env: %v", err)
 	} else {
 		err := envconfig.Init(config)

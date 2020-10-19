@@ -1,3 +1,3 @@
-module github.com/walterjwhite/go-application/libraries/typename
+module github.com/walterjwhite/go-application/libraries/utils/typename
 
-go 1.14
+go 1.15

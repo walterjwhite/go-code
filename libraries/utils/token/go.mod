@@ -1,3 +1,3 @@
-module github.com/walterjwhite/go-application/libraries/token
+module github.com/walterjwhite/go-application/libraries/utils/token
 
-go 1.14
+go 1.15

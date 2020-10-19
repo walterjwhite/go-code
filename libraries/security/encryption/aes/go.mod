@@ -1,3 +1,3 @@
-module github.com/walterjwhite/go-application/libraries/encryption/aes
+module github.com/walterjwhite/go-application/libraries/security/encryption/aes
 
-go 1.14
+go 1.15

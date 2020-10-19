@@ -1,6 +1,7 @@
 package property
 
 import (
+	"flag"
 	"github.com/mitchellh/go-homedir"
 	"github.com/rs/zerolog/log"
 	"github.com/walterjwhite/go-application/libraries/application/logging"
@@ -10,12 +11,12 @@ import (
 	"path/filepath"
 )
 
-const (
-	defaultsPath = "~/.defaults"
+var (
+	propertyConfigurationLocationFlag = flag.String("config-path", "~/.config/walterjwhite", "property config path")
 )
 
-func (c *Configuration) LoadFile(config interface{}, prefix string) {
-	filename := c.getFile(config, prefix)
+func (c *Configuration) LoadFile(config interface{}) {
+	filename := c.getFile(config)
 
 	finfo, err := os.Stat(filename)
 	if os.IsNotExist(err) {
@@ -27,15 +28,15 @@ func (c *Configuration) LoadFile(config interface{}, prefix string) {
 		return
 	}
 
-	yamlhelper.Read(filename, config)
+	yaml.Read(filename, config)
 }
 
-func (c *Configuration) getFile(config interface{}, prefix string) string {
+func (c *Configuration) getFile(config interface{}) string {
 	if len(c.Path) == 0 {
-		path, err := homedir.Expand(defaultsPath)
+		path, err := homedir.Expand(*propertyConfigurationLocationFlag)
 		logging.Panic(err)
 
-		return filepath.Join(path, prefix, typename.Get(config)+".yaml")
+		return filepath.Join(path, c.Path, typename.Get(config)+".yaml")
 	}
 
 	return c.Path

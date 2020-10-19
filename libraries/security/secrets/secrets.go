@@ -64,7 +64,7 @@ func initialize() {
 	filename, err := homedir.Expand(*secretConfigurationFilePath)
 	logging.Panic(err)
 
-	yamlhelper.Read(filename, SecretsConfigurationInstance)
+	yaml.Read(filename, SecretsConfigurationInstance)
 
 	translatedRepositoryPath, err := homedir.Expand(SecretsConfigurationInstance.RepositoryPath)
 	SecretsConfigurationInstance.RepositoryPath = translatedRepositoryPath

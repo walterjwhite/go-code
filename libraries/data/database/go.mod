@@ -1,5 +1,3 @@
-module github.com/walterjwhite/go-application/libraries/database
+module github.com/walterjwhite/go-application/libraries/data/database
 
-go 1.14
-
-require github.com/jmoiron/sqlx v1.2.0
+go 1.15

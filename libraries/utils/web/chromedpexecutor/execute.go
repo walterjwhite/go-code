@@ -27,8 +27,8 @@ type ChromeDPSession struct {
 
 var (
 	devToolsWsUrlFlag          = flag.String("u", "", "Dev Tools WS URL")
-	devToolsWsFileFlag         = flag.String("f", "~/.remote-browser-sessions", "Remote Browser Session File")
-	launchRemoteBrowserCmdFlag = flag.String("c", "launch-remote-control-browser", "Command to launch remote browser")
+	devToolsWsFileFlag         = flag.String("s", "~/.remote-browser-sessions", "Remote Browser Session File")
+	launchRemoteBrowserCmdFlag = flag.String("browser-remote-cmd", "launch-remote-control-browser", "Command to launch remote browser")
 
 	// TODO: add flags to tweak the deviation and minimum wait times
 	// OR if a fixed delay is preferred
@@ -63,7 +63,7 @@ func LaunchRemoteBrowser(ctx context.Context) *ChromeDPSession {
 }
 
 func New(ctx context.Context) *ChromeDPSession {
-	if len(*devToolsWsFileFlag) == 0 {
+	if len(*devToolsWsFileFlag) > 0 {
 		getURLFromFile()
 	}
 
@@ -73,6 +73,7 @@ func New(ctx context.Context) *ChromeDPSession {
 
 	actxt, cancelActxt := chromedp.NewRemoteAllocator(ctx, *devToolsWsUrlFlag)
 
+	// TODO: we might want to use an existing tab ...
 	// create new tab
 	ctx, cancelCtxt := chromedp.NewContext(actxt)
 
@@ -92,8 +93,10 @@ func getURLFromFile() {
 		dataString := strings.TrimSpace(string(data))
 		devToolsWsUrlFlag = &dataString
 
-		log.Info().Msgf("URL: %v", dataString)
-		log.Info().Msgf("URL: %v", *devToolsWsUrlFlag)
+		log.Debug().Msgf("URL: %v", dataString)
+		log.Debug().Msgf("URL: %v", *devToolsWsUrlFlag)
+	} else {
+		logging.Panic(err)
 	}
 }
 

@@ -20,7 +20,7 @@ func (s *Session) Authenticate(ctx context.Context) {
 		logging.Panic(fmt.Errorf("Please enter the 6-digit token: %v", s.Token))
 	}
 
-	s.ChromeDPSession = chromedpexecutor.LaunchRemoteBrowser(ctx)
+	s.ChromeDPSession = chromedpexecutor.New(ctx)
 
 	// no need to wait
 	s.ChromeDPSession.Waiter = nil

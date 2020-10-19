@@ -92,5 +92,5 @@ func (c *Command) run() {
 	logging.Panic(ioutil.WriteFile(filepath.Join(c.LogDirectory, "stderr"), errBuffer.Bytes(), 0644))
 
 	// write cmd to yaml
-	yamlhelper.Write(c, filepath.Join(c.LogDirectory, "cli.yaml"))
+	yaml.Write(c, filepath.Join(c.LogDirectory, "cli.yaml"))
 }

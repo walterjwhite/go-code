@@ -5,5 +5,5 @@ import (
 )
 
 func read(configurationFile string, c *Session) {
-	yamlhelper.Read(configurationFile, c)
+	yaml.Read(configurationFile, c)
 }

@@ -1,5 +1,3 @@
-module github.com/walterjwhite/go-application/libraries/wait
+module github.com/walterjwhite/go-application/libraries/time/wait
 
-go 1.14
-
-require github.com/rs/zerolog v1.20.0
+go 1.15

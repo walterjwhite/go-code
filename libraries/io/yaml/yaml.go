@@ -1,4 +1,4 @@
-package yamlhelper
+package yaml
 
 import (
 	"github.com/rs/zerolog/log"

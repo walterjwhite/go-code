@@ -10,7 +10,7 @@ func (i *Instance) setupAuth() {
 	}
 
 	transport := jiral.BasicAuthTransport{Username: i.Credentials.Username, Password: i.Credentials.Password}
-	jiraClient, _ := jiral.NewClient(transport.Client(), i.Uri)
+	jiraClient, _ := jiral.NewClient(transport.Client(), i.Url)
 
 	i.client = jiraClient
 }

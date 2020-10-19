@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-func (c *Instance) EncryptedFields() []string {
+func (c *Instance) SecretFields() []string {
 	return []string{"Username", "Password"}
 }
 

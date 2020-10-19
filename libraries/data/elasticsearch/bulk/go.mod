@@ -1,3 +1,3 @@
-module github.com/walterjwhite/go-application/libraries/elasticsearch/bulk
+module github.com/walterjwhite/go-application/libraries/data/elasticsearch/bulk
 
-go 1.14
+go 1.15

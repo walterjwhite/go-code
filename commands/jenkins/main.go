@@ -6,24 +6,19 @@ import (
 	"github.com/rs/zerolog/log"
 	"github.com/walterjwhite/go-application/libraries/application"
 	"github.com/walterjwhite/go-application/libraries/application/logging"
-	"github.com/walterjwhite/go-application/libraries/application/property"
+
 	"github.com/walterjwhite/go-application/libraries/external/jenkins"
 )
 
 var (
 	jenkinsInstance *jenkins.Instance
 	jenkinsJobFlag  = flag.String("j", "", "Jenkins Job Name")
-
-	// move this to property/plugins/cli
-	prefixFlag = flag.String("prefix", "", "property prefix, ie. if user specifies web/gmail.com/username with prefix of testing, resulting property would be testing/web/gmail.com/username")
 )
 
 func init() {
-	application.Configure()
-
 	jenkinsInstance = &jenkins.Instance{}
 
-	property.Load(jenkinsInstance, *prefixFlag)
+	application.ConfigureWithProperties(jenkinsInstance)
 
 	validate()
 

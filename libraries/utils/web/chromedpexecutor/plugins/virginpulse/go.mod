@@ -1,8 +1,3 @@
-module github.com/walterjwhite/go-application/libraries/virginpulse
+module github.com/walterjwhite/go-application/libraries/utils/web/chromedpexecutor/plugins/virginpulse
 
-go 1.14
-
-require (
-	github.com/chromedp/chromedp v0.5.3
-	github.com/rs/zerolog v1.20.0
-)
+go 1.15

@@ -1,5 +1,3 @@
-module github.com/walterjwhite/go-application/libraries/walgreens
+module github.com/walterjwhite/go-application/libraries/utils/web/chromedpexecutor/plugins/walgreens
 
-go 1.14
-
-require github.com/chromedp/chromedp v0.5.3
+go 1.15

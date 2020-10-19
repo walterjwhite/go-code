@@ -5,6 +5,7 @@ import (
 	"flag"
 
 	"github.com/rs/zerolog/log"
+	"github.com/walterjwhite/go-application/libraries/application/property"
 	"github.com/walterjwhite/go-application/libraries/application/shutdown"
 	"os"
 	"sync"
@@ -20,13 +21,24 @@ var (
 
 func init() {
 	Context, Cancel = context.WithCancel(context.Background())
+
+	configureLogging()
+	logIdentifier()
 }
 
 func Configure() {
 	flag.Parse()
+	doConfigure()
+}
 
+func ConfigureWithProperties(config interface{}) {
+	property.Load(config)
+
+	doConfigure()
+}
+
+func doConfigure() {
 	configureLogging()
-	logIdentifier()
 
 	logStart()
 	shutdown.Add(Context, &defaultHandler{})

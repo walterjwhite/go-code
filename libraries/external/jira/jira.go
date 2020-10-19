@@ -9,13 +9,13 @@ type Credentials struct {
 	Password string
 }
 
-func (i *Instance) EncryptedFields() []string {
+func (i *Instance) SecretFields() []string {
 	return []string{"Credentials.Username", "Credentials.Password"}
 }
 
 type Instance struct {
 	Credentials             *Credentials
-	Uri                     string
+	Url                     string
 	TransitionActionMapping map[string]int
 
 	client *jiral.Client

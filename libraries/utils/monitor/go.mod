@@ -1,3 +1,3 @@
-module github.com/walterjwhite/go-application/libraries/monitor
+module github.com/walterjwhite/go-application/libraries/utils/monitor
 
-go 1.14
+go 1.15

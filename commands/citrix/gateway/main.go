@@ -14,7 +14,7 @@ import (
 var (
 
 	// TODO: randomize the interval, configure minimum interval and deviation ...
-	tickleInterval = flag.String("TickleInterval", "", "Tickle Interval, disabled")
+	tickleInterval = flag.String("i", "", "Tickle Interval, disabled")
 	session        = &gateway.Session{}
 )
 

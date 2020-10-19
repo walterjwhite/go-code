@@ -41,7 +41,7 @@ func (s *EmailSession) Read(folderName string, function func(msg *imap.Message),
 }
 
 /*
-	yamlhelper.Write(emailMessage, "/tmp/email-message")
+	yaml.Write(emailMessage, "/tmp/email-message")
 
 	// push to ES
 	ces := elasticsearch.NewDefaultClient()

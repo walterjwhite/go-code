@@ -6,7 +6,8 @@ import (
 )
 
 type Application struct {
-	Name        string
+	Name string
+
 	Command     string
 	Arguments   []string
 	LogMatcher  string
@@ -15,7 +16,9 @@ type Application struct {
 	PortMonitorTimeout  time.Duration
 	PortMonitorInterval time.Duration
 	Port                int
-	command             *exec.Cmd
+
+	command *exec.Cmd
+	session *Session
 
 	//Files []string
 
@@ -23,6 +26,7 @@ type Application struct {
 	//workDirectory
 }
 
-type Instance struct {
+type Session struct {
+	Path         string
 	Applications []*Application
 }

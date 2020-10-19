@@ -30,8 +30,8 @@ func (a *Application) configureLogWatcher(notificationChannel chan *string, writ
 	runner.WithWriter(command, writer)
 }
 
-func getLogFile(application string) *os.File {
-	logFile := filepath.Join(application, ".logs", timestamp.Get())
+func (a *Application) getLogFile() *os.File {
+	logFile := filepath.Join(a.session.Path, a.Name, ".logs", timestamp.Get())
 	log.Info().Msgf("writing logs to: %s", logFile)
 
 	return makeLogFile(logFile)

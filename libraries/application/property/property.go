@@ -1,5 +1,9 @@
 package property
 
+import (
+	"flag"
+)
+
 type Configuration struct {
 	Path string
 }
@@ -7,22 +11,22 @@ type Configuration struct {
 // TODO: allow other sources (REDIS, etcd, etc.)
 // TODO: allow writing properties
 type ConfigurationReader interface {
-	Load(config interface{}, prefix string)
+	Load(config interface{})
 }
 
-// var (
-// 	prefixFlag  = flag.String("prefix", "", "property prefix, ie. if user specifies web/gmail.com/username with prefix of testing, resulting property would be testing/web/gmail.com/username")
-// )
+var (
+	prefixFlag = flag.String("config-prefix", "", "property prefix, ie. if user specifies web/gmail.com/username with prefix of testing, resulting property would be testing/web/gmail.com/username")
+)
 
-func (c *Configuration) Load(config interface{}, prefix string) {
-	c.LoadFile(config, prefix)
+func (c *Configuration) Load(config interface{}) {
+	c.LoadFile(config)
 
-	LoadEnv(config, prefix)
-	LoadCli(config, prefix)
-	LoadEncrypted(config, prefix)
+	c.LoadEnv(config)
+	c.LoadCli(config)
+	c.LoadSecrets(config)
 }
 
-func Load(config interface{}, prefix string) {
-	c := &Configuration{}
-	c.Load(config, prefix)
+func Load(config interface{}) {
+	c := &Configuration{Path: *prefixFlag}
+	c.Load(config)
 }

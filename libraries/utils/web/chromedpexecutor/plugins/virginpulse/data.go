@@ -33,6 +33,6 @@ type Credentials struct {
 	Password     string
 }
 
-func (c *Credentials) EncryptedFields() []string {
+func (c *Credentials) SecretFields() []string {
 	return []string{"EmailAddress", "Password"}
 }

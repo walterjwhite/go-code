@@ -24,7 +24,7 @@ func NewMonitor(action *monitor.Action, session *monitor.Session) DatabaseMonito
 	var databaseMonitorAction DatabaseMonitorAction
 
 	// TODO: this is configuration, this should be provided by another package
-	yamlhelper.Read(action.Reference, &databaseMonitorAction)
+	yaml.Read(action.Reference, &databaseMonitorAction)
 
 	databaseMonitorAction.Action = action
 	databaseMonitorAction.Session = session

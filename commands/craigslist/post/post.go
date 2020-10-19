@@ -28,6 +28,6 @@ func onFile(filePath string) {
 
 	p := &craigslist.CraigslistPost{}
 
-	yamlhelper.Read(filePath, p)
+	yaml.Read(filePath, p)
 	p.Create(application.Context)
 }

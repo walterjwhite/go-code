@@ -1,3 +1,3 @@
-module github.com/walterjwhite/go-application/libraries/document
+module github.com/walterjwhite/go-application/libraries/data/document
 
-go 1.14
+go 1.15

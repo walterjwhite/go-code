@@ -3,34 +3,26 @@ package application
 import (
 	"compress/zlib"
 	"flag"
-	//"fmt"
 	"github.com/rs/zerolog"
-	//"github.com/rs/zerolog/diode"
 	"github.com/rs/zerolog/log"
+	"github.com/walterjwhite/go-application/libraries/application/logging"
 	"io"
 	"os"
-	//"time"
-	"github.com/walterjwhite/go-application/libraries/application/logging"
 )
 
-// TODO: support properties?
+const (
+	logDateTimeFormat = "2006/01/02 15:04:05 -0700"
+)
+
 var (
-	logDateTimeFormat = flag.String("LogDateTimeFormat", "2006/01/02 15:04:05 -0700", "LogDateTimeFormat")
-	logNoColor        = flag.Bool("LogNoColor", false, "LogNoColor")
-
-	logLevel    = flag.String("LogLevel", "error", "LogLevel")
-	logStdOut   = flag.Bool("LogStdOut", true, "LogStdOut")
-	logFile     = flag.String("LogFile", "", "LogFile")
-	logCompress = flag.Bool("LogCompress", false, "LogCompress")
+	logLevel = flag.String("log-level", "error", "log level")
+	logFile  = flag.String("log-file", "", "log file, if empty, stdout is used")
 )
 
-// 1. set time format
-// 2. set output & format
 func configureLogging() {
-	zerolog.TimeFieldFormat = *logDateTimeFormat
+	zerolog.TimeFieldFormat = logDateTimeFormat
 
 	var f io.Writer = getWriter()
-	//log.Logger = zerolog.New(diode.NewWriter(f, 1000, 10*time.Millisecond, onMissedMessages)).With().Timestamp().Logger()
 	log.Logger = zerolog.New(zerolog.SyncWriter(f)).With().Timestamp().Logger()
 
 	setLogLevel()
@@ -41,21 +33,7 @@ func getWriter() io.Writer {
 		return prepareFile()
 	}
 
-	return zerolog.ConsoleWriter{Out: getOutputStream(), NoColor: *logNoColor, TimeFormat: *logDateTimeFormat}
-}
-
-/*
-func onMissedMessages(missed int) {
-	fmt.Printf("Logger Dropped %d messages", missed)
-}
-*/
-
-func getOutputStream() *os.File {
-	if *logStdOut {
-		return os.Stdout
-	}
-
-	return os.Stderr
+	return zerolog.ConsoleWriter{Out: os.Stdout /*NoColor: false,*/, TimeFormat: logDateTimeFormat}
 }
 
 func setLogLevel() {
@@ -75,12 +53,10 @@ func prepareFile() io.WriteCloser {
 		logging.Panic(f.Close())
 	}()
 
-	if *logCompress {
-		f = zlib.NewWriter(f)
-		defer func() {
-			logging.Panic(f.Close())
-		}()
-	}
+	f = zlib.NewWriter(f)
+	defer func() {
+		logging.Panic(f.Close())
+	}()
 
 	return f
 }

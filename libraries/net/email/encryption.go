@@ -1,5 +1,5 @@
 package email
 
-func (c *EmailSenderAccount) EncryptedFields() []string {
+func (c *EmailSenderAccount) SecretFields() []string {
 	return []string{"Username", "Password", "Domain"}
 }
