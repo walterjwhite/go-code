@@ -16,7 +16,7 @@ var (
 	Cancel  context.CancelFunc
 	endCall sync.Once
 
-	noAuditFlag = flag.Bool("NoAudit", false, "Disable Audit execution")
+	noAuditFlag = flag.Bool("no-audit", false, "Disable Audit execution")
 )
 
 func init() {
@@ -30,8 +30,10 @@ func Configure() {
 	doConfigure()
 }
 
-func ConfigureWithProperties(config interface{}) {
-	property.Load(config)
+func ConfigureWithProperties(configurations ...interface{}) {
+	for _, config := range configurations {
+		property.Load(config)
+	}
 
 	doConfigure()
 }

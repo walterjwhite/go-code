@@ -14,7 +14,7 @@ const (
 
 	usernameField = "/html/body/div[12]/div[1]/div[2]/div/div/div[1]/div[2]/div/div/div/form/div[1]/div[1]/div[2]/input"
 	passwordField = "/html/body/div[12]/div[1]/div[2]/div/div/div[1]/div[2]/div/div/div/form/div[1]/div[2]/div[2]/input"
-	loginButton = "/html/body/div[12]/div[1]/div[2]/div/div/div[1]/div[2]/div/div/div/form/div[2]/button"
+	loginButton   = "/html/body/div[12]/div[1]/div[2]/div/div/div[1]/div[2]/div/div/div/form/div[2]/button"
 )
 
 func (s *Session) Login(ctx context.Context) {

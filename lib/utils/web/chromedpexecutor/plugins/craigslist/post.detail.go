@@ -3,7 +3,7 @@ package craigslist
 import (
 	"github.com/chromedp/chromedp"
 
-	"github.com/walterjwhite/go/lib/utils/web/chromedpexecutor"
+	"github.com/walterjwhite/go/lib/utils/web/chromedpexecutor/plugins/run"
 )
 
 func (p *CraigslistPost) doPostDetails() []chromedp.Action {
@@ -41,5 +41,5 @@ func (p *CraigslistPost) doScript() []chromedp.Action {
 		return nil
 	}
 
-	return chromedpexecutor.ParseActions(p.Script...)
+	return run.ParseActions(p.Script...)
 }

@@ -5,7 +5,8 @@ import (
 	"fmt"
 	"github.com/chromedp/chromedp"
 	"github.com/walterjwhite/go/lib/application/logging"
-	"github.com/walterjwhite/go/lib/utils/web/chromedpexecutor"
+
+	"github.com/walterjwhite/go/lib/utils/web/chromedpexecutor/plugins/run"
 
 	"time"
 )
@@ -31,7 +32,7 @@ func (s *Session) runPostAuthenticationActions(ctx context.Context) {
 	time.Sleep(*s.PostAuthenticationDelay)
 
 	if len(s.PostAuthenticationActions) > 0 {
-		s.ChromeDPSession.Execute(chromedpexecutor.ParseActions(s.PostAuthenticationActions...)...)
+		s.ChromeDPSession.Execute(run.ParseActions(s.PostAuthenticationActions...)...)
 	}
 }
 

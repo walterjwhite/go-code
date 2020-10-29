@@ -16,6 +16,7 @@ type ConfigurationReader interface {
 
 var (
 	prefixFlag = flag.String("config-prefix", "", "property prefix, ie. if user specifies web/gmail.com/username with prefix of testing, resulting property would be testing/web/gmail.com/username")
+	c *Configuration
 )
 
 func (c *Configuration) Load(config interface{}) {
@@ -27,6 +28,9 @@ func (c *Configuration) Load(config interface{}) {
 }
 
 func Load(config interface{}) {
-	c := &Configuration{Path: *prefixFlag}
+	if c == nil {
+		c = &Configuration{Path: *prefixFlag}
+	}
+
 	c.Load(config)
 }

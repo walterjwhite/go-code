@@ -8,19 +8,13 @@ import (
 	// "time"
 )
 
-const (
-	userIdField       = "//*[@id=\"user-name\"]"
-	userPasswordField = "//*[@id=\"user_password\"]"
-	submitButton      = "//*[@id=\"submit_btn\"]"
+// const (
+// 	securityQuestionRadio = "//*[@id=\"radio-security\"]"
+// 	continueButton        = "//*[@id=\"optionContinue\"]"
 
-	securityQuestionRadio = "//*[@id=\"radio-security\"]"
-	continueButton        = "//*[@id=\"optionContinue\"]"
-
-	securityQuestionField          = "//*[@id=\"secQues\"]"
-	validateSecurityQuestionButton = "//*[@id=\"validate_security_answer\"]"
-
-	loggedInField = "//*[@id=\"yourAcCMS\"]/a/span[1]"
-)
+// 	securityQuestionField          = "//*[@id=\"secQues\"]"
+// 	validateSecurityQuestionButton = "//*[@id=\"validate_security_answer\"]"
+// )
 
 func (s *Session) Login(ctx context.Context) {
 	s.chromedpsession = chromedpexecutor.New(ctx)
@@ -47,16 +41,16 @@ func (s *Session) Login(ctx context.Context) {
 	// )
 }
 
-func (s *Session) answerSecurityQuestion(ctx context.Context) {
-	// select security question
-	s.chromedpsession.Execute(
-		chromedp.Click(securityQuestionRadio),
-		chromedp.Click(continueButton),
-	)
+// func (s *Session) answerSecurityQuestion(ctx context.Context) {
+// 	// select security question
+// 	s.chromedpsession.Execute(
+// 		chromedp.Click(securityQuestionRadio),
+// 		chromedp.Click(continueButton),
+// 	)
 
-	// security question
-	s.chromedpsession.Execute(
-		chromedp.SendKeys(securityQuestionField, s.Credentials.SecretAnswer),
-		chromedp.Click(validateSecurityQuestionButton),
-	)
-}
+// 	// security question
+// 	s.chromedpsession.Execute(
+// 		chromedp.SendKeys(securityQuestionField, s.Credentials.SecretAnswer),
+// 		chromedp.Click(validateSecurityQuestionButton),
+// 	)
+// }

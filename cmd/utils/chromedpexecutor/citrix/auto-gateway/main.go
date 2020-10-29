@@ -2,10 +2,10 @@ package main
 
 import (
 	"flag"
-	"github.com/rs/zerolog/log"
+	
 	"github.com/walterjwhite/go/lib/application"
 	"github.com/walterjwhite/go/lib/application/logging"
-	"github.com/walterjwhite/go/lib/application/property"
+	
 	emaill "github.com/walterjwhite/go/lib/net/email"
 	"github.com/walterjwhite/go/lib/utils/web/chromedpexecutor/plugins/gateway"
 	"github.com/walterjwhite/go/lib/utils/web/chromedpexecutor/plugins/gateway/email"
@@ -21,20 +21,7 @@ var (
 )
 
 func init() {
-	application.Configure()
-
-	// configure email
-	property.Load(emailInstance, "")
-	log.Info().Msgf("emailInstance: %v", *emailInstance)
-
-	property.Load(emailInstance.EmailSenderAccount, "")
-	log.Info().Msgf("emailInstance: %v", *emailInstance.EmailSenderAccount)
-
-	property.Load(session, "")
-
-	log.Info().Msgf("session: %v", *session)
-	property.Load(session.Credentials, "")
-	log.Info().Msgf("session: %v", *session)
+	application.ConfigureWithProperties(session, emailInstance)
 
 	i, err := time.ParseDuration(*tickleInterval)
 	logging.Panic(err)
