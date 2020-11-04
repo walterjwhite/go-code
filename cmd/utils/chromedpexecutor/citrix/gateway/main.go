@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"github.com/rs/zerolog/log"
 	
 	"github.com/walterjwhite/go/lib/application"
 	"github.com/walterjwhite/go/lib/application/logging"
@@ -31,6 +32,9 @@ func init() {
 
 func main() {
 	session.Token = cli.New().Get()
+
+	log.Debug().Msgf("token: %v", session.Token)
+
 	session.Run(application.Context)
 
 	application.Wait()

@@ -27,7 +27,10 @@ func (s *Session) Authenticate(ctx context.Context) {
 
 	s.ChromeDPSession.Execute(chromedp.Navigate(s.Endpoint.Uri))
 
-	log.Debug().Msgf("pin: %v%v", s.Credentials.Pin, s.Token)
+	log.Debug().Msgf("username: %v", s.Credentials.Username)
+	log.Debug().Msgf("domain: %v", s.Credentials.Domain)
+	log.Debug().Msgf("password: %v", s.Credentials.Password)
+	log.Debug().Msgf("pi/tokenn: %v", s.getToken())
 
 	s.ChromeDPSession.Execute(
 		chromedp.SendKeys(s.Endpoint.UsernameXPath, s.Credentials.Domain+"\\"+s.Credentials.Username),
