@@ -45,9 +45,9 @@ func getSecretProvider(providerName string) SecretProvider {
 
 // TODO: this should be moved out to a CLI module?
 var (
-	secretConfigurationFilePath  = flag.String("c", "~/.config/walterjwhite/secrets.yaml", "SecretsConfigurationFilePath")
-	secretFileFlag               = flag.String("f", "", "Secret Key Filename")
-	secretProviderFlag           = flag.String("p", "", "Secret Provider")
+	secretConfigurationFilePath  = flag.String("secret-conf", "~/.config/walterjwhite/secrets.yaml", "SecretsConfigurationFilePath")
+	secretFileFlag               = flag.String("secret-filename", "", "Secret Key Filename")
+	secretProviderFlag           = flag.String("secret-provider", "", "Secret Provider")
 	SecretsConfigurationInstance *SecretsConfiguration
 )
 
