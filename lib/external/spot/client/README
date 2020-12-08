@@ -1,0 +1,4 @@
+SPOT client for interfacing with SPOT API
+
+calls API endpoint
+consumes at most the 50 most recent messages

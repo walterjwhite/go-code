@@ -11,7 +11,7 @@ type SecretPropertyConfiguration interface {
 	SecretFields() []string
 }
 
-func (c *Configuration) LoadSecrets(config interface{}) {
+func LoadSecrets(config interface{}) {
 	secretPropertyConfiguration, ok := config.(SecretPropertyConfiguration)
 	if !ok {
 		log.Warn().Msg("Unable to initialize secrets, unable to process encrypted properties")
@@ -25,9 +25,9 @@ func (c *Configuration) LoadSecrets(config interface{}) {
 		log.Debug().Msgf("val: %v", val)
 
 		for _, fieldName := range secretPropertyConfiguration.SecretFields() {
-			log.Debug().Msgf("fieldName: %v %v", c.Path, fieldName)
+			log.Debug().Msgf("fieldName: %v %v", *pathPrefixFlag, fieldName)
 
-			setFieldValue(secretPropertyConfiguration, val, c.Path, fieldName)
+			setFieldValue(secretPropertyConfiguration, val, *pathPrefixFlag, fieldName)
 		}
 	}
 }

@@ -1,19 +1,23 @@
-package pnc
+package target
 
 import (
 	"context"
 	"github.com/chromedp/chromedp"
+	"github.com/rs/zerolog/log"
 
 	"github.com/walterjwhite/go/lib/utils/web/chromedpexecutor"
 	"time"
 )
 
 const (
-	url = "https://www.pnc.com"
+	// url = "https://login.target.com/gsp/static/v1/login/?client_id=ecom-web-1.0.0&ui_namespace=ui-default&back_button_action=browser&keep_me_signed_in=false&kmsi_default=false&actions=create_session_signin"
+	url = "https://target.com"
 
-	usernameField = "//*[@id=\"userId\"]"
-	passwordField = "//*[@id=\"passwordInputField\"]"
-	loginMenuItem = "//*[@id=\"main-header\"]/div/div/div[3]/a"
+	//*[@id="account"]/span[1]/span/div/svg/path
+	// signInButton = "//*[@id=\"accountNav-signIn\"]/a/div"
+
+	usernameField = "//*[@id=\"username\"]"
+	passwordField = "//*[@id=\"password\"]"
 )
 
 func (s *Session) Login(ctx context.Context) {
@@ -30,7 +34,9 @@ func (s *Session) Login(ctx context.Context) {
 
 	s.chromedpsession.Execute(
 		chromedp.Navigate(url),
-		chromedp.Click(loginMenuItem),
+		chromedp.Click("//*[@id=\"account\"]/span[1]/span/div"),
+		chromedp.WaitVisible("//*[@id=\"accountNav-signIn\"]/a/div"),
+		chromedp.Click("//*[@id=\"accountNav-signIn\"]/a/div"),
 		chromedp.SendKeys(usernameField, s.Credentials.Username),
 		chromedp.SendKeys(passwordField, s.Credentials.Password),
 		chromedp.Submit(passwordField),
@@ -40,4 +46,6 @@ func (s *Session) Login(ctx context.Context) {
 		chromedpexecutor.TimeLimitedChromeAction{Action: chromedp.WaitVisible(logoutButton),
 			Limit: 10 * time.Second, IsException: true, Message: "Login Failed"},
 	)
+
+	log.Info().Msgf("Successfully authenticated as: %v", s.Credentials.Username)
 }

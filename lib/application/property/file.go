@@ -15,8 +15,8 @@ var (
 	propertyConfigurationLocationFlag = flag.String("config-path", "~/.config/walterjwhite", "property config path")
 )
 
-func (c *Configuration) LoadFile(config interface{}) {
-	filename := c.getFile(config)
+func LoadFile(config interface{}) {
+	filename := getFile(config)
 
 	finfo, err := os.Stat(filename)
 	if os.IsNotExist(err) {
@@ -31,13 +31,13 @@ func (c *Configuration) LoadFile(config interface{}) {
 	yaml.Read(filename, config)
 }
 
-func (c *Configuration) getFile(config interface{}) string {
-	if len(c.Path) == 0 {
+func getFile(config interface{}) string {
+	if len(*pathPrefixFlag) == 0 {
 		path, err := homedir.Expand(*propertyConfigurationLocationFlag)
 		logging.Panic(err)
 
-		return filepath.Join(path, c.Path, typename.Get(config)+".yaml")
+		return filepath.Join(path, *pathPrefixFlag, typename.Get(config)+".yaml")
 	}
 
-	return c.Path
+	return *pathPrefixFlag
 }

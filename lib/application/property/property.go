@@ -2,35 +2,39 @@ package property
 
 import (
 	"flag"
+	"github.com/walterjwhite/go/lib/application/logging"
+	"github.com/walterjwhite/go/lib/utils/typename"
+	"github.com/mitchellh/go-homedir"
+	"path/filepath"
 )
-
-type Configuration struct {
-	Path string
-}
 
 // TODO: allow other sources (REDIS, etcd, etc.)
 // TODO: allow writing properties
-type ConfigurationReader interface {
-	Load(config interface{})
-}
+// type ConfigurationReader interface {
+// 	Load(config interface{})
+// }
 
 var (
-	prefixFlag = flag.String("config-prefix", "", "property prefix, ie. if user specifies web/gmail.com/username with prefix of testing, resulting property would be testing/web/gmail.com/username")
-	c *Configuration
+	pathPrefixFlag = flag.String("config-prefix-path", "", "property prefix, ie. if user specifies web/gmail.com/username with prefix of testing, resulting property would be testing/web/gmail.com/username")
 )
 
-func (c *Configuration) Load(config interface{}) {
-	c.LoadFile(config)
+func Load(config interface{}) {
+	LoadFile(config)
 
-	c.LoadEnv(config)
-	c.LoadCli(config)
-	c.LoadSecrets(config)
+	LoadEnv(config)
+	LoadCli(config)
+	LoadSecrets(config)
 }
 
-func Load(config interface{}) {
-	if c == nil {
-		c = &Configuration{Path: *prefixFlag}
-	}
+func GetConfigurationDirectory(qualifiers ...string) string {
+	configurationDirectory, err := homedir.Expand("~/.config")
+	logging.Panic(err)
 
-	c.Load(config)
+	e := []string{configurationDirectory, "walterjwhite"}
+	e = append(e, qualifiers...)
+	return filepath.Join(e...)
+}
+
+func GetConfigurationFile(data interface{}, qualifiers ...string) string {
+	return filepath.Join(GetConfigurationDirectory(qualifiers...), typename.Get(data)+".yaml")
 }

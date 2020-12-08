@@ -6,7 +6,7 @@ import (
 	"github.com/walterjwhite/go/lib/application/logging"
 )
 
-func (c *Configuration) LoadCli(config interface{}) {
+func LoadCli(config interface{}) {
 	logging.Panic(gflag.ParseToDef(config))
 	flag.Parse()
 }
