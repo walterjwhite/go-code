@@ -41,7 +41,7 @@ func addAttachments(emailMessage *EmailMessage, m *sendmail.Message) []string {
 	attachmentFilenames := make([]string, 0)
 	if len(emailMessage.Attachments) > 0 {
 		for _, attachment := range emailMessage.Attachments {
-			tmpFile, err := ioutil.TempFile(os.TempDir(), "*" + attachment.Name)
+			tmpFile, err := ioutil.TempFile(os.TempDir(), "*"+attachment.Name)
 			logging.Panic(err)
 
 			log.Debug().Msgf("attachment size: %v", len(attachment.Data.Bytes()))

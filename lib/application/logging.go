@@ -33,7 +33,7 @@ func getWriter() io.Writer {
 		return prepareFile()
 	}
 
-	return zerolog.ConsoleWriter{Out: os.Stdout /*NoColor: false,*/, TimeFormat: logDateTimeFormat}
+	return zerolog.ConsoleWriter{Out: os.Stderr /*NoColor: false,*/, TimeFormat: logDateTimeFormat}
 }
 
 func setLogLevel() {

@@ -9,11 +9,11 @@ import (
 )
 
 const (
-	url = "https://www.pnc.com"
+	url           = "https://www.pnc.com"
+	usernameField = "//*[@id=\"experiencefragment-d94b5a89cd\"]/div/div/div[2]/div/div/div[2]/form/div/div[1]/div[1]/div[1]/label/input"
+	passwordField = "//*[@id=\"experiencefragment-d94b5a89cd\"]/div/div/div[2]/div/div/div[2]/form/div/div[1]/div[1]/div[3]/label/input"
 
-	usernameField = "//*[@id=\"userId\"]"
-	passwordField = "//*[@id=\"passwordInputField\"]"
-	loginMenuItem = "//*[@id=\"main-header\"]/div/div/div[3]/a"
+	loginMenuItem = "//*[@id=\"experiencefragment-d94b5a89cd\"]/div/div/div[1]/button/span[2]"
 )
 
 func (s *Session) Login(ctx context.Context) {
@@ -30,7 +30,7 @@ func (s *Session) Login(ctx context.Context) {
 
 	s.chromedpsession.Execute(
 		chromedp.Navigate(url),
-		chromedp.Click(loginMenuItem),
+				chromedp.Click(loginMenuItem),
 		chromedp.SendKeys(usernameField, s.Credentials.Username),
 		chromedp.SendKeys(passwordField, s.Credentials.Password),
 		chromedp.Submit(passwordField),

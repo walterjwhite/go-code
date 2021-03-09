@@ -29,6 +29,7 @@ require (
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/octago/sflags v0.2.0
 	github.com/olivere/elastic/v7 v7.0.21
+	github.com/openvenues/gopostal v0.0.0-20171226154602-e0184512a45d
 	github.com/peco/peco v0.5.8
 	github.com/rs/zerolog v1.20.0
 	github.com/satori/go.uuid v1.2.0

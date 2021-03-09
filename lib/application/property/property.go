@@ -2,9 +2,9 @@ package property
 
 import (
 	"flag"
+	"github.com/mitchellh/go-homedir"
 	"github.com/walterjwhite/go/lib/application/logging"
 	"github.com/walterjwhite/go/lib/utils/typename"
-	"github.com/mitchellh/go-homedir"
 	"path/filepath"
 )
 

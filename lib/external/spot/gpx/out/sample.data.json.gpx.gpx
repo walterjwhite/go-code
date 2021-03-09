@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="" creator="sudhanshuraheja/go-garmin-gpx">
+    <metadata></metadata>
+    <trk>
+        <trkseg>
+            <trkpt lat="40" lon="-80"></trkpt>
+            <trkpt lat="41" lon="-81"></trkpt>
+            <trkpt lat="42" lon="-82"></trkpt>
+        </trkseg>
+    </trk>
+</gpx>

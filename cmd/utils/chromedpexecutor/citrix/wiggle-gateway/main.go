@@ -4,10 +4,10 @@ import (
 	"flag"
 	"github.com/chromedp/chromedp"
 	"github.com/chromedp/chromedp/kb"
-	
+
 	"github.com/walterjwhite/go/lib/application"
 	"github.com/walterjwhite/go/lib/application/logging"
-	
+
 	"github.com/walterjwhite/go/lib/utils/web/chromedpexecutor/plugins/gateway"
 	"github.com/walterjwhite/go/lib/utils/web/chromedpexecutor/plugins/gateway/cli"
 	"time"
@@ -22,7 +22,7 @@ var (
 
 func init() {
 	application.ConfigureWithProperties(session)
-	
+
 	i, err := time.ParseDuration(*tickleInterval)
 	logging.Panic(err)
 
