@@ -2,6 +2,7 @@ package cli
 
 import (
 	"flag"
+	"os"
 )
 
 type Provider struct {
@@ -16,5 +17,14 @@ func New() *Provider {
 }
 
 func (p *Provider) Get() string {
-	return *tokenFlag
+	if ( len(*tokenFlag) == 6) {
+		return *tokenFlag
+	}
+
+	if len(os.Args) >= 2 {
+		// use first argument
+		return os.Args[1]
+	}
+
+	return ""
 }

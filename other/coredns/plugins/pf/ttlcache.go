@@ -1,40 +1,33 @@
 package pf
 
-// var (
-// 	cache = ttlcache.NewCache()
-	
-// )
+import (
+	"github.com/ReneKroon/ttlcache/v2"
+	"github.com/walterjwhite/go/lib/application/logging"
+	"time"
+)
 
-// func init() {
-// 	cache.SetTTL(time.Duration(5 * time.Minute))
+var (
+	cache = ttlcache.NewCache()
+	ttl   time.Duration
 
-// 	cache.SetExpirationReasonCallback(expirationCallback)
-// 	cache.SetLoaderFunction(loaderFunction)
-// 	cache.SetNewItemCallback(newItemCallback)
-// 	cache.SetCheckExpirationCallback(checkExpirationCallback)
-// 	cache.SetCacheSizeLimit(2)
-// }
+// time.Duration(5 * time.Minute)
+)
 
-// /**
-//  * add IP address to cache
-//  */
-//  func add(ip) {
-// 	ips = append(ips, ip)
-// }
+func init() {
+	logging.Panic(cache.SetTTL(ttl))
+	cache.SetExpirationReasonCallback(_expire)
+}
 
-// /**
-//  * remove IP address from cache
-//  */
-// func remove(ip) {
-// 	ips = remove(ips, (ip, sysdate))
+func add(ip string) {
+	logging.Panic(cache.Set(ip, ""))
+	pfAdd(ip)
+}
 
+func remove(ip string) {
+	logging.Panic(cache.Remove(ip))
+	pfRemove(ip)
+}
 
-// }
-
-// func _expire() {
-// 	for in () {
-// 		if ip.sysdate > sysdate {
-// 			remove(ip)
-// 		}
-// 	}
-// }
+func _expire(key string, reason ttlcache.EvictionReason, value interface{}) {
+	remove(key)
+}

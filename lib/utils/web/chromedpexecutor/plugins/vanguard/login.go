@@ -5,13 +5,11 @@ import (
 	"github.com/chromedp/chromedp"
 
 	"github.com/walterjwhite/go/lib/utils/web/chromedpexecutor"
-	"time"
+	// "time"
 )
 
 const (
-	url = "https://www.vanguard.com"
-
-	personalInvestors = "/html/body/app-root/app-home-page/homepage-get-started/section/div/div/aside/div/div/app-triage/ul/li[1]/div/span[1]"
+	url = "https://investor.vanguard.com/home"
 
 	usernameField = "//*[@id=\"username\"]"
 	passwordField = "//*[@id=\"password\"]"
@@ -32,7 +30,6 @@ func (s *Session) Login(ctx context.Context) {
 
 	s.chromedpsession.Execute(
 		chromedp.Navigate(url),
-		chromedp.Click(personalInvestors),
 	)
 
 	// s.chromedpsession.ExecuteTimeLimited(
@@ -50,8 +47,8 @@ func (s *Session) Login(ctx context.Context) {
 		chromedp.Click(loginButton),
 	)
 
-	s.chromedpsession.ExecuteTimeLimited(
-		chromedpexecutor.TimeLimitedChromeAction{Action: chromedp.WaitVisible(logoutButton),
-			Limit: 10 * time.Second, IsException: true, Message: "Login Failed"},
-	)
+	// s.chromedpsession.ExecuteTimeLimited(
+	// 	chromedpexecutor.TimeLimitedChromeAction{Action: chromedp.WaitVisible(logoutButton),
+	// 		Limit: 10 * time.Second, IsException: true, Message: "Login Failed"},
+	// )
 }

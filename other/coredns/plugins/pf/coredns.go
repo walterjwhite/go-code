@@ -3,9 +3,9 @@ package pf
 import (
 	"context"
 
-	"github.com/coredns/coredns/plugin"
 	"github.com/coredns/caddy"
 	"github.com/coredns/coredns/core/dnsserver"
+	"github.com/coredns/coredns/plugin"
 	// "github.com/coredns/coredns/request"
 	// "github.com/coredns/coredns/plugin/pkg/response"
 	"github.com/coredns/coredns/plugin/pkg/dnstest"
@@ -18,6 +18,7 @@ import (
 )
 
 const pluginName = "pf"
+
 type Pf struct {
 	Next plugin.Handler
 }
@@ -38,8 +39,8 @@ func setup(c *caddy.Controller) error {
 	return nil
 }
 
-func (p Pf) Ready() bool { 
-	return true 
+func (p Pf) Ready() bool {
+	return true
 }
 
 func (p Pf) ServeDNS(ctx context.Context, w dns.ResponseWriter, r *dns.Msg) (int, error) {
@@ -50,6 +51,9 @@ func (p Pf) ServeDNS(ctx context.Context, w dns.ResponseWriter, r *dns.Msg) (int
 	// class := response.Classify(tpe)
 
 	fmt.Printf("pf - ServeDNS - %v\n", rrw.Msg)
+	ip := "8.8.8.8"
+	add(ip)
+
 	return rc, err
 }
 

@@ -5,11 +5,11 @@ import (
 
 	"github.com/walterjwhite/go/lib/application"
 
-	"github.com/walterjwhite/go/lib/utils/web/chromedpexecutor/plugins/vanguard"
+	"github.com/walterjwhite/go/lib/utils/web/chromedpexecutor/plugins/clearviewfcu"
 )
 
 var (
-	session = &vanguard.Session{}
+	session = &clearviewfcu.Session{}
 )
 
 func init() {

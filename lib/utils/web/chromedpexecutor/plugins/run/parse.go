@@ -18,6 +18,8 @@ func ParseActions(lines ...string) []chromedp.Action {
 	for _, line := range lines {
 		action := ParseAction(line)
 		if action != nil {
+			log.Info().Msgf("action: %v", action)
+
 			actions = append(actions, action)
 		}
 	}
@@ -34,6 +36,8 @@ func ParseAction(line string) chromedp.Action {
 	case "click":
 		return chromedp.Click(arguments[1])
 	case "sendKeys":
+		return chromedp.SendKeys(arguments[1], arguments[2])
+	case "sendKeysSecret":
 		return chromedp.SendKeys(arguments[1], process(arguments[2]))
 	case "clear":
 		return chromedp.Clear(arguments[1])

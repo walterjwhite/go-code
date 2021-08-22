@@ -1,19 +1,17 @@
-package discovercard
+package patientnotebook
 
 import (
 	"context"
 	"github.com/chromedp/chromedp"
-	// "github.com/rs/zerolog/log"
 
 	"github.com/walterjwhite/go/lib/utils/web/chromedpexecutor"
-	// "time"
+	"time"
 )
 
 const (
-	url = "https://www.discover.com"
-
-	usernameField = "//*[@id=\"userid-content\"]"
-	passwordField = "//*[@id=\"password-content\"]"
+	url           = "https://www.patientnotebook.com/Login/Index"
+	usernameField = "//*[@id=\"Username\"]"
+	passwordField = "//*[@id=\"Password\"]"
 )
 
 func (s *Session) Login(ctx context.Context) {
@@ -35,10 +33,8 @@ func (s *Session) Login(ctx context.Context) {
 		chromedp.Submit(passwordField),
 	)
 
-	// s.chromedpsession.ExecuteTimeLimited(
-	// 	chromedpexecutor.TimeLimitedChromeAction{Action: chromedp.WaitVisible(logoutButton),
-	// 		Limit: 10 * time.Second, IsException: true, Message: "Login Failed"},
-	// )
-
-	// log.Info().Msgf("Successfully authenticated as: %v", s.Credentials.Username)
+	s.chromedpsession.ExecuteTimeLimited(
+		chromedpexecutor.TimeLimitedChromeAction{Action: chromedp.WaitVisible(logoutButton),
+			Limit: 10 * time.Second, IsException: true, Message: "Login Failed"},
+	)
 }

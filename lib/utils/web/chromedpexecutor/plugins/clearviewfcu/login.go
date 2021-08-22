@@ -1,4 +1,4 @@
-package pnc
+package clearviewfcu
 
 import (
 	"context"
@@ -9,11 +9,12 @@ import (
 )
 
 const (
-	url           = "https://www.pnc.com"
-	usernameField = "//*[@id=\"experiencefragment-9df31000f1\"]/div/div/div[3]/div/div/div[2]/form/div/div[1]/div[1]/div[1]/label/input"
-	passwordField = "//*[@id=\"experiencefragment-9df31000f1\"]/div/div/div[3]/div/div/div[2]/form/div/div[1]/div[1]/div[3]/label/input"
+	url           = "https://www.clearviewfcu.org"
 
-	loginMenuItem = "//*[@id=\"experiencefragment-9df31000f1\"]/div/div/div[2]/button"
+	usernameField = "//*[@id=\"userid\"]"
+	passwordField = "//*[@id=\"password\"]"
+
+	loginButton = "//*[@id=\"LoginButton\"]"
 )
 
 func (s *Session) Login(ctx context.Context) {
@@ -30,7 +31,7 @@ func (s *Session) Login(ctx context.Context) {
 
 	s.chromedpsession.Execute(
 		chromedp.Navigate(url),
-		chromedp.Click(loginMenuItem),
+		chromedp.Click(loginButton),
 		chromedp.SendKeys(usernameField, s.Credentials.Username),
 		chromedp.SendKeys(passwordField, s.Credentials.Password),
 		chromedp.Submit(passwordField),

@@ -51,6 +51,7 @@ func read() []string {
 	}
 
 	logging.Panic(scanner.Err())
+	log.Info().Msgf("read: %v", lines)
 
 	return lines
 }
