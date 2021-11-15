@@ -2,7 +2,9 @@ package chromedpexecutor
 
 import (
 	"context"
+
 	"github.com/chromedp/cdproto/cdp"
+	"github.com/chromedp/cdproto/runtime"
 	"github.com/chromedp/chromedp"
 )
 
@@ -11,7 +13,7 @@ func (s *ChromeDPSession) Exists(selector interface{}) bool {
 
 	s.Execute(
 		chromedp.Query(selector, chromedp.AtLeast(0),
-			chromedp.After(func(i context.Context, n ...*cdp.Node) error {
+			chromedp.After(func(i context.Context, executionId runtime.ExecutionContextID, n ...*cdp.Node) error {
 				existingNodes = n
 				return nil
 			}),

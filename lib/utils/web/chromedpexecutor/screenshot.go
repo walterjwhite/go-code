@@ -3,10 +3,11 @@ package chromedpexecutor
 import (
 	"context"
 
-	"github.com/chromedp/cdproto/page"
-	"github.com/chromedp/chromedp"
 	"io/ioutil"
 	"math"
+
+	"github.com/chromedp/cdproto/page"
+	"github.com/chromedp/chromedp"
 
 	"github.com/chromedp/cdproto/emulation"
 	"github.com/rs/zerolog/log"
@@ -31,7 +32,7 @@ func FullScreenshot(quality int64, res *[]byte) chromedp.Tasks {
 	return chromedp.Tasks{
 		chromedp.ActionFunc(func(ctx context.Context) error {
 			// get layout metrics
-			_, _, contentSize, err := page.GetLayoutMetrics().Do(ctx)
+			_, _, contentSize, _, _, _, err := page.GetLayoutMetrics().Do(ctx)
 			logging.Panic(err)
 
 			width, height := int64(math.Ceil(contentSize.Width)), int64(math.Ceil(contentSize.Height))

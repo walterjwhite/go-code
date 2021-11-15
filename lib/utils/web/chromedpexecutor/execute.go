@@ -4,17 +4,19 @@ import (
 	"context"
 	"errors"
 	"flag"
+
 	"github.com/chromedp/chromedp"
 	"github.com/mitchellh/go-homedir"
 	"github.com/rs/zerolog/log"
 	"github.com/walterjwhite/go/lib/application/logging"
 
-	"github.com/walterjwhite/go/lib/time/sleep"
 	"io/ioutil"
 	"os"
 	"os/exec"
 	"strings"
 	"time"
+
+	"github.com/walterjwhite/go/lib/time/sleep"
 )
 
 type ChromeDPSession struct {
@@ -32,13 +34,9 @@ var (
 
 	// TODO: add flags to tweak the deviation and minimum wait times
 	// OR if a fixed delay is preferred
-	waiter sleep.Waiter
-	cmd    *exec.Cmd
+	// waiter sleep.Waiter
+	cmd *exec.Cmd
 )
-
-func init() {
-	waiter = &sleep.RandomDelay{MinimumDelay: 250, Deviation: 5000}
-}
 
 func IsRemoteBrowserRunning() bool {
 	getURLFromFile()
@@ -75,9 +73,11 @@ func New(ctx context.Context) *ChromeDPSession {
 
 	// TODO: we might want to use an existing tab ...
 	// create new tab
-	ctx, cancelCtxt := chromedp.NewContext(actxt)
+	// actxt, cancelActxt := context.WithCancel(context.Background())
+	ctx, cancelCtxt := chromedp.NewContext(actxt /*, chromedp.WithLogf(log.Printf)*/)
 
-	return &ChromeDPSession{Context: ctx, CancelAllocator: cancelActxt, CancelContext: cancelCtxt, Waiter: waiter}
+	// TODO: make this more granular, distinguish between find elements visibly on screen / typing
+	return &ChromeDPSession{Context: ctx, CancelAllocator: cancelActxt, CancelContext: cancelCtxt, Waiter: &sleep.RandomDelay{MinimumDelay: 250, Deviation: 5000}}
 }
 
 func getURLFromFile() {
@@ -93,9 +93,6 @@ func getURLFromFile() {
 		// ws url is on line 2
 		dataString := strings.TrimSpace(strings.Split(string(data), "\n")[1])
 		devToolsWsUrlFlag = &dataString
-
-		log.Debug().Msgf("URL: %v", dataString)
-		log.Debug().Msgf("URL: %v", *devToolsWsUrlFlag)
 	} else {
 		logging.Panic(err)
 	}
@@ -103,18 +100,10 @@ func getURLFromFile() {
 
 func (s *ChromeDPSession) Execute(actions ...chromedp.Action) {
 	for i, action := range actions {
-		log.Debug().Msgf("running %v", action)
+		log.Debug().Msgf("running (%d): %T", i, action)
+		s.Waiter.Wait()
+
 		logging.Panic(chromedp.Run(s.Context, action))
-
-		s.doWait(i, actions...)
-	}
-}
-
-func (s *ChromeDPSession) doWait(i int, actions ...chromedp.Action) {
-	if s.Waiter != nil {
-		if i < (len(actions) - 1) {
-			s.Waiter.Wait()
-		}
 	}
 }
 

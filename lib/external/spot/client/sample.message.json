@@ -1,14 +1,11 @@
 {
-    "id": 4937065,
-    "messengerId": "0-8356068",
-    "messengerName": "Spot2",
-    "unixTime": 1364909292,
-    
-    "latitude": -99999.0,
-    "longitude": -99999.0,
-    
-    
-    "hidden": 0,
-    "messageContent": "The help message has been cancelled",
-    "_clientUnixTime": "0"
+  "id": 4937065,
+  "messengerId": "0-8356068",
+  "messengerName": "Spot2",
+  "unixTime": 1364909292,
+  "latitude": -99999,
+  "longitude": -99999,
+  "hidden": 0,
+  "messageContent": "The help message has been cancelled",
+  "_clientUnixTime": "0"
 }

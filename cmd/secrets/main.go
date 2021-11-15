@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"flag"
+
 	"github.com/walterjwhite/go/lib/application"
 	"github.com/walterjwhite/go/lib/application/logging"
 	"github.com/walterjwhite/go/lib/security/secrets"
@@ -21,10 +22,9 @@ func main() {
 
 	switch flag.Args()[0] {
 	case "find":
-		onFind(printOnMatch, flag.Args()[1:])
+		find()
 	case "get":
-		logging.Panic(getFlagSet.Parse(flag.Args()[1:]))
-		onFind(decryptOnMatch, getFlagSet.Args())
+		get()
 	case "put":
 		put()
 	case "encrypt":

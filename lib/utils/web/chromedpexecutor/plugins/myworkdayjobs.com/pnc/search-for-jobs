@@ -1,7 +1,0 @@
-1. click: //*[@id="wd-DropDownCommandButton-commandButton.additionalJobs"]
-2. enter: //*[@id="wd-AdvancedFacetedSearch-SearchTextBox-input"]
-
-filter:
-1. PA: //*[@id="wd-FacetValue-CheckBox-Location_Region_State_Province::f620a79f2dc44473828b42881312de2b"]/div
-2. full-time: //*[@id="wd-FacetValue-CheckBox-timeType::de9fd0a3dfd201ede97f02db0f047e00-label"]
-

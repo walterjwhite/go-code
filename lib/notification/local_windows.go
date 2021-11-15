@@ -1,16 +1,15 @@
 package notification
 
 import (
+	"github.com/walterjwhite/go/lib/application"
 	"github.com/walterjwhite/go/lib/application/logging"
-	"github.com/walterjwhite/go/lib/identifier"
-	"gopkg.in/toast.v1"
 )
 
 type windowsNotification struct{}
 
 func (n *windowsNotification) Notify(notification Notification) {
 	toastNotification := toast.Notification{
-		AppID:   identifier.GetApplicationId(),
+		AppID:   application.GetApplicationId(),
 		Title:   notification.Title,
 		Message: notification.Description,
 

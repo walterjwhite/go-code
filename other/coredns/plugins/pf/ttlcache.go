@@ -19,6 +19,7 @@ func init() {
 }
 
 func add(ip string) {
+	// if the key already exists, bypass adding it to pf, that will just slow the operation down
 	logging.Panic(cache.Set(ip, ""))
 	pfAdd(ip)
 }

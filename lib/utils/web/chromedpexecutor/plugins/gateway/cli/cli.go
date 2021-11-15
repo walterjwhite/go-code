@@ -17,7 +17,7 @@ func New() *Provider {
 }
 
 func (p *Provider) Get() string {
-	if ( len(*tokenFlag) == 6) {
+	if len(*tokenFlag) == 6 {
 		return *tokenFlag
 	}
 

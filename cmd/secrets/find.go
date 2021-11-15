@@ -1,10 +1,16 @@
 package main
 
 import (
+	"flag"
 	"fmt"
-	"github.com/walterjwhite/go/lib/security/secrets"
 	"strings"
+
+	"github.com/walterjwhite/go/lib/security/secrets"
 )
+
+func find() {
+	onFind(printOnMatch, flag.Args()[1:])
+}
 
 func printOnMatch(filePath string) {
 	key := removeProject(removeValue(filePath))

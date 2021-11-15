@@ -1,96 +1,96 @@
 {
-    "response": {
-       "feedMessageResponse": {
-          "count": 10,
-          "feed": {
-             "id": "03XHH0sPyTiYUsYD2TVJ4q7CzEH89HBhG",
-             "name": "OneAtATime",
-             "description": "OneAtATime",
-             "status": "ACTIVE",
-             "usage": "0",
-             "daysRange": 7,
-             "detailedMessageShown": true
+  "response": {
+    "feedMessageResponse": {
+      "count": 10,
+      "feed": {
+        "id": "03XHH0sPyTiYUsYD2TVJ4q7CzEH89HBhG",
+        "name": "OneAtATime",
+        "description": "OneAtATime",
+        "status": "ACTIVE",
+        "usage": "0",
+        "daysRange": 7,
+        "detailedMessageShown": true
+      },
+      "totalCount": 10,
+      "activityCount": 0,
+      "messages": {
+        "message": [
+          {
+            "id": 4937065,
+            "messengerId": "0-8356068",
+            "messengerName": "Spot2",
+            "unixTime": 1364909292,
+            "messageType": "HELP-CANCEL",
+            "latitude": -99999,
+            "longitude": -99999,
+            "modelId": "SPOT2",
+            "showCustomMsg": "Y",
+            "dateTime": "2013-04-02T06:28:12-0700",
+            "hidden": 0,
+            "messageContent": "The help message has been cancelled",
+            "_clientUnixTime": "0"
           },
-          "totalCount": 10,
-          "activityCount": 0,
-          "messages": {
-             "message": [
-                {
-                   "id": 4937065,
-                   "messengerId": "0-8356068",
-                   "messengerName": "Spot2",
-                   "unixTime": 1364909292,
-                   "messageType": "HELP-CANCEL",
-                   "latitude": -99999.0,
-                   "longitude": -99999.0,
-                   "modelId": "SPOT2",
-                   "showCustomMsg": "Y",
-                   "dateTime": "2013-04-02T06:28:12-0700",
-                   "hidden": 0,
-                   "messageContent": "The help message has been cancelled",
-                   "_clientUnixTime": "0"
-                },
-                {
-                   "id": 4937064,
-                   "messengerId": "0-8356068",
-                   "messengerName": "Spot2",
-                   "unixTime": 1364909283,
-                   "messageType": "HELP",
-                   "latitude": 45.42249,
-                   "longitude": -111.68832,
-                   "modelId": "SPOT2",
-                   "showCustomMsg": "Y",
-                   "dateTime": "2013-04-02T06:28:03-0700",
-                   "hidden": 0,
-                   "messageContent": "This is the default HELP message. Please update.",
-                   "_clientUnixTime": "0"
-                },
-                {
-                   "id": 4937060,
-                   "messengerId": "0-8356068",
-                   "messengerName": "Spot2",
-                   "unixTime": 1364908774,
-                   "messageType": "CUSTOM",
-                   "latitude": 45.42249,
-                   "longitude": -111.68832,
-                   "modelId": "SPOT2",
-                   "showCustomMsg": "Y",
-                   "dateTime": "2013-04-02T06:19:34-0700",
-                   "hidden": 0,
-                   "messageContent": "This is a custom message",
-                   "_clientUnixTime": "0"
-                },
-                {
-                   "id": 4937059,
-                   "messengerId": "0-8356068",
-                   "messengerName": "Spot2",
-                   "unixTime": 1364908765,
-                   "messageType": "OK",
-                   "latitude": 45.42249,
-                   "longitude": -111.68832,
-                   "modelId": "SPOT2",
-                   "showCustomMsg": "Y",
-                   "dateTime": "2013-04-02T06:19:25-0700",
-                   "hidden": 0,
-                   "messageContent": "This is the default SPOT Check-in/OK message. Please update.",
-                   "_clientUnixTime": "0"
-                },
-                {
-                   "id": 4937057,
-                   "messengerId": "0-8356068",
-                   "messengerName": "Spot2",
-                   "unixTime": 1364908512,
-                   "messageType": "TRACK",
-                   "latitude": 45.42249,
-                   "longitude": -111.68832,
-                   "modelId": "SPOT2",
-                   "showCustomMsg": "Y",
-                   "dateTime": "2013-04-02T06:15:12-0700",
-                   "hidden": 0,
-                   "_clientUnixTime": "0"
-                }
-             ]
+          {
+            "id": 4937064,
+            "messengerId": "0-8356068",
+            "messengerName": "Spot2",
+            "unixTime": 1364909283,
+            "messageType": "HELP",
+            "latitude": 45.42249,
+            "longitude": -111.68832,
+            "modelId": "SPOT2",
+            "showCustomMsg": "Y",
+            "dateTime": "2013-04-02T06:28:03-0700",
+            "hidden": 0,
+            "messageContent": "This is the default HELP message. Please update.",
+            "_clientUnixTime": "0"
+          },
+          {
+            "id": 4937060,
+            "messengerId": "0-8356068",
+            "messengerName": "Spot2",
+            "unixTime": 1364908774,
+            "messageType": "CUSTOM",
+            "latitude": 45.42249,
+            "longitude": -111.68832,
+            "modelId": "SPOT2",
+            "showCustomMsg": "Y",
+            "dateTime": "2013-04-02T06:19:34-0700",
+            "hidden": 0,
+            "messageContent": "This is a custom message",
+            "_clientUnixTime": "0"
+          },
+          {
+            "id": 4937059,
+            "messengerId": "0-8356068",
+            "messengerName": "Spot2",
+            "unixTime": 1364908765,
+            "messageType": "OK",
+            "latitude": 45.42249,
+            "longitude": -111.68832,
+            "modelId": "SPOT2",
+            "showCustomMsg": "Y",
+            "dateTime": "2013-04-02T06:19:25-0700",
+            "hidden": 0,
+            "messageContent": "This is the default SPOT Check-in/OK message. Please update.",
+            "_clientUnixTime": "0"
+          },
+          {
+            "id": 4937057,
+            "messengerId": "0-8356068",
+            "messengerName": "Spot2",
+            "unixTime": 1364908512,
+            "messageType": "TRACK",
+            "latitude": 45.42249,
+            "longitude": -111.68832,
+            "modelId": "SPOT2",
+            "showCustomMsg": "Y",
+            "dateTime": "2013-04-02T06:15:12-0700",
+            "hidden": 0,
+            "_clientUnixTime": "0"
           }
-       }
+        ]
+      }
     }
- }
+  }
+}

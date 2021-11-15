@@ -62,6 +62,7 @@ func getField(value reflect.Value, fieldName string) reflect.Value {
 
 	return getFieldRecurse(field, fieldNamePath[1:])
 }
+
 func getFieldRecurse(value reflect.Value, fieldNamePath []string) reflect.Value {
 	field := reflect.Indirect(value).FieldByName(fieldNamePath[0])
 
@@ -70,4 +71,8 @@ func getFieldRecurse(value reflect.Value, fieldNamePath []string) reflect.Value 
 	}
 
 	return getFieldRecurse(field, fieldNamePath[1:])
+}
+
+func Decrypt(secretKey string) string {
+	return secrets.Decrypt(getFieldPath(*pathPrefixFlag, secretKey))
 }

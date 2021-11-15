@@ -1,19 +1,20 @@
-package discovercard
+package clearviewfcu
 
 import (
 	"context"
 	"github.com/chromedp/chromedp"
-	// "github.com/rs/zerolog/log"
 
 	"github.com/walterjwhite/go/lib/utils/web/chromedpexecutor"
 	// "time"
 )
 
 const (
-	url = "https://www.discover.com"
+	url = "https://www.clearviewfcu.org"
 
-	usernameField = "//*[@id=\"userid-content\"]"
-	passwordField = "//*[@id=\"password-content\"]"
+	usernameField = "//*[@id=\"userid\"]"
+	passwordField = "//*[@id=\"password\"]"
+
+	loginButton = "//*[@id=\"LoginButton\"]"
 )
 
 func (s *Session) Login(ctx context.Context) {
@@ -30,6 +31,7 @@ func (s *Session) Login(ctx context.Context) {
 
 	s.chromedpsession.Execute(
 		chromedp.Navigate(url),
+		chromedp.Click(loginButton),
 		chromedp.SendKeys(usernameField, s.Credentials.Username),
 		chromedp.SendKeys(passwordField, s.Credentials.Password),
 		chromedp.Submit(passwordField),
@@ -39,6 +41,4 @@ func (s *Session) Login(ctx context.Context) {
 	// 	chromedpexecutor.TimeLimitedChromeAction{Action: chromedp.WaitVisible(logoutButton),
 	// 		Limit: 10 * time.Second, IsException: true, Message: "Login Failed"},
 	// )
-
-	// log.Info().Msgf("Successfully authenticated as: %v", s.Credentials.Username)
 }

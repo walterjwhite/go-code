@@ -4,19 +4,18 @@ import (
 	"context"
 	"flag"
 
+	"os"
+	"sync"
+
 	"github.com/rs/zerolog/log"
 	"github.com/walterjwhite/go/lib/application/property"
 	"github.com/walterjwhite/go/lib/application/shutdown"
-	"os"
-	"sync"
 )
 
 var (
 	Context context.Context
 	Cancel  context.CancelFunc
 	endCall sync.Once
-
-	noAuditFlag = flag.Bool("no-audit", false, "Disable Audit execution")
 )
 
 func init() {
@@ -47,9 +46,7 @@ func doConfigure() {
 }
 
 func logStart() {
-	if !*noAuditFlag {
-		log.Info().Msg("Application started")
-	}
+	log.Info().Msg("Application started")
 }
 
 func OnEnd() {
@@ -67,9 +64,7 @@ func (a *defaultHandler) OnContextClosed() {
 }
 
 func doEnd() {
-	if !*noAuditFlag {
-		log.Info().Msg("Application stopped")
-	}
+	log.Info().Msg("Application stopped")
 
 	Cancel()
 	os.Exit(0)

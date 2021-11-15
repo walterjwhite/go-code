@@ -1,5 +1,0 @@
-1. get https://pnc.wd5.myworkdayjobs.com/en-US/External/login
-2. type username: //*[@id="wd-Authentication-NO_METADATA_ID-uid4"]/div/div/div[2]/div/div[3]/div[1]/div/input
-3. type password: //*[@id="wd-Authentication-NO_METADATA_ID-uid4"]/div/div/div[2]/div/div[3]/div[2]/div/input
-
-

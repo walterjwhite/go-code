@@ -1,8 +1,8 @@
 package remote
 
 import (
-"github.com/rs/zerolog/log"
-"os"
+	"github.com/rs/zerolog/log"
+	"os"
 )
 
 func IsRemote() bool {
@@ -10,6 +10,6 @@ func IsRemote() bool {
 	if exists {
 		log.Info().Msgf("remote client name: %v", clientName)
 	}
-	
+
 	return exists
 }

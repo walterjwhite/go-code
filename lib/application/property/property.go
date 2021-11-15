@@ -2,10 +2,11 @@ package property
 
 import (
 	"flag"
+	"path/filepath"
+
 	"github.com/mitchellh/go-homedir"
 	"github.com/walterjwhite/go/lib/application/logging"
 	"github.com/walterjwhite/go/lib/utils/typename"
-	"path/filepath"
 )
 
 // TODO: allow other sources (REDIS, etcd, etc.)
@@ -19,6 +20,8 @@ var (
 )
 
 func Load(config interface{}) {
+	flag.Parse()
+
 	LoadFile(config)
 
 	LoadEnv(config)

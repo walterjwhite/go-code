@@ -2,17 +2,19 @@ package property
 
 import (
 	"flag"
+	"os"
+	"path/filepath"
+
 	"github.com/mitchellh/go-homedir"
 	"github.com/rs/zerolog/log"
 	"github.com/walterjwhite/go/lib/application/logging"
 	"github.com/walterjwhite/go/lib/io/yaml"
 	"github.com/walterjwhite/go/lib/utils/typename"
-	"os"
-	"path/filepath"
 )
 
 var (
 	propertyConfigurationLocationFlag = flag.String("config-path", "~/.config/walterjwhite", "property config path")
+	propertyConfigurationFileFlag     = flag.String("property-file", "", "property file")
 )
 
 func LoadFile(config interface{}) {
@@ -32,6 +34,10 @@ func LoadFile(config interface{}) {
 }
 
 func getFile(config interface{}) string {
+	if len(*propertyConfigurationFileFlag) > 0 {
+		return *propertyConfigurationFileFlag
+	}
+
 	if len(*pathPrefixFlag) == 0 {
 		path, err := homedir.Expand(*propertyConfigurationLocationFlag)
 		logging.Panic(err)

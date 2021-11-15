@@ -2,9 +2,10 @@ package periodic
 
 import (
 	"context"
-	"github.com/walterjwhite/go/lib/application/logging"
 	"sync"
 	"time"
+
+	"github.com/walterjwhite/go/lib/application/logging"
 )
 
 type PeriodicInstance struct {
@@ -20,6 +21,10 @@ type PeriodicInstance struct {
 
 func Now(parentContext context.Context, interval *time.Duration, fn func() error) *PeriodicInstance {
 	return Periodic(parentContext, interval, true, fn)
+}
+
+func After(parentContext context.Context, interval *time.Duration, fn func() error) *PeriodicInstance {
+	return Periodic(parentContext, interval, false, fn)
 }
 
 func Periodic(parentContext context.Context, interval *time.Duration, runImmediately bool, fn func() error) *PeriodicInstance {

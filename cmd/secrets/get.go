@@ -3,22 +3,30 @@ package main
 import (
 	"flag"
 	"fmt"
+	"path/filepath"
+	"strings"
 
 	"github.com/atotto/clipboard"
 
+	"io/ioutil"
+
 	"github.com/walterjwhite/go/lib/application/logging"
 	"github.com/walterjwhite/go/lib/security/secrets"
-	"io/ioutil"
 )
 
 var (
 	getFlagSet = flag.NewFlagSet("get", flag.ExitOnError)
 
 	getOutputTarget = getFlagSet.String("o", "c", "display secret on (c=>Clipboard, s=>StdOut, f=>file)")
+	removeSpaces    = getFlagSet.Bool("s", false, "remove spaces")
 )
 
 func decryptOnMatch(secretPath string) {
 	secretText := secrets.Decrypt(secretPath)
+
+	if *removeSpaces {
+		secretText = strings.ReplaceAll(secretText, " ", "")
+	}
 
 	switch *getOutputTarget {
 	case "s":
@@ -28,4 +36,14 @@ func decryptOnMatch(secretPath string) {
 	default:
 		logging.Panic(clipboard.WriteAll(secretText))
 	}
+}
+
+func get() {
+	logging.Panic(getFlagSet.Parse(flag.Args()[1:]))
+	if len(getFlagSet.Args()) == 1 {
+		decryptOnMatch(filepath.Join(getFlagSet.Args()[0], "value"))
+		return
+	}
+
+	onFind(decryptOnMatch, getFlagSet.Args())
 }

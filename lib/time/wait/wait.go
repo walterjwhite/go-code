@@ -28,7 +28,11 @@ func Wait(ctx context.Context, interval *time.Duration, limit *time.Duration, us
 	w.periodic = periodic.Now(wctx, interval, w.monitorFunction)
 
 	// wait until done
-	timeout.Limit(w.doWait, limit, wctx)
+	if limit != nil {
+		timeout.Limit(w.doWait, limit, wctx)
+	} else {
+		w.doWait()
+	}
 }
 
 func (w *waitInstance) doWait() {

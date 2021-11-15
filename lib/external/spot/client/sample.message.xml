@@ -1,14 +1,15 @@
+<?xml version="1.0"?>
 <message clientUnixTime="0">
-    <id>4937065</id>
-    <messengerId>0-8356068</messengerId>
-    <messengerName>Spot2</messengerName>
-    <unixTime>1364909292</unixTime>
-    <messageType>HELP-CANCEL</messageType>
-    <latitude>-99999.0</latitude>
-    <longitude>-99999.0</longitude>
-    <modelId>SPOT2</modelId>
-    <showCustomMsg>Y</showCustomMsg>
-    <dateTime>2013-04-02T06:28:12-0700</dateTime>
-    <hidden>0</hidden>
-    <messageContent>The help message has been cancelled</messageContent>
+  <id>4937065</id>
+  <messengerId>0-8356068</messengerId>
+  <messengerName>Spot2</messengerName>
+  <unixTime>1364909292</unixTime>
+  <messageType>HELP-CANCEL</messageType>
+  <latitude>-99999.0</latitude>
+  <longitude>-99999.0</longitude>
+  <modelId>SPOT2</modelId>
+  <showCustomMsg>Y</showCustomMsg>
+  <dateTime>2013-04-02T06:28:12-0700</dateTime>
+  <hidden>0</hidden>
+  <messageContent>The help message has been cancelled</messageContent>
 </message>

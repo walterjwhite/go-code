@@ -5,11 +5,11 @@ import (
 
 	"github.com/walterjwhite/go/lib/application"
 
-	"github.com/walterjwhite/go/lib/utils/web/chromedpexecutor/plugins/pnc"
+	"github.com/walterjwhite/go/lib/utils/web/chromedpexecutor/plugins/authenticate"
 )
 
 var (
-	session = &pnc.Session{}
+	session = &authenticate.Session{}
 )
 
 func init() {
@@ -19,5 +19,7 @@ func init() {
 func main() {
 	defer application.OnEnd()
 
-	session.Login(context.Background())
+	ctx := context.Background()
+	session.Login(ctx)
+	session.KeepAlive(ctx)
 }
