@@ -3,22 +3,22 @@ package cli
 import (
 	"bytes"
 
-	"github.com/satori/go.uuid"
-
 	"context"
 
-	"github.com/walterjwhite/go/lib/application/logging"
 	"io"
 	"os"
 	"time"
 
+	"github.com/walterjwhite/go/lib/application/logging"
+
 	"os/exec"
 
-	"github.com/walterjwhite/go/lib/io/yaml"
-	"github.com/walterjwhite/go/lib/time/timeout"
 	"io/ioutil"
 	"path/filepath"
-	//"github.com/edwingeng/wuid/callback/wuid"
+
+	"github.com/segmentio/ksuid"
+	"github.com/walterjwhite/go/lib/io/yaml"
+	"github.com/walterjwhite/go/lib/time/timeout"
 )
 
 // creates the command object
@@ -32,7 +32,7 @@ func (c *Command) Execute(ctx context.Context) {
 	//g := NewWUID("default", nil)
 	if len(c.Id) == 0 {
 		// TODO: replace this with a newer library
-		c.Id = uuid.Must(uuid.NewV4()).String()
+		c.Id = ksuid.New().String()
 	}
 
 	c.Date = time.Now()

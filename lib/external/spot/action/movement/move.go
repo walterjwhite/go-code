@@ -2,6 +2,7 @@ package movement
 
 import (
 	"fmt"
+
 	"github.com/walterjwhite/go/lib/external/spot/notification"
 )
 
@@ -33,12 +34,12 @@ func (c *MovementConfiguration) buildNotification() *notification.Notification {
 	n := notification.New(c.Session,
 		c.Session.LatestReceivedRecord, c.getNotificationName())
 
-	n.Context["StartHour"] = string(c.StartHour)
-	n.Context["StartMinute"] = string(c.StartMinute)
-	n.Context["EndHour"] = string(c.EndHour)
-	n.Context["EndMinute"] = string(c.EndMinute)
+	n.Context["StartHour"] = fmt.Sprint(c.StartHour)
+	n.Context["StartMinute"] = fmt.Sprint(c.StartMinute)
+	n.Context["EndHour"] = fmt.Sprint(c.EndHour)
+	n.Context["EndMinute"] = fmt.Sprint(c.EndMinute)
 
-	n.Context["AlertAfter"] = string(c.AlertAfter)
+	n.Context["AlertAfter"] = fmt.Sprint(c.AlertAfter)
 	n.Context["MovementDurationTimeout"] = fmt.Sprintf("%.0f minutes", c.MovementDurationTimeout.Minutes())
 	n.Context["SuspendDurationTimeout"] = fmt.Sprintf("%.0f minutes", c.SuspendDurationTimeout.Minutes())
 

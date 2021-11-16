@@ -18,8 +18,10 @@ var (
 )
 
 func LoadFile(config interface{}) {
-	filename := getFile(config)
+	LoadFileWithPath(config, getFile(config))
+}
 
+func LoadFileWithPath(config interface{}, filename string) {
 	finfo, err := os.Stat(filename)
 	if os.IsNotExist(err) {
 		log.Error().Msgf("%v does not exist", filename)

@@ -21,10 +21,12 @@ require (
 	github.com/emersion/go-sasl v0.0.0-20211008083017-0b9dcfb154ac // indirect
 	github.com/emersion/go-textwrapper v0.0.0-20200911093747-65d896831594 // indirect
 	github.com/erikstmartin/go-testdb v0.0.0-20160219214506-8d10e4a1bae5 // indirect
+	github.com/esiqveland/notify v0.11.0
 	github.com/fatih/structs v1.1.0 // indirect
 	github.com/go-mail/gomail v2.3.1+incompatible
 	github.com/go-sql-driver/mysql v1.5.0 // indirect
 	github.com/godbus/dbus v4.1.0+incompatible // indirect
+	github.com/godbus/dbus/v5 v5.0.6
 	github.com/google/go-querystring v1.0.0 // indirect
 	github.com/jmoiron/sqlx v1.2.0
 	github.com/kellydunn/golang-geo v0.7.0
@@ -35,7 +37,7 @@ require (
 	github.com/olivere/elastic/v7 v7.0.29
 	github.com/openvenues/gopostal v0.0.0-20171226154602-e0184512a45d
 	github.com/rs/zerolog v1.20.0
-	github.com/satori/go.uuid v1.2.0
+	github.com/segmentio/ksuid v1.0.4
 	github.com/sudhanshuraheja/go-garmin-gpx v1.0.1 // indirect
 	github.com/trivago/tgo v1.0.7 // indirect
 	github.com/valyala/fasttemplate v1.2.1
@@ -46,7 +48,7 @@ require (
 	golang.org/x/crypto v0.0.0-20211115234514-b4de73f9ece8
 	golang.org/x/image v0.0.0-20211028202545-6944b10bf410
 	golang.org/x/net v0.0.0-20211112202133-69e39bad7dc2 // indirect
-	golang.org/x/sys v0.0.0-20211113001501-0c823b97ae02 // indirect
+	golang.org/x/sys v0.0.0-20211116061358-0a5406a5449c // indirect
 	golang.org/x/text v0.3.7 // indirect
 	google.golang.org/genproto v0.0.0-20211115160612-a5da7257a6f7 // indirect
 	gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc // indirect

@@ -5,11 +5,12 @@ import (
 )
 
 type Feed struct {
-	Id                   string
-	Name                 string
-	Description          string
-	Status               string
-	Usage                int
+	Id          string
+	Name        string
+	Description string
+	Status      string
+	// Usage                int
+	Usage                string
 	DaysRange            int
 	DetailedMessageShown bool
 	Type                 string

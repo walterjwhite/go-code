@@ -2,9 +2,10 @@ package run
 
 import (
 	"context"
+	"path/filepath"
+
 	"github.com/walterjwhite/go/lib/application/logging"
 	"github.com/walterjwhite/go/lib/application/property"
-	"path/filepath"
 )
 
 func New(path string, applications ...string) *Session {
@@ -14,8 +15,8 @@ func New(path string, applications ...string) *Session {
 	for index, application := range applications {
 		a := &Application{}
 
-		appConf := &property.Configuration{Path: filepath.Join(s.Path, application, "application.yaml")}
-		appConf.Load(a)
+		appConfPath := filepath.Join(s.Path, application, ".application", "go.yaml")
+		property.LoadFileWithPath(a, appConfPath)
 		a.session = s
 
 		s.Applications[index] = a
