@@ -1,4 +1,4 @@
-module github.com/walterjwhite/go
+module github.com/walterjwhite/go-code
 
 go 1.16
 
