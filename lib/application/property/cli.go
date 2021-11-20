@@ -1,7 +1,8 @@
 package property
 
 import (
-	"github.com/octago/sflags/gen/gflag"
+	"github.com/walterjwhite/sflags/gen/gflag"
+	//"github.com/sflags/gen/gflag"
 	"github.com/walterjwhite/go/lib/application/logging"
 )
 
