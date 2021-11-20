@@ -101,7 +101,9 @@ func getURLFromFile() {
 func (s *ChromeDPSession) Execute(actions ...chromedp.Action) {
 	for i, action := range actions {
 		log.Debug().Msgf("running (%d): %T", i, action)
-		s.Waiter.Wait()
+		if s.Waiter != nil {
+			s.Waiter.Wait()
+		}
 
 		logging.Panic(chromedp.Run(s.Context, action))
 	}
