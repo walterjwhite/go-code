@@ -2,7 +2,7 @@ package property
 
 import (
 	"github.com/rs/zerolog/log"
-	"github.com/walterjwhite/go/lib/security/secrets"
+	"github.com/walterjwhite/go-code/lib/security/secrets"
 	"reflect"
 	"strings"
 )

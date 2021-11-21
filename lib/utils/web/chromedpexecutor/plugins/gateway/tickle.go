@@ -4,7 +4,7 @@ import (
 	"context"
 	"github.com/chromedp/chromedp"
 	"github.com/rs/zerolog/log"
-	"github.com/walterjwhite/go/lib/time/periodic"
+	"github.com/walterjwhite/go-code/lib/time/periodic"
 )
 
 func (s *Session) tickle(ctx context.Context) {

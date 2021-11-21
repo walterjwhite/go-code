@@ -3,12 +3,12 @@ package main
 import (
 	"flag"
 
-	"github.com/walterjwhite/go/lib/application"
-	"github.com/walterjwhite/go/lib/application/logging"
+	"github.com/walterjwhite/go-code/lib/application"
+	"github.com/walterjwhite/go-code/lib/application/logging"
 
-	emaill "github.com/walterjwhite/go/lib/net/email"
-	"github.com/walterjwhite/go/lib/utils/web/chromedpexecutor/plugins/gateway"
-	"github.com/walterjwhite/go/lib/utils/web/chromedpexecutor/plugins/gateway/email"
+	emaill "github.com/walterjwhite/go-code/lib/net/email"
+	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/plugins/gateway"
+	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/plugins/gateway/email"
 	"time"
 )
 

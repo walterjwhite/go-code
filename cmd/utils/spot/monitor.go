@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/walterjwhite/go/lib/application"
-	"github.com/walterjwhite/go/lib/external/spot"
+	"github.com/walterjwhite/go-code/lib/application"
+	"github.com/walterjwhite/go-code/lib/external/spot"
 )
 
 // TODO: configure actions (export of daily GPS data, export of last GPS track, email, sms, etc)

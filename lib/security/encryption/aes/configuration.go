@@ -1,7 +1,7 @@
 package aes
 
 import (
-	"github.com/walterjwhite/go/lib/security/encryption"
+	"github.com/walterjwhite/go-code/lib/security/encryption"
 )
 
 type Configuration struct {

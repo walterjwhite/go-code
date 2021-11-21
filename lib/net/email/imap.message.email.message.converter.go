@@ -6,7 +6,7 @@ import (
 	"github.com/emersion/go-imap"
 	"github.com/emersion/go-message/mail"
 	"github.com/rs/zerolog/log"
-	"github.com/walterjwhite/go/lib/application/logging"
+	"github.com/walterjwhite/go-code/lib/application/logging"
 	"io"
 	"io/ioutil"
 )

@@ -3,7 +3,7 @@ package sleep
 import (
 	"time"
 
-	"github.com/walterjwhite/go/lib/security/random"
+	"github.com/walterjwhite/go-code/lib/security/random"
 
 	"github.com/rs/zerolog/log"
 )

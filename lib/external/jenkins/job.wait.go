@@ -3,7 +3,7 @@ package jenkins
 import (
 	"context"
 	"github.com/rs/zerolog/log"
-	"github.com/walterjwhite/go/lib/time/wait"
+	"github.com/walterjwhite/go-code/lib/time/wait"
 )
 
 func (j *Job) Wait(ctx context.Context) {

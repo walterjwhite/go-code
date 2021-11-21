@@ -3,7 +3,7 @@ package database
 import (
 	"fmt"
 	"github.com/jmoiron/sqlx"
-	"github.com/walterjwhite/go/lib/application/logging"
+	"github.com/walterjwhite/go-code/lib/application/logging"
 )
 
 // TODO: this is specific to Oracle, generalize this

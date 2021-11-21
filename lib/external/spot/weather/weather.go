@@ -3,8 +3,8 @@ package weather
 import (
 	"bytes"
 	"fmt"
-	"github.com/walterjwhite/go/lib/application/logging"
-	"github.com/walterjwhite/go/lib/external/spot/data"
+	"github.com/walterjwhite/go-code/lib/application/logging"
+	"github.com/walterjwhite/go-code/lib/external/spot/data"
 	"net/http"
 	"strconv"
 )

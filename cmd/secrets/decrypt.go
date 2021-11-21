@@ -4,8 +4,8 @@ import (
 	"flag"
 	"fmt"
 	"github.com/atotto/clipboard"
-	"github.com/walterjwhite/go/lib/application/logging"
-	"github.com/walterjwhite/go/lib/security/secrets"
+	"github.com/walterjwhite/go-code/lib/application/logging"
+	"github.com/walterjwhite/go-code/lib/security/secrets"
 )
 
 var (

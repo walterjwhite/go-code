@@ -5,9 +5,9 @@ import (
 	"time"
 
 	"github.com/rs/zerolog/log"
-	//"github.com/walterjwhite/go/lib/application/logging"
-	"github.com/walterjwhite/go/lib/time/periodic"
-	"github.com/walterjwhite/go/lib/time/timeout"
+	//"github.com/walterjwhite/go-code/lib/application/logging"
+	"github.com/walterjwhite/go-code/lib/time/periodic"
+	"github.com/walterjwhite/go-code/lib/time/timeout"
 )
 
 type waitInstance struct {

@@ -3,7 +3,7 @@ package day
 import (
 	//"fmt"
 
-	"github.com/walterjwhite/go/lib/time/timeformatter/decade"
+	"github.com/walterjwhite/go-code/lib/time/timeformatter/decade"
 
 	"time"
 )

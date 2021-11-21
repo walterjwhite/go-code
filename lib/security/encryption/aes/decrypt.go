@@ -3,7 +3,7 @@ package aes
 import (
 	aesl "crypto/aes"
 	"crypto/cipher"
-	"github.com/walterjwhite/go/lib/application/logging"
+	"github.com/walterjwhite/go-code/lib/application/logging"
 )
 
 func (c *Configuration) Decrypt(data []byte) []byte {

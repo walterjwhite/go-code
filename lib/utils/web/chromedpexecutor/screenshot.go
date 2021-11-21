@@ -11,7 +11,7 @@ import (
 
 	"github.com/chromedp/cdproto/emulation"
 	"github.com/rs/zerolog/log"
-	"github.com/walterjwhite/go/lib/application/logging"
+	"github.com/walterjwhite/go-code/lib/application/logging"
 )
 
 // TODO: this does not work and just hangs

@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 	"github.com/olivere/elastic/v7"
-	"github.com/walterjwhite/go/lib/application/logging"
-	"github.com/walterjwhite/go/lib/data/elasticsearch"
+	"github.com/walterjwhite/go-code/lib/application/logging"
+	"github.com/walterjwhite/go-code/lib/data/elasticsearch"
 	"time"
 )
 

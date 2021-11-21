@@ -3,7 +3,7 @@ package email
 import (
 	"github.com/emersion/go-imap"
 	"github.com/rs/zerolog/log"
-	emaill "github.com/walterjwhite/go/lib/net/email"
+	emaill "github.com/walterjwhite/go-code/lib/net/email"
 	"regexp"
 )
 

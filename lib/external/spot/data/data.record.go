@@ -1,7 +1,7 @@
 package data
 
 import (
-	"github.com/walterjwhite/go/lib/external/spot/client"
+	"github.com/walterjwhite/go-code/lib/external/spot/client"
 	"time"
 )
 

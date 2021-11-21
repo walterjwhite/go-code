@@ -1,8 +1,8 @@
 package notification
 
 import (
-	"github.com/walterjwhite/go/lib/application/property"
-	"github.com/walterjwhite/go/lib/io/yaml"
+	"github.com/walterjwhite/go-code/lib/application/property"
+	"github.com/walterjwhite/go-code/lib/io/yaml"
 	"os"
 	"path/filepath"
 )

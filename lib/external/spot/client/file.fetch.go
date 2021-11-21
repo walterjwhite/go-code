@@ -3,7 +3,7 @@ package client
 import (
 	"bufio"
 	"encoding/json"
-	"github.com/walterjwhite/go/lib/application/logging"
+	"github.com/walterjwhite/go-code/lib/application/logging"
 	"os"
 )
 

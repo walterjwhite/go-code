@@ -3,8 +3,8 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/walterjwhite/go/lib/application"
-	"github.com/walterjwhite/go/lib/security/random"
+	"github.com/walterjwhite/go-code/lib/application"
+	"github.com/walterjwhite/go-code/lib/security/random"
 )
 
 var (

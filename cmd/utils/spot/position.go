@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/walterjwhite/go/lib/external/spot"
+	"github.com/walterjwhite/go-code/lib/external/spot"
 )
 
 func position(c *spot.Configuration) {

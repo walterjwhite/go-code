@@ -1,14 +1,14 @@
 package spot
 
 import (
-	"github.com/walterjwhite/go/lib/external/spot/data"
+	"github.com/walterjwhite/go-code/lib/external/spot/data"
 
-	"github.com/walterjwhite/go/lib/application/property"
-	"github.com/walterjwhite/go/lib/external/spot/action"
-	"github.com/walterjwhite/go/lib/external/spot/action/daily_export"
-	"github.com/walterjwhite/go/lib/external/spot/action/movement"
-	"github.com/walterjwhite/go/lib/external/spot/action/new_record"
-	"github.com/walterjwhite/go/lib/io/yaml"
+	"github.com/walterjwhite/go-code/lib/application/property"
+	"github.com/walterjwhite/go-code/lib/external/spot/action"
+	"github.com/walterjwhite/go-code/lib/external/spot/action/daily_export"
+	"github.com/walterjwhite/go-code/lib/external/spot/action/movement"
+	"github.com/walterjwhite/go-code/lib/external/spot/action/new_record"
+	"github.com/walterjwhite/go-code/lib/io/yaml"
 )
 
 func (c *Configuration) initActions() {

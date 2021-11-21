@@ -2,7 +2,7 @@ package movement
 
 import (
 	"github.com/rs/zerolog/log"
-	"github.com/walterjwhite/go/lib/time/after"
+	"github.com/walterjwhite/go-code/lib/time/after"
 	"time"
 )
 

@@ -1,7 +1,7 @@
 package jira
 
 import (
-	"github.com/walterjwhite/go/lib/application/logging"
+	"github.com/walterjwhite/go-code/lib/application/logging"
 	jiral "gopkg.in/andygrunwald/go-jira.v1"
 )
 

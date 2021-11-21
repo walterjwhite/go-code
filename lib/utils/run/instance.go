@@ -4,8 +4,8 @@ import (
 	"context"
 	"path/filepath"
 
-	"github.com/walterjwhite/go/lib/application/logging"
-	"github.com/walterjwhite/go/lib/application/property"
+	"github.com/walterjwhite/go-code/lib/application/logging"
+	"github.com/walterjwhite/go-code/lib/application/property"
 )
 
 func New(path string, applications ...string) *Session {

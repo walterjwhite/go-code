@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"github.com/chromedp/chromedp"
 	"github.com/rs/zerolog/log"
-	"github.com/walterjwhite/go/lib/application/logging"
-	"github.com/walterjwhite/go/lib/security/secrets"
-	"github.com/walterjwhite/go/lib/utils/token/plugins/stdin"
+	"github.com/walterjwhite/go-code/lib/application/logging"
+	"github.com/walterjwhite/go-code/lib/security/secrets"
+	"github.com/walterjwhite/go-code/lib/utils/token/plugins/stdin"
 	"strings"
 	"time"
 )

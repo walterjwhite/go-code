@@ -3,7 +3,7 @@ package secrets
 import (
 	"encoding/base64"
 	"github.com/rs/zerolog/log"
-	"github.com/walterjwhite/go/lib/application/logging"
+	"github.com/walterjwhite/go-code/lib/application/logging"
 	"io/ioutil"
 	"os"
 	"os/exec"

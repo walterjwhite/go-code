@@ -2,10 +2,10 @@ package movement
 
 import (
 	"context"
-	"github.com/walterjwhite/go/lib/external/spot/client"
-	"github.com/walterjwhite/go/lib/external/spot/data"
+	"github.com/walterjwhite/go-code/lib/external/spot/client"
+	"github.com/walterjwhite/go-code/lib/external/spot/data"
 
-	"github.com/walterjwhite/go/lib/time/after"
+	"github.com/walterjwhite/go-code/lib/time/after"
 	"strings"
 	"sync"
 	"time"

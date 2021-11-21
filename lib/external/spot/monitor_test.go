@@ -3,7 +3,7 @@ package spot
 import (
 	"context"
 
-	"github.com/walterjwhite/go/lib/external/spot/data"
+	"github.com/walterjwhite/go-code/lib/external/spot/data"
 	"testing"
 	"time"
 )

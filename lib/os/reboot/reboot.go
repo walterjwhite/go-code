@@ -3,8 +3,8 @@ package reboot
 import (
 	"context"
 	"github.com/rs/zerolog/log"
-	"github.com/walterjwhite/go/lib/os/shutdown"
-	"github.com/walterjwhite/go/lib/os/user/idle"
+	"github.com/walterjwhite/go-code/lib/os/shutdown"
+	"github.com/walterjwhite/go-code/lib/os/user/idle"
 	"sync"
 	"time"
 )

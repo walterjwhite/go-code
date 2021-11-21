@@ -1,7 +1,7 @@
 package file
 
 import (
-	"github.com/walterjwhite/go/lib/application/logging"
+	"github.com/walterjwhite/go-code/lib/application/logging"
 	"io/ioutil"
 )
 

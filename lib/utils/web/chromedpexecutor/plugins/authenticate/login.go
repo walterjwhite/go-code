@@ -10,9 +10,9 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/walterjwhite/go/lib/application/logging"
-	"github.com/walterjwhite/go/lib/application/property"
-	"github.com/walterjwhite/go/lib/utils/web/chromedpexecutor"
+	"github.com/walterjwhite/go-code/lib/application/logging"
+	"github.com/walterjwhite/go-code/lib/application/property"
+	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor"
 )
 
 func (s *Session) Login(ctx context.Context) {

@@ -2,7 +2,7 @@ package monitor
 
 import (
 	"context"
-	"github.com/walterjwhite/go/lib/time/after"
+	"github.com/walterjwhite/go-code/lib/time/after"
 	"time"
 )
 

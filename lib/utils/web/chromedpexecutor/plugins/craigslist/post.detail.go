@@ -3,7 +3,7 @@ package craigslist
 import (
 	"github.com/chromedp/chromedp"
 
-	"github.com/walterjwhite/go/lib/utils/web/chromedpexecutor/plugins/run"
+	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/plugins/run"
 )
 
 func (p *CraigslistPost) doPostDetails() []chromedp.Action {

@@ -4,9 +4,9 @@ import (
 	"errors"
 	"flag"
 
-	"github.com/walterjwhite/go/lib/application"
-	"github.com/walterjwhite/go/lib/application/logging"
-	"github.com/walterjwhite/go/lib/security/secrets"
+	"github.com/walterjwhite/go-code/lib/application"
+	"github.com/walterjwhite/go-code/lib/application/logging"
+	"github.com/walterjwhite/go-code/lib/security/secrets"
 )
 
 func init() {

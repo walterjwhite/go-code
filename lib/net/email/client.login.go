@@ -3,7 +3,7 @@ package email
 import (
 	"fmt"
 	"github.com/emersion/go-imap/client"
-	"github.com/walterjwhite/go/lib/application/logging"
+	"github.com/walterjwhite/go-code/lib/application/logging"
 )
 
 type EmailSession struct {

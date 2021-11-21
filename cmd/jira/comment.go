@@ -4,8 +4,8 @@ import (
 	"flag"
 
 	"errors"
-	"github.com/walterjwhite/go/lib/application/logging"
-	"github.com/walterjwhite/go/lib/external/jira"
+	"github.com/walterjwhite/go-code/lib/application/logging"
+	"github.com/walterjwhite/go-code/lib/external/jira"
 )
 
 var (

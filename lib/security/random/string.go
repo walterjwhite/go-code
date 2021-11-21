@@ -2,7 +2,7 @@ package random
 
 import (
 	"errors"
-	"github.com/walterjwhite/go/lib/application/logging"
+	"github.com/walterjwhite/go-code/lib/application/logging"
 	"math/rand"
 	"time"
 )

@@ -2,7 +2,7 @@ package craigslist
 
 import (
 	"github.com/chromedp/chromedp"
-	//"github.com/walterjwhite/go/lib/application/logging"
+	//"github.com/walterjwhite/go-code/lib/application/logging"
 	"github.com/rs/zerolog/log"
 	"time"
 )

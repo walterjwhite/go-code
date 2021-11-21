@@ -4,9 +4,9 @@ import (
 	"context"
 
 	"github.com/rs/zerolog/log"
-	"github.com/walterjwhite/go/lib/application"
+	"github.com/walterjwhite/go-code/lib/application"
 
-	"github.com/walterjwhite/go/lib/utils/web/chromedpexecutor/plugins/bnymellon401k"
+	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/plugins/bnymellon401k"
 )
 
 var (

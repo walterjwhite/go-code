@@ -6,9 +6,9 @@ package movement
 // useful for determining how long the user has been idle
 import (
 	ggeo "github.com/kellydunn/golang-geo"
-	"github.com/walterjwhite/go/lib/external/geo"
-	"github.com/walterjwhite/go/lib/external/spot/client"
-	"github.com/walterjwhite/go/lib/external/spot/data"
+	"github.com/walterjwhite/go-code/lib/external/geo"
+	"github.com/walterjwhite/go-code/lib/external/spot/client"
+	"github.com/walterjwhite/go-code/lib/external/spot/data"
 	"strings"
 
 	"time"

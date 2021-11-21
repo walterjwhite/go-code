@@ -8,7 +8,7 @@ import (
 	"github.com/chromedp/chromedp"
 	"github.com/mitchellh/go-homedir"
 	"github.com/rs/zerolog/log"
-	"github.com/walterjwhite/go/lib/application/logging"
+	"github.com/walterjwhite/go-code/lib/application/logging"
 
 	"io/ioutil"
 	"os"
@@ -16,7 +16,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/walterjwhite/go/lib/time/sleep"
+	"github.com/walterjwhite/go-code/lib/time/sleep"
 )
 
 type ChromeDPSession struct {

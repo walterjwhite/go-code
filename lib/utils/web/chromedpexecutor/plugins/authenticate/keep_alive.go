@@ -6,7 +6,7 @@ import (
 
 	"github.com/chromedp/chromedp"
 	"github.com/rs/zerolog/log"
-	"github.com/walterjwhite/go/lib/time/wait"
+	"github.com/walterjwhite/go-code/lib/time/wait"
 )
 
 func (s *Session) KeepAlive(ctx context.Context) {

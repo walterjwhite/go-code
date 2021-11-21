@@ -4,11 +4,11 @@ import (
 	"context"
 	"errors"
 	"flag"
-	"github.com/walterjwhite/go/lib/application"
-	"github.com/walterjwhite/go/lib/application/logging"
+	"github.com/walterjwhite/go-code/lib/application"
+	"github.com/walterjwhite/go-code/lib/application/logging"
 
 	"github.com/rs/zerolog/log"
-	"github.com/walterjwhite/go/lib/utils/web/chromedpexecutor/plugins/walgreens"
+	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/plugins/walgreens"
 )
 
 var (

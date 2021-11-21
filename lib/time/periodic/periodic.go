@@ -5,7 +5,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/walterjwhite/go/lib/application/logging"
+	"github.com/walterjwhite/go-code/lib/application/logging"
 )
 
 type PeriodicInstance struct {

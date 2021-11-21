@@ -1,10 +1,10 @@
 package notification
 
 import (
-	"github.com/walterjwhite/go/lib/application/property"
-	"github.com/walterjwhite/go/lib/external/spot/data"
-	"github.com/walterjwhite/go/lib/io/yaml"
-	"github.com/walterjwhite/go/lib/net/email"
+	"github.com/walterjwhite/go-code/lib/application/property"
+	"github.com/walterjwhite/go-code/lib/external/spot/data"
+	"github.com/walterjwhite/go-code/lib/io/yaml"
+	"github.com/walterjwhite/go-code/lib/net/email"
 
 	"os"
 	"path/filepath"

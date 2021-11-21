@@ -4,11 +4,11 @@ import (
 	"flag"
 	"github.com/rs/zerolog/log"
 
-	"github.com/walterjwhite/go/lib/application"
-	"github.com/walterjwhite/go/lib/application/logging"
+	"github.com/walterjwhite/go-code/lib/application"
+	"github.com/walterjwhite/go-code/lib/application/logging"
 
-	"github.com/walterjwhite/go/lib/utils/web/chromedpexecutor/plugins/gateway"
-	"github.com/walterjwhite/go/lib/utils/web/chromedpexecutor/plugins/gateway/cli"
+	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/plugins/gateway"
+	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/plugins/gateway/cli"
 	"time"
 )
 

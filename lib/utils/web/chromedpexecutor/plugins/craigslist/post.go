@@ -4,9 +4,9 @@ import (
 	"context"
 	"flag"
 	"github.com/chromedp/chromedp"
-	//"github.com/walterjwhite/go/lib/application/logging"
-	"github.com/walterjwhite/go/lib/time/sleep"
-	"github.com/walterjwhite/go/lib/utils/web/chromedpexecutor"
+	//"github.com/walterjwhite/go-code/lib/application/logging"
+	"github.com/walterjwhite/go-code/lib/time/sleep"
+	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor"
 
 	"github.com/rs/zerolog/log"
 	//"os"

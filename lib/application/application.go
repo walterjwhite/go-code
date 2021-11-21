@@ -8,8 +8,8 @@ import (
 	"sync"
 
 	"github.com/rs/zerolog/log"
-	"github.com/walterjwhite/go/lib/application/property"
-	"github.com/walterjwhite/go/lib/application/shutdown"
+	"github.com/walterjwhite/go-code/lib/application/property"
+	"github.com/walterjwhite/go-code/lib/application/shutdown"
 )
 
 var (

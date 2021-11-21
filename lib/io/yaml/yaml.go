@@ -2,7 +2,7 @@ package yaml
 
 import (
 	"github.com/rs/zerolog/log"
-	"github.com/walterjwhite/go/lib/application/logging"
+	"github.com/walterjwhite/go-code/lib/application/logging"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
 )

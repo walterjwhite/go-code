@@ -7,11 +7,11 @@ import (
 	"io/ioutil"
 	"time"
 
-	"github.com/walterjwhite/go/lib/application"
-	"github.com/walterjwhite/go/lib/utils/foreachfile"
-	"github.com/walterjwhite/go/lib/utils/web/chromedpexecutor/plugins/craigslist"
+	"github.com/walterjwhite/go-code/lib/application"
+	"github.com/walterjwhite/go-code/lib/utils/foreachfile"
+	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/plugins/craigslist"
 
-	"github.com/walterjwhite/go/lib/application/logging"
+	"github.com/walterjwhite/go-code/lib/application/logging"
 )
 
 // approve post

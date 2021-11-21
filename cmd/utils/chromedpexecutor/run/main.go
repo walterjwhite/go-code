@@ -2,8 +2,8 @@ package main
 
 import (
 	"github.com/rs/zerolog/log"
-	"github.com/walterjwhite/go/lib/application"
-	"github.com/walterjwhite/go/lib/utils/web/chromedpexecutor/plugins/run"
+	"github.com/walterjwhite/go-code/lib/application"
+	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/plugins/run"
 )
 
 func init() {

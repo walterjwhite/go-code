@@ -3,7 +3,7 @@ package movement
 import (
 	"fmt"
 
-	"github.com/walterjwhite/go/lib/external/spot/notification"
+	"github.com/walterjwhite/go-code/lib/external/spot/notification"
 )
 
 func (c *MovementConfiguration) onTimeout() error {

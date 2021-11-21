@@ -4,9 +4,9 @@ import (
 	"context"
 	"fmt"
 	"github.com/rs/zerolog/log"
-	"github.com/walterjwhite/go/lib/application/logging"
-	"github.com/walterjwhite/go/lib/data/document"
-	"github.com/walterjwhite/go/lib/utils/typename"
+	"github.com/walterjwhite/go-code/lib/application/logging"
+	"github.com/walterjwhite/go-code/lib/data/document"
+	"github.com/walterjwhite/go-code/lib/utils/typename"
 	"strings"
 )
 

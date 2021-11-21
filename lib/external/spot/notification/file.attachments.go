@@ -3,10 +3,10 @@ package notification
 import (
 	"bytes"
 
-	"github.com/walterjwhite/go/lib/application/logging"
+	"github.com/walterjwhite/go-code/lib/application/logging"
 
 	"github.com/mitchellh/go-homedir"
-	"github.com/walterjwhite/go/lib/net/email"
+	"github.com/walterjwhite/go-code/lib/net/email"
 	"io/ioutil"
 	"os"
 	"path/filepath"

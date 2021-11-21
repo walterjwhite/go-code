@@ -2,7 +2,7 @@ package elasticsearch
 
 import (
 	"github.com/olivere/elastic/v7"
-	"github.com/walterjwhite/go/lib/application/logging"
+	"github.com/walterjwhite/go-code/lib/application/logging"
 )
 
 /*

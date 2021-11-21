@@ -4,14 +4,14 @@ import (
 	"flag"
 	"fmt"
 	"github.com/mitchellh/go-homedir"
-	"github.com/walterjwhite/go/lib/security/encryption"
-	"github.com/walterjwhite/go/lib/security/encryption/aes"
-	"github.com/walterjwhite/go/lib/security/encryption/providers/file"
-	"github.com/walterjwhite/go/lib/security/encryption/providers/ssh"
-	"github.com/walterjwhite/go/lib/security/encryption/providers/stdin"
+	"github.com/walterjwhite/go-code/lib/security/encryption"
+	"github.com/walterjwhite/go-code/lib/security/encryption/aes"
+	"github.com/walterjwhite/go-code/lib/security/encryption/providers/file"
+	"github.com/walterjwhite/go-code/lib/security/encryption/providers/ssh"
+	"github.com/walterjwhite/go-code/lib/security/encryption/providers/stdin"
 
-	"github.com/walterjwhite/go/lib/application/logging"
-	"github.com/walterjwhite/go/lib/io/yaml"
+	"github.com/walterjwhite/go-code/lib/application/logging"
+	"github.com/walterjwhite/go-code/lib/io/yaml"
 )
 
 type SecretsConfiguration struct {

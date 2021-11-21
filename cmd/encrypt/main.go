@@ -6,10 +6,10 @@ import (
 	"io/ioutil"
 	"strings"
 
-	"github.com/walterjwhite/go/lib/application"
-	"github.com/walterjwhite/go/lib/application/logging"
-	"github.com/walterjwhite/go/lib/security/encryption/aes"
-	"github.com/walterjwhite/go/lib/security/encryption/providers/ssh"
+	"github.com/walterjwhite/go-code/lib/application"
+	"github.com/walterjwhite/go-code/lib/application/logging"
+	"github.com/walterjwhite/go-code/lib/security/encryption/aes"
+	"github.com/walterjwhite/go-code/lib/security/encryption/providers/ssh"
 )
 
 var (

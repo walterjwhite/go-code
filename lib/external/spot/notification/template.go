@@ -5,7 +5,7 @@ import (
 	"github.com/rs/zerolog/log"
 	"github.com/valyala/fasttemplate"
 
-	"github.com/walterjwhite/go/lib/external/spot/weather"
+	"github.com/walterjwhite/go-code/lib/external/spot/weather"
 
 	"strconv"
 	"strings"

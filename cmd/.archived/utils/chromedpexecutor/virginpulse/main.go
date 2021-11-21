@@ -1,9 +1,9 @@
 package main
 
 import (
-	"github.com/walterjwhite/go/lib/application"
+	"github.com/walterjwhite/go-code/lib/application"
 
-	"github.com/walterjwhite/go/lib/utils/web/chromedpexecutor/plugins/virginpulse"
+	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/plugins/virginpulse"
 )
 
 var (

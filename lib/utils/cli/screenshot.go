@@ -1,7 +1,7 @@
 package cli
 
 import (
-	"github.com/walterjwhite/go/lib/utils/screenshot"
+	"github.com/walterjwhite/go-code/lib/utils/screenshot"
 
 	"path/filepath"
 )

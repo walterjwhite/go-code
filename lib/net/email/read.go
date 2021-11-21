@@ -3,7 +3,7 @@ package email
 import (
 	"github.com/emersion/go-imap"
 	"github.com/rs/zerolog/log"
-	"github.com/walterjwhite/go/lib/application/logging"
+	"github.com/walterjwhite/go-code/lib/application/logging"
 )
 
 func (s *EmailSession) Read(folderName string, function func(msg *imap.Message), incrementIndex bool) {

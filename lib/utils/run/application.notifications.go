@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/rs/zerolog/log"
-	"github.com/walterjwhite/go/lib/notification"
+	"github.com/walterjwhite/go-code/lib/notification"
 )
 
 // TODO: the channel is only sending the matching line

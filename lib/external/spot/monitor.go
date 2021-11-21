@@ -5,7 +5,7 @@ import (
 
 	"flag"
 
-	"github.com/walterjwhite/go/lib/external/spot/client"
+	"github.com/walterjwhite/go-code/lib/external/spot/client"
 
 	"path/filepath"
 	"time"

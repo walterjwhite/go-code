@@ -2,8 +2,8 @@ package screenshot
 
 import (
 	"github.com/vova616/screenshot"
-	"github.com/walterjwhite/go/lib/application/logging"
-	"github.com/walterjwhite/go/lib/time/timeformatter/timestamp"
+	"github.com/walterjwhite/go-code/lib/application/logging"
+	"github.com/walterjwhite/go-code/lib/time/timeformatter/timestamp"
 	"golang.org/x/image/font"
 	"golang.org/x/image/font/basicfont"
 	"golang.org/x/image/math/fixed"

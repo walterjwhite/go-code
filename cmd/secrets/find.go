@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/walterjwhite/go/lib/security/secrets"
+	"github.com/walterjwhite/go-code/lib/security/secrets"
 )
 
 func find() {

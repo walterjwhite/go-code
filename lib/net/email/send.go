@@ -5,7 +5,7 @@ import (
 	"github.com/rs/zerolog/log"
 
 	sendmail "github.com/go-mail/gomail"
-	"github.com/walterjwhite/go/lib/application/logging"
+	"github.com/walterjwhite/go-code/lib/application/logging"
 	"io/ioutil"
 	"os"
 )

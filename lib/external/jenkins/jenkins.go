@@ -1,7 +1,7 @@
 package jenkins
 
 import (
-	"github.com/walterjwhite/go/lib/application/logging"
+	"github.com/walterjwhite/go-code/lib/application/logging"
 
 	"gopkg.in/bndr/gojenkins.v1"
 	"time"

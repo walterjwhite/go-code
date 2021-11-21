@@ -9,7 +9,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/walterjwhite/go/lib/application/logging"
+	"github.com/walterjwhite/go-code/lib/application/logging"
 
 	"os/exec"
 
@@ -17,8 +17,8 @@ import (
 	"path/filepath"
 
 	"github.com/segmentio/ksuid"
-	"github.com/walterjwhite/go/lib/io/yaml"
-	"github.com/walterjwhite/go/lib/time/timeout"
+	"github.com/walterjwhite/go-code/lib/io/yaml"
+	"github.com/walterjwhite/go-code/lib/time/timeout"
 )
 
 // creates the command object

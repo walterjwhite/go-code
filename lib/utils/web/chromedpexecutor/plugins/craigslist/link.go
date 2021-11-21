@@ -4,7 +4,7 @@ import (
 	"context"
 	"github.com/chromedp/chromedp"
 	"github.com/rs/zerolog/log"
-	"github.com/walterjwhite/go/lib/utils/web/chromedpexecutor"
+	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor"
 )
 
 func Accept(ctx context.Context, url string) {

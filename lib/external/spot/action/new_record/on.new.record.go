@@ -1,8 +1,8 @@
 package new_record
 
 import (
-	"github.com/walterjwhite/go/lib/external/spot/data"
-	"github.com/walterjwhite/go/lib/external/spot/notification"
+	"github.com/walterjwhite/go-code/lib/external/spot/data"
+	"github.com/walterjwhite/go-code/lib/external/spot/notification"
 	"path/filepath"
 )
 

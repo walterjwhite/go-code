@@ -1,7 +1,7 @@
 package bnymellon401k
 
 import (
-	"github.com/walterjwhite/go/lib/utils/web/chromedpexecutor"
+	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor"
 )
 
 // TODO: generalize this ...

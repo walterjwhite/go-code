@@ -1,9 +1,9 @@
 package database
 
 import (
-	//"github.com/walterjwhite/go/lib/database"
-	"github.com/walterjwhite/go/lib/io/yaml"
-	"github.com/walterjwhite/go/lib/utils/monitor"
+	//"github.com/walterjwhite/go-code/lib/database"
+	"github.com/walterjwhite/go-code/lib/io/yaml"
+	"github.com/walterjwhite/go-code/lib/utils/monitor"
 )
 
 type DatabaseMonitorAction struct {

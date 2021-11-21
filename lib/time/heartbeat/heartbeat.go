@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/walterjwhite/go/lib/time/periodic"
+	"github.com/walterjwhite/go-code/lib/time/periodic"
 )
 
 type HeartbeatInstance struct {

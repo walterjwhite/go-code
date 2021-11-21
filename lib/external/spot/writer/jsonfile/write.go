@@ -2,9 +2,9 @@ package jsonfile
 
 import (
 	"encoding/json"
-	"github.com/walterjwhite/go/lib/application/logging"
-	"github.com/walterjwhite/go/lib/external/spot/data"
-	"github.com/walterjwhite/go/lib/time/timeformatter/day"
+	"github.com/walterjwhite/go-code/lib/application/logging"
+	"github.com/walterjwhite/go-code/lib/external/spot/data"
+	"github.com/walterjwhite/go-code/lib/time/timeformatter/day"
 	"os"
 	"path"
 	"path/filepath"

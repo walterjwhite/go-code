@@ -2,8 +2,8 @@ package secrets
 
 import (
 	"errors"
-	"github.com/walterjwhite/go/lib/application/logging"
-	"github.com/walterjwhite/go/lib/utils/foreachfile"
+	"github.com/walterjwhite/go-code/lib/application/logging"
+	"github.com/walterjwhite/go-code/lib/utils/foreachfile"
 )
 
 func Find(callback func(filePath string), patterns ...string) {

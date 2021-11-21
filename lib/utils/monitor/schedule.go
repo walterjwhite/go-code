@@ -1,8 +1,8 @@
 package monitor
 
 import (
-	"github.com/walterjwhite/go/lib/time/after"
-	"github.com/walterjwhite/go/lib/time/periodic"
+	"github.com/walterjwhite/go-code/lib/time/after"
+	"github.com/walterjwhite/go-code/lib/time/periodic"
 )
 
 type wrapPeriodic struct {

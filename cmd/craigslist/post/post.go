@@ -3,11 +3,11 @@ package main
 import (
 	"flag"
 
-	"github.com/walterjwhite/go/lib/application"
-	"github.com/walterjwhite/go/lib/utils/foreachfile"
-	"github.com/walterjwhite/go/lib/utils/web/chromedpexecutor/plugins/craigslist"
+	"github.com/walterjwhite/go-code/lib/application"
+	"github.com/walterjwhite/go-code/lib/utils/foreachfile"
+	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/plugins/craigslist"
 
-	"github.com/walterjwhite/go/lib/io/yaml"
+	"github.com/walterjwhite/go-code/lib/io/yaml"
 )
 
 var (

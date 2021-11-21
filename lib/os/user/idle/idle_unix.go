@@ -1,8 +1,8 @@
 package idle
 
 import (
-	"github.com/walterjwhite/go/lib/application/logging"
-	"github.com/walterjwhite/go/lib/utils/runner"
+	"github.com/walterjwhite/go-code/lib/application/logging"
+	"github.com/walterjwhite/go-code/lib/utils/runner"
 	"os/exec"
 
 	"bytes"

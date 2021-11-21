@@ -2,7 +2,7 @@ package bulk
 
 import (
 	"github.com/olivere/elastic/v7"
-	"github.com/walterjwhite/go/lib/data/document"
+	"github.com/walterjwhite/go-code/lib/data/document"
 )
 
 func (b *MasterBatch) Update(document document.Document) {

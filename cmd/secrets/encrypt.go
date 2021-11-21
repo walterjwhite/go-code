@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/walterjwhite/go/lib/security/secrets"
+	"github.com/walterjwhite/go-code/lib/security/secrets"
 )
 
 func encrypt() {

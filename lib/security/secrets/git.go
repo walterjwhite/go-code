@@ -3,7 +3,7 @@ package secrets
 import (
 	"github.com/mitchellh/go-homedir"
 	"github.com/rs/zerolog/log"
-	"github.com/walterjwhite/go/lib/application/logging"
+	"github.com/walterjwhite/go-code/lib/application/logging"
 	"os"
 	"os/exec"
 )

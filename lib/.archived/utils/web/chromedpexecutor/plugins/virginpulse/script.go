@@ -1,7 +1,7 @@
 package virginpulse
 
 import (
-	"github.com/walterjwhite/go/lib/utils/web/chromedpexecutor/plugins/run"
+	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/plugins/run"
 )
 
 // just do today for starters

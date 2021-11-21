@@ -7,7 +7,7 @@ import (
 	"github.com/godbus/dbus/v5"
 
 	"github.com/esiqveland/notify"
-	"github.com/walterjwhite/go/lib/application/logging"
+	"github.com/walterjwhite/go-code/lib/application/logging"
 )
 
 type bsdNotification struct{}

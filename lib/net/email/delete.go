@@ -2,7 +2,7 @@ package email
 
 import (
 	"github.com/emersion/go-imap"
-	"github.com/walterjwhite/go/lib/application/logging"
+	"github.com/walterjwhite/go-code/lib/application/logging"
 )
 
 func (s *EmailSession) Delete(msg *imap.Message) {

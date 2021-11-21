@@ -2,8 +2,8 @@ package stdin
 
 import (
 	"context"
-	"github.com/walterjwhite/go/lib/application/logging"
-	"github.com/walterjwhite/go/lib/time/wait"
+	"github.com/walterjwhite/go-code/lib/application/logging"
+	"github.com/walterjwhite/go-code/lib/time/wait"
 	"io/ioutil"
 	"os"
 	"time"

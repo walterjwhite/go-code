@@ -4,13 +4,13 @@ import (
 	"context"
 
 	"github.com/rs/zerolog/log"
-	"github.com/walterjwhite/go/lib/utils/web/chromedpexecutor"
+	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor"
 
 	"errors"
 
 	"bufio"
 	"flag"
-	"github.com/walterjwhite/go/lib/application/logging"
+	"github.com/walterjwhite/go-code/lib/application/logging"
 	"os"
 )
 

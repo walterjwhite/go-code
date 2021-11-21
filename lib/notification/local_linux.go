@@ -2,7 +2,7 @@ package notification
 
 import (
 	"github.com/TheCreeper/go-notify"
-	"github.com/walterjwhite/go/lib/application/logging"
+	"github.com/walterjwhite/go-code/lib/application/logging"
 )
 
 type linuxNotification struct{}
