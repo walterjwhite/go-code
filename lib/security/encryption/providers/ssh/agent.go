@@ -1,63 +1,58 @@
 package ssh
 
 import (
-	"crypto/sha256"
 	"fmt"
-	"github.com/rs/zerolog/log"
-	"github.com/walterjwhite/go-code/lib/application/logging"
-	"golang.org/x/crypto/ssh/agent"
 	"net"
 	"os"
+
+	"github.com/rs/zerolog/log"
+	"golang.org/x/crypto/ssh/agent"
 )
 
 type Conf struct {
-	agentClient agent.ExtendedAgent
+	key []byte
 }
 
-var (
-	Instance *Conf
-)
-
-func init() {
+func initAgent() ([]byte, error) {
 	socket := os.Getenv("SSH_AUTH_SOCK")
 	conn, err := net.Dial("unix", socket)
-	logging.Panic(err)
+	if err == nil {
+		defer conn.Close()
 
-	Instance = &Conf{agentClient: agent.NewClient(conn)}
-}
+		client := agent.NewClient(conn)
 
-func (c *Conf) List() {
-	keys, err := c.agentClient.List()
-	logging.Panic(err)
+		// this was working before, but is not now?
+		keys, err := client.List()
+		if err != nil {
+			log.Warn().Msg("error listing")
+			return nil, err
+		}
 
-	for _, key := range keys {
-		log.Info().Msgf("Key: %v", key)
-		log.Info().Msgf("Key: %v", string(key.Blob))
+		if len(keys) != 1 {
+			return nil, fmt.Errorf("Expecting 1 private key to be available: %v", len(keys))
+		}
+
+		return keys[0].Blob, nil
 	}
+
+	log.Warn().Msg("error")
+	return nil, err
 }
 
 func (c *Conf) GetDecryptionKey() []byte {
-	return getUsableKey(c.getDecryptionKey().Blob)
-}
-
-// TODO: select the key to use (flag, configuration?)
-func (c *Conf) getDecryptionKey() *agent.Key {
-	keys, err := c.agentClient.List()
-	logging.Panic(err)
-
-	if len(keys) != 1 {
-		logging.Panic(fmt.Errorf("Expecting 1 private key to be available: %v", len(keys)))
-	}
-
-	return keys[0]
+	return c.key
 }
 
 func (c *Conf) GetEncryptionKey() []byte {
-	return c.GetDecryptionKey()
+	return c.key
 }
 
-// TODO: we should probably hash this several times?
-func getUsableKey(data []byte) []byte {
-	k := sha256.Sum256(data)
-	return k[:]
-}
+// func (c *Conf) List() {
+// 	keys, err := c.agentClient.List()
+// 	logging.Panic(err)
+
+// 	for _, key := range keys {
+// 		log.Info().Msgf("Key: %v", key)
+// 		log.Info().Msgf("Key: %v", string(key.Blob))
+// 	}
+// }

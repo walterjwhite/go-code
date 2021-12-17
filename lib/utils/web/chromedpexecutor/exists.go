@@ -1,4 +1,4 @@
-package chromedpexecutor
+package session
 
 import (
 	"context"
@@ -6,12 +6,14 @@ import (
 	"github.com/chromedp/cdproto/cdp"
 	"github.com/chromedp/cdproto/runtime"
 	"github.com/chromedp/chromedp"
+
+	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/session"
 )
 
-func (s *ChromeDPSession) Exists(selector interface{}) bool {
+func Exists(s session.ChromeDPSession, selector interface{}) (bool, error) {
 	var existingNodes []*cdp.Node
 
-	s.Execute(
+	err := chromedp.Run(s.Context(),
 		chromedp.Query(selector, chromedp.AtLeast(0),
 			chromedp.After(func(i context.Context, executionId runtime.ExecutionContextID, n ...*cdp.Node) error {
 				existingNodes = n
@@ -19,5 +21,9 @@ func (s *ChromeDPSession) Exists(selector interface{}) bool {
 			}),
 		))
 
-	return len(existingNodes) > 0
+	if err != nil {
+		return false, err
+	}
+
+	return len(existingNodes) > 0, nil
 }

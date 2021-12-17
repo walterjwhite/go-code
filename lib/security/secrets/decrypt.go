@@ -2,19 +2,19 @@ package secrets
 
 import (
 	"encoding/base64"
-	"github.com/rs/zerolog/log"
-	"github.com/walterjwhite/go-code/lib/application/logging"
 	"io/ioutil"
 	"path/filepath"
 	"strings"
+
+	"github.com/rs/zerolog/log"
+	"github.com/walterjwhite/go-code/lib/application/logging"
 )
 
 func Decrypt(secretPath string) string {
 	log.Debug().Msgf("processing secret: %v", secretPath)
+	initialize()
 
 	if !filepath.IsAbs(secretPath) {
-		initialize()
-
 		secretPath = SecretsConfigurationInstance.RepositoryPath + "/" + secretPath
 	}
 
@@ -26,7 +26,7 @@ func Decrypt(secretPath string) string {
 }
 
 func DoDecrypt(data []byte) []byte {
-	initialize()
+	initEncryption()
 
 	return SecretsConfigurationInstance.EncryptionConfiguration.Decrypt(data)
 }

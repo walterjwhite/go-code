@@ -1,14 +1,15 @@
 package secrets
 
 import (
+	"os"
+	"os/exec"
+
 	"github.com/mitchellh/go-homedir"
 	"github.com/rs/zerolog/log"
 	"github.com/walterjwhite/go-code/lib/application/logging"
-	"os"
-	"os/exec"
 )
 
-func setupRepository() {
+func initRepository() {
 	if isRepositorySetup() {
 		return
 	}

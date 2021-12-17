@@ -1,8 +1,6 @@
 package authenticate
 
 import (
-	"context"
-
 	"github.com/chromedp/chromedp"
 
 	"github.com/rs/zerolog/log"
@@ -12,24 +10,20 @@ import (
 
 	"github.com/walterjwhite/go-code/lib/application/logging"
 	"github.com/walterjwhite/go-code/lib/application/property"
-	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor"
 )
 
-func (s *Session) Login(ctx context.Context) {
-	if s.chromedpsession != nil {
-		s.Logout()
-	}
-
-	s.chromedpsession = chromedpexecutor.New(ctx)
+func (s *Session) Login() {
+	// handled outside of here
+	// s.chromedpsession = chromedpexecutor.New(ctx)
 
 	// no need to wait
 	//s.chromedpsession.Waiter = nil
 
 	//defer s.Cancel()
 
-	s.chromedpsession.Execute(chromedp.Navigate(*s.Website.Url))
+	logging.Panic(chromedp.Run(s.chromedpsession.Context(), chromedp.Navigate(*s.Website.Url)))
 
-	log.Debug().Msg("fetched")
+	log.Debug().Msgf("fetched: %v", s.Website)
 	for _, fieldGroup := range s.Website.FieldGroups {
 		for _, field := range fieldGroup.Fields {
 			log.Debug().Msgf("get value: %s", *field.Id)
@@ -38,14 +32,14 @@ func (s *Session) Login(ctx context.Context) {
 			logging.Panic(err)
 
 			log.Debug().Msgf("executing: %s / %s", *field.Selector, value)
-			// s.chromedpsession.Execute(chromedp.SendKeys(*field.Selector, value, chromedp.ByID))
-			s.chromedpsession.Execute(chromedp.SendKeys(*field.Selector, value))
+			// TODO: use wrapper which introduces a delay, waits until visible, etc.
+			logging.Panic(chromedp.Run(s.chromedpsession.Context(), chromedp.SendKeys(*field.Selector, value)))
 			log.Debug().Msgf("executed: %s", *field.Selector)
 		}
 
 		log.Debug().Msg("submitting")
 		selector := getSubmitSelector(fieldGroup)
-		s.chromedpsession.Execute(chromedp.Submit(*selector))
+		logging.Panic(chromedp.Run(s.chromedpsession.Context(), chromedp.Submit(*selector)))
 		log.Debug().Msg("submitted")
 	}
 }

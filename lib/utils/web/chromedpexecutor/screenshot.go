@@ -1,4 +1,4 @@
-package chromedpexecutor
+package session
 
 import (
 	"context"
@@ -12,15 +12,16 @@ import (
 	"github.com/chromedp/cdproto/emulation"
 	"github.com/rs/zerolog/log"
 	"github.com/walterjwhite/go-code/lib/application/logging"
+	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/session"
 )
 
 // TODO: this does not work and just hangs
-func (s *ChromeDPSession) Screenshot(filename string) {
+func Screenshot(s session.ChromeDPSession, filename string) {
 	var buf []byte
 
 	log.Info().Msgf("capturing screenshot: %v", filename)
 	//logging.Panic(chromedp.Run(s.Context, fullScreenshot(90, &buf)))
-	s.Execute(chromedp.CaptureScreenshot(&buf))
+	logging.Panic(chromedp.Run(s.Context(), chromedp.CaptureScreenshot(&buf)))
 
 	log.Info().Msgf("took screenshot - writing to: %v", filename)
 

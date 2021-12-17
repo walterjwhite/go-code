@@ -3,12 +3,14 @@ module github.com/walterjwhite/go-code
 go 1.16
 
 require (
+	github.com/BurntSushi/xgb v0.0.0-20210121224620-deaf085860bc // indirect
 	github.com/ReneKroon/ttlcache/v2 v2.9.0
 	github.com/TheCreeper/go-notify v0.2.0
 	github.com/Zauberstuhl/go-xml v0.0.0-20180122175953-534ffa216723 // indirect
 	github.com/atotto/clipboard v0.1.4
-	github.com/chromedp/cdproto v0.0.0-20211112223831-e508c7bf6446
-	github.com/chromedp/chromedp v0.7.4
+	github.com/cespare/xxhash/v2 v2.1.2 // indirect
+	github.com/chromedp/cdproto v0.0.0-20211205231339-d2673e93eee4
+	github.com/chromedp/chromedp v0.7.6
 	github.com/coredns/caddy v1.1.1
 	github.com/coredns/coredns v1.8.6
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
@@ -16,6 +18,7 @@ require (
 	github.com/emersion/go-imap-idle v0.0.0-20210907174914-db2568431445
 	github.com/emersion/go-imap-move v0.0.0-20210907172020-fe4558f9c872
 	github.com/emersion/go-message v0.15.0
+	github.com/emersion/go-sasl v0.0.0-20211008083017-0b9dcfb154ac // indirect
 	github.com/erikstmartin/go-testdb v0.0.0-20160219214506-8d10e4a1bae5 // indirect
 	github.com/esiqveland/notify v0.11.0
 	github.com/fatih/structs v1.1.0 // indirect
@@ -25,6 +28,7 @@ require (
 	github.com/jmoiron/sqlx v1.3.4
 	github.com/kellydunn/golang-geo v0.7.0
 	github.com/kylelemons/go-gypsy v1.0.0 // indirect
+	github.com/lestrrat/go-libxml2 v0.0.0-20180221004755-bb78334e2019
 	github.com/miekg/dns v1.1.43
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/olivere/elastic/v7 v7.0.29
@@ -38,8 +42,13 @@ require (
 	github.com/walterjwhite/go-garmin-gpx v1.0.2
 	github.com/walterjwhite/sflags v0.3.2
 	github.com/ziutek/mymysql v1.5.4 // indirect
-	golang.org/x/crypto v0.0.0-20211117183948-ae814b36b871
+	golang.org/x/crypto v0.0.0-20211209193657-4570a0811e8b
 	golang.org/x/image v0.0.0-20211028202545-6944b10bf410
+	golang.org/x/net v0.0.0-20211209124913-491a49abca63 // indirect
+	golang.org/x/sys v0.0.0-20211210111614-af8b64212486 // indirect
+	golang.org/x/term v0.0.0-20210927222741-03fcf44c2211
+	google.golang.org/genproto v0.0.0-20211208223120-3a66f561d7aa // indirect
+	google.golang.org/grpc v1.41.1 // indirect
 	gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc // indirect
 	gopkg.in/andygrunwald/go-jira.v1 v1.8.0
 	gopkg.in/bndr/gojenkins.v1 v1.0.1

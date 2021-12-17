@@ -21,7 +21,7 @@ var (
 )
 
 func init() {
-	aesConfiguration = &aes.Configuration{Encryption: ssh.Instance}
+	aesConfiguration = &aes.Configuration{Encryption: ssh.New()}
 
 	application.Configure()
 }

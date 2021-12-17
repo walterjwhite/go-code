@@ -2,13 +2,14 @@ package secrets
 
 import (
 	"encoding/base64"
-	"github.com/rs/zerolog/log"
-	"github.com/walterjwhite/go-code/lib/application/logging"
 	"io/ioutil"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"time"
+
+	"github.com/rs/zerolog/log"
+	"github.com/walterjwhite/go-code/lib/application/logging"
 )
 
 const DateTimeLayout = "2006/01/02 15:04:05"
@@ -34,6 +35,7 @@ func Encrypt(name *string, message *string, data []byte) {
 
 func DoEncrypt(data []byte) []byte {
 	initialize()
+	initEncryption()
 
 	return SecretsConfigurationInstance.EncryptionConfiguration.Encrypt(data)
 }

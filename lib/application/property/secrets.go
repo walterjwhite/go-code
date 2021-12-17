@@ -1,10 +1,11 @@
 package property
 
 import (
-	"github.com/rs/zerolog/log"
-	"github.com/walterjwhite/go-code/lib/security/secrets"
 	"reflect"
 	"strings"
+
+	"github.com/rs/zerolog/log"
+	"github.com/walterjwhite/go-code/lib/security/secrets"
 )
 
 type SecretPropertyConfiguration interface {
@@ -14,7 +15,7 @@ type SecretPropertyConfiguration interface {
 func LoadSecrets(config interface{}) {
 	secretPropertyConfiguration, ok := config.(SecretPropertyConfiguration)
 	if !ok {
-		log.Warn().Msg("Unable to initialize secrets, unable to process encrypted properties")
+		log.Warn().Msg("Configuration does not implement SecretPropertyConfiguration, not decrypting")
 		return
 	}
 

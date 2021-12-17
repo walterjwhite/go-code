@@ -11,11 +11,11 @@ var (
 
 func logIdentifier() {
 	if !isConfigured() {
-		log.Error().Msg("Application was not built properly to log application version, build date, etc., check compilation")
+		log.Warn().Msg("Application was not built properly to log application version, build date, etc., check compilation")
 		return
 	}
 
-	log.Debug().Msgf("Application Version: %v", ApplicationVersion)
+	log.Debug().Msgf("Application: %v", GetApplicationId())
 	log.Debug().Msgf("Built on: %v", BuildDate)
 	log.Debug().Msgf("OSArchitecture: %v", OSArchitecture)
 	log.Debug().Msgf("GoVersion: %v", GoVersion)

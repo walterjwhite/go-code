@@ -1,9 +1,9 @@
 package gpx
 
 import (
-	ggpx "github.com/walterjwhite/go-garmin-gpx"
 	"github.com/walterjwhite/go-code/lib/application/logging"
 	"github.com/walterjwhite/go-code/lib/external/spot/data"
+	ggpx "github.com/walterjwhite/go-garmin-gpx"
 	"os"
 	"path/filepath"
 )

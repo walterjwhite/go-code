@@ -2,8 +2,9 @@ package after
 
 import (
 	"context"
-	"github.com/walterjwhite/go-code/lib/application/logging"
 	"time"
+
+	"github.com/walterjwhite/go-code/lib/application/logging"
 )
 
 type AfterDelay struct {
@@ -14,7 +15,7 @@ type AfterDelay struct {
 	function func() error
 }
 
-func After(ctx context.Context, delay *time.Duration, fn func() error) *AfterDelay {
+func New(ctx context.Context, delay *time.Duration, fn func() error) *AfterDelay {
 	acontext, acancel := context.WithCancel(ctx)
 
 	afterDelay := &AfterDelay{ctx: acontext, cancel: acancel, function: fn}

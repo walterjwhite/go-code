@@ -6,20 +6,23 @@ import (
 	"github.com/walterjwhite/go-code/lib/application"
 
 	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/plugins/authenticate"
+	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/session/remote"
 )
 
 var (
-	session = &authenticate.Session{}
+	s = &authenticate.Session{}
 )
 
 func init() {
-	application.ConfigureWithProperties(session)
+	application.ConfigureWithProperties(s)
 }
 
 func main() {
 	defer application.OnEnd()
 
 	ctx := context.Background()
-	session.Login(ctx)
-	session.KeepAlive(ctx)
+
+	s.With(ctx, remote.New(ctx))
+
+	s.Login()
 }

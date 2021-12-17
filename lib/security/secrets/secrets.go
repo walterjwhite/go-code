@@ -3,6 +3,7 @@ package secrets
 import (
 	"flag"
 	"fmt"
+
 	"github.com/mitchellh/go-homedir"
 	"github.com/walterjwhite/go-code/lib/security/encryption"
 	"github.com/walterjwhite/go-code/lib/security/encryption/aes"
@@ -54,7 +55,7 @@ var (
 // initialize the key
 func initialize() {
 	if SecretsConfigurationInstance == nil {
-		SecretsConfigurationInstance = &SecretsConfiguration{EncryptionConfiguration: &aes.Configuration{Encryption: getEncryption()}}
+		SecretsConfigurationInstance = &SecretsConfiguration{}
 	} else {
 		if len(SecretsConfigurationInstance.RepositoryPath) > 0 {
 			return
@@ -70,7 +71,11 @@ func initialize() {
 	SecretsConfigurationInstance.RepositoryPath = translatedRepositoryPath
 	logging.Panic(err)
 
-	setupRepository()
+	initRepository()
+}
+
+func initEncryption() {
+	SecretsConfigurationInstance.EncryptionConfiguration = &aes.Configuration{Encryption: getEncryption()}
 }
 
 func getEncryption() encryption.Encryption {
@@ -84,6 +89,6 @@ func getEncryption() encryption.Encryption {
 	case Stdin:
 		return stdin.New()
 	default:
-		return ssh.Instance
+		return ssh.New()
 	}
 }
