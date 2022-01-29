@@ -2,6 +2,7 @@ package authenticate
 
 import (
 	"github.com/chromedp/chromedp"
+	"github.com/chromedp/chromedp/kb"
 
 	"github.com/rs/zerolog/log"
 
@@ -10,6 +11,7 @@ import (
 
 	"github.com/walterjwhite/go-code/lib/application/logging"
 	"github.com/walterjwhite/go-code/lib/application/property"
+	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/action"
 )
 
 func (s *Session) Login() {
@@ -32,24 +34,30 @@ func (s *Session) Login() {
 			logging.Panic(err)
 
 			log.Debug().Msgf("executing: %s / %s", *field.Selector, value)
-			// TODO: use wrapper which introduces a delay, waits until visible, etc.
-			logging.Panic(chromedp.Run(s.chromedpsession.Context(), chromedp.SendKeys(*field.Selector, value)))
+			logging.Panic(action.SendKeys(s.chromedpsession.Context(), *s.VisibleTimeout, s.LocateDelay, *field.Selector, value))
+
 			log.Debug().Msgf("executed: %s", *field.Selector)
 		}
 
 		log.Debug().Msg("submitting")
-		selector := getSubmitSelector(fieldGroup)
-		logging.Panic(chromedp.Run(s.chromedpsession.Context(), chromedp.Submit(*selector)))
+		s.LocateDelay.Delay()
+
+		s.submit(fieldGroup)
+
 		log.Debug().Msg("submitted")
 	}
 }
 
-func getSubmitSelector(fieldGroup *FieldGroup) *string {
+func (s *Session) submit(fieldGroup *FieldGroup) {
 	if fieldGroup.SubmitSelector != nil {
-		return fieldGroup.SubmitSelector
+		logging.Panic(chromedp.Run(s.chromedpsession.Context(), chromedp.Submit(fieldGroup.SubmitSelector)))
+		return
 	}
 
-	return fieldGroup.Fields[len(fieldGroup.Fields)-1].Selector
+	submitSelector := fieldGroup.Fields[len(fieldGroup.Fields)-1].Selector
+	log.Debug().Msgf("submit selector: %v", *submitSelector)
+
+	logging.Panic(action.SendKeys(s.chromedpsession.Context(), *s.VisibleTimeout, s.LocateDelay, submitSelector, kb.Enter))
 }
 
 func getValue(c *Credentials, FieldId *string) (string, error) {

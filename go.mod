@@ -9,7 +9,7 @@ require (
 	github.com/Zauberstuhl/go-xml v0.0.0-20180122175953-534ffa216723 // indirect
 	github.com/atotto/clipboard v0.1.4
 	github.com/cespare/xxhash/v2 v2.1.2 // indirect
-	github.com/chromedp/cdproto v0.0.0-20211205231339-d2673e93eee4
+	github.com/chromedp/cdproto v0.0.0-20211226214557-5a9a0564ad26
 	github.com/chromedp/chromedp v0.7.6
 	github.com/coredns/caddy v1.1.1
 	github.com/coredns/coredns v1.8.6
@@ -32,7 +32,7 @@ require (
 	github.com/miekg/dns v1.1.43
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/olivere/elastic/v7 v7.0.29
-	github.com/rs/zerolog v1.26.0
+	github.com/rs/zerolog v1.26.1
 	github.com/segmentio/ksuid v1.0.4
 	github.com/sudhanshuraheja/go-garmin-gpx v1.0.1 // indirect
 	github.com/trivago/tgo v1.0.7 // indirect
@@ -42,10 +42,10 @@ require (
 	github.com/walterjwhite/go-garmin-gpx v1.0.2
 	github.com/walterjwhite/sflags v0.3.2
 	github.com/ziutek/mymysql v1.5.4 // indirect
-	golang.org/x/crypto v0.0.0-20211209193657-4570a0811e8b
+	golang.org/x/crypto v0.0.0-20220126234351-aa10faf2a1f8
 	golang.org/x/image v0.0.0-20211028202545-6944b10bf410
 	golang.org/x/net v0.0.0-20211209124913-491a49abca63 // indirect
-	golang.org/x/sys v0.0.0-20211210111614-af8b64212486 // indirect
+	golang.org/x/sys v0.0.0-20220114195835-da31bd327af9 // indirect
 	golang.org/x/term v0.0.0-20210927222741-03fcf44c2211
 	google.golang.org/genproto v0.0.0-20211208223120-3a66f561d7aa // indirect
 	google.golang.org/grpc v1.41.1 // indirect

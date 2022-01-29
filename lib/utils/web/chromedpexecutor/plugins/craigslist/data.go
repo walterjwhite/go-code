@@ -1,7 +1,7 @@
 package craigslist
 
 import (
-	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor"
+	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/session"
 )
 
 type CraigslistPost struct {
@@ -33,5 +33,5 @@ type CraigslistPost struct {
 	ReceiveCalls     bool
 	PhoneContactName string
 
-	session *chromedpexecutor.ChromeDPSession
+	session *session.ChromeDPSession
 }
