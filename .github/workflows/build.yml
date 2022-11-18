@@ -10,7 +10,7 @@ jobs:
 #          - { runner: freebsd-latest,  os: freebsd,  arch: amd64, env: CGO_ENABLED=0 }
           - { runner: macos-latest,  os: darwin,  arch: amd64, tags: netcgo        }
           - { runner: ubuntu-latest, os: linux,   arch: amd64, env:  CGO_ENABLED=0 }
-          - { runner: windows-latest, os: windows, arch: amd64, env:  CGO_ENABLED=0 }
+#          - { runner: windows-latest, os: windows, arch: amd64, env:  CGO_ENABLED=0 }
     steps:
       - uses: actions/checkout@v3
       - name: Build
