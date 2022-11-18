@@ -1,0 +1,34 @@
+name: build
+on: push
+jobs:
+  example:
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      matrix:
+        include:
+          - { runner: freebsd-latest,  os: freebsd,  arch: amd64, env: CGO_ENABLED=0 }
+          - { runner: macos-latest,  os: darwin,  arch: amd64, tags: netcgo        }
+          - { runner: ubuntu-latest, os: linux,   arch: amd64, env:  CGO_ENABLED=0 }
+          - { runner: windows-latest, os: windows, arch: amd64, env:  CGO_ENABLED=0 }
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build
+        uses: hashicorp/actions-go-build@main
+        with:
+          product_name: go-code
+          product_version: 0.0.0
+          go_version: 1.18
+          os: ${{ matrix.os }}
+          arch: ${{ matrix.arch }}
+          instructions: |-
+            ${{ matrix.env }} \
+              go build \
+                -o "$BIN_PATH" \
+                -trimpath \
+                -buildvcs=false \
+                -tags="${{ matrix.tags }}" \
+                -ldflags "
+                  -X 'main.Version=$PRODUCT_VERSION'
+                  -X 'main.Revision=$PRODUCT_REVISION'
+                  -X 'main.RevisionTime=$PRODUCT_REVISION_TIME'
+                "
