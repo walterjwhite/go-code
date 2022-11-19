@@ -1,7 +1,7 @@
 name: build
 on: push
 jobs:
-  example:
+  build:
     runs-on: ${{ matrix.runner }}
     strategy:
       matrix:
