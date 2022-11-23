@@ -20,12 +20,24 @@ jobs:
       - name: build
         run: |
           cd lib
-          go get -u
-          go mod tidy
-          go build -a -race
+          _ORIGINAL_PWD=$PWD
+          for project in $(find . -type d ! -name .); do
+            cd $_ORIGINAL_PWD/$project
+            
+            go get -u || continue
+            go mod tidy || continue
+            
+            go build -a -race || continue
+          done
+          
 
           cd ../cmd
-          go install -a race
+          _ORIGINAL_PWD=$PWD
+          for project in $(find . -type d ! -name .); do
+            cd $_ORIGINAL_PWD/$project  
+            go build -a -race || continue
+          done
+          
 #       - name: upload
 #         uses: actions/upload-artifact@v3
 #         with:
