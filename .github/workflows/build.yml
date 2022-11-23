@@ -17,10 +17,15 @@ jobs:
         with:
           go-version: 1.19
           cache: true
-      - name: install dependencies
-        run: go get .
       - name: build
-        run: go build -v ./...
+        run: |
+          go get -u
+          go mod tidy
+          cd lib
+          go build -a -race
+          cd ../cmd
+          
+          go install -a race
 #       - name: upload
 #         uses: actions/upload-artifact@v3
 #         with:
