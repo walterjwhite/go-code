@@ -19,6 +19,8 @@ jobs:
           cache: true
       - name: build
         run: |
+          _ORIGIN_PATH=$PWD
+          
           cd lib
           _ORIGINAL_PWD=$PWD
           for project in $(find . -type d ! -name .); do
@@ -30,8 +32,7 @@ jobs:
             go build -a -race || continue
           done
           
-
-          cd ../cmd
+          cd $_ORIGIN_PATH/cmd
           _ORIGINAL_PWD=$PWD
           for project in $(find . -type d ! -name .); do
             cd $_ORIGINAL_PWD/$project  
