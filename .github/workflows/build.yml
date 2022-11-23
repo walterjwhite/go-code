@@ -19,12 +19,12 @@ jobs:
           cache: true
       - name: build
         run: |
+          cd lib
           go get -u
           go mod tidy
-          cd lib
           go build -a -race
+
           cd ../cmd
-          
           go install -a race
 #       - name: upload
 #         uses: actions/upload-artifact@v3
