@@ -20,7 +20,7 @@ require (
 	github.com/emersion/go-message v0.17.0
 	github.com/emersion/go-sasl v0.0.0-20220912192320-0145f2c60ead // indirect
 	github.com/erikstmartin/go-testdb v0.0.0-20160219214506-8d10e4a1bae5 // indirect
-	github.com/esiqveland/notify v0.11.1
+	github.com/esiqveland/notify v0.11.2
 	github.com/fatih/structs v1.1.0 // indirect
 	github.com/gen2brain/beeep v0.0.0-20220909211152-5a9ec94374f6
 	github.com/go-mail/gomail v2.3.1+incompatible
