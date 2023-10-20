@@ -32,7 +32,7 @@ require (
 	github.com/lib/pq v1.10.7 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.17
-	github.com/miekg/dns v1.1.50
+	github.com/miekg/dns v1.1.56
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/olivere/elastic/v7 v7.0.32
 	github.com/prometheus/client_golang v1.11.1 // indirect
@@ -46,10 +46,9 @@ require (
 	github.com/walterjwhite/go-garmin-gpx v1.0.2
 	github.com/walterjwhite/sflags v0.3.2
 	github.com/ziutek/mymysql v1.5.4 // indirect
-	golang.org/x/crypto v0.3.0
+	golang.org/x/crypto v0.13.0
 	golang.org/x/image v0.13.0
-	golang.org/x/sys v0.6.0 // indirect
-	golang.org/x/term v0.5.0
+	golang.org/x/term v0.12.0
 	golang.org/x/xerrors v0.0.0-20220609144429-65e65417b02f // indirect
 	google.golang.org/genproto v0.0.0-20220719170305-83ca9fad585f // indirect
 	gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc // indirect
