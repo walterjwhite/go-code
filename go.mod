@@ -17,7 +17,7 @@ require (
 	github.com/emersion/go-imap v1.2.1
 	github.com/emersion/go-imap-idle v0.0.0-20210907174914-db2568431445
 	github.com/emersion/go-imap-move v0.0.0-20210907172020-fe4558f9c872
-	github.com/emersion/go-message v0.16.0
+	github.com/emersion/go-message v0.17.0
 	github.com/emersion/go-sasl v0.0.0-20220912192320-0145f2c60ead // indirect
 	github.com/erikstmartin/go-testdb v0.0.0-20160219214506-8d10e4a1bae5 // indirect
 	github.com/esiqveland/notify v0.11.1
@@ -49,8 +49,7 @@ require (
 	golang.org/x/crypto v0.3.0
 	golang.org/x/image v0.1.0
 	golang.org/x/sys v0.6.0 // indirect
-	golang.org/x/term v0.2.0
-	golang.org/x/text v0.5.0 // indirect
+	golang.org/x/term v0.5.0
 	golang.org/x/xerrors v0.0.0-20220609144429-65e65417b02f // indirect
 	google.golang.org/genproto v0.0.0-20220719170305-83ca9fad585f // indirect
 	gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc // indirect
