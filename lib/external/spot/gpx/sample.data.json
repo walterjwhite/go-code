@@ -1,0 +1,21 @@
+{
+  "id": 4937064,
+  "messageType": "OK",
+  "unixTime": 1364909292,
+  "latitude": 40,
+  "longitude": -80
+}
+{
+  "id": 4937065,
+  "messageType": "TRACK",
+  "unixTime": 1364909294,
+  "latitude": 41,
+  "longitude": -81
+}
+{
+  "id": 4937066,
+  "messageType": "TRACK",
+  "unixTime": 1364909296,
+  "latitude": 42,
+  "longitude": -82
+}
