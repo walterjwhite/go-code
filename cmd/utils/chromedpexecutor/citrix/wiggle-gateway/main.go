@@ -8,16 +8,16 @@ import (
 	"github.com/walterjwhite/go-code/lib/application"
 	"github.com/walterjwhite/go-code/lib/application/logging"
 
-	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/session"
 	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/plugins/gateway"
 	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/plugins/gateway/cli"
+	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/session"
 	"time"
 )
 
 var (
 
 	tickleInterval = flag.String("TickleInterval", "3m", "Tickle Interval")
-	s        = &gateway.Session{}
+	s              = &gateway.Session{}
 )
 
 func init() {

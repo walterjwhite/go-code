@@ -2,7 +2,7 @@ package remote
 
 import (
 	"flag"
-	
+
 	"os"
 	"strings"
 

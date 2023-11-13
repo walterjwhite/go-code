@@ -5,7 +5,6 @@ import (
 	"github.com/walterjwhite/go-code/lib/application/logging"
 	"github.com/walterjwhite/go-code/lib/external/spot/data"
 
-	
 	"os"
 	"path/filepath"
 )
@@ -40,9 +39,9 @@ func latest(path string, f *LatestFile) {
 				continue
 			}
 
-			leftFileInfo, err := file.Info();
+			leftFileInfo, err := file.Info()
 			logging.Panic(err)
-			rightFileInfo, err := f.DirEntry.Info();
+			rightFileInfo, err := f.DirEntry.Info()
 			logging.Panic(err)
 
 			if leftFileInfo.ModTime().After(rightFileInfo.ModTime()) {

@@ -1,8 +1,6 @@
 package install
 
 import (
-
-
 	"github.com/walterjwhite/go-code/lib/application/logging"
 
 	"fmt"
@@ -14,7 +12,7 @@ type NPMInstaller struct {
 	// root    string
 	options string
 
-	installTimeout   time.Duration
+	installTimeout time.Duration
 	isBootstrapped bool
 	// bootstrapTimeout time.Duration
 }
@@ -41,7 +39,7 @@ func (i *NPMInstaller) Bootstrap() {
 	if i.isBootstrapped {
 		return
 	}
-	
+
 	SystemInstaller.Bootstrap()
 
 	SystemInstaller.Install("npm")
@@ -62,5 +60,5 @@ func (i *NPMInstaller) Update() {
 }
 
 func init() {
-	NPMinstaller = &NPMInstaller{installTimeout: 1*time.Minute, isBootstrapped: IsCommandAvailable("npm")}
+	NPMinstaller = &NPMInstaller{installTimeout: 1 * time.Minute, isBootstrapped: IsCommandAvailable("npm")}
 }

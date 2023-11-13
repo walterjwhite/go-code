@@ -10,7 +10,7 @@ import (
 	"github.com/walterjwhite/go-code/lib/external/spot/gpx"
 
 	"github.com/walterjwhite/go-code/lib/net/email"
-	
+
 	"os"
 )
 

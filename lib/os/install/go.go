@@ -1,8 +1,6 @@
 package install
 
 import (
-
-
 	"github.com/walterjwhite/go-code/lib/application/logging"
 
 	"fmt"
@@ -14,7 +12,7 @@ type GoInstaller struct {
 	// root    string
 	options string
 
-	installTimeout   time.Duration
+	installTimeout time.Duration
 	// bootstrapTimeout time.Duration
 }
 

@@ -1,11 +1,11 @@
 package install
 
 import (
-      "os/exec"
+	"os/exec"
 )
 
 func IsCommandAvailable(name string) bool {
-      cmd := exec.Command("command", "-v", name)
-      err := cmd.Run()
-	  return err == nil
+	cmd := exec.Command("command", "-v", name)
+	err := cmd.Run()
+	return err == nil
 }

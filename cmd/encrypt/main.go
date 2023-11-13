@@ -3,7 +3,7 @@ package main
 import (
 	"errors"
 	"flag"
-	
+
 	"strings"
 
 	"github.com/walterjwhite/go-code/lib/application"

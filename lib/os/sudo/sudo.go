@@ -1,15 +1,15 @@
 package sudo
 
 import (
-	"os/user"
+	"context"
 	"github.com/walterjwhite/go-code/lib/application/logging"
 	"github.com/walterjwhite/go-code/lib/utils/runner"
-	"context"
+	"os/user"
 )
 
 func Run(ctx context.Context, command string, arguments ...string) (int, error) {
-	if ! isRoot() {
-		return runner.Run(ctx, "sudo", append(arguments[:0], append([]string{command}, arguments[1:]...)...) ...)
+	if !isRoot() {
+		return runner.Run(ctx, "sudo", append(arguments[:0], append([]string{command}, arguments[1:]...)...)...)
 	}
 
 	return runner.Run(ctx, command, arguments...)

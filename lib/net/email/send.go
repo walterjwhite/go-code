@@ -6,7 +6,7 @@ import (
 
 	sendmail "github.com/go-mail/gomail"
 	"github.com/walterjwhite/go-code/lib/application/logging"
-	
+
 	"os"
 )
 

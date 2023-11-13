@@ -7,7 +7,7 @@ import (
 
 	"github.com/mitchellh/go-homedir"
 	"github.com/walterjwhite/go-code/lib/net/email"
-	
+
 	"os"
 	"path/filepath"
 )

@@ -8,7 +8,6 @@ import (
 	"github.com/rs/zerolog/log"
 	"github.com/walterjwhite/go-code/lib/application/logging"
 	"io"
-	
 )
 
 func Process(msg *imap.Message) *EmailMessage {

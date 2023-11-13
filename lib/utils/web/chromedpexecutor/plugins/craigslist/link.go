@@ -5,8 +5,8 @@ import (
 
 	"github.com/chromedp/chromedp"
 	"github.com/rs/zerolog/log"
-	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/session/remote"
 	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/session"
+	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/session/remote"
 )
 
 func Accept(ctx context.Context, url string) {

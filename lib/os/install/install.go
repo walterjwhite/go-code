@@ -2,10 +2,10 @@ package install
 
 import (
 	"context"
+	"github.com/rs/zerolog/log"
 	"github.com/walterjwhite/go-code/lib/application"
 	"github.com/walterjwhite/go-code/lib/application/logging"
 	"github.com/walterjwhite/go-code/lib/os/sudo"
-	"github.com/rs/zerolog/log"
 	"time"
 )
 

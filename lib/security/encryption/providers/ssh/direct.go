@@ -2,7 +2,7 @@ package ssh
 
 import (
 	"fmt"
-	
+
 	"os"
 
 	"github.com/walterjwhite/go-code/lib/application/logging"

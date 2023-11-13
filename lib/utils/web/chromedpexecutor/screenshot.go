@@ -3,7 +3,6 @@ package session
 import (
 	"context"
 
-	
 	"math"
 
 	"github.com/chromedp/cdproto/page"

@@ -4,7 +4,7 @@ import (
 	"github.com/walterjwhite/go-code/lib/application/logging"
 	"github.com/walterjwhite/go-code/lib/external/spot/client"
 	"github.com/walterjwhite/go-code/lib/external/spot/data"
-	
+
 	"os"
 	"testing"
 )

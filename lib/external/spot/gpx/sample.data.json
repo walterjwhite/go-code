@@ -1,21 +1,21 @@
 {
   "id": 4937064,
-  "messageType": "OK",
-  "unixTime": 1364909292,
   "latitude": 40,
-  "longitude": -80
+  "longitude": -80,
+  "messageType": "OK",
+  "unixTime": 1364909292
 }
 {
   "id": 4937065,
-  "messageType": "TRACK",
-  "unixTime": 1364909294,
   "latitude": 41,
-  "longitude": -81
+  "longitude": -81,
+  "messageType": "TRACK",
+  "unixTime": 1364909294
 }
 {
   "id": 4937066,
-  "messageType": "TRACK",
-  "unixTime": 1364909296,
   "latitude": 42,
-  "longitude": -82
+  "longitude": -82,
+  "messageType": "TRACK",
+  "unixTime": 1364909296
 }

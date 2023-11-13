@@ -5,8 +5,8 @@ import (
 	"crypto/x509"
 	"errors"
 	"golang.org/x/crypto/pkcs12"
-	"os"
 	"log"
+	"os"
 )
 
 func Decode(filename string, password string) (*x509.Certificate, *rsa.PrivateKey) {

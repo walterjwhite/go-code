@@ -1,13 +1,13 @@
 package runner
 
 import (
-	"strings"
 	"io"
+	"strings"
 )
 
 type IndenterConf struct {
-  Indentation int
-  w io.Writer
+	Indentation int
+	w           io.Writer
 }
 
 func Default(w io.Writer) *IndenterConf {

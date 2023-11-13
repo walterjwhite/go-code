@@ -2,7 +2,7 @@ package secrets
 
 import (
 	"encoding/base64"
-	
+
 	"os"
 	"os/exec"
 	"path/filepath"

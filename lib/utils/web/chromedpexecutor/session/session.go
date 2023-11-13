@@ -24,6 +24,6 @@ type ChromeDPSession interface {
 // 	s.cancel()
 // }
 
-func Execute(s ChromeDPSession, actions ...chromedp.Action){
+func Execute(s ChromeDPSession, actions ...chromedp.Action) {
 	logging.Panic(chromedp.Run(s.Context(), actions...))
 }

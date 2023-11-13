@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/walterjwhite/go-code/lib/application/logging"
 	"github.com/gen2brain/beeep"
+	"github.com/walterjwhite/go-code/lib/application/logging"
 )
 
 func main() {

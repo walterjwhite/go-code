@@ -6,7 +6,7 @@ import (
 	"github.com/chromedp/chromedp"
 
 	"github.com/walterjwhite/go-code/lib/time/delay"
-	
+
 	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/session"
 	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/session/remote"
 
@@ -41,7 +41,7 @@ func (p *CraigslistPost) Create(ctx context.Context) {
 
 	p.session = remote.New(ctx)
 
-	session.Execute(p.session, chromedp.Navigate(craigslistBasePostUrl + p.Region))
+	session.Execute(p.session, chromedp.Navigate(craigslistBasePostUrl+p.Region))
 
 	session.Execute(p.session, p.doForSaleBy()...)
 	session.Execute(p.session, p.doCategory()...)

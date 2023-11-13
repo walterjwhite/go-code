@@ -12,8 +12,6 @@ import (
 
 	"path/filepath"
 	"time"
-
-	
 )
 
 func (c *Configuration) initLastRecord() {

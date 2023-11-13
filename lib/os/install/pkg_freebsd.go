@@ -1,11 +1,6 @@
 package install
 
 import (
-	
-	
-	
-	
-	
 	"time"
 )
 
@@ -66,6 +61,6 @@ func (i *FreeBSDPKGInstaller) BootstrapType(typeName string) {
 }
 
 func init() {
-	SystemInstaller = &FreeBSDPKGInstaller{installTimeout: 1*time.Minute, bootstrapTimeout: 5*time.Minute}
+	SystemInstaller = &FreeBSDPKGInstaller{installTimeout: 1 * time.Minute, bootstrapTimeout: 5 * time.Minute}
 	SystemInstaller.Bootstrap()
 }

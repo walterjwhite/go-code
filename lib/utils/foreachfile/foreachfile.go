@@ -2,7 +2,7 @@ package foreachfile
 
 import (
 	"fmt"
-	
+
 	"os"
 	"path/filepath"
 	"strings"

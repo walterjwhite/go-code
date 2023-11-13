@@ -6,8 +6,8 @@ import (
 	"github.com/chromedp/chromedp"
 	"github.com/walterjwhite/go-code/lib/application/logging"
 
-	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/session"
 	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/plugins/run"
+	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/session"
 
 	"time"
 )

@@ -3,11 +3,10 @@ package gpx
 import (
 	"github.com/walterjwhite/go-code/lib/application/logging"
 	"github.com/walterjwhite/go-code/lib/external/spot/data"
-	
 
+	"os"
 	"path/filepath"
 	"sort"
-	"os"
 )
 
 func All(s *data.Session) []*data.Record {
@@ -22,9 +21,9 @@ func dir(path string) []*data.Record {
 
 	// sort files
 	sort.Slice(files, func(i, j int) bool {
-		leftFileInfo, err := files[i].Info();
+		leftFileInfo, err := files[i].Info()
 		logging.Panic(err)
-		rightFileInfo, err := files[j].Info();
+		rightFileInfo, err := files[j].Info()
 		logging.Panic(err)
 
 		return leftFileInfo.ModTime().Before(rightFileInfo.ModTime())
