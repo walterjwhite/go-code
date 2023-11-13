@@ -42,7 +42,7 @@ require (
 	github.com/walterjwhite/sflags v0.3.2
 	github.com/ziutek/mymysql v1.5.4 // indirect
 	golang.org/x/crypto v0.14.0
-	golang.org/x/image v0.13.0
+	golang.org/x/image v0.14.0
 	golang.org/x/net v0.17.0 // indirect
 	golang.org/x/term v0.13.0
 	gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc // indirect
