@@ -29,7 +29,7 @@ require (
 	github.com/kylelemons/go-gypsy v1.0.0 // indirect
 	github.com/lib/pq v1.10.9 // indirect
 	github.com/mattn/go-isatty v0.0.20
-	github.com/miekg/dns v1.1.56
+	github.com/miekg/dns v1.1.57
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/olivere/elastic/v7 v7.0.32
 	github.com/rs/zerolog v1.31.0
