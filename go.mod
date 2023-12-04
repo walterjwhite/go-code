@@ -42,7 +42,7 @@ require (
 	github.com/walterjwhite/go-garmin-gpx v1.0.2
 	github.com/walterjwhite/sflags v0.3.2
 	github.com/ziutek/mymysql v1.5.4 // indirect
-	golang.org/x/crypto v0.15.0
+	golang.org/x/crypto v0.16.0
 	golang.org/x/image v0.14.0
 	golang.org/x/net v0.18.0 // indirect
 	golang.org/x/term v0.15.0
