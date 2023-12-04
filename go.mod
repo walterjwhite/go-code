@@ -45,7 +45,7 @@ require (
 	golang.org/x/crypto v0.15.0
 	golang.org/x/image v0.14.0
 	golang.org/x/net v0.18.0 // indirect
-	golang.org/x/term v0.14.0
+	golang.org/x/term v0.15.0
 	gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc // indirect
 	gopkg.in/andygrunwald/go-jira.v1 v1.8.0
 	gopkg.in/bndr/gojenkins.v1 v1.0.1
