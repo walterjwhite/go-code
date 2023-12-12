@@ -1,7 +1,7 @@
 package jwthelper
 
 import (
-	"github.com/dgrijalva/jwt-go"
+	"github.com/golang-jwt/jwt"
 	"github.com/mitchellh/go-homedir"
 	"log"
 	"time"

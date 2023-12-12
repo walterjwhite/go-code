@@ -8,11 +8,10 @@ require (
 	github.com/TheCreeper/go-notify v0.2.0
 	github.com/Zauberstuhl/go-xml v0.0.0-20180122175953-534ffa216723 // indirect
 	github.com/atotto/clipboard v0.1.4
-	github.com/chromedp/cdproto v0.0.0-20231112213822-7d5b36658e55
+	github.com/chromedp/cdproto v0.0.0-20231205062650-00455a960d61
 	github.com/chromedp/chromedp v0.9.3
 	github.com/coredns/caddy v1.1.1
 	github.com/coredns/coredns v1.11.1
-	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/emersion/go-imap v1.2.1
 	github.com/emersion/go-imap-idle v0.0.0-20210907174914-db2568431445
 	github.com/emersion/go-imap-move v0.0.0-20210907172020-fe4558f9c872
@@ -23,6 +22,7 @@ require (
 	github.com/go-mail/gomail v2.3.1+incompatible
 	github.com/gobwas/ws v1.3.1 // indirect
 	github.com/godbus/dbus/v5 v5.1.0
+	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/google/go-querystring v1.1.0 // indirect
 	github.com/jmoiron/sqlx v1.3.5
 	github.com/kellydunn/golang-geo v0.7.0
@@ -44,7 +44,7 @@ require (
 	github.com/ziutek/mymysql v1.5.4 // indirect
 	golang.org/x/crypto v0.16.0
 	golang.org/x/image v0.14.0
-	golang.org/x/net v0.18.0 // indirect
+	golang.org/x/net v0.19.0 // indirect
 	golang.org/x/term v0.15.0
 	gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc // indirect
 	gopkg.in/andygrunwald/go-jira.v1 v1.8.0
