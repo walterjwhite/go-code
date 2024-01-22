@@ -29,7 +29,7 @@ require (
 	github.com/kylelemons/go-gypsy v1.0.0 // indirect
 	github.com/lib/pq v1.10.9 // indirect
 	github.com/mattn/go-isatty v0.0.20
-	github.com/miekg/dns v1.1.57
+	github.com/miekg/dns v1.1.58
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/olivere/elastic/v7 v7.0.32
 	github.com/rs/zerolog v1.31.0
@@ -44,7 +44,6 @@ require (
 	github.com/ziutek/mymysql v1.5.4 // indirect
 	golang.org/x/crypto v0.18.0
 	golang.org/x/image v0.15.0
-	golang.org/x/net v0.19.0 // indirect
 	golang.org/x/term v0.16.0
 	gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc // indirect
 	gopkg.in/andygrunwald/go-jira.v1 v1.8.0
