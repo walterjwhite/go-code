@@ -32,7 +32,7 @@ require (
 	github.com/miekg/dns v1.1.58
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/olivere/elastic/v7 v7.0.32
-	github.com/rs/zerolog v1.31.0
+	github.com/rs/zerolog v1.32.0
 	github.com/segmentio/ksuid v1.0.4
 	github.com/sudhanshuraheja/go-garmin-gpx v1.0.1 // indirect
 	github.com/trivago/tgo v1.0.7 // indirect
