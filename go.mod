@@ -8,8 +8,8 @@ require (
 	github.com/TheCreeper/go-notify v0.2.0
 	github.com/Zauberstuhl/go-xml v0.0.0-20180122175953-534ffa216723 // indirect
 	github.com/atotto/clipboard v0.1.4
-	github.com/chromedp/cdproto v0.0.0-20231205062650-00455a960d61
-	github.com/chromedp/chromedp v0.9.3
+	github.com/chromedp/cdproto v0.0.0-20240202021202-6d0b6a386732
+	github.com/chromedp/chromedp v0.9.5
 	github.com/coredns/caddy v1.1.1
 	github.com/coredns/coredns v1.11.1
 	github.com/emersion/go-imap v1.2.1
@@ -20,7 +20,6 @@ require (
 	github.com/esiqveland/notify v0.11.2
 	github.com/gen2brain/beeep v0.0.0-20230907135156-1a38885a97fc
 	github.com/go-mail/gomail v2.3.1+incompatible
-	github.com/gobwas/ws v1.3.1 // indirect
 	github.com/godbus/dbus/v5 v5.1.0
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/google/go-querystring v1.1.0 // indirect
