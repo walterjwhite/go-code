@@ -43,7 +43,7 @@ require (
 	github.com/ziutek/mymysql v1.5.4 // indirect
 	golang.org/x/crypto v0.19.0
 	golang.org/x/image v0.15.0
-	golang.org/x/term v0.17.0
+	golang.org/x/term v0.18.0
 	gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc // indirect
 	gopkg.in/andygrunwald/go-jira.v1 v1.8.0
 	gopkg.in/bndr/gojenkins.v1 v1.0.1
