@@ -23,10 +23,9 @@ require (
 	github.com/godbus/dbus/v5 v5.1.0
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/google/go-querystring v1.1.0 // indirect
-	github.com/jmoiron/sqlx v1.3.5
+	github.com/jmoiron/sqlx v1.4.0
 	github.com/kellydunn/golang-geo v0.7.0
 	github.com/kylelemons/go-gypsy v1.0.0 // indirect
-	github.com/lib/pq v1.10.9 // indirect
 	github.com/mattn/go-isatty v0.0.20
 	github.com/miekg/dns v1.1.58
 	github.com/mitchellh/go-homedir v1.1.0
