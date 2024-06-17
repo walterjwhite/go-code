@@ -17,7 +17,7 @@ require (
 	github.com/emersion/go-imap-move v0.0.0-20210907172020-fe4558f9c872
 	github.com/emersion/go-message v0.18.1
 	github.com/emersion/go-sasl v0.0.0-20231106173351-e73c9f7bad43 // indirect
-	github.com/esiqveland/notify v0.11.2
+	github.com/esiqveland/notify v0.13.3
 	github.com/gen2brain/beeep v0.0.0-20230907135156-1a38885a97fc
 	github.com/go-mail/gomail v2.3.1+incompatible
 	github.com/godbus/dbus/v5 v5.1.0
