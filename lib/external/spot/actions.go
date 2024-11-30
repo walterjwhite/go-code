@@ -30,6 +30,5 @@ func (c *Configuration) onNewRecord(old, new *data.Record) {
 		if ok {
 			recordAction.OnNewRecord(old, new)
 		}
-
 	}
 }

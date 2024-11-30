@@ -12,7 +12,7 @@ import (
 )
 
 var (
-	devToolsWsFileFlag = flag.String("s", "~/.data/chrome-launcher/default", "Remote Browser Session File")
+	devToolsWsFileFlag = flag.String("s", "/tmp/w/walterjwhite/app/default/web-browser/remote-web-browser/instance/remote", "Remote Browser Session File")
 )
 
 func getURLFromFile() {
@@ -28,8 +28,10 @@ func getURLFromFile() {
 		log.Info().Msg("getting URL from file ...")
 
 		// ws url is on line 2
-		dataString := strings.TrimSpace(strings.Split(string(data), "\n")[1])
+		dataString := strings.TrimSpace(strings.Split(string(data), "\n")[0])
 		devToolsWsUrlFlag = &dataString
+
+		log.Info().Msgf("Dev Tools WS URL: %v", *devToolsWsUrlFlag)
 	}
 }
 

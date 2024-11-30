@@ -2,11 +2,15 @@ package gateway
 
 import (
 	"context"
-	"fmt"
+
 	"github.com/chromedp/chromedp"
-	"github.com/chromedp/chromedp/kb"
+
 	"github.com/rs/zerolog/log"
-	"github.com/walterjwhite/go-code/lib/application/logging"
+	"strings"
+	"time"
+
+	"github.com/walterjwhite/go-code/lib/time/delay"
+	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor"
 	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/session"
 	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/session/remote"
 )
@@ -16,36 +20,37 @@ const (
 	logoffButtonXpath = "//*[@id=\"menuLogOffBtn\"]"
 )
 
-// authenticate and nothing more
-func (s *Session) Authenticate(ctx context.Context) {
-	if len(s.Token) != 6 {
-		logging.Panic(fmt.Errorf("Please enter the 6-digit token: %v", s.Token))
-	}
-
+func (s *Session) InitializeChromeDP(ctx context.Context) {
 	s.session = remote.New(ctx)
+}
 
-	// no need to wait
-	//s.session.Waiter = nil
+// authenticate and nothing more
+func (s *Session) Authenticate(token string) {
+	token = s.trim(token)
+	validateToken(token)
 
 	session.Execute(s.session, chromedp.Navigate(s.Endpoint.Uri))
 
 	log.Debug().Msgf("username: %v", s.Credentials.Username)
 	log.Debug().Msgf("domain: %v", s.Credentials.Domain)
 	log.Debug().Msgf("password: %v", s.Credentials.Password)
-	log.Debug().Msgf("pin/token: %v", s.getToken())
+	log.Debug().Msgf("pin/token: %v", s.getToken(token))
 
-	session.Execute(s.session,
-		chromedp.SendKeys(s.Endpoint.UsernameXPath, s.Credentials.Domain+"\\"+s.Credentials.Username),
-		chromedp.SendKeys(s.Endpoint.PasswordXPath, s.Credentials.Password),
-		chromedp.SendKeys(s.Endpoint.TokenXPath, s.getToken()),
-		//		chromedp.Click(s.Endpoint.LoginButtonXPath),
-		//chromedp.Submit(s.Endpoint.TokenXPath),
-		chromedp.KeyEvent(kb.Enter),
+	session.ExecuteWithDelay(s.session,
+		delay.NewRandom(*s.Delay, *s.Delay),
+
+		chromedp.SendKeys(s.Endpoint.UsernameXPath, strings.TrimSpace(s.Credentials.Domain+"\\"+s.Credentials.Username)),
+
+		chromedp.SendKeys(s.Endpoint.PasswordXPath, strings.TrimSpace(s.Credentials.Password)),
+		chromedp.SendKeys(s.Endpoint.TokenXPath, strings.TrimSpace(s.getToken(token))),
 	)
+
+	// wait for page to load
+	chromedp.RunResponse(s.session.Context(), chromedp.Click(s.Endpoint.LoginButtonXPath))
 }
 
-func (s *Session) getToken() string {
-	return s.Credentials.Pin + s.Token
+func (s *Session) getToken(token string) string {
+	return s.Credentials.Pin + token
 }
 
 func (s *Session) Logout() {
@@ -55,7 +60,16 @@ func (s *Session) Logout() {
 	)
 }
 
-func (s *Session) isAuthenticated() bool {
-	//return session.Execute(s.session, chromedp.Exists(menuButtonXpath))
-	return false
+func (s *Session) IsAuthenticated() bool {
+	// user has citrix workspace installed
+	if chromedpexecutor.Exists(s.session, time.Duration(time.Second*5), "userMenuBtn", chromedp.ByID) {
+		log.Warn().Msg("user is authenticated - userMenuBtn is present")
+		return true
+	}
+
+	// user does not have citrix workspace installed
+	citrixLightInstallButtonExists := chromedpexecutor.Exists(s.session, time.Duration(time.Second*5), "protocolhandler-welcome-installButton", chromedp.ByID)
+	log.Warn().Msgf("user is authenticated - light install button: %v", citrixLightInstallButtonExists)
+
+	return citrixLightInstallButtonExists
 }

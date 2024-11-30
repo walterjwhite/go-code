@@ -1,59 +1,68 @@
 package gateway
 
 import (
-	"context"
-	"fmt"
 	"github.com/chromedp/chromedp"
-	"github.com/walterjwhite/go-code/lib/application/logging"
+	"github.com/rs/zerolog/log"
 
+	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor"
 	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/plugins/run"
 	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/session"
 
 	"time"
 )
 
+const (
+	menuChangeClientButtonXpath = "//*[@id=\"menuChangeClientBtn\"]"
+	useLightVersionXpath        = "//*[@id=\"changeclient-use-light-version\"]"
+
+	useLightVersionPromptXpath = "//*[@id=\"protocolhandler-welcome-useLightVersionLink\"]"
+)
+
 // authenticate and keep the session alive ...
-func (s *Session) Run(ctx context.Context) {
-	s.Authenticate(ctx)
+func (s *Session) Run(token string) bool {
+	log.Info().Msgf("running with: %v", token)
+	validateToken(token)
 
-	time.Sleep(*s.Endpoint.AuthenticationDelay)
+	s.Authenticate(token)
 
-	if !s.isAuthenticated() {
-		logging.Panic(fmt.Errorf("Unable to authenticate"))
+	if !s.IsAuthenticated() {
+		return false
 	}
 
 	s.useLightVersion()
-	s.tickle(ctx)
+	s.runPostAuthenticationActions()
 
-	s.runPostAuthenticationActions(ctx)
+	return true
 }
 
-func (s *Session) runPostAuthenticationActions(ctx context.Context) {
-	time.Sleep(*s.PostAuthenticationDelay)
-
+func (s *Session) runPostAuthenticationActions() {
 	if len(s.PostAuthenticationActions) > 0 {
+		log.Info().Msgf("running post authentication actions - delay: %v", *s.PostAuthenticationDelay)
+		time.Sleep(*s.PostAuthenticationDelay)
+
+		log.Info().Msgf("running post authentication actions: %v", s.PostAuthenticationActions)
 		session.Execute(s.session, run.ParseActions(s.PostAuthenticationActions...)...)
 	}
 }
 
-func (s *Session) RunWith(ctx context.Context, fn func()) {
-	s.Run(ctx)
+func (s *Session) RunWith(token string, fn func()) {
+	s.Run(token)
 
-	// after authenticated, run fn
+	// after authenticated, run fn, wiggle mouse ...
 	fn()
 }
 
-const (
-	menuChangeClientButtonXpath = "//*[@id=\"menuChangeClientBtn\"]"
-	useLightVersionXpath        = "//*[@id=\"changeclient-use-light-version\"]"
-)
-
 func (s *Session) useLightVersion() {
-	if s.UseLightVersion {
+	log.Info().Msgf("useLightVersion: %v", s.UseLightVersion)
+
+	if !s.UseLightVersion {
+		return
+	}
+
+	if chromedpexecutor.Exists(s.session, time.Duration(time.Second*5), "protocolhandler-welcome-useLightVersionLink", chromedp.ByID) {
+		log.Info().Msg("switching to light version")
 		session.Execute(s.session,
-			chromedp.Click(menuButtonXpath),
-			chromedp.Click(menuChangeClientButtonXpath),
-			chromedp.Click(useLightVersionXpath),
+			chromedp.Click("protocolhandler-welcome-useLightVersionLink", chromedp.ByID),
 		)
 	}
 }

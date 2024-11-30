@@ -5,6 +5,7 @@ import (
 	"path/filepath"
 
 	"github.com/mitchellh/go-homedir"
+	// "github.com/rs/zerolog/log"
 	"github.com/walterjwhite/go-code/lib/application/logging"
 	"github.com/walterjwhite/go-code/lib/utils/typename"
 )
@@ -25,6 +26,8 @@ func Load(config interface{}) {
 	LoadEnv(config)
 	LoadCli(config)
 	LoadSecrets(config)
+
+	//log.Warn().Msgf("configuration: %v", config)
 }
 
 func GetConfigurationDirectory(qualifiers ...string) string {

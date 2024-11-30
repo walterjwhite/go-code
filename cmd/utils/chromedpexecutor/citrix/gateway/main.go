@@ -2,7 +2,7 @@ package main
 
 import (
 	"flag"
-	"github.com/rs/zerolog/log"
+	"fmt"
 
 	"github.com/walterjwhite/go-code/lib/application"
 	"github.com/walterjwhite/go-code/lib/application/logging"
@@ -14,7 +14,7 @@ import (
 
 var (
 
-	tickleInterval = flag.String("i", "", "Tickle Interval, disabled")
+	tickleInterval = flag.String("i", "3m", "Tickle Interval")
 	session        = &gateway.Session{}
 )
 
@@ -27,14 +27,17 @@ func init() {
 
 		session.Tickle = &gateway.Tickle{TickleInterval: &i}
 	}
+
+	session.Validate()
+	session.InitializeChromeDP(application.Context)
 }
 
 func main() {
-	session.Token = cli.New().Get()
+	token := cli.New().Get()
+	if !session.Run(token) {
+		logging.Panic(fmt.Errorf("Unable to authenticate"))
+	}
 
-	log.Debug().Msgf("token: %v", session.Token)
-
-	session.Run(application.Context)
-
+	session.KeepAlive(application.Context)
 	application.Wait()
 }

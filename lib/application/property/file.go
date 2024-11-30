@@ -29,9 +29,11 @@ func LoadFileWithPath(config interface{}, filename string) {
 	}
 
 	if finfo.IsDir() {
+		log.Warn().Msgf("File is a directory %v", filename)
 		return
 	}
 
+	log.Warn().Msgf("Reading %v", filename)
 	yaml.Read(filename, config)
 }
 

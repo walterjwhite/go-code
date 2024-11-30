@@ -25,7 +25,6 @@ var (
 func New(ctx context.Context) *RemoteChromeDPSession {
 	if len(*devToolsWsUrlFlag) == 0 {
 		if len(*devToolsWsFileFlag) > 0 {
-			log.Info().Msg("getting url from file")
 			getURLFromFile()
 		}
 

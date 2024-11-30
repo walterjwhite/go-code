@@ -14,11 +14,11 @@ type Session struct {
 	Credentials *Credentials
 	Endpoint    *Endpoint
 
-	Token string
-
 	Tickle *Tickle
 
 	UseLightVersion bool
+
+	Delay *time.Duration
 
 	PostAuthenticationDelay   *time.Duration
 	PostAuthenticationActions []string

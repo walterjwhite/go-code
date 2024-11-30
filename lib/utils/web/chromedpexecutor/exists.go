@@ -1,29 +1,20 @@
-package session
+package chromedpexecutor
 
 import (
 	"context"
-
-	"github.com/chromedp/cdproto/cdp"
-	"github.com/chromedp/cdproto/runtime"
 	"github.com/chromedp/chromedp"
+	"time"
 
+	"github.com/rs/zerolog/log"
 	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/session"
 )
 
-func Exists(s session.ChromeDPSession, selector interface{}) (bool, error) {
-	var existingNodes []*cdp.Node
+func Exists(s session.ChromeDPSession, d time.Duration, sel interface{}, opts ...chromedp.QueryOption) bool {
+	log.Warn().Msgf("checking for visibility of: %s via %s", sel, s)
 
-	err := chromedp.Run(s.Context(),
-		chromedp.Query(selector, chromedp.AtLeast(0),
-			chromedp.After(func(i context.Context, executionId runtime.ExecutionContextID, n ...*cdp.Node) error {
-				existingNodes = n
-				return nil
-			}),
-		))
+	ctx, cancel := context.WithTimeout(s.Context(), d)
+	defer cancel()
 
-	if err != nil {
-		return false, err
-	}
-
-	return len(existingNodes) > 0, nil
+	err := chromedp.Run(ctx, chromedp.Tasks{chromedp.WaitVisible(sel, opts...)})
+	return err == nil
 }

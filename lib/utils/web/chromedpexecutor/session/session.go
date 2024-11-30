@@ -3,7 +3,9 @@ package session
 import (
 	"context"
 	"github.com/chromedp/chromedp"
+	"github.com/rs/zerolog/log"
 	"github.com/walterjwhite/go-code/lib/application/logging"
+	"github.com/walterjwhite/go-code/lib/time/delay"
 )
 
 type ChromeDPSession interface {
@@ -12,18 +14,30 @@ type ChromeDPSession interface {
 }
 
 // type ChromeDPSession struct {
-// 	context context.Context
-// 	cancel  context.CancelFunc
+//  context context.Context
+//  cancel  context.CancelFunc
 
-// 	waiter sleep.Waiter
+//  waiter sleep.Waiter
 
-// 	limit *time.Duration
+//  limit *time.Duration
 // }
 
 // func (s *ChromeDPSession) Cancel() {
-// 	s.cancel()
+//  s.cancel()
 // }
 
 func Execute(s ChromeDPSession, actions ...chromedp.Action) {
 	logging.Panic(chromedp.Run(s.Context(), actions...))
+}
+
+func ExecuteWithDelay(s ChromeDPSession, delay delay.Delayer, actions ...chromedp.Action) {
+	for i, action := range actions {
+		log.Info().Msgf("running %v", action)
+
+		logging.Panic(chromedp.Run(s.Context(), action))
+
+		if i < len(actions)-1 {
+			delay.Delay()
+		}
+	}
 }

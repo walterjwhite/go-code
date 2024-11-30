@@ -6,6 +6,7 @@ import (
 
 	"github.com/rs/zerolog/log"
 	"github.com/walterjwhite/go-code/lib/security/secrets"
+	"github.com/walterjwhite/go-code/lib/utils/typename"
 )
 
 type SecretPropertyConfiguration interface {
@@ -15,7 +16,7 @@ type SecretPropertyConfiguration interface {
 func LoadSecrets(config interface{}) {
 	secretPropertyConfiguration, ok := config.(SecretPropertyConfiguration)
 	if !ok {
-		log.Warn().Msg("Configuration does not implement SecretPropertyConfiguration, not decrypting")
+		log.Warn().Msgf("%v does not implement SecretPropertyConfiguration, not decrypting", typename.Get(config))
 		return
 	}
 
@@ -47,10 +48,10 @@ func setFieldValue(config SecretPropertyConfiguration, value reflect.Value, path
 
 func getFieldPath(prefix, fieldValue string) string {
 	if len(prefix) > 0 {
-		return prefix + "/" + fieldValue + "/value"
+		return prefix + "/" + fieldValue
 	}
 
-	return fieldValue + "/value"
+	return fieldValue
 }
 
 func getField(value reflect.Value, fieldName string) reflect.Value {

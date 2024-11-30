@@ -10,7 +10,7 @@ import (
 )
 
 var (
-	launchRemoteBrowserCmdFlag = flag.String("browser-remote-cmd", "launch-remote-chrome", "Command to launch remote browser")
+	launchRemoteBrowserCmdFlag = flag.String("browser-remote-cmd", "remote-web-browser", "Command to launch remote browser")
 
 	browserRemoteCmd *exec.Cmd
 )

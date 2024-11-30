@@ -3,6 +3,7 @@ package email
 import (
 	"fmt"
 	"github.com/emersion/go-imap/client"
+	"github.com/rs/zerolog/log"
 	"github.com/walterjwhite/go-code/lib/application/logging"
 )
 
@@ -18,7 +19,10 @@ func (a *EmailSenderAccount) Connect() *EmailSession {
 	c, err := client.DialTLS(fmt.Sprintf("%v:%v", a.ImapServer.Host, a.ImapServer.Port), nil)
 	logging.Panic(err)
 
+	log.Debug().Msgf("credentials: %v, %v", a.Username, a.Password)
 	logging.Panic(c.Login(a.Username, a.Password))
+
+	log.Info().Msgf("successfully logged in")
 
 	emailSession.client = c
 	return emailSession

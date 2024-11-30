@@ -15,19 +15,26 @@ type Provider struct {
 	channel chan *string
 }
 
+const (
+	TOKEN_REGEXP = "^token: [0-9]{6}$"
+	INBOX_FOLDER = "INBOX"
+)
+
 // block until we receive the email
 func (p *Provider) Get() string {
 	p.channel = make(chan *string, 1)
 
+	log.Info().Msgf("Connecting to: %v @ %v:%v", p.EmailSenderAccount.EmailAddress, p.EmailSenderAccount.ImapServer.Host, p.EmailSenderAccount.ImapServer.Port)
+
 	p.emailSession = p.EmailSenderAccount.Connect()
-	go p.emailSession.ReadAsync("INBOX", p.onNewMessage, true)
+	go p.emailSession.ReadAsync(INBOX_FOLDER, p.onNewMessage, true)
 
 	return *<-p.channel
 }
 
 func (p *Provider) onNewMessage(msg *imap.Message) {
 	if isMessageToken(msg) {
-		log.Debug().Msgf("is token: %v", msg.Envelope.Subject)
+		log.Info().Msgf("is token: %v", msg.Envelope.Subject)
 		p.onTokenReceived(msg)
 	} else {
 		log.Debug().Msgf("NOT token: %v", msg.Envelope.Subject)
@@ -35,7 +42,7 @@ func (p *Provider) onNewMessage(msg *imap.Message) {
 }
 
 func isMessageToken(msg *imap.Message) bool {
-	r := regexp.MustCompile("^token: [0-9]{6}$")
+	r := regexp.MustCompile(TOKEN_REGEXP)
 
 	return r.MatchString(msg.Envelope.Subject)
 }

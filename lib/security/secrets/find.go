@@ -13,7 +13,5 @@ func Find(callback func(filePath string), patterns ...string) {
 
 	initialize()
 
-	patterns = append(patterns, "/value")
-
 	foreachfile.Execute(SecretsConfigurationInstance.RepositoryPath, callback, patterns...)
 }

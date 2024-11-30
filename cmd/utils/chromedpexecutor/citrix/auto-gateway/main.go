@@ -6,31 +6,38 @@ import (
 	"github.com/walterjwhite/go-code/lib/application"
 	"github.com/walterjwhite/go-code/lib/application/logging"
 
-	emaill "github.com/walterjwhite/go-code/lib/net/email"
+	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/plugins/gateway/google"
+
 	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/plugins/gateway"
-	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/plugins/gateway/email"
+
 	"time"
 )
 
 var (
-	tickleInterval = flag.String("TickleInterval", "3m", "Tickle Interval")
 
-	session       = &gateway.Session{}
-	emailInstance = &email.Provider{EmailSenderAccount: &emaill.EmailSenderAccount{}}
+	tickleInterval = flag.String("i", "3m", "Tickle Interval")
+	session        = &gateway.Session{}
+	googleConf     = &google.Provider{}
 )
 
 func init() {
-	application.ConfigureWithProperties(session, emailInstance)
+	application.ConfigureWithProperties(session)
+	application.ConfigureWithProperties(googleConf)
 
-	i, err := time.ParseDuration(*tickleInterval)
-	logging.Panic(err)
+	if len(*tickleInterval) > 0 {
+		i, err := time.ParseDuration(*tickleInterval)
+		logging.Panic(err)
 
-	session.Tickle = &gateway.Tickle{TickleInterval: &i}
+		session.Tickle = &gateway.Tickle{TickleInterval: &i}
+	}
+
+	session.Validate()
+	session.InitializeChromeDP(application.Context)
 }
 
 func main() {
-	session.Token = emailInstance.Get()
-	session.Run(application.Context)
+	googleConf.ReadToken(session)
+	session.KeepAlive(application.Context)
 
 	application.Wait()
 }
