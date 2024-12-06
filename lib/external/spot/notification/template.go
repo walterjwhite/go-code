@@ -24,6 +24,7 @@ func (c *Notification) prepareTemplateContext() {
 	c.Context["Longitude"] = longitude
 	c.Context["WeatherUrl"] = weatherUrl
 	c.Context["WeatherReport"] = weatherReport
+	c.Context["GoogleMaps"] = fmt.Sprintf("https://maps.google.com/maps?f=q&geocode=&q=%s,%s&ll=%s,%s", latitude, longitude, latitude, longitude)
 }
 
 func (c *Notification) doTemplate() {

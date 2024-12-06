@@ -16,4 +16,5 @@ func Accept(ctx context.Context, url string) {
 	defer s.Cancel()
 
 	session.Execute(s, chromedp.Navigate(url))
+	session.Execute(s, chromedp.Click("//*[@id=\"new-edit\"]/div/div[2]/div[1]/button"))
 }

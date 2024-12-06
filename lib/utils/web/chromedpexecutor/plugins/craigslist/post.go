@@ -15,6 +15,7 @@ import (
 )
 
 const (
+	craigslistBasePostUrl = "https://post.craigslist.org/c/"
 )
 
 var (
@@ -47,6 +48,7 @@ func (p *CraigslistPost) Create(ctx context.Context) {
 }
 
 func (p *CraigslistPost) publish() []chromedp.Action {
+	return []chromedp.Action{chromedp.Click("//*[@id=\"publish_top\"]/button")}
 }
 
 func Delay() {

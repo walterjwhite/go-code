@@ -12,7 +12,10 @@ import (
 )
 
 const (
+	menuChangeClientButtonXpath = "//*[@id=\"menuChangeClientBtn\"]"
+	useLightVersionXpath        = "//*[@id=\"changeclient-use-light-version\"]"
 
+	useLightVersionPromptXpath = "//*[@id=\"protocolhandler-welcome-useLightVersionLink\"]"
 )
 
 func (s *Session) Run(token string) bool {

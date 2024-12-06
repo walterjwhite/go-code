@@ -16,6 +16,8 @@ import (
 )
 
 const (
+	menuButtonXpath   = "//*[@id=\"userMenuBtn\"]/div"
+	logoffButtonXpath = "//*[@id=\"menuLogOffBtn\"]"
 )
 
 func (s *Session) InitializeChromeDP(ctx context.Context) {

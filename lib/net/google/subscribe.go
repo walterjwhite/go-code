@@ -17,6 +17,7 @@ func Subscribe(credentialsDirectory string, projectId string, topicName string, 
 	err := sub.Receive(ctx, func(ctx context.Context, m *pubsub.Message) {
 		log.Info().Msgf("received message: %v", m.Data)
 		log.Info().Msgf("received message (string value): %s", m.Data)
+		m.Ack() // Acknowledge that we've consumed the message.
 	})
 	logging.Panic(err)
 }

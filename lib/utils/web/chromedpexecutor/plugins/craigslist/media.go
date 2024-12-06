@@ -16,6 +16,7 @@ func (p *CraigslistPost) doMedia() []chromedp.Action {
 	if len(p.Media) > 0 {
 		log.Info().Msgf("has %v images to upload", len(p.Media))
 
+		actions = append(actions, chromedp.SetUploadFiles("//input[@type = 'file']", p.Media, chromedp.NodeVisible))
 
 		actions = append(actions, chromedp.Sleep(p.sleepTime(len(p.Media))))
 

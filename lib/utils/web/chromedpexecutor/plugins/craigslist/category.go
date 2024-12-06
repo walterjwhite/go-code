@@ -57,5 +57,6 @@ const (
 
 func (p *CraigslistPost) doCategory() []chromedp.Action {
 	return []chromedp.Action{
+		chromedp.Click(fmt.Sprintf("//*[@id=\"new-edit\"]/div/label/label[%v]", p.Category)),
 	}
 }
