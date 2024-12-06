@@ -14,7 +14,6 @@ var (
 	Default *Configuration
 )
 
-// decade/year/month/day
 func init() {
 	Default = &Configuration{Template: "%d.%d.%d.%d.%d.%d.%d"}
 }

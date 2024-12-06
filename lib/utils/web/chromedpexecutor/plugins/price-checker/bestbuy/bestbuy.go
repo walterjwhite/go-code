@@ -29,8 +29,6 @@ func (j *BestBuy) IsInStock() bool {
 	return !err
 }
 
-// *[@id="pricing-price-46208696"]/div/div/div/div/div[1]/div/div[1]/div/span[1]
-// *[@id="pricing-price-63188314"]/div/div/div/div/div[1]/div[1]/div[1]/div/span[1]
 func (j *BestBuy) GetPrice() string {
 	var price string
 	session.Execute(j.session, chromedp.Text("price", &price, chromedp.NodeVisible, chromedp.ByID))

@@ -15,7 +15,6 @@ type instance struct {
 	channel chan bool
 }
 
-// calls the function periodically with the given interval until it returns true, the call times out, or the context is Done
 func New(ctx context.Context, interval *time.Duration, limit *time.Duration, f func() bool) {
 	channel := make(chan bool, 1)
 

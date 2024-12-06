@@ -18,7 +18,6 @@ func (s *Session) KeepAlive(ctx context.Context) {
 		s.Tickle.periodicInstance = nil
 	}
 
-	// do not tickle immediately
 	if s.Tickle != nil && s.Tickle.TickleInterval.Seconds() > 0 {
 		s.Tickle.periodicInstance = periodic.Periodic(ctx, s.Tickle.TickleInterval, false, s.doKeepAlive)
 		log.Debug().Msgf("tickle instance: %v", s.Tickle.periodicInstance)
@@ -34,9 +33,3 @@ func (s *Session) doKeepAlive() error {
 	return nil
 }
 
-// func wiggleMouse() {
-// 	for {
-// 		session.Execute(s.Session(), chromedp.KeyEvent(kb.Tab))
-// 		time.Sleep(400 * time.Millisecond)
-// 	}
-// }

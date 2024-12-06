@@ -8,7 +8,6 @@ import (
 )
 
 func (j *Job) Build(ctx context.Context) {
-	// j.get()
 
 	var params map[string]string
 

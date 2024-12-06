@@ -10,25 +10,20 @@ import (
 	"path/filepath"
 )
 
-// read from file (in session path)
 type Notification struct {
 	TemplateName string
 
 	Session *data.Session
 	Record  *data.Record
 
-	// email configuration
 	EmailSenderAccount *email.EmailSenderAccount
 
 	EmailMessage *email.EmailMessage
 
-	// for simplicity, only support strings
 	Context map[string]interface{}
 
-	//ReferenceData *ReferenceData
 	Filenames []string
 
-	//Notifiers []*Notifier
 }
 
 func New(s *data.Session, r *data.Record, templateName string) *Notification {

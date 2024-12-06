@@ -24,7 +24,6 @@ type CraigslistPost struct {
 		Condition ConditionType
 	*/
 	Script []string
-	// images to attach
 	Media []string
 
 	EmailAddress     string

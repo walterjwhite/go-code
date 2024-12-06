@@ -53,7 +53,6 @@ type Credentials struct {
 }
 
 type FieldSecret struct {
-	// must match Field.id to be injected
 	FieldId     *string
 	SecretKey   *string
 	SecretValue *string
@@ -66,8 +65,6 @@ type Website struct {
 
 	SupportsMultipleTabs bool
 
-	//KeepAliveUrl   *string
-	//IsKeepAlive bool
 
 	keepAliveActions []chromedp.Action
 }

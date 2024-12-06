@@ -8,7 +8,6 @@ import (
 
 type RecordAction interface {
 	OnNewRecord(old, new *data.Record)
-	//Init(latestRecord *data.Record, ctx context.Context)
 }
 
 type BackgroundAction interface {

@@ -55,9 +55,7 @@ func ParseAction(line string) chromedp.Action {
 		/*d*/ _, err := time.ParseDuration(arguments[1])
 		logging.Panic(err)
 
-		//action := strings.Join(ParseAction(arguments[2:]), ",")
 
-		//return chromedp.Sleep(d)
 	case "waitVisible":
 		return chromedp.WaitVisible(arguments[1])
 	case "submit":

@@ -10,7 +10,6 @@ import (
 	"os"
 )
 
-// NOTE: for gmail users, insecure access must be enabled for this to work
 func (e *EmailSenderAccount) Send(emailMessage *EmailMessage) {
 	m := sendmail.NewMessage()
 
@@ -23,7 +22,6 @@ func (e *EmailSenderAccount) Send(emailMessage *EmailMessage) {
 	attachmentFilenames := addAttachments(emailMessage, m)
 
 	m.SetHeader("Subject", emailMessage.Subject)
-	// m.SetBody("text/html", emailMessage.Body)
 	m.SetBody("text/plain", emailMessage.Body)
 
 	log.Debug().Msgf("subject: %s", emailMessage.Subject)
@@ -31,7 +29,6 @@ func (e *EmailSenderAccount) Send(emailMessage *EmailMessage) {
 
 	d := sendmail.NewDialer(e.SmtpServer.Host, e.SmtpServer.Port, e.Username, e.Password)
 	d.SSL = true
-	//d.TLSConfig = &UserTlsConfig
 	logging.Panic(d.DialAndSend(m))
 
 	cleanupAttachments(attachmentFilenames)

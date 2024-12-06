@@ -19,7 +19,6 @@ func dir(path string) []*data.Record {
 	files, err := os.ReadDir(path)
 	logging.Panic(err)
 
-	// sort files
 	sort.Slice(files, func(i, j int) bool {
 		leftFileInfo, err := files[i].Info()
 		logging.Panic(err)

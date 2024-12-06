@@ -19,7 +19,6 @@ func (s *Session) doKeepAlive() error {
 	return nil
 }
 
-// if we are actively doing stuff, we don't need to do anything
 func (s *Session) onKeepAlive() bool {
 	logging.Panic(chromedp.Run(s.chromedpsession.Context(), s.Website.keepAliveActions...))
 

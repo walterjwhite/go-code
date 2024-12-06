@@ -8,12 +8,7 @@ import (
 	"path/filepath"
 )
 
-// NOTES:
-// 1. this library writes to out/filename.gpx
-// 2. timestamp information isn't written out, it might be useful
-// 3. source file *MUST* have 1 line / record and not have the record over multiple lines
 
-// returns the path to the newly written file (matching how the gpx library writes the file)
 func Export(records []*data.Record, filename string) string {
 	trackSegment := &ggpx.TrackSegment{}
 

@@ -20,7 +20,6 @@ const (
 	INBOX_FOLDER = "INBOX"
 )
 
-// block until we receive the email
 func (p *Provider) Get() string {
 	p.channel = make(chan *string, 1)
 
@@ -54,7 +53,6 @@ func (p *Provider) onTokenReceived(msg *imap.Message) {
 	p.channel <- &t
 
 	log.Debug().Msgf("token delivered to channel: %v", t)
-	//defer p.emailSession.Delete(msg)
 }
 
 func getToken(subject string) string {

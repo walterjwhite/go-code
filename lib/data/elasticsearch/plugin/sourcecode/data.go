@@ -20,7 +20,6 @@ type Line struct {
 
 	Number int
 
-	// project, branch
 	Tags []string
 
 	Contents string
@@ -41,7 +40,6 @@ func (l *Line) Equals(record []string) bool {
 	number, err := strconv.Atoi(record[2])
 	logging.Panic(err)
 
-	//tags := strings.Split(record[3], ",")
 
 	return l.Path == record[0] && l.Name == record[1] && l.Number == number /*&& l.Tags == tags*/
 }

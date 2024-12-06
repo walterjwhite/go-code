@@ -34,7 +34,6 @@ func Periodic(parentContext context.Context, interval *time.Duration, runImmedia
 
 	p := &PeriodicInstance{function: fn, ticker: ticker, ctx: ctx, cancelFunction: cancel, mutex: &sync.RWMutex{}}
 
-	// initial invocation
 	if runImmediately {
 		p.tryRun()
 	}

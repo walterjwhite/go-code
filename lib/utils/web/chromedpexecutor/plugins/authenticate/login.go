@@ -15,13 +15,8 @@ import (
 )
 
 func (s *Session) Login() {
-	// handled outside of here
-	// s.chromedpsession = chromedpexecutor.New(ctx)
 
-	// no need to wait
-	//s.chromedpsession.Waiter = nil
 
-	//defer s.Cancel()
 
 	logging.Panic(chromedp.Run(s.chromedpsession.Context(), chromedp.Navigate(*s.Website.Url)))
 
@@ -34,8 +29,6 @@ func (s *Session) Login() {
 			logging.Panic(err)
 
 			log.Debug().Msgf("executing: %s / %s", *field.Selector, value)
-			// logging.Panic(chromedp.Run(s.chromedpsession.Context(), chromedp.Clear(*field.Selector)))
-			// log.Debug().Msgf("cleared: %s", *field.Selector)
 
 			logging.Panic(action.SendKeys(s.chromedpsession.Context(), *s.VisibleTimeout, s.LocateDelay, *field.Selector, value))
 

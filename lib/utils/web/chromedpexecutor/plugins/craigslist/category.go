@@ -8,9 +8,7 @@ import (
 type Category int
 
 const (
-	//*[@id="new-edit"]/div/label/label[1]/div/span
 	Antiques Category = iota + 1
-	//*[@id="new-edit"]/div/label/label[2]/div/span
 	Appliances
 	ArtsAndCrafts
 	AtvsUtvsSnowmobiles
@@ -58,9 +56,6 @@ const (
 )
 
 func (p *CraigslistPost) doCategory() []chromedp.Action {
-	// for sale by owner
 	return []chromedp.Action{
-		// bicycle parts - by owner
-		chromedp.Click(fmt.Sprintf("//*[@id=\"new-edit\"]/div/label/label[%v]", p.Category)),
 	}
 }

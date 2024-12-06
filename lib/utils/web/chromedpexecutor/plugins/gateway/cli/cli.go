@@ -22,7 +22,6 @@ func (p *Provider) Get() string {
 	}
 
 	if len(os.Args) >= 2 {
-		// use first argument
 		return os.Args[1]
 	}
 

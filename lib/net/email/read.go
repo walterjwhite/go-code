@@ -43,7 +43,6 @@ func (s *EmailSession) Read(folderName string, function func(msg *imap.Message),
 /*
 	yaml.Write(emailMessage, "/tmp/email-message")
 
-	// push to ES
 	ces := elasticsearch.NewDefaultClient()
 	b := ces.NewBatch(11, 5242880, 5*time.Second, 2)
 

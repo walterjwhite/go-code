@@ -10,4 +10,3 @@ func Of(deviation int) int {
 	return rand.Intn(deviation)
 }
 
-// + d.MinimumDelay

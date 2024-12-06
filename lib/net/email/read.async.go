@@ -15,17 +15,14 @@ func (s *EmailSession) ReadAsync(folderName string, function func(msg *imap.Mess
 
 	idleClient := idle.NewClient(s.client)
 
-	// Create a channel to receive mailbox updates
 	updates := make(chan client.Update)
 	s.client.Updates = updates
 
-	// Start idling
 	done := make(chan error, 1)
 	go func() {
 		done <- idleClient.IdleWithFallback(nil, 0)
 	}()
 
-	// Listen for updates
 	for {
 		select {
 		case update := <-updates:

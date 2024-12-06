@@ -11,8 +11,6 @@ import (
 )
 
 func Process(msg *imap.Message) *EmailMessage {
-	//log.Info().Msgf("Message: %v %v", msg.Envelope, msg.Uid)
-	//log.Info().Msgf("Message: %v %v", *msg.Envelope.From[0], *msg.Envelope.To[0])
 
 	emailMessage := &EmailMessage{}
 
@@ -22,7 +20,6 @@ func Process(msg *imap.Message) *EmailMessage {
 		logging.Panic(errors.New("No message body returned"))
 	}
 
-	// Create a new mail reader
 	mr, err := mail.CreateReader(r)
 	logging.Panic(err)
 
@@ -45,7 +42,6 @@ func Process(msg *imap.Message) *EmailMessage {
 		emailMessage.Cc = cc
 	}
 
-	// Process each message's part
 
 	for {
 		p, err := mr.NextPart()
@@ -56,11 +52,9 @@ func Process(msg *imap.Message) *EmailMessage {
 
 		switch h := p.Header.(type) {
 		case *mail.InlineHeader:
-			// This is the message's text (can be plain-text or HTML)
 			b, _ := io.ReadAll(p.Body)
 			emailMessage.Body = string(b)
 
-			//log.Info().Msgf("Got text: %v", string(b))
 			log.Info().Msgf("header: %v", p.Header)
 			log.Info().Msgf("body: %v", emailMessage.Body[0:4])
 
@@ -79,16 +73,13 @@ func handleInlineAttachments(msg *imap.Message, p *mail.Part, h *mail.InlineHead
 	/*
 		headerDisplay, cdparams, err := h.ContentDisposition()
 		if err != nil {
-			//logging.Panic(err)
 			log.Warn().Msgf("Error with inline header: %v", err)
 		}
 
 		log.Info().Msgf("headerDisplay: %v", headerDisplay, cdparams)
 
 		headerType, params, err := h.ContentType()
-		//logging.Panic(err)
 		if err != nil {
-			//logging.Panic(err)
 			log.Warn().Msgf("Error with inline header: %v", err)
 		}
 

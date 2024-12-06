@@ -15,8 +15,6 @@ import (
 
 func (a *Application) configureLogWatcher(notificationChannel chan *string, writer io.Writer, command *exec.Cmd) {
 	if len(a.LogMatcher) > 0 {
-		// change this to be an external executable
-		// pass stderr/stdout to this
 		if "spring-boot" == a.LogMatcher {
 			writer = writermatcher.NewSpringBootApplicationStartupMatcher(notificationChannel, writer)
 		} else if "npm" == a.LogMatcher {

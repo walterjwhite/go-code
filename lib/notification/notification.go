@@ -26,10 +26,8 @@ var NotifierInstance = New()
 
 func OnCompletion() {
 	if r := recover(); r != nil {
-		// exception
 		NotifierInstance.Notify(Notification{Title: "Error", Description: "Application execution completed abnormally.", Type: Error})
 	} else {
-		// normal
 		NotifierInstance.Notify(Notification{Title: "Success", Description: "Application execution completed normally.", Type: Info})
 	}
 }

@@ -9,12 +9,10 @@ import (
 )
 
 type NPMInstaller struct {
-	// root    string
 	options string
 
 	installTimeout time.Duration
 	isBootstrapped bool
-	// bootstrapTimeout time.Duration
 }
 
 var NPMinstaller *NPMInstaller

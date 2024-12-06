@@ -19,7 +19,6 @@ func Screenshot(s session.ChromeDPSession, filename string) {
 	var buf []byte
 
 	log.Info().Msgf("capturing screenshot: %v", filename)
-	//logging.Panic(chromedp.Run(s.Context, fullScreenshot(90, &buf)))
 	logging.Panic(chromedp.Run(s.Context(), chromedp.CaptureScreenshot(&buf)))
 
 	log.Info().Msgf("took screenshot - writing to: %v", filename)
@@ -31,13 +30,11 @@ func Screenshot(s session.ChromeDPSession, filename string) {
 func FullScreenshot(quality int64, res *[]byte) chromedp.Tasks {
 	return chromedp.Tasks{
 		chromedp.ActionFunc(func(ctx context.Context) error {
-			// get layout metrics
 			_, _, contentSize, _, _, _, err := page.GetLayoutMetrics().Do(ctx)
 			logging.Panic(err)
 
 			width, height := int64(math.Ceil(contentSize.Width)), int64(math.Ceil(contentSize.Height))
 
-			// force viewport emulation
 			err = emulation.SetDeviceMetricsOverride(width, height, 1, false).
 				WithScreenOrientation(&emulation.ScreenOrientation{
 					Type:  emulation.OrientationTypePortraitPrimary,
@@ -46,7 +43,6 @@ func FullScreenshot(quality int64, res *[]byte) chromedp.Tasks {
 				Do(ctx)
 			logging.Panic(err)
 
-			// capture screenshot
 			*res, err = page.CaptureScreenshot().
 				WithQuality(quality).
 				WithClip(&page.Viewport{

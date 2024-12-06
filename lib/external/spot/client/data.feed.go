@@ -9,7 +9,6 @@ type Feed struct {
 	Name        string
 	Description string
 	Status      string
-	// Usage                int
 	Usage                string
 	DaysRange            int
 	DetailedMessageShown bool

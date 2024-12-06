@@ -37,7 +37,6 @@ func (p *Provider) ReadToken(session *gateway.Session) {
 			log.Info().Msgf("unmarshalled token: %s", token)
 			p.PublishStatus(fmt.Sprintf("unmarshalled token: %s", token), true)
 
-			// if successful, stop listening for more messages
 			if session.Run(token) {
 				p.PublishStatus("session is authenticated", true)
 

@@ -10,10 +10,8 @@ import (
 type HeartbeatInstance struct {
 	Interval *time.Duration
 
-	// Function to invoke every interval
 	HeartbeatFunction func() error
 
-	// Long-running function
 	Function func()
 }
 

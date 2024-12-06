@@ -16,7 +16,6 @@ import (
 )
 
 var (
-	// randomWait                    = flag.Bool("w", false, "introduce random waits between actions")
 	detachFromBrowserWhenComplete = flag.Bool("d", true, "detach from browser session when complete")
 	sessionFile                   = flag.String("session-file", "", "file to execute")
 	chromedpsession               session.ChromeDPSession
@@ -29,10 +28,6 @@ func Run(ctx context.Context) {
 
 	chromedpsession = setup(ctx)
 
-	// if !*randomWait {
-	// 	// no need to wait
-	// 	chromedpsession.Waiter = nil
-	// }
 
 	session.Execute(chromedpsession, ParseActions(read()...)...)
 }

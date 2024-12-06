@@ -14,11 +14,8 @@ func (i *Instance) Create(projectKey, summary, description, issueTypeName string
 		Summary:     summary,
 		Description: description,
 
-		// case-sensitive
 		Type: jiral.IssueType{Name: issueTypeName},
 
-		// reporter is auto set to creator
-		//Assignee: &jira.User{Name: "<userid>"},
 	}}
 
 	_, _, err := i.client.Issue.Create(issue)

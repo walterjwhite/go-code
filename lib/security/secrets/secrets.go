@@ -51,7 +51,6 @@ var (
 	SecretsConfigurationInstance *SecretsConfiguration
 )
 
-// initialize the key
 func initialize() {
 	if SecretsConfigurationInstance == nil {
 		SecretsConfigurationInstance = &SecretsConfiguration{}

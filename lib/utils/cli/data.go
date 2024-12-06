@@ -20,14 +20,11 @@ type Command struct {
 
 	Tags []string `yaml:",omitempty"`
 
-	// Command Output
 	Stdout string `yaml:",omitempty"`
 	Stderr string `yaml:",omitempty"`
 
 	Status int
 
-	// use a std filename
-	//ScreenshotFilename string
 	CaptureScreenshots bool
 
 	CompletionDate time.Time

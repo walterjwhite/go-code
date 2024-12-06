@@ -9,11 +9,9 @@ import (
 )
 
 type GoInstaller struct {
-	// root    string
 	options string
 
 	installTimeout time.Duration
-	// bootstrapTimeout time.Duration
 }
 
 func (i *GoInstaller) Install(packageName string) {

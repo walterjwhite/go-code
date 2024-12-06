@@ -12,13 +12,9 @@ import (
 )
 
 const (
-	menuChangeClientButtonXpath = "//*[@id=\"menuChangeClientBtn\"]"
-	useLightVersionXpath        = "//*[@id=\"changeclient-use-light-version\"]"
 
-	useLightVersionPromptXpath = "//*[@id=\"protocolhandler-welcome-useLightVersionLink\"]"
 )
 
-// authenticate and keep the session alive ...
 func (s *Session) Run(token string) bool {
 	log.Info().Msgf("running with: %v", token)
 	validateToken(token)
@@ -48,7 +44,6 @@ func (s *Session) runPostAuthenticationActions() {
 func (s *Session) RunWith(token string, fn func()) {
 	s.Run(token)
 
-	// after authenticated, run fn, wiggle mouse ...
 	fn()
 }
 

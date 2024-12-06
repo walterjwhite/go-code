@@ -21,7 +21,6 @@ func initAgent() ([]byte, error) {
 
 		client := agent.NewClient(conn)
 
-		// this was working before, but is not now?
 		keys, err := client.List()
 		if err != nil {
 			log.Warn().Msg("error listing")
@@ -47,12 +46,4 @@ func (c *Conf) GetEncryptionKey() []byte {
 	return c.key
 }
 
-// func (c *Conf) List() {
-// 	keys, err := c.agentClient.List()
-// 	logging.Panic(err)
 
-// 	for _, key := range keys {
-// 		log.Info().Msgf("Key: %v", key)
-// 		log.Info().Msgf("Key: %v", string(key.Blob))
-// 	}
-// }

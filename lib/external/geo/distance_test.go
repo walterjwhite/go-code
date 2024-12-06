@@ -6,7 +6,6 @@ import (
 	"testing"
 )
 
-// units appear to be kilometers
 func TestDistance(t *testing.T) {
 	p1 := geol.NewPoint(42.25, 120.2)
 	p2 := geol.NewPoint(30.25, 112.2)

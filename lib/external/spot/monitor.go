@@ -12,7 +12,6 @@ import (
 )
 
 const (
-	// 2.5 minutes (if we go less than that, spot will block us and we don't want that)
 	minRefreshInterval = time.Duration(150 * time.Second)
 )
 

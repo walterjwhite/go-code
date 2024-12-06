@@ -6,7 +6,6 @@ import (
 )
 
 func (s *EmailSession) Delete(msg *imap.Message) {
-	//dc := move.NewClient(s.client)
 
 	set := new(imap.SeqSet)
 	set.AddNum(msg.Uid)

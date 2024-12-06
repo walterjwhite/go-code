@@ -16,7 +16,6 @@ var (
 )
 
 func getURLFromFile() {
-	// check if the file exists
 	f, err := homedir.Expand(*devToolsWsFileFlag)
 	logging.Panic(err)
 
@@ -27,7 +26,6 @@ func getURLFromFile() {
 
 		log.Info().Msg("getting URL from file ...")
 
-		// ws url is on line 2
 		dataString := strings.TrimSpace(strings.Split(string(data), "\n")[0])
 		devToolsWsUrlFlag = &dataString
 

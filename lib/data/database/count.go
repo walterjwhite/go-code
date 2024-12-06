@@ -12,13 +12,11 @@ type CountQuery struct {
 func (q *CountQuery) Count() {
 	q.Query.connect()
 
-	// automatically inject parameters
 	rows, err := q.Query.Database.Query(q.Query.QueryString, q.Query.Parameters)
 	logging.Panic(err)
 
 	defer rows.Close()
 
-	// iterate over each row
 	if rows.Next() {
 		var count int
 		err = rows.Scan(&count)

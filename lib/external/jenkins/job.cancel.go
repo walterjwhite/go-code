@@ -14,8 +14,6 @@ func (j *Job) Cancel(ctx context.Context) {
 	logging.Panic(err)
 
 	if running {
-		//success, err := j.GetBuild().Stop()
-		//logging.Panic(err)
 		build, err := j.job.GetLastBuild()
 		logging.Panic(err)
 

@@ -19,7 +19,6 @@ const (
 	dateFormat = "2006-01-02"
 )
 
-// last, specific date, all
 func export(c *spot.Configuration) {
 	var records []*data.Record
 
@@ -31,7 +30,6 @@ func export(c *spot.Configuration) {
 		records = gpx.All(c.Session)
 		action = "all"
 	} else {
-		// parse date
 		date, err := time.Parse(dateFormat, flag.Args()[0])
 		logging.Panic(err)
 

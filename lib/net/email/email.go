@@ -59,5 +59,4 @@ type EmailMessage struct {
 func (e *EmailSenderAccount) Initialize() {
 	e.addCerts()
 
-	//UserTlsConfig = tls.Config{InsecureSkipVerify: e.InsecureSkipVerify, ServerName: e.Server.Host, RootCAs: rootCertPool}
 }

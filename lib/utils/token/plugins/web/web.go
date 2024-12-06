@@ -26,7 +26,6 @@ func NewRandomWebReader() *WebReader {
 }
 
 func (r *WebReader) Get() string {
-	log.Info().Msgf("Please enter token into: http://localhost:%v%v", r.Port, r.Path)
 
 	go r.serve()
 

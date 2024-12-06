@@ -11,7 +11,6 @@ import (
 )
 
 var (
-	endpointUrlFlag = flag.String("spot-url", "https://api.findmespot.com/spot-main-web/consumer/rest-api/2.0/public/feed/%s/message.json", "Spot API Endpoint URL (change for debugging purposes)")
 )
 
 type FeedFetcher interface {

@@ -12,7 +12,6 @@ type FreeBSDPKGInstaller struct {
 	bootstrapTimeout time.Duration
 }
 
-//const NPM_PACKAGES = "npm"
 
 func (i *FreeBSDPKGInstaller) Install(packageNames ...string) {
 	var args []string
@@ -41,8 +40,6 @@ func (i *FreeBSDPKGInstaller) IsInstalled(packageName string) bool {
 func (i *FreeBSDPKGInstaller) Bootstrap() {
 	if len(i.root) > 0 {
 		_ = checkStatus(i.bootstrapTimeout, "mount", "/var/cache/pkg", i.root+"/var/cache/pkg")
-		// these can be replaced with go libraries
-		//i.Install("git", "gsed", "gnugrep")
 	}
 }
 

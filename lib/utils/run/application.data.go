@@ -20,10 +20,7 @@ type Application struct {
 	command *exec.Cmd
 	session *Session
 
-	//Files []string
 
-	// each invocation will run out of a temporary directory
-	//workDirectory
 }
 
 type Session struct {

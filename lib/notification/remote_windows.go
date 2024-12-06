@@ -14,7 +14,6 @@ type remoteNotification struct {
 	Username string
 	Server   string
 
-	// acknowledge message, wait for seconds, 0 (do not wait)
 	TimeWait uint
 
 	Context context.Context
@@ -49,6 +48,5 @@ func getUsername() string {
 	currentUser, err := user.Current()
 	logging.Panic(err)
 
-	// remove domain
 	return strings.Split(currentUser.Username, "\\")[1]
 }

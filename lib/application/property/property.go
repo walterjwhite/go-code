@@ -5,14 +5,10 @@ import (
 	"path/filepath"
 
 	"github.com/mitchellh/go-homedir"
-	// "github.com/rs/zerolog/log"
 	"github.com/walterjwhite/go-code/lib/application/logging"
 	"github.com/walterjwhite/go-code/lib/utils/typename"
 )
 
-// type ConfigurationReader interface {
-// 	Load(config interface{})
-// }
 
 var (
 	pathPrefixFlag = flag.String("config-prefix-path", "", "property prefix, ie. if user specifies web/gmail.com/username with prefix of testing, resulting property would be testing/web/gmail.com/username")
@@ -27,7 +23,6 @@ func Load(config interface{}) {
 	LoadCli(config)
 	LoadSecrets(config)
 
-	//log.Warn().Msgf("configuration: %v", config)
 }
 
 func GetConfigurationDirectory(qualifiers ...string) string {

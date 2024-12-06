@@ -23,7 +23,6 @@ func main() {
 }
 
 func onFile(filePath string) {
-	// attempt to rate-limit posts
 	craigslist.Delay()
 
 	p := &craigslist.CraigslistPost{}

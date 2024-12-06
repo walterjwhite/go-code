@@ -3,7 +3,6 @@ package email
 import (
 	"github.com/emersion/go-imap"
 	"github.com/emersion/go-imap-move"
-	//"github.com/rs/zerolog/log"
 	"github.com/walterjwhite/go-code/lib/application/logging"
 )
 

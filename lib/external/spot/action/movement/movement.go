@@ -1,9 +1,5 @@
 package movement
 
-// keeps track of the last position moved
-// if the current position is within the tolerance,
-// then the position is not considered unique and is discarded
-// useful for determining how long the user has been idle
 import (
 	ggeo "github.com/kellydunn/golang-geo"
 	"github.com/walterjwhite/go-code/lib/external/geo"

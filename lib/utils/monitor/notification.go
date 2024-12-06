@@ -9,7 +9,6 @@ import (
 type NotificationEvent struct {
 	Session Session
 	Action  Action
-	//Notification notify.Notification
 	Details string
 }
 
@@ -34,8 +33,6 @@ func (session *Session) watchChannel() {
 func (session *Session) pushAlerts(notificationEvent *NotificationEvent) {
 	session.scheduleNoActivityAlert()
 
-	//notification := notificationEvent.build()
-	// notificationEvent should be notification (as it will be sent to Windows10 (toast), dbus, etc.
 	session.push(notificationEvent)
 }
 
@@ -55,7 +52,6 @@ func (session *Session) push(notificationEvent *NotificationEvent) {
 
 func (session *Session) NoActivityAlert() error {
 	details := fmt.Sprintf(session.NoActivity.Description, session.NoActivity.Interval)
-	// generate notification / push to channel
 
 	notificationEvent := &NotificationEvent{Session: *session, Details: details}
 

@@ -11,7 +11,6 @@ import (
 )
 
 type PriceChecker interface {
-	// select options ...
 
 	IsInStock() bool
 	GetPrice() string
@@ -25,7 +24,6 @@ type Session struct {
 
 func New(ctx context.Context, url *string) *Session {
 	s := remote.New(ctx)
-	// s.Waiter = nil
 
 	return &Session{Session: s, Url: url}
 }

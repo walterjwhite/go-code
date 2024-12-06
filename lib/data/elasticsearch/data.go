@@ -20,7 +20,6 @@ type NodeConfiguration struct {
 	Indexes     map[string]bool
 }
 
-// unnecessary, this is the default
 func NewDefaultClient() *NodeConfiguration {
 	nodeConfiguration := NodeConfiguration{}
 	nodeConfiguration.configure()
@@ -29,7 +28,6 @@ func NewDefaultClient() *NodeConfiguration {
 }
 
 func (c *NodeConfiguration) configure() {
-	// Create a client and connect to http://127.0.0.1:9200 (default)
 	client, err := elastic.NewClient()
 	logging.Panic(err)
 

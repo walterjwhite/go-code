@@ -16,15 +16,12 @@ import (
 )
 
 const (
-	menuButtonXpath   = "//*[@id=\"userMenuBtn\"]/div"
-	logoffButtonXpath = "//*[@id=\"menuLogOffBtn\"]"
 )
 
 func (s *Session) InitializeChromeDP(ctx context.Context) {
 	s.session = remote.New(ctx)
 }
 
-// authenticate and nothing more
 func (s *Session) Authenticate(token string) {
 	token = s.trim(token)
 	validateToken(token)
@@ -45,7 +42,6 @@ func (s *Session) Authenticate(token string) {
 		chromedp.SendKeys(s.Endpoint.TokenXPath, strings.TrimSpace(s.getToken(token))),
 	)
 
-	// wait for page to load
 	chromedp.RunResponse(s.session.Context(), chromedp.Click(s.Endpoint.LoginButtonXPath))
 }
 
@@ -61,13 +57,11 @@ func (s *Session) Logout() {
 }
 
 func (s *Session) IsAuthenticated() bool {
-	// user has citrix workspace installed
 	if chromedpexecutor.Exists(s.session, time.Duration(time.Second*5), "userMenuBtn", chromedp.ByID) {
 		log.Warn().Msg("user is authenticated - userMenuBtn is present")
 		return true
 	}
 
-	// user does not have citrix workspace installed
 	citrixLightInstallButtonExists := chromedpexecutor.Exists(s.session, time.Duration(time.Second*5), "protocolhandler-welcome-installButton", chromedp.ByID)
 	log.Warn().Msgf("user is authenticated - light install button: %v", citrixLightInstallButtonExists)
 

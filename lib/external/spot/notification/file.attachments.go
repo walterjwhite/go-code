@@ -30,7 +30,6 @@ func (c *Notification) getAttachmentFilename(filename string) string {
 		return filename
 	}
 
-	// not absolute, try relative
 	relativeFilename := filepath.Join(c.Session.SessionPath, ".notifications", filename)
 	_, err = os.Stat(relativeFilename)
 	if !os.IsNotExist(err) {

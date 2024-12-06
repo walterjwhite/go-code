@@ -22,7 +22,6 @@ func launchRemoteBrowser(ctx context.Context) {
 		browserRemoteCmd = exec.CommandContext(ctx, *launchRemoteBrowserCmdFlag)
 		logging.Panic(browserRemoteCmd.Start())
 
-		// ensure browser has had enough time to initialize
 		time.Sleep(5 * time.Second)
 	}
 }

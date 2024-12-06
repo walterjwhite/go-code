@@ -6,15 +6,10 @@ import (
 	"github.com/coredns/caddy"
 	"github.com/coredns/coredns/core/dnsserver"
 	"github.com/coredns/coredns/plugin"
-	// "github.com/coredns/coredns/request"
-	// "github.com/coredns/coredns/plugin/pkg/response"
 	"github.com/coredns/coredns/plugin/pkg/dnstest"
 
 	"github.com/miekg/dns"
-	// "net"
-	// "strconv"
 	"fmt"
-	// "time"
 )
 
 const pluginName = "pf"
@@ -27,7 +22,6 @@ func init() { plugin.Register(pluginName, setup) }
 
 func setup(c *caddy.Controller) error {
 	c.Next()
-	// no args after pf
 	if c.NextArg() {
 		return plugin.Error(pluginName, c.ArgErr())
 	}
@@ -47,8 +41,6 @@ func (p Pf) ServeDNS(ctx context.Context, w dns.ResponseWriter, r *dns.Msg) (int
 	rrw := dnstest.NewRecorder(w)
 	rc, err := plugin.NextOrFailure(p.Name(), p.Next, ctx, rrw, r)
 
-	// tpe, _ := response.Typify(rrw.Msg, time.Now().UTC())
-	// class := response.Classify(tpe)
 
 	fmt.Printf("pf - ServeDNS - %v\n", rrw.Msg)
 	ip := "8.8.8.8"

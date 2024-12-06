@@ -9,7 +9,6 @@ import (
 )
 
 func (c *Configuration) fetch() {
-	// ensure we don't incorrectly set a refresh interval
 	if c.RefreshInterval < minRefreshInterval {
 		c.RefreshInterval = minRefreshInterval
 	}

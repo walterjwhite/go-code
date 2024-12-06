@@ -15,10 +15,7 @@ func SetValue(ctx context.Context, visibleTimeout time.Duration, locateDelay del
 		return err
 	}
 
-	// log.Debug().Msgf("sending: %v", value)
-	// if len(value) > 32 {
 
-	// }
 
 	return chromedp.Run(ctx, chromedp.Clear(selector), chromedp.SetValue(selector, value, opts...))
 }

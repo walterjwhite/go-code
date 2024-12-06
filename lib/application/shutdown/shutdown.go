@@ -14,7 +14,6 @@ type ShutdownHandler interface {
 
 var (
 	shutdownHooksGroup = sync.WaitGroup{}
-	//registerContextCleanupOnce sync.Once
 )
 
 func Add(ctx context.Context, shutdownHandler ShutdownHandler) {
@@ -22,13 +21,10 @@ func Add(ctx context.Context, shutdownHandler ShutdownHandler) {
 
 	osSignalChannel := make(chan os.Signal, 1)
 
-	// all signals
 	signal.Notify(osSignalChannel, os.Interrupt)
 
 	go handleShutdown(ctx, osSignalChannel, shutdownHandler)
 
-	// was this necessary?
-	//go registerContextCleanupOnce.Do(cleanup)
 }
 
 func handleShutdown(ctx context.Context, osSignalChannel chan os.Signal, shutdownHandler ShutdownHandler) {
@@ -45,6 +41,5 @@ func handleShutdown(ctx context.Context, osSignalChannel chan os.Signal, shutdow
 /*
 func cleanup() {
 	shutdownHooksGroup.Wait()
-	//application.Cancel()
 }
 */

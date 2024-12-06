@@ -17,10 +17,7 @@ func (c *MovementConfiguration) schedule(duration time.Duration) {
 		return
 	}
 
-	// sends notification after movement window starts and duration has elapsed (if after is NOT canceled by a message update first)
-	//u := time.Until(start.Add(c.MovementDurationTimeout))
 
-	// log.Info().Msgf("Until: %v", u)
 	c.mutex.Lock()
 	defer c.mutex.Unlock()
 

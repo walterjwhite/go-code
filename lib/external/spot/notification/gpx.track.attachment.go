@@ -24,14 +24,11 @@ func (c *Notification) exportLatestTrack() []byte {
 
 	defer os.Remove(tmpFile.Name())
 
-	// export the latest data
 	records := gpx.Latest(c.Session)
-	// latestRecord := records[len(records)-1]
 
 	exportFilename := gpx.Export(records, tmpFile.Name())
 	defer os.Remove(exportFilename)
 
-	// read data to []byte
 	data, err := os.ReadFile(exportFilename)
 	logging.Panic(err)
 

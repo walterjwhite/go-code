@@ -4,7 +4,6 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-// *MUST* be injected at compile time
 var (
 	ApplicationName, ApplicationVersion, SCMId, BuildDate, GoVersion, OSArchitecture string
 )

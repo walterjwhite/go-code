@@ -25,10 +25,8 @@ type MovementConfiguration struct {
 
 	MovementDurationTimeout time.Duration
 
-	// once user presses okay, how long should we disable monitoring the user's movement?
 	SuspendDurationTimeout time.Duration
 
-	//monitorPeriodic *periodic.PeriodicInstance
 	after *after.AfterDelay
 	count int
 

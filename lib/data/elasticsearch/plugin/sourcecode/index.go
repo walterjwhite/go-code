@@ -23,11 +23,7 @@ type IndexSession struct {
 	waitChannel chan bool
 }
 
-// 1. delete old contents under path, tags first
-// 2. create index with mapping
 func (i *IndexSession) Prune() {
-	// find all matching documents
-	// delete
 }
 
 func (i *IndexSession) IndexRecursive() {
@@ -40,7 +36,6 @@ func (i *IndexSession) IndexRecursive() {
 	foreachfile.ExecuteCallback(i.Path, i.Index, &foreachfile.HiddenFileExcluder{})
 
 	i.waitGroup.Wait()
-	//<- i.waitChannel
 }
 
 func (i *IndexSession) Index(filePath string) {

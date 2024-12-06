@@ -1,7 +1,6 @@
 package day
 
 import (
-	//"fmt"
 
 	"github.com/walterjwhite/go-code/lib/time/timeformatter/decade"
 
@@ -16,7 +15,6 @@ var (
 	Default *Configuration
 )
 
-// decade/year/month/day
 func init() {
 	Default = &Configuration{Template: "2006/01.January/02"}
 }

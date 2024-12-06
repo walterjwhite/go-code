@@ -19,7 +19,6 @@ func (a *RecordAppenderConfiguration) Write(r *data.Record) {
 
 	defer f.Close()
 
-	// serialize to json
 	data, err := json.Marshal(r)
 	logging.Panic(err)
 

@@ -22,7 +22,6 @@ type MasterBatch struct {
 	bulkProcessor     *elastic.BulkProcessor
 }
 
-// problem is that we don't have the granularity to report this now
 /*
 type RecordOperation struct {
 	Operation Operation
@@ -46,8 +45,6 @@ func NewBatch(c *elasticsearch.NodeConfiguration, actionSize int, dataSize int, 
 		Name(getProcessorName(c)).
 		Workers(workers).
 		BulkActions(actionSize).
-		// default is 5 MB
-		//BulkSize(2 << 20).
 		FlushInterval(interval).
 		Do(context.Background())
 

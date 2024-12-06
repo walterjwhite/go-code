@@ -10,7 +10,6 @@ import (
 )
 
 const (
-	urlTemplate = "http://wttr.in/%s,%s?0&Q&T"
 )
 
 func Get(r *data.Record) (string, string) {
