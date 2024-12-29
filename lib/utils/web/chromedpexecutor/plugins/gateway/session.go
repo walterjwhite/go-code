@@ -12,10 +12,7 @@ import (
 )
 
 const (
-	menuChangeClientButtonXpath = "//*[@id=\"menuChangeClientBtn\"]"
-	useLightVersionXpath        = "//*[@id=\"changeclient-use-light-version\"]"
-
-	useLightVersionPromptXpath = "//*[@id=\"protocolhandler-welcome-useLightVersionLink\"]"
+	useLightVersionPromptId = "protocolhandler-welcome-useLightVersionLink"
 )
 
 func (s *Session) Run(token string) bool {
@@ -57,10 +54,10 @@ func (s *Session) useLightVersion() {
 		return
 	}
 
-	if chromedpexecutor.Exists(s.session, time.Duration(time.Second*5), "protocolhandler-welcome-useLightVersionLink", chromedp.ByID) {
+	if chromedpexecutor.Exists(s.session, time.Duration(time.Second*5), useLightVersionPromptId, chromedp.ByID) {
 		log.Info().Msg("switching to light version")
 		session.Execute(s.session,
-			chromedp.Click("protocolhandler-welcome-useLightVersionLink", chromedp.ByID),
+			chromedp.Click(useLightVersionPromptId, chromedp.ByID),
 		)
 	}
 }

@@ -48,7 +48,8 @@ func read(message string, hide bool) *string {
 	}
 
 	var value string
-	fmt.Scanln(&value)
+	_, err := fmt.Scanln(&value)
+	logging.Panic(err)
 
 	return &value
 }

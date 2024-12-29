@@ -9,6 +9,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/walterjwhite/go-code/lib/application/logging"
 	"github.com/walterjwhite/go-code/lib/time/delay"
 	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor"
 	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/session"
@@ -44,7 +45,8 @@ func (s *Session) Authenticate(token string) {
 		chromedp.SendKeys(s.Endpoint.TokenXPath, strings.TrimSpace(s.getToken(token))),
 	)
 
-	chromedp.RunResponse(s.session.Context(), chromedp.Click(s.Endpoint.LoginButtonXPath))
+	_, err := chromedp.RunResponse(s.session.Context(), chromedp.Click(s.Endpoint.LoginButtonXPath))
+	logging.Panic(err)
 }
 
 func (s *Session) getToken(token string) string {
