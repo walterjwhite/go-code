@@ -23,7 +23,7 @@ func (q *Query) connect() {
 func (q *Query) Select(dest interface{}) {
 	q.connect()
 
-	defer q.Database.DB.Close()
+	defer q.cleanup()
 
 	if q.Parameters != nil {
 		logging.Panic(q.Database.Select(dest, q.QueryString, q.Parameters))
@@ -50,4 +50,8 @@ func (q *Query) Queryx() (*sqlx.Rows, error) {
 	}
 
 	return q.Database.Queryx(q.QueryString)
+}
+
+func (q *Query) cleanup() {
+	logging.Panic(q.Database.Close())
 }

@@ -17,7 +17,7 @@ func Process(msg *imap.Message) *EmailMessage {
 	var section imap.BodySectionName
 	r := msg.GetBody(&section)
 	if r == nil {
-		logging.Panic(errors.New("No message body returned"))
+		logging.Panic(errors.New("no message body returned"))
 	}
 
 	mr, err := mail.CreateReader(r)

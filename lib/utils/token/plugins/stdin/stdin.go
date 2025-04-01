@@ -13,7 +13,7 @@ type StdInReader struct {
 func (r *StdInReader) Get() string {
 	reader := bufio.NewReader(os.Stdin)
 
-	fmt.Print(r.PromptMessage)
+	fmt.Fprint(os.Stderr, r.PromptMessage)
 
 	text, _ := reader.ReadString('\n')
 	return text

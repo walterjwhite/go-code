@@ -23,7 +23,7 @@ func (i *GoInstaller) Uninstall(packageName string) {
 }
 
 func (i *GoInstaller) IsInstalled(packageName string) bool {
-	logging.Panic(fmt.Errorf("Not Implemented"))
+	logging.Panic(fmt.Errorf("not implemented"))
 
 	return false
 }
@@ -35,9 +35,9 @@ func (i *GoInstaller) Bootstrap() {
 }
 
 func (i *GoInstaller) Cleanup() {
-	logging.Panic(fmt.Errorf("Not Implemented"))
+	logging.Panic(fmt.Errorf("not implemented"))
 }
 
 func (i *GoInstaller) Update() {
-	logging.Panic(fmt.Errorf("Not Implemented"))
+	logging.Panic(fmt.Errorf("not implemented"))
 }

@@ -61,7 +61,8 @@ func (r *WebReader) handleValid(writer http.ResponseWriter, request *http.Reques
 	}
 
 	log.Debug().Msgf("No data received: %v", request.URL.Path)
-	fmt.Fprintf(writer, "No data received: %v", request.URL.Path)
+	_, err := fmt.Fprintf(writer, "No data received: %v", request.URL.Path)
+	logging.Panic(err)
 }
 
 func (r *WebReader) handleData(writer http.ResponseWriter, request *http.Request, j int, k int) {
@@ -72,5 +73,6 @@ func (r *WebReader) handleData(writer http.ResponseWriter, request *http.Request
 
 func (r *WebReader) handleUnknown(writer http.ResponseWriter, request *http.Request) {
 	log.Debug().Msgf("Ignored %v", request.URL.Path)
-	fmt.Fprintf(writer, "Ignored %v\n", request.URL.Path)
+	_, err := fmt.Fprintf(writer, "Ignored %v\n", request.URL.Path)
+	logging.Panic(err)
 }

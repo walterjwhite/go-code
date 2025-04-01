@@ -35,7 +35,7 @@ func decode(p12 []byte, password string) (*x509.Certificate, *rsa.PrivateKey, er
 
 	priv, ok := privateKey.(*rsa.PrivateKey)
 	if !ok {
-		return nil, nil, errors.New("Expected RSA Private Key Type")
+		return nil, nil, errors.New("expected RSA Private Key Type")
 	}
 
 	return cert, priv, nil
@@ -63,5 +63,5 @@ func verify(cert *x509.Certificate) error {
 }
 
 var (
-	ErrExpired = errors.New("Certificate has expired or is not yet valid.")
+	ErrExpired = errors.New("certificate has expired or is not yet valid")
 )

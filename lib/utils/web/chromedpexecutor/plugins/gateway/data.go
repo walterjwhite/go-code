@@ -6,19 +6,17 @@ import (
 	"time"
 )
 
-type TokenProvider interface {
-	Get() string
-}
-
 type Session struct {
 	Credentials *Credentials
 	Endpoint    *Endpoint
 
-	Tickle *Tickle
+	Tickle        *Tickle
+	Headless      bool
 
 	UseLightVersion bool
 
-	Delay *time.Duration
+	Delay   *time.Duration
+	Instances []Instance
 
 	PostAuthenticationDelay   *time.Duration
 	PostAuthenticationActions []string
@@ -52,4 +50,9 @@ type Endpoint struct {
 type Tickle struct {
 	TickleInterval   *time.Duration
 	periodicInstance *periodic.PeriodicInstance
+}
+
+type Instance struct {
+	Index int
+	WiggleMouse bool
 }

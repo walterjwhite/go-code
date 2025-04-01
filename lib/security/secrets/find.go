@@ -8,7 +8,7 @@ import (
 
 func Find(callback func(filePath string), patterns ...string) {
 	if len(patterns) == 0 {
-		logging.Panic(errors.New("At least 1 pattern is required."))
+		logging.Panic(errors.New("at least 1 pattern is required"))
 	}
 
 	initialize()

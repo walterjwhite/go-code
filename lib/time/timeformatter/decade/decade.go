@@ -27,11 +27,12 @@ func (c *Configuration) Format(t time.Time) string {
 	allButLast := year[:len(year)-1]
 
 	var start, end int
-	if last == "1" {
+	switch last {
+	case "1":
 		start, end = atStart(y)
-	} else if last == "0" {
+	case "0":
 		start, end = atEnd(y)
-	} else {
+	default:
 		nstart, err := strconv.Atoi(allButLast + "1")
 		logging.Panic(err)
 

@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/rs/zerolog/log"
+	"github.com/walterjwhite/go-code/lib/application/logging"
 	"golang.org/x/crypto/ssh/agent"
 )
 
@@ -17,7 +18,7 @@ func initAgent() ([]byte, error) {
 	socket := os.Getenv("SSH_AUTH_SOCK")
 	conn, err := net.Dial("unix", socket)
 	if err == nil {
-		defer conn.Close()
+		defer logging.Panic(conn.Close())
 
 		client := agent.NewClient(conn)
 
@@ -28,7 +29,7 @@ func initAgent() ([]byte, error) {
 		}
 
 		if len(keys) != 1 {
-			return nil, fmt.Errorf("Expecting 1 private key to be available: %v", len(keys))
+			return nil, fmt.Errorf("expecting 1 private key to be available: %v", len(keys))
 		}
 
 		return keys[0].Blob, nil

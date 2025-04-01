@@ -18,7 +18,10 @@ type ChromeDPSession interface {
 
 
 func Execute(s ChromeDPSession, actions ...chromedp.Action) {
-	logging.Panic(chromedp.Run(s.Context(), actions...))
+	for _, action := range actions {
+		log.Info().Msgf("running %v", action)
+		logging.Panic(chromedp.Run(s.Context(), action))
+	}
 }
 
 func ExecuteWithDelay(s ChromeDPSession, delay delay.Delayer, actions ...chromedp.Action) {

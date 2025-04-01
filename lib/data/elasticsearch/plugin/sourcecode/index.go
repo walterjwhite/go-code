@@ -61,7 +61,7 @@ func (i *IndexSession) indexFile(filePath string) {
 	file, err := os.Open(filePath)
 	logging.Panic(err)
 
-	defer file.Close()
+	defer close(file)
 
 	number := 0
 
@@ -80,6 +80,10 @@ func (i *IndexSession) indexFile(filePath string) {
 
 	waitGroup.Wait()
 	<-i.waitChannel
+}
+
+func close(file *os.File) {
+	logging.Panic(file.Close())
 }
 
 func (i *IndexSession) doIndex(waitGroup *sync.WaitGroup, l *Line) {

@@ -20,7 +20,7 @@ func New() *Key {
 		return &Key{encryptionKey: keyBytes}
 	}
 
-	logging.Panic(fmt.Errorf("No encryption key provided"))
+	logging.Panic(fmt.Errorf("no encryption key provided"))
 	return nil
 }
 

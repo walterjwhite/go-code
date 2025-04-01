@@ -1,6 +1,7 @@
 package database
 
 import (
+	"database/sql"
 	"github.com/walterjwhite/go-code/lib/application/logging"
 )
 
@@ -13,9 +14,9 @@ func (q *CountQuery) Count() {
 	q.Query.connect()
 
 	rows, err := q.Query.Database.Query(q.Query.QueryString, q.Query.Parameters)
-	logging.Panic(err)
+	defer q.cleanup(rows)
 
-	defer rows.Close()
+	logging.Panic(err)
 
 	if rows.Next() {
 		var count int
@@ -24,4 +25,12 @@ func (q *CountQuery) Count() {
 
 		q.RecordCount = count
 	}
+}
+
+func (q *CountQuery) cleanup(rows *sql.Rows) {
+	if rows == nil {
+		return
+	}
+
+	logging.Panic(rows.Close())
 }

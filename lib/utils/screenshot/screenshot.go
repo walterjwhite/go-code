@@ -49,7 +49,7 @@ func (i *Instance) Take() {
 func (i *Instance) write() {
 	file, err := os.OpenFile(i.filename, os.O_WRONLY|os.O_CREATE, 0666)
 	logging.Panic(err)
-	defer file.Close()
+	defer logging.Panic(file.Close())
 
 	logging.Panic(jpeg.Encode(file, i.image, &jpeg.Options{Quality: i.quality}))
 

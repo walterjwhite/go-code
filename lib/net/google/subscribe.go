@@ -1,23 +1,62 @@
 package google
 
 import (
-	"context"
-
 	"cloud.google.com/go/pubsub"
-
+	"context"
+	"encoding/json"
 	"github.com/rs/zerolog/log"
 	"github.com/walterjwhite/go-code/lib/application/logging"
+	"github.com/walterjwhite/go-code/lib/io/compression/zstd"
 )
 
-func Subscribe(credentialsDirectory string, projectId string, topicName string, subscriptionName string) {
-	ctx, client, _ := Initialize(credentialsDirectory, projectId, topicName)
-	defer client.Close()
+func (s *Session) Subscribe(topicName string, subscriptionName string, ms MessageSubscriber) {
+	_ = s.getOrCreateTopic(topicName)
 
-	sub := client.Subscription(subscriptionName)
-	err := sub.Receive(ctx, func(ctx context.Context, m *pubsub.Message) {
-		log.Info().Msgf("received message: %v", m.Data)
-		log.Info().Msgf("received message (string value): %s", m.Data)
+	sub := s.client.Subscription(subscriptionName)
+
+	err := sub.Receive(s.Ctx, func(ctx context.Context, m *pubsub.Message) {
+		decrypted := s.decrypt(m.Data)
+		decompressed := s.decompress(decrypted)
+
+		log.Info().Msgf("received message (decompressed): %s", decompressed)
+		var deserialized = ms.New()
+		err := json.Unmarshal(decompressed, &deserialized)
+		if err != nil {
+			ms.MessageParseError(err)
+			logging.Panic(err)
+		}
+
+		log.Info().Msgf("received message: %s", deserialized)
+		ms.MessageDeserialized()
+
 		m.Ack() // Acknowledge that we've consumed the message.
 	})
+
 	logging.Panic(err)
+}
+
+func (s *Session) decrypt(data []byte) []byte {
+	if s.AesConf == nil {
+		return data
+	}
+
+	return s.AesConf.Decrypt(data)
+}
+
+func (s *Session) decompress(data []byte) []byte {
+	if !s.EnableCompression {
+		return data
+	}
+
+	decompressed, err := zstd.DecompressBuffer(data)
+	logging.Panic(err)
+
+	return decompressed
+}
+
+type MessageSubscriber interface {
+	New() any
+
+	MessageDeserialized()
+	MessageParseError(err error)
 }

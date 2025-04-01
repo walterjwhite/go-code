@@ -52,7 +52,7 @@ func getFilenamePath(filename string) string {
 
 func getFilename(label string, extension string, details ...string) string {
 	if len(SessionDirectory) == 0 {
-		logging.Panic(errors.New("Session Directory was not initialized"))
+		logging.Panic(errors.New("session Directory was not initialized"))
 	}
 
 	filenameWithPrefix := getFilenameWithPrefix(extension, details...)

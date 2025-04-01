@@ -23,7 +23,7 @@ var (
 
 func Run(ctx context.Context) {
 	if len(*sessionFile) == 0 {
-		logging.Panic(errors.New("Session File is required"))
+		logging.Panic(errors.New("session File is required"))
 	}
 
 	chromedpsession = setup(ctx)
@@ -38,7 +38,7 @@ func read() []string {
 	file, err := os.Open(*sessionFile)
 	logging.Panic(err)
 
-	defer file.Close()
+	defer logging.Panic(file.Close())
 
 	var lines []string
 	scanner := bufio.NewScanner(file)

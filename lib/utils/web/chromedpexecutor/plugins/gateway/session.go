@@ -19,15 +19,24 @@ func (s *Session) Run(token string) bool {
 	log.Info().Msgf("running with: %v", token)
 	validateToken(token)
 
+
 	s.Authenticate(token)
+	if log.Debug().Enabled() {
+		chromedpexecutor.FullScreenshot(s.session.Context(), "/tmp/0.gateway-authenticate.png")
+	}
 
 	if !s.IsAuthenticated() {
 		return false
 	}
 
+	if log.Debug().Enabled() {
+		chromedpexecutor.FullScreenshot(s.session.Context(), "/tmp/1.gateway-authenticated.png")
+	}
+
 	s.useLightVersion()
 	s.runPostAuthenticationActions()
 
+	log.Info().Msg("returning from run")
 	return true
 }
 
@@ -39,12 +48,6 @@ func (s *Session) runPostAuthenticationActions() {
 		log.Info().Msgf("running post authentication actions: %v", s.PostAuthenticationActions)
 		session.Execute(s.session, run.ParseActions(s.PostAuthenticationActions...)...)
 	}
-}
-
-func (s *Session) RunWith(token string, fn func()) {
-	s.Run(token)
-
-	fn()
 }
 
 func (s *Session) useLightVersion() {

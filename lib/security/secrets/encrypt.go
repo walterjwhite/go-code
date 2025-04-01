@@ -57,7 +57,7 @@ func putLastUpdated(secretPath string) {
 	f, err := os.Create(secretLastUpdatedPath)
 	logging.Panic(err)
 
-	defer f.Close()
+	defer logging.Panic(f.Close())
 
 	lastUpdated := getDateTimeLastUpdated()
 	_, err = f.Write(lastUpdated)

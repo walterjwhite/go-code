@@ -22,7 +22,7 @@ var (
 func configureLogging() {
 	zerolog.TimeFieldFormat = logDateTimeFormat
 
-	var f io.Writer = getWriter()
+	var f = getWriter()
 	log.Logger = zerolog.New(zerolog.SyncWriter(f)).With().Timestamp().Logger()
 
 	setLogLevel()

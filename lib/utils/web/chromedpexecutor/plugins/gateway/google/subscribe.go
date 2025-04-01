@@ -1,52 +1,33 @@
 package google
 
 import (
-	"cloud.google.com/go/pubsub"
 	"context"
-	"encoding/json"
 	"fmt"
-	"github.com/rs/zerolog/log"
-	"github.com/walterjwhite/go-code/lib/application/logging"
-
-	google_api "github.com/walterjwhite/go-code/lib/net/google"
-	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/plugins/gateway"
 )
 
-func (p *Provider) ReadToken(session *gateway.Session) {
-	ctx, client, _ := google_api.Initialize(p.CredentialsFile, p.ProjectId, p.TokenTopicName)
-	defer client.Close()
+func (p *Provider) ReadToken(ctx context.Context) *string {
+	p.session.Subscribe(p.TokenTopicName, p.TokenSubscriptionName, p)
+	return &p.token
+}
 
-	sctx, cancel := context.WithCancel(ctx)
-	defer cancel()
+func (p *Provider) New() any {
+	return &p.token
+}
 
-	sub := client.Subscription(p.TokenSubscriptionName)
+func (p *Provider) MessageDeserialized() {
+	p.publishStatus(fmt.Sprintf("unmarshalled token: %s", p.token), true)
 
-	log.Info().Msgf("subscribed to: %v", p.TokenSubscriptionName)
-	err := sub.Receive(sctx, func(ctx context.Context, m *pubsub.Message) {
-		m.Ack()
+	p.session.Cancel()
+}
 
-		log.Info().Msgf("received message: %v | %s", m.Data, m.Data)
-		p.PublishStatus(fmt.Sprintf("received message: %s", m.Data), true)
+func (p *Provider) MessageParseError(err error) {
+	p.publishStatus(fmt.Sprintf("error unmarshalling message: %s", err), false)
+}
 
-		var token string
-		err := json.Unmarshal(m.Data, &token)
-		if err != nil {
-			log.Info().Msgf("Error unmarshalling message: %v", err)
-			p.PublishStatus(fmt.Sprintf("error unmarshalling message: %s", m.Data), false)
-		} else {
-			log.Info().Msgf("unmarshalled token: %s", token)
-			p.PublishStatus(fmt.Sprintf("unmarshalled token: %s", token), true)
+func (p *Provider) OnSuccess(ctx context.Context) {
+	p.publishStatus("session is authenticated", true)
+}
 
-			if session.Run(token) {
-				p.PublishStatus("session is authenticated", true)
-
-				cancel()
-				return
-			}
-
-			p.PublishStatus("failed to authenticate", false)
-		}
-	})
-
-	logging.Panic(err)
+func (p *Provider) OnError(ctx context.Context, err error) {
+	p.publishStatus("failed to authenticated", false)
 }

@@ -45,16 +45,16 @@ func (i *NPMInstaller) Bootstrap() {
 	i.isBootstrapped = IsCommandAvailable("npm")
 
 	if !i.isBootstrapped {
-		logging.Panic(fmt.Errorf("Error bootstrapping NPM"))
+		logging.Panic(fmt.Errorf("error bootstrapping NPM"))
 	}
 }
 
 func (i *NPMInstaller) Cleanup() {
-	logging.Panic(fmt.Errorf("Not Implemented"))
+	logging.Panic(fmt.Errorf("not implemented"))
 }
 
 func (i *NPMInstaller) Update() {
-	logging.Panic(fmt.Errorf("Not Implemented"))
+	logging.Panic(fmt.Errorf("not implemented"))
 }
 
 func init() {

@@ -1,14 +1,17 @@
 package gateway
 
 import (
-	"context"
 	"github.com/chromedp/chromedp"
 	"github.com/rs/zerolog/log"
 	"github.com/walterjwhite/go-code/lib/time/periodic"
 	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/session"
+	"sync"
 )
 
-func (s *Session) KeepAlive(ctx context.Context) {
+func (s *Session) KeepAlive(waitGroup *sync.WaitGroup) {
+	waitGroup.Add(1)
+	defer waitGroup.Done()
+
 	log.Debug().Msg("tickle")
 
 	if s.Tickle.periodicInstance != nil {
@@ -19,7 +22,7 @@ func (s *Session) KeepAlive(ctx context.Context) {
 	}
 
 	if s.Tickle != nil && s.Tickle.TickleInterval.Seconds() > 0 {
-		s.Tickle.periodicInstance = periodic.Periodic(ctx, s.Tickle.TickleInterval, false, s.doKeepAlive)
+		s.Tickle.periodicInstance = periodic.Periodic(s.session.Context(), s.Tickle.TickleInterval, false, s.doKeepAlive)
 		log.Debug().Msgf("tickle instance: %v", s.Tickle.periodicInstance)
 	} else {
 		log.Debug().Msgf("not tickling: %v (seconds)", s.Tickle.TickleInterval.Seconds())

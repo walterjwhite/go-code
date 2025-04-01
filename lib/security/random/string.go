@@ -17,11 +17,11 @@ var (
 
 func validateInput(length int, charset string) {
 	if length <= 0 {
-		logging.Panic(errors.New("Please enter a non-zero length"))
+		logging.Panic(errors.New("please enter a non-zero length"))
 	}
 
 	if len(charset) <= 0 {
-		logging.Panic(errors.New("Please enter a non-empty charset"))
+		logging.Panic(errors.New("please enter a non-empty charset"))
 	}
 }
 

@@ -37,6 +37,12 @@ func ConfigureWithProperties(configurations ...interface{}) {
 	doConfigure()
 }
 
+func Load(configurations ...interface{}) {
+	for _, config := range configurations {
+		property.Load(config)
+	}
+}
+
 func doConfigure() {
 	configureLogging()
 

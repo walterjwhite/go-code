@@ -80,7 +80,7 @@ func getEncryption() encryption.Encryption {
 	switch getSecretProvider(*secretProviderFlag) {
 	case File:
 		if len(*secretFileFlag) == 0 {
-			logging.Panic(fmt.Errorf("Expecting secret file to be set"))
+			logging.Panic(fmt.Errorf("expecting secret file to be set"))
 		}
 
 		return file.New(*secretFileFlag)

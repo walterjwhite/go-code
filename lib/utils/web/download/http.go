@@ -16,12 +16,12 @@ func (h *HttpDownload) Fetch() {
 	response, err := http.Get(h.Url)
 	logging.Panic(err)
 
-	defer response.Body.Close()
+	defer logging.Panic(response.Body.Close())
 
 	out, err := os.Create(h.LocalFilepath)
 	logging.Panic(err)
 
-	defer out.Close()
+	defer logging.Panic(out.Close())
 
 	_, err = io.Copy(out, response.Body)
 	logging.Panic(err)

@@ -2,11 +2,13 @@ package run
 
 import (
 	"fmt"
+
 	"github.com/chromedp/chromedp"
 	"github.com/rs/zerolog/log"
 	"github.com/walterjwhite/go-code/lib/application/logging"
 	"github.com/walterjwhite/go-code/lib/security/secrets"
 	"github.com/walterjwhite/go-code/lib/utils/token/plugins/stdin"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -17,7 +19,6 @@ func ParseActions(lines ...string) []chromedp.Action {
 	for _, line := range lines {
 		action := ParseAction(line)
 		if action != nil {
-			log.Info().Msgf("action: %v", action)
 
 			actions = append(actions, action)
 		}
@@ -25,6 +26,11 @@ func ParseActions(lines ...string) []chromedp.Action {
 
 	return actions
 }
+
+
+
+
+
 
 func ParseAction(line string) chromedp.Action {
 	arguments := strings.Split(line, ",")
@@ -34,6 +40,14 @@ func ParseAction(line string) chromedp.Action {
 		return chromedp.Navigate(arguments[1])
 	case "click":
 		return chromedp.Click(arguments[1])
+	case "mouseClick":
+		x, err := strconv.ParseFloat(arguments[1], 64)
+		logging.Panic(err)
+
+		y, err := strconv.ParseFloat(arguments[2], 64)
+		logging.Panic(err)
+
+		return chromedp.MouseClickXY(x, y)
 	case "sendKeys":
 		return chromedp.SendKeys(arguments[1], arguments[2])
 	case "sendKeysSecret":
@@ -42,6 +56,8 @@ func ParseAction(line string) chromedp.Action {
 		return chromedp.Clear(arguments[1])
 	case "key":
 		return chromedp.KeyEvent(process(arguments[1]))
+	case "exec":
+		return &Exec{arguments[1], arguments[2:]}
 	case "setValue":
 		return chromedp.SetValue(arguments[1], arguments[2])
 	case "scrollIntoView":
@@ -66,7 +82,7 @@ func ParseAction(line string) chromedp.Action {
 			return nil
 		}
 
-		logging.Panic(fmt.Errorf("Unsupported action: %v", arguments[0]))
+		logging.Panic(fmt.Errorf("unsupported action: %v", arguments[0]))
 	}
 
 	return nil

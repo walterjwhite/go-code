@@ -35,7 +35,7 @@ func New(ctx context.Context) *RemoteChromeDPSession {
 			getURLFromFile()
 
 			if len(*devToolsWsUrlFlag) == 0 {
-				logging.Panic(fmt.Errorf("Unable to determine dev tools url"))
+				logging.Panic(fmt.Errorf("unable to determine dev tools url"))
 			}
 		}
 	}
@@ -55,6 +55,6 @@ func (s *RemoteChromeDPSession) Cancel() {
 
 func newRemoteInstance(ctx context.Context) *RemoteChromeDPSession {
 	allocatorContext, allocatorCancelFunction := chromedp.NewRemoteAllocator(ctx, *devToolsWsUrlFlag)
-	ctx, ctxCancelFunction := chromedp.NewContext(allocatorContext /*, chromedp.WithLogf(log.Printf)*/)
+	ctx, ctxCancelFunction := chromedp.NewContext(allocatorContext)
 	return &RemoteChromeDPSession{allocatorContext: allocatorContext, allocatorCancelFunction: allocatorCancelFunction, ctx: ctx, ctxCancelFunction: ctxCancelFunction}
 }

@@ -16,7 +16,7 @@ type SecretPropertyConfiguration interface {
 func LoadSecrets(config interface{}) {
 	secretPropertyConfiguration, ok := config.(SecretPropertyConfiguration)
 	if !ok {
-		log.Warn().Msgf("%v does not implement SecretPropertyConfiguration, not decrypting", typename.Get(config))
+		log.Debug().Msgf("%v does not implement SecretPropertyConfiguration, not decrypting", typename.Get(config))
 		return
 	}
 

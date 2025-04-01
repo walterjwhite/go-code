@@ -1,6 +1,7 @@
 package email
 
 import (
+	"context"
 	"github.com/emersion/go-imap"
 	"github.com/rs/zerolog/log"
 	emaill "github.com/walterjwhite/go-code/lib/net/email"
@@ -20,7 +21,7 @@ const (
 	INBOX_FOLDER = "INBOX"
 )
 
-func (p *Provider) Get() string {
+func (p *Provider) Get(ctx context.Context) string {
 	p.channel = make(chan *string, 1)
 
 	log.Info().Msgf("Connecting to: %v @ %v:%v", p.EmailSenderAccount.EmailAddress, p.EmailSenderAccount.ImapServer.Host, p.EmailSenderAccount.ImapServer.Port)

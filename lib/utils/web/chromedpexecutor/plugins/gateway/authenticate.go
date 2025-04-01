@@ -13,6 +13,7 @@ import (
 	"github.com/walterjwhite/go-code/lib/time/delay"
 	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor"
 	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/session"
+	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/session/headless"
 	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/session/remote"
 )
 
@@ -21,8 +22,20 @@ const (
 	logoffButtonXpath = "//*[@id=\"menuLogOffBtn\"]"
 )
 
+type TokenProvider interface {
+	ReadToken(ctx context.Context) *string
+	OnSuccess(ctx context.Context)
+	OnError(ctx context.Context, err error)
+}
+
 func (s *Session) InitializeChromeDP(ctx context.Context) {
-	s.session = remote.New(ctx)
+	if !s.Headless {
+		log.Warn().Msg("New remote session")
+		s.session = remote.New(ctx)
+	} else {
+		log.Warn().Msg("New headless session")
+		s.session = headless.New(ctx)
+	}
 }
 
 func (s *Session) Authenticate(token string) {
@@ -34,7 +47,7 @@ func (s *Session) Authenticate(token string) {
 	log.Debug().Msgf("username: %v", s.Credentials.Username)
 	log.Debug().Msgf("domain: %v", s.Credentials.Domain)
 	log.Debug().Msgf("password: %v", s.Credentials.Password)
-	log.Debug().Msgf("pin/token: %v", s.getToken(token))
+	log.Debug().Msgf("pin/token: %v", s.getTokenAndPin(token))
 
 	session.ExecuteWithDelay(s.session,
 		delay.NewRandom(*s.Delay, *s.Delay),
@@ -42,14 +55,14 @@ func (s *Session) Authenticate(token string) {
 		chromedp.SendKeys(s.Endpoint.UsernameXPath, strings.TrimSpace(s.Credentials.Domain+"\\"+s.Credentials.Username)),
 
 		chromedp.SendKeys(s.Endpoint.PasswordXPath, strings.TrimSpace(s.Credentials.Password)),
-		chromedp.SendKeys(s.Endpoint.TokenXPath, strings.TrimSpace(s.getToken(token))),
+		chromedp.SendKeys(s.Endpoint.TokenXPath, strings.TrimSpace(s.getTokenAndPin(token))),
 	)
 
 	_, err := chromedp.RunResponse(s.session.Context(), chromedp.Click(s.Endpoint.LoginButtonXPath))
 	logging.Panic(err)
 }
 
-func (s *Session) getToken(token string) string {
+func (s *Session) getTokenAndPin(token string) string {
 	return s.Credentials.Pin + token
 }
 

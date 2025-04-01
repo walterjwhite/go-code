@@ -27,6 +27,6 @@ func doLimit(ctx context.Context, function func()) {
 	case <-invocationCompletedChannel:
 		return
 	case <-ctx.Done():
-		logging.Panic(fmt.Errorf("Context was aborted"))
+		logging.Panic(fmt.Errorf("context was aborted"))
 	}
 }

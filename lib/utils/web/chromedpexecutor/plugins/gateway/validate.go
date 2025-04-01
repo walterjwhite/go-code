@@ -9,16 +9,16 @@ import (
 
 func (s *Session) Validate() {
 	if len(s.Credentials.Domain) == 0 {
-		logging.Panic(errors.New("Domain is required"))
+		logging.Panic(errors.New("domain is required"))
 	}
 	if len(s.Credentials.Username) == 0 {
-		logging.Panic(errors.New("Username is required"))
+		logging.Panic(errors.New("username is required"))
 	}
 	if len(s.Credentials.Password) == 0 {
-		logging.Panic(errors.New("Password is required"))
+		logging.Panic(errors.New("password is required"))
 	}
 	if len(s.Credentials.Pin) == 0 {
-		logging.Panic(errors.New("Pin is required"))
+		logging.Panic(errors.New("pin is required"))
 	}
 
 	log.Info().Msg("Validated session configuration")
@@ -26,6 +26,6 @@ func (s *Session) Validate() {
 
 func validateToken(token string) {
 	if len(token) != 6 {
-		logging.Panic(fmt.Errorf("Please enter the 6-digit token: %v", token))
+		logging.Panic(fmt.Errorf("please enter the 6-digit token: %v", token))
 	}
 }

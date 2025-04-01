@@ -1,8 +1,10 @@
 package cli
 
 import (
+	"context"
+
 	"flag"
-	"os"
+	"fmt"
 )
 
 type Provider struct {
@@ -16,14 +18,18 @@ func New() *Provider {
 	return &Provider{}
 }
 
-func (p *Provider) Get() string {
+func (p *Provider) ReadToken(ctx context.Context) *string {
 	if len(*tokenFlag) == 6 {
-		return *tokenFlag
+		return tokenFlag
 	}
 
-	if len(os.Args) >= 2 {
-		return os.Args[1]
-	}
+	return nil
+}
 
-	return ""
+func (p *Provider) OnSuccess(ctx context.Context) {
+	fmt.Println("successfully authenticated")
+}
+
+func (p *Provider) OnError(ctx context.Context, err error) {
+	fmt.Println("error during authentication", err)
 }

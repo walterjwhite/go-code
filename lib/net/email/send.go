@@ -55,7 +55,7 @@ func addAttachments(emailMessage *EmailMessage, m *sendmail.Message) []string {
 func cleanupAttachments(attachmentFilenames []string) {
 	if len(attachmentFilenames) > 0 {
 		for _, attachmentFilename := range attachmentFilenames {
-			os.Remove(attachmentFilename)
+			logging.Panic(os.Remove(attachmentFilename))
 		}
 	}
 
