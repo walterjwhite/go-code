@@ -36,6 +36,8 @@ func init() {
 }
 
 func main() {
+	defer session.Session().Cancel()
+
 	token := getToken()
 
 	if !session.Run(*token) {

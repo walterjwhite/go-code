@@ -1,63 +1,60 @@
 package main
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/rs/zerolog/log"
 	"github.com/walterjwhite/go-code/lib/application"
+	"github.com/walterjwhite/go-code/lib/application/logging"
 
 	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor"
-	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/session"
+	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/plugins/run"
 	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/session/headless"
 
 	"github.com/chromedp/chromedp"
+
+	"time"
 )
 
-const (
-	connectivityCheckUrl = "http://lxer.com"
-)
+type CaptivePortalSession struct {
+	Url     string
+	Actions []string
+
+	ActionTimeout time.Duration
+	session       *headless.HeadlessChromeDPSession
+}
+
+var captivePortalSession = &CaptivePortalSession{}
 
 func init() {
-	application.Configure()
+	application.ConfigureWithProperties(captivePortalSession)
+
+	if captivePortalSession.ActionTimeout <= 0 {
+		captivePortalSession.ActionTimeout = time.Duration(5 * time.Second)
+	}
 }
 
 func main() {
-	s := headless.New(application.Context)
+	captivePortalSession.session = headless.New(application.Context)
+	defer captivePortalSession.session.Cancel()
 
-	session.Execute(s, chromedp.Navigate(connectivityCheckUrl))
-	chromedpexecutor.Screenshot(s.Context(), "/tmp/0.connectivity-check-fetch.png")
+	runStep(0, chromedp.Navigate(captivePortalSession.Url))
 
-	acceptTerms(s)
-	chromedpexecutor.Screenshot(s.Context(), "/tmp/1.connectivity-check-accept-terms.png")
-
-	continueToInternet(s)
-	chromedpexecutor.Screenshot(s.Context(), "/tmp/2.connectivity-check-continue.png")
-}
-
-func acceptTerms(s *headless.HeadlessChromeDPSession) {
-	findAndClickElementByType(s, "input[type=\"checkbox\"]")
-}
-
-func continueToInternet(s *headless.HeadlessChromeDPSession) {
-	findAndClickElementByType(s, "button")
-}
-
-func findAndClickElementByType(s *headless.HeadlessChromeDPSession, elementType string) {
-	var elements []string
-	session.Execute(s, chromedp.Evaluate(fmt.Sprintf("Array.from(document.querySelectorAll('%s')).map(element => element.outerHTML)", elementType), &elements))
-
-	if len(elements) == 1 {
-		log.Info().Msg("Found exactly 1 element, clicking it")
-		elementIndex := 0
-
-		session.Execute(s,
-			chromedp.Click(fmt.Sprintf(`input[type="%s"]:nth-of-type(%d)`, elementType, elementIndex+1)),
-		)
-	} else {
-		log.Warn().Msgf("Found %v elements, but expected just 1", len(elements))
-
-		for _, element := range elements {
-			log.Info().Msgf("Found element: %v", element)
-		}
+	for i, action := range run.ParseActions(captivePortalSession.Actions...) {
+		runStep(i+1, action)
 	}
+
+	log.Info().Msgf("sleeping %d(ns)", captivePortalSession.ActionTimeout)
+	time.Sleep(captivePortalSession.ActionTimeout)
+
+	runStep(len(captivePortalSession.Actions)+1, chromedp.Navigate(captivePortalSession.Url))
+}
+
+func runStep(index int, action chromedp.Action) {
+	stepTimeoutContext, stepFetchCancel := context.WithTimeout(captivePortalSession.session.Context(), captivePortalSession.ActionTimeout)
+	defer stepFetchCancel()
+	logging.Panic(chromedp.Run(stepTimeoutContext, action))
+
+	chromedpexecutor.FullScreenshot(captivePortalSession.session.Context(), fmt.Sprintf("/tmp/%d.connectivity-check.png", index))
 }
