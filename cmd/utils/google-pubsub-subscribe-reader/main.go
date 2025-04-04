@@ -29,7 +29,7 @@ var (
 )
 
 func init() {
-	application.ConfigureWithProperties(googleConf)
+	application.Configure(googleConf)
 
 	aesConf.Encryption = file.New(googleConf.EncryptionKeyFilename)
 }

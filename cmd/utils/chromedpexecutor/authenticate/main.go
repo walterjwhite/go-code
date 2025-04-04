@@ -14,7 +14,7 @@ var (
 )
 
 func init() {
-	application.ConfigureWithProperties(s)
+	application.Configure(s)
 }
 
 func main() {

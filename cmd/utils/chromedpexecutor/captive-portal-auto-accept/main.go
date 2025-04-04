@@ -28,7 +28,7 @@ type CaptivePortalSession struct {
 var captivePortalSession = &CaptivePortalSession{}
 
 func init() {
-	application.ConfigureWithProperties(captivePortalSession)
+	application.Configure(captivePortalSession)
 
 	if captivePortalSession.ActionTimeout <= 0 {
 		captivePortalSession.ActionTimeout = time.Duration(5 * time.Second)

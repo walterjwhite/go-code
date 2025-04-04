@@ -35,7 +35,7 @@ func (s *Session) wiggleMouse(ctx context.Context, instance Instance) {
 }
 
 func (s *Session) moveMouse(ctx context.Context, x, y float64, i int, timeBetweenActions time.Duration) {
-	log.Info().Msgf("moving mouse to: %d,%d - %d", x, y, i)
+	log.Info().Msgf("moving mouse to: %f,%f - %d", x, y, i)
 	logging.Panic(chromedp.Run(ctx,
 		chromedp.MouseEvent(input.MouseMoved, x, y),
 		chromedp.Sleep(timeBetweenActions)))

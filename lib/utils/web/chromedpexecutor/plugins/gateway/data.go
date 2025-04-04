@@ -10,12 +10,12 @@ type Session struct {
 	Credentials *Credentials
 	Endpoint    *Endpoint
 
-	Tickle        *Tickle
-	Headless      bool
+	Tickle   *Tickle
+	Headless bool
 
 	UseLightVersion bool
 
-	Delay   *time.Duration
+	Delay     *time.Duration
 	Instances []Instance
 
 	PostAuthenticationDelay   *time.Duration
@@ -53,6 +53,9 @@ type Tickle struct {
 }
 
 type Instance struct {
-	Index int
+	Index       int
 	WiggleMouse bool
+
+	InitialActionDelay *time.Duration
+	Actions            []string
 }

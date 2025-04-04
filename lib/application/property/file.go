@@ -12,9 +12,12 @@ import (
 	"github.com/walterjwhite/go-code/lib/utils/typename"
 )
 
+const (
+	propertyConfigurationLocation = "~/.config/walterjwhite"
+)
+
 var (
-	propertyConfigurationLocationFlag = flag.String("config-path", "~/.config/walterjwhite", "property config path")
-	propertyConfigurationFileFlag     = flag.String("property-file", "", "property file")
+	configFilePrefixFlag = flag.String("conf-prefix", "", "If specified, configuration files will be expected to be nested in this directory, ie. ~/.config/walterjwhite/<prefix>/<TypeName>.yaml")
 )
 
 func LoadFile(config interface{}) {
@@ -24,7 +27,7 @@ func LoadFile(config interface{}) {
 func LoadFileWithPath(config interface{}, filename string) {
 	finfo, err := os.Stat(filename)
 	if os.IsNotExist(err) {
-		log.Error().Msgf("%v does not exist", filename)
+		log.Warn().Msgf("%v does not exist", filename)
 		return
 	}
 
@@ -33,21 +36,13 @@ func LoadFileWithPath(config interface{}, filename string) {
 		return
 	}
 
-	log.Warn().Msgf("Reading %v", filename)
+	log.Info().Msgf("Reading %v", filename)
 	yaml.Read(filename, config)
 }
 
 func getFile(config interface{}) string {
-	if len(*propertyConfigurationFileFlag) > 0 {
-		return *propertyConfigurationFileFlag
-	}
+	path, err := homedir.Expand(propertyConfigurationLocation)
+	logging.Panic(err)
 
-	if len(*pathPrefixFlag) == 0 {
-		path, err := homedir.Expand(*propertyConfigurationLocationFlag)
-		logging.Panic(err)
-
-		return filepath.Join(path, *pathPrefixFlag, typename.Get(config)+".yaml")
-	}
-
-	return *pathPrefixFlag
+	return filepath.Join(path, *configFilePrefixFlag, typename.Get(config)+".yaml")
 }

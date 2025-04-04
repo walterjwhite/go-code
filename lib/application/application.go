@@ -24,15 +24,9 @@ func init() {
 	configureLogging()
 }
 
-func Configure() {
+func Configure(configurations ...interface{}) {
 	flag.Parse()
-	doConfigure()
-}
-
-func ConfigureWithProperties(configurations ...interface{}) {
-	for _, config := range configurations {
-		property.Load(config)
-	}
+	Load(configurations)
 
 	doConfigure()
 }

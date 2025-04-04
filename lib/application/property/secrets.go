@@ -27,31 +27,23 @@ func LoadSecrets(config interface{}) {
 		log.Debug().Msgf("val: %v", val)
 
 		for _, fieldName := range secretPropertyConfiguration.SecretFields() {
-			log.Debug().Msgf("fieldName: %v %v", *pathPrefixFlag, fieldName)
+			log.Debug().Msgf("fieldName: %v", fieldName)
 
-			setFieldValue(secretPropertyConfiguration, val, *pathPrefixFlag, fieldName)
+			setFieldValue(secretPropertyConfiguration, val, fieldName)
 		}
 	}
 }
 
-func setFieldValue(config SecretPropertyConfiguration, value reflect.Value, path, fieldName string) {
+func setFieldValue(config SecretPropertyConfiguration, value reflect.Value, fieldName string) {
 	f := getField(value, fieldName)
 
 	fieldValue := f.String()
 	log.Debug().Msgf("fieldValue: %v / %v / %v", f, fieldValue, fieldName)
 	if len(fieldValue) > 0 {
-		decrypted := secrets.Get(getFieldPath(path, fieldValue))
+		decrypted := secrets.Get(fieldValue)
 
 		f.SetString(decrypted)
 	}
-}
-
-func getFieldPath(prefix, fieldValue string) string {
-	if len(prefix) > 0 {
-		return prefix + "/" + fieldValue
-	}
-
-	return fieldValue
 }
 
 func getField(value reflect.Value, fieldName string) reflect.Value {
@@ -76,5 +68,5 @@ func getFieldRecurse(value reflect.Value, fieldNamePath []string) reflect.Value 
 }
 
 func Decrypt(secretKey string) string {
-	return secrets.Get(getFieldPath(*pathPrefixFlag, secretKey))
+	return secrets.Get(secretKey)
 }

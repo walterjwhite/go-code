@@ -18,13 +18,16 @@ func Panic(err error, contextuals ...interface{}) {
 }
 
 func Warn(err error, isError bool, message ...string) {
-	if err != nil {
-		if isError {
-			log.Error().Msgf("%v", message)
-			Panic(err)
-		} else {
-			log.Warn().Msgf("%v", message)
-			log.Warn().Msg(err.Error())
-		}
+	if err == nil {
+		return
 	}
+
+	if isError {
+		log.Error().Msgf("%v", message)
+		Panic(err)
+		return
+	}
+
+	log.Warn().Msgf("%v", message)
+	log.Warn().Msg(err.Error())
 }

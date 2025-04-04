@@ -4,10 +4,11 @@ import (
 	"fmt"
 
 	"github.com/chromedp/chromedp"
+	"github.com/chromedp/chromedp/kb"
 	"github.com/rs/zerolog/log"
 	"github.com/walterjwhite/go-code/lib/application/logging"
 	"github.com/walterjwhite/go-code/lib/security/secrets"
-	"github.com/walterjwhite/go-code/lib/utils/token/plugins/stdin"
+	"github.com/walterjwhite/go-code/lib/utils/token/providers/stdin"
 	"strconv"
 	"strings"
 	"time"
@@ -89,7 +90,7 @@ func ParseAction(line string) chromedp.Action {
 }
 
 func process(value string) string {
-	return secret(stdIn(value))
+	return getKeyFromString(secret(stdIn(value)))
 }
 
 func secret(value string) string {
@@ -109,4 +110,21 @@ func stdIn(value string) string {
 	}
 
 	return value
+}
+
+func getKeyFromString(key string) string {
+	switch key {
+	case "SUPER":
+		return kb.Super
+	case "CONTROL":
+		return kb.Control
+	case "ALT":
+		return kb.Alt
+	case "SHIFT":
+		return kb.Shift
+	case "ENTER":
+		return kb.Enter
+	default:
+		return key
+	}
 }

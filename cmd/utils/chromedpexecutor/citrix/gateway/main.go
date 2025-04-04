@@ -22,7 +22,7 @@ var (
 )
 
 func init() {
-	application.ConfigureWithProperties(session)
+	application.Configure(session)
 
 	if len(*tickleInterval) > 0 {
 		i, err := time.ParseDuration(*tickleInterval)

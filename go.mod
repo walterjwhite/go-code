@@ -5,7 +5,7 @@ go 1.23.0
 toolchain go1.23.5
 
 require (
-	cloud.google.com/go/pubsub v1.48.0
+	cloud.google.com/go/pubsub v1.48.1
 	github.com/TheCreeper/go-notify v0.2.0
 	github.com/chromedp/cdproto v0.0.0-20250126231910-1730200a0f74
 	github.com/chromedp/chromedp v0.12.1
@@ -24,12 +24,11 @@ require (
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/olivere/elastic/v7 v7.0.32
 	github.com/rs/zerolog v1.34.0
-	github.com/segmentio/ksuid v1.0.4
+	github.com/urfave/sflags v0.4.1
 	github.com/vcaesar/bitmap v0.12.0
 	github.com/vcaesar/gcv v0.43.1
 	github.com/vova616/screenshot v0.0.0-20220801010501-56c10359473c
 	github.com/vrischmann/envconfig v1.4.1
-	github.com/walterjwhite/sflags v0.3.2
 	gocv.io/x/gocv v0.41.0
 	golang.org/x/crypto v0.36.0
 	golang.org/x/image v0.25.0
@@ -79,7 +78,6 @@ require (
 	github.com/mailru/easyjson v0.9.0 // indirect
 	github.com/mattn/go-colorable v0.1.14 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
-	github.com/octago/sflags v0.3.1 // indirect
 	github.com/otiai10/gosseract v2.2.1+incompatible // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect
@@ -111,10 +109,10 @@ require (
 	golang.org/x/sys v0.31.0 // indirect
 	golang.org/x/text v0.23.0 // indirect
 	golang.org/x/time v0.11.0 // indirect
-	google.golang.org/genproto v0.0.0-20250324211829-b45e905df463 // indirect
-	google.golang.org/genproto/googleapis/api v0.0.0-20250324211829-b45e905df463 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20250324211829-b45e905df463 // indirect
-	google.golang.org/grpc v1.71.0 // indirect
+	google.golang.org/genproto v0.0.0-20250404141209-ee84b53bf3d0 // indirect
+	google.golang.org/genproto/googleapis/api v0.0.0-20250404141209-ee84b53bf3d0 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20250404141209-ee84b53bf3d0 // indirect
+	google.golang.org/grpc v1.71.1 // indirect
 	google.golang.org/protobuf v1.36.6 // indirect
 	gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc // indirect
 	gopkg.in/mail.v2 v2.3.1 // indirect

@@ -11,7 +11,7 @@ import (
 	"github.com/walterjwhite/go-code/lib/net/google"
 	"github.com/walterjwhite/go-code/lib/security/encryption/aes"
 	"github.com/walterjwhite/go-code/lib/security/encryption/providers/file"
-	rexec "github.com/walterjwhite/go-code/lib/utils/remote/exec"
+
 	"os/exec"
 )
 
@@ -28,7 +28,7 @@ type SubscriberConfiguration struct {
 
 type Command struct {
 	command    *string
-	remoteExec rexec.RemoteExec
+	remoteExec exec.Command
 }
 
 var (
@@ -40,7 +40,7 @@ var (
 )
 
 func init() {
-	application.ConfigureWithProperties(googleConf)
+	application.Configure(googleConf)
 
 	aesConf.Encryption = file.New(googleConf.EncryptionKeyFilename)
 }
@@ -61,7 +61,7 @@ func main() {
 }
 
 func (c *Command) New() any {
-	c.remoteExec = rexec.RemoteExec{}
+	c.remoteExec = exec.Command("")
 	return &c.remoteExec
 }
 

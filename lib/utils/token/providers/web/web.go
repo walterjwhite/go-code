@@ -6,6 +6,7 @@ import (
 	"github.com/rs/zerolog/log"
 	"github.com/walterjwhite/go-code/lib/application/logging"
 	"github.com/walterjwhite/go-code/lib/security/random"
+	"math/rand"
 	"net/http"
 	"strings"
 )
@@ -22,7 +23,7 @@ type WebReader struct {
 }
 
 func NewRandomWebReader() *WebReader {
-	return &WebReader{Port: 1024 + random.Of(64512), Path: "/" + random.String(4+random.Of(4)) + "/", channel: make(chan string, 1)}
+	return &WebReader{Port: 1024 + rand.Intn(64512), Path: "/" + random.String(4+rand.Intn(4)) + "/", channel: make(chan string, 1)}
 }
 
 func (r *WebReader) Get() string {
