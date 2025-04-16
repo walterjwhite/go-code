@@ -7,6 +7,7 @@ import (
 	"github.com/rs/zerolog/log"
 	"github.com/walterjwhite/go-code/lib/application/logging"
 	"io"
+	"log/syslog"
 	"os"
 )
 
@@ -15,8 +16,8 @@ const (
 )
 
 var (
-	logLevel = flag.String("log-level", "warn", "log level")
-	logFile  = flag.String("log-file", "", "log file, if empty, stdout is used")
+	logLevel  = flag.String("log-level", "warn", "log level")
+	logTarget = flag.String("log-target", "", "log file, if empty, stderr is used, if SYSLOG, syslog is used")
 )
 
 func configureLogging() {
@@ -29,11 +30,18 @@ func configureLogging() {
 }
 
 func getWriter() io.Writer {
-	if len(*logFile) > 0 {
+	if len(*logTarget) > 0 {
+		if *logTarget == "SYSLOG" {
+			syslogger, err := syslog.New(syslog.LOG_KERN|syslog.LOG_EMERG|syslog.LOG_ERR|syslog.LOG_INFO|syslog.LOG_CRIT|syslog.LOG_WARNING|syslog.LOG_NOTICE|syslog.LOG_DEBUG, ApplicationName)
+			logging.Panic(err)
+
+			return zerolog.ConsoleWriter{Out: syslogger, TimeFormat: logDateTimeFormat, NoColor: true}
+		}
+
 		return prepareFile()
 	}
 
-	return zerolog.ConsoleWriter{Out: os.Stderr /*NoColor: false,*/, TimeFormat: logDateTimeFormat}
+	return zerolog.ConsoleWriter{Out: os.Stderr, TimeFormat: logDateTimeFormat}
 }
 
 func setLogLevel() {
@@ -45,7 +53,7 @@ func setLogLevel() {
 
 func prepareFile() io.WriteCloser {
 	var f io.WriteCloser
-	f, err := os.OpenFile(*logFile, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+	f, err := os.OpenFile(*logTarget, os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
 	logging.Panic(err)
 	defer func() {
 		logging.Panic(f.Close())

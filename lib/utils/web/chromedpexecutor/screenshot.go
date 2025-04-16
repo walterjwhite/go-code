@@ -56,9 +56,7 @@ func FullScreenshot(ctx context.Context, filename string) {
 					Height: contentSize.Height,
 					Scale:  1,
 				}).Do(ctx)
-			logging.Panic(err)
-
-			return nil
+			return err
 		}),
 	}))
 

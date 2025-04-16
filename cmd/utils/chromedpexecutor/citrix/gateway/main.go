@@ -8,17 +8,16 @@ import (
 	"github.com/walterjwhite/go-code/lib/application"
 	"github.com/walterjwhite/go-code/lib/application/logging"
 
-	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/plugins/gateway"
-	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/plugins/gateway/cli"
-	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/plugins/gateway/google"
-	"sync"
+	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/plugins/citrix"
+	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/plugins/citrix/token/cli"
+	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/plugins/citrix/token/google"
 	"time"
 )
 
 var (
 
 	tickleInterval = flag.String("i", "3m", "Tickle Interval")
-	session        = &gateway.Session{}
+	session        = &citrix.Session{}
 )
 
 func init() {
@@ -28,7 +27,7 @@ func init() {
 		i, err := time.ParseDuration(*tickleInterval)
 		logging.Panic(err)
 
-		session.Tickle = &gateway.Tickle{TickleInterval: &i}
+		session.Tickle = &citrix.Tickle{TickleInterval: &i}
 	}
 
 	session.Validate()
@@ -44,12 +43,7 @@ func main() {
 		logging.Panic(errors.New("unable to authenticate"))
 	}
 
-	waitGroup := &sync.WaitGroup{}
-	session.Launch(waitGroup)
-
-	go session.KeepAlive(waitGroup)
-
-	waitGroup.Wait()
+	session.Launch()
 	application.Wait()
 }
 

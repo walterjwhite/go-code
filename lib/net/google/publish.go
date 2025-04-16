@@ -9,6 +9,8 @@ import (
 )
 
 func (s *Session) Publish(topicName string, message interface{}) {
+	log.Info().Msgf("publishing to: %v", topicName)
+
 	topic := s.getOrCreateTopic(topicName)
 
 	data, err := json.Marshal(message)

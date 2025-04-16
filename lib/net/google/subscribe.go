@@ -13,8 +13,11 @@ func (s *Session) Subscribe(topicName string, subscriptionName string, ms Messag
 	_ = s.getOrCreateTopic(topicName)
 
 	sub := s.client.Subscription(subscriptionName)
+	log.Info().Msgf("subscribed to: %s", subscriptionName)
 
 	err := sub.Receive(s.Ctx, func(ctx context.Context, m *pubsub.Message) {
+		log.Info().Msgf("received raw message: %v", m)
+
 		decrypted := s.decrypt(m.Data)
 		decompressed := s.decompress(decrypted)
 
@@ -27,6 +30,7 @@ func (s *Session) Subscribe(topicName string, subscriptionName string, ms Messag
 		}
 
 		log.Info().Msgf("received message: %s", deserialized)
+
 		ms.MessageDeserialized()
 
 		m.Ack() // Acknowledge that we've consumed the message.

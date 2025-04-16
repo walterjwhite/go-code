@@ -24,14 +24,14 @@ type Instance struct {
 	image   *image.RGBA
 }
 
-func Default(filename string) *Instance {
+func Default(filename string) *citrix.Instance {
 	i := &Instance{filename: filename, quality: 95, captureDateTimeStamp: true}
 	i.Take()
 
 	return i
 }
 
-func (i *Instance) Take() {
+func (i *citrix.Instance) Take() {
 	i.channel = make(chan bool, 1)
 
 	img, err := screenshot.CaptureScreen()
@@ -46,7 +46,7 @@ func (i *Instance) Take() {
 	go i.write()
 }
 
-func (i *Instance) write() {
+func (i *citrix.Instance) write() {
 	file, err := os.OpenFile(i.filename, os.O_WRONLY|os.O_CREATE, 0666)
 	logging.Panic(err)
 	defer logging.Panic(file.Close())
@@ -69,7 +69,7 @@ func addTimestamp(img *image.RGBA, x, y int, label string) {
 	d.DrawString(label)
 }
 
-func (i *Instance) Wait() {
+func (i *citrix.Instance) Wait() {
 	<-i.channel
 	close(i.channel)
 }

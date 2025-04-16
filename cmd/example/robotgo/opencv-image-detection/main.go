@@ -7,6 +7,8 @@ import (
 	"github.com/go-vgo/robotgo"
 	"github.com/vcaesar/bitmap"
 	"github.com/vcaesar/gcv"
+
+	"github.com/walterjwhite/go-code/lib/application/logging"
 )
 
 func main() {
@@ -16,8 +18,8 @@ func main() {
 func opencv() {
 	name := "test.png"
 	name1 := "test_001.png"
-	robotgo.SaveCapture(name1, 10, 10, 30, 30)
-	robotgo.SaveCapture(name)
+	logging.Panic(robotgo.SaveCapture(name1, 10, 10, 30, 30))
+	logging.Panic(robotgo.SaveCapture(name))
 
 	fmt.Print("gcv find image: ")
 	fmt.Println(gcv.FindImgFile(name1, name))

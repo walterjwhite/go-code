@@ -26,7 +26,7 @@ func init() {
 
 func Configure(configurations ...interface{}) {
 	flag.Parse()
-	Load(configurations)
+	Load(configurations...)
 
 	doConfigure()
 }

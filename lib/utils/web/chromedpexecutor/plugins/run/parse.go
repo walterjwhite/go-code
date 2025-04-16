@@ -114,6 +114,8 @@ func stdIn(value string) string {
 
 func getKeyFromString(key string) string {
 	switch key {
+	case "META":
+		return kb.Meta
 	case "SUPER":
 		return kb.Super
 	case "CONTROL":
@@ -124,6 +126,8 @@ func getKeyFromString(key string) string {
 		return kb.Shift
 	case "ENTER":
 		return kb.Enter
+	case "TAB":
+		return kb.Tab
 	default:
 		return key
 	}

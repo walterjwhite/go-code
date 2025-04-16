@@ -7,7 +7,6 @@ import (
 	"github.com/chromedp/chromedp"
 	"github.com/rs/zerolog/log"
 	"github.com/walterjwhite/go-code/lib/time/delay"
-	"github.com/walterjwhite/go-code/lib/time/keep_alive"
 	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/session"
 )
 
@@ -24,28 +23,6 @@ type Session struct {
 
 	chromedpsession session.ChromeDPSession
 	activityChannel chan bool
-	keepAlive       *keep_alive.KeepAlive
-}
-
-func (s *Session) With(ctx context.Context, chromedpsession session.ChromeDPSession) *Session {
-	s.ctx = ctx
-	s.chromedpsession = chromedpsession
-	s.activityChannel = make(chan bool)
-	if s.Website.SessionTimeout != nil {
-		s.keepAlive = keep_alive.New(s.ctx, *s.Website.SessionTimeout, s.doKeepAlive)
-	}
-
-	if s.MinLocateDelay != nil {
-		log.Debug().Msgf("delay: %v", *s.MinLocateDelay)
-		if s.DeviateLocateDelay != nil {
-			log.Debug().Msgf("deviate delay: %v", *s.DeviateLocateDelay)
-			s.LocateDelay = delay.NewRandom(*s.MinLocateDelay, *s.DeviateLocateDelay)
-		} else {
-			s.LocateDelay = delay.New(*s.MinLocateDelay)
-		}
-	}
-
-	return s
 }
 
 type Credentials struct {
@@ -79,4 +56,28 @@ type Field struct {
 
 	Selector *string
 }
+
+
+func (s *Session) With(ctx context.Context, chromedpsession session.ChromeDPSession) *Session {
+	s.ctx = ctx
+	s.chromedpsession = chromedpsession
+	s.activityChannel = make(chan bool)
+	if s.Website.SessionTimeout != nil {
+		s.keepAliveChannel = time.Tick(*s.Website.SessionTimeout)
+		go s.keepAlive
+	}
+
+	if s.MinLocateDelay != nil {
+		log.Debug().Msgf("delay: %v", *s.MinLocateDelay)
+		if s.DeviateLocateDelay != nil {
+			log.Debug().Msgf("deviate delay: %v", *s.DeviateLocateDelay)
+			s.LocateDelay = delay.NewRandom(*s.MinLocateDelay, *s.DeviateLocateDelay)
+		} else {
+			s.LocateDelay = delay.New(*s.MinLocateDelay)
+		}
+	}
+
+	return s
+}
+
 
