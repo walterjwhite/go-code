@@ -2,7 +2,6 @@ package citrix
 
 import (
 	"context"
-	"github.com/walterjwhite/go-code/lib/time/periodic"
 	"github.com/walterjwhite/go-code/lib/utils/worker"
 
 	"time"
