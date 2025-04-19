@@ -24,10 +24,4 @@ func (p *Provider) MessageParseError(err error) {
 	p.publishStatus(fmt.Sprintf("error unmarshalling message: %s", err), false)
 }
 
-func (p *Provider) OnSuccess(ctx context.Context) {
-	p.publishStatus("session is authenticated", true)
-}
 
-func (p *Provider) OnError(ctx context.Context, err error) {
-	p.publishStatus("failed to authenticated", false)
-}

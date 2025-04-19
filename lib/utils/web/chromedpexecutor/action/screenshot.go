@@ -1,4 +1,4 @@
-package chromedpexecutor
+package action
 
 import (
 	"context"
@@ -62,4 +62,25 @@ func FullScreenshot(ctx context.Context, filename string) {
 
 	logging.Panic(os.WriteFile(filename, buf, 0644))
 	log.Debug().Msgf("captured screenshot: %v", filename)
+}
+
+func TakeScreenshotOf(ctx context.Context, x, y, width, height float64) []byte {
+	log.Info().Msgf("taking screenshot: [%f, %f] [%f, %f]", x, y, width, height)
+
+	var buf []byte
+	logging.Panic(chromedp.Run(ctx, chromedp.ActionFunc(func(ctx context.Context) error {
+		var err error
+		buf, err = page.CaptureScreenshot().
+			WithClip(&page.Viewport{
+
+				X:      x,
+				Y:      y,
+				Width:  width,
+				Height: height,
+
+				Scale: 1,
+			}).Do(ctx)
+		return err
+	})))
+	return buf
 }

@@ -6,7 +6,7 @@ import (
 	"github.com/walterjwhite/go-code/lib/application"
 
 	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/plugins/authenticate"
-	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/session/remote"
+	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/provider/remote"
 )
 
 var (

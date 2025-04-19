@@ -27,11 +27,9 @@ require (
 	github.com/urfave/sflags v0.4.1
 	github.com/vcaesar/bitmap v0.12.1
 	github.com/vcaesar/gcv v0.43.2
-	github.com/vova616/screenshot v0.0.0-20220801010501-56c10359473c
 	github.com/vrischmann/envconfig v1.4.1
 	gocv.io/x/gocv v0.41.0
 	golang.org/x/crypto v0.37.0
-	golang.org/x/image v0.26.0
 	golang.org/x/term v0.31.0
 	google.golang.org/api v0.229.0
 	gopkg.in/yaml.v2 v2.4.0
@@ -43,7 +41,6 @@ require (
 	cloud.google.com/go/auth/oauth2adapt v0.2.8 // indirect
 	cloud.google.com/go/compute/metadata v0.6.0 // indirect
 	cloud.google.com/go/iam v1.5.2 // indirect
-	github.com/BurntSushi/xgb v0.0.0-20210121224620-deaf085860bc // indirect
 	github.com/chromedp/sysutil v1.1.0 // indirect
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
 	github.com/dblohm7/wingoes v0.0.0-20240820181039-f2b84150679e // indirect
@@ -98,6 +95,7 @@ require (
 	go.opentelemetry.io/otel/metric v1.35.0 // indirect
 	go.opentelemetry.io/otel/trace v1.35.0 // indirect
 	golang.org/x/exp v0.0.0-20250408133849-7e4ce0ab07d0 // indirect
+	golang.org/x/image v0.26.0 // indirect
 	golang.org/x/net v0.39.0 // indirect
 	golang.org/x/oauth2 v0.29.0 // indirect
 	golang.org/x/sync v0.13.0 // indirect

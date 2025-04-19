@@ -8,9 +8,9 @@ import (
 	"github.com/walterjwhite/go-code/lib/application"
 	"github.com/walterjwhite/go-code/lib/application/logging"
 
-	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor"
+	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/action"
 	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/plugins/run"
-	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/session/headless"
+	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/provider/headless"
 
 	"github.com/chromedp/chromedp"
 
@@ -22,7 +22,8 @@ type CaptivePortalSession struct {
 	Actions []string
 
 	ActionTimeout time.Duration
-	session       *headless.HeadlessChromeDPSession
+	ctx context.Context
+	cancel context.CancelFunc
 }
 
 var captivePortalSession = &CaptivePortalSession{}
@@ -36,8 +37,8 @@ func init() {
 }
 
 func main() {
-	captivePortalSession.session = headless.New(application.Context)
-	defer captivePortalSession.session.Cancel()
+	captivePortalSession.ctx, captivePortalSession.cancel = headless.New(application.Context)
+	defer captivePortalSession.cancel()
 
 	runStep(0, chromedp.Navigate(captivePortalSession.Url))
 
@@ -51,10 +52,10 @@ func main() {
 	runStep(len(captivePortalSession.Actions)+1, chromedp.Navigate(captivePortalSession.Url))
 }
 
-func runStep(index int, action chromedp.Action) {
-	stepTimeoutContext, stepFetchCancel := context.WithTimeout(captivePortalSession.session.Context(), captivePortalSession.ActionTimeout)
+func runStep(index int, chromeAction chromedp.Action) {
+	stepTimeoutContext, stepFetchCancel := context.WithTimeout(captivePortalSession.ctx, captivePortalSession.ActionTimeout)
 	defer stepFetchCancel()
-	logging.Panic(chromedp.Run(stepTimeoutContext, action))
+	logging.Panic(chromedp.Run(stepTimeoutContext, chromeAction))
 
-	chromedpexecutor.FullScreenshot(captivePortalSession.session.Context(), fmt.Sprintf("/tmp/%d.connectivity-check.png", index))
+	action.FullScreenshot(captivePortalSession.ctx, fmt.Sprintf("/tmp/%d.connectivity-check.png", index))
 }

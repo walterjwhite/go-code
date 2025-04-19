@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"flag"
-	"fmt"
 )
 
 type Provider struct {
@@ -26,10 +25,4 @@ func (p *Provider) ReadToken(ctx context.Context) *string {
 	return nil
 }
 
-func (p *Provider) OnSuccess(ctx context.Context) {
-	fmt.Println("successfully authenticated")
-}
 
-func (p *Provider) OnError(ctx context.Context, err error) {
-	fmt.Println("error during authentication", err)
-}

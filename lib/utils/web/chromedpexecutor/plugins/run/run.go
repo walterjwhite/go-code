@@ -4,8 +4,8 @@ import (
 	"context"
 
 	"github.com/rs/zerolog/log"
-	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/session"
-	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/session/remote"
+	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/action"
+	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/provider/remote"
 
 	"errors"
 
@@ -18,18 +18,18 @@ import (
 var (
 	detachFromBrowserWhenComplete = flag.Bool("d", true, "detach from browser session when complete")
 	sessionFile                   = flag.String("session-file", "", "file to execute")
-	chromedpsession               session.ChromeDPSession
 )
 
-func Run(ctx context.Context) {
+func Run(pctx context.Context) {
 	if len(*sessionFile) == 0 {
 		logging.Panic(errors.New("session File is required"))
 	}
 
-	chromedpsession = setup(ctx)
+	ctx, cancel := setup(pctx)
+	defer cancel()
 
 
-	session.Execute(chromedpsession, ParseActions(read()...)...)
+	action.Execute(ctx, ParseActions(read()...)...)
 }
 
 func read() []string {
@@ -52,7 +52,7 @@ func read() []string {
 	return lines
 }
 
-func setup(ctx context.Context) session.ChromeDPSession {
+func setup(ctx context.Context) (context.Context, context.CancelFunc) {
 	if *detachFromBrowserWhenComplete {
 		return remote.New(context.Background())
 	}

@@ -5,9 +5,12 @@ import (
 	"github.com/rs/zerolog/log"
 
 	"github.com/walterjwhite/go-code/lib/application"
-	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor"
+	"github.com/walterjwhite/go-code/lib/application/logging"
+
+	"errors"
+	"github.com/chromedp/cdproto/browser"
+	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/action"
 	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/plugins/run"
-	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/session"
 
 	"time"
 )
@@ -16,38 +19,29 @@ const (
 	useLightVersionPromptId = "protocolhandler-welcome-useLightVersionLink"
 )
 
-func (s *Session) Run(token string) bool {
-	s.Authenticate(token)
-	if log.Debug().Enabled() {
-		chromedpexecutor.FullScreenshot(s.session.Context(), "/tmp/0.gateway-authenticate.png")
+func (s *Session) Run(token string) {
+	defer s.Cancel()
+
+	s.authenticate(token)
+	saveScreenshot(s.ctx, "/tmp/%d.gateway-authenticate.png", 0)
+
+	if !s.isAuthenticated() {
+		saveScreenshot(s.ctx, "/tmp/%d.gateway-failed-to-authenticate.png", 1)
+		logging.Panic(errors.New("failed to authenticate"))
 	}
 
-	if !s.IsAuthenticated() {
-		return false
-	}
-
-	if log.Debug().Enabled() {
-		chromedpexecutor.FullScreenshot(s.session.Context(), "/tmp/1.gateway-authenticated.png")
-	}
+	saveScreenshot(s.ctx, "/tmp/%d.gateway-authenticated.png", 1)
 
 	s.useLightVersion()
+	action.Grant(s.ctx, []browser.PermissionType{"windowManagement"})
+
 	s.runPostAuthenticationActions()
 
 	s.keepAliveChannel = time.Tick(*s.Timeout)
 	go s.keepAlive()
 
-	log.Info().Msg("returning from run")
-	return true
-}
-
-func (s *Session) scheduleEnd() {
-	if s.EndHour == 0 {
-		log.Warn().Msg("end hour is unset, running indefinitely")
-		return
-	}
-
-	waitUntil(s.EndHour)
-	application.Cancel()
+	s.Worker.Worker = s
+	s.Worker.Run()
 }
 
 func (s *Session) runPostAuthenticationActions() {
@@ -56,7 +50,7 @@ func (s *Session) runPostAuthenticationActions() {
 		time.Sleep(*s.PostAuthenticationDelay)
 
 		log.Info().Msgf("running post authentication actions: %v", s.PostAuthenticationActions)
-		session.Execute(s.session, run.ParseActions(s.PostAuthenticationActions...)...)
+		action.Execute(s.ctx, run.ParseActions(s.PostAuthenticationActions...)...)
 	}
 }
 
@@ -67,10 +61,28 @@ func (s *Session) useLightVersion() {
 		return
 	}
 
-	if chromedpexecutor.Exists(s.session, time.Duration(time.Second*5), useLightVersionPromptId, chromedp.ByID) {
+	if action.Exists(s.ctx, time.Duration(time.Second*5), useLightVersionPromptId, chromedp.ByID) {
 		log.Info().Msg("switching to light version")
-		session.Execute(s.session,
+		action.Execute(s.ctx,
 			chromedp.Click(useLightVersionPromptId, chromedp.ByID),
 		)
+	}
+}
+
+func (s *Session) Cancel() {
+	log.Warn().Msg("cancelling session")
+	if s.cancel != nil {
+		s.logout()
+		s.cancel()
+	}
+
+	s.cleanup()
+	application.Cancel()
+}
+
+func (s *Session) cleanup() {
+	for index := range s.Instances {
+		log.Info().Msgf("on break, cancelling context: %v", s.Instances[index])
+		s.Instances[index].cleanup()
 	}
 }

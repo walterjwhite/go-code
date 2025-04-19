@@ -1,6 +1,7 @@
 package citrix
 
 import (
+	"context"
 	"fmt"
 	"github.com/chromedp/cdproto/target"
 
@@ -9,134 +10,88 @@ import (
 	"github.com/rs/zerolog/log"
 	"github.com/walterjwhite/go-code/lib/application/logging"
 
+	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/action"
+	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/plugins/citrix/plugins/mouse_wiggle"
 	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/plugins/run"
+
 	"sync"
 	"time"
 )
 
 var sessionMutex sync.Mutex
 
-func (s *Session) Launch() {
-	go s.scheduleEnd()
-	s.waitUntilStart()
-
-	for _, instance := range s.Instances {
-		instance.session = s
-
-		s.waitGroup.Add(1)
-		go instance.run()
-	}
-
-	s.waitGroup.Wait()
+type CitrixWorker interface {
+	Work(ctx context.Context, headless bool)
+	Cleanup()
 }
 
-func (i *Instance) run() {
-	defer i.cleanup()
+func (s *Session) Work() {
+	waitGroup := &sync.WaitGroup{}
 
-	i.breakChannel = make(chan *time.Duration)
-	i.stopChannel = make(chan bool)
+	for index := range s.Instances {
+		log.Info().Msgf("Work [%v]", s.Instances[index])
+		s.Instances[index].session = s
 
-	defer close(i.breakChannel)
-	defer close(i.stopChannel)
-
-	go i.Pomodoro.init(i.breakChannel)
-	go i.session.initLunchBreak(i.breakChannel)
-
-	for {
-		select {
-		case <-i.stopChannel:
-			log.Warn().Msgf("exiting instance: %v", i)
-			return
-		case duration := <-i.breakChannel:
-			log.Warn().Msgf("taking a break: %v (%v)", i, *duration)
-
-			i.cancel()
-			i.initialized = false
-			time.Sleep(*duration)
-		default:
-			log.Info().Msg("default case")
-
-			if !i.initialized {
-				log.Info().Msg("launching instance")
-				i.launch()
-
-				time.Sleep(*i.InitialActionDelay)
-				i.handlePrompt()
-
-				if !i.actionsInitialized {
-					log.Info().Msg("running actions")
-					i.actions()
-					i.actionsInitialized = true
-				}
-			}
-
-			i.wiggleMouse()
-
-			time.Sleep(*i.TimeBetweenActions)
-		}
+		waitGroup.Add(1)
+		go s.Instances[index].run(waitGroup)
 	}
 
-	log.Info().Msgf("end of for loop: %v", i)
+	waitGroup.Wait()
 }
 
-func (i *Instance) waitForDesktop() {
-	screenCheckDuration := 5 * time.Second
-	if !i.isScreenLocked() {
-		log.Warn().Msg("screen is not locked (windows icon is present)")
-		return
-	}
+func (s *Session) OnBreak(breakDuration *time.Duration) {
+	log.Info().Msgf("taking break: %v", breakDuration)
 
-	for {
-		if i.isWaitingForTermsAcceptance() {
-			i.handlePrompt()
-		} else if i.isLoggingIn() {
-			log.Info().Msg("waiting for system to login")
-			for {
-				time.Sleep(screenCheckDuration)
-				if !i.isLoggingIn() {
-					log.Info().Msg("logged in")
-					return
-				}
-			}
-		} else {
-			log.Warn().Msg("neither waiting for terms acceptance or logging in")
-		}
-
-		time.Sleep(screenCheckDuration)
-	}
+	s.cleanup()
 }
 
-func (s *Session) waitUntilStart() {
-	_ = waitUntil(s.StartHour)
+func (s *Session) OnStop() {
+	s.Cancel()
 }
 
-func waitUntil(hour int) bool {
-	currentTime := time.Now()
-	if currentTime.Hour() < hour {
-		targetTime := time.Date(currentTime.Year(), currentTime.Month(), currentTime.Day(), hour, 0, 0, 0, currentTime.Location())
-		duration := targetTime.Sub(currentTime)
+func (i *Instance) run(waitGroup *sync.WaitGroup) {
+	log.Info().Msgf("run.start [%v]", i)
 
-		time.Sleep(duration)
-		return true
+	defer waitGroup.Done()
+
+	log.Info().Msg("run")
+	if !i.initialized {
+		i.launch()
+
+		movementWaitTime := 3 * time.Minute
+		timeBetweenActions := 3 * time.Second
+		i.Worker = &mouse_wiggle.State{MovementWaitTime: &movementWaitTime, TimeBetweenActions: &timeBetweenActions}
+
+		i.initialized = true
 	}
 
-	return false
+	time.Sleep(*i.InitialActionDelay)
+	i.handlePrompt()
+
+	if !i.actionsInitialized {
+		log.Info().Msg("running actions")
+		i.actions()
+		i.actionsInitialized = true
+	}
+
+	i.Worker.Work(i.ctx, i.session.Headless)
+	log.Info().Msgf("run.end [%v]", i)
 }
 
 func (i *Instance) launch() {
+	i.session.handleExpired()
+
 	sessionMutex.Lock()
 	defer sessionMutex.Unlock()
 
-	log.Info().Msgf("Launching instance: %d -> %d", i, i.Index)
-	targetIDChannel := chromedp.WaitNewTarget(i.session.session.Context(), matchTabWithNonEmptyURL)
+	log.Info().Msgf("launching instance: %d -> %d @ [%s]", i, i.Index, action.Location(i.session.ctx))
+	targetIDChannel := chromedp.WaitNewTarget(i.session.ctx, matchTabWithNonEmptyURL)
 
-	logging.Panic(chromedp.Run(i.session.session.Context(), chromedp.Click(fmt.Sprintf("//*[@id=\"home-screen\"]/div[2]/section[5]/div[5]/div/ul/li[%d]/a[1]", i.Index))))
+	logging.Panic(chromedp.Run(i.session.ctx, chromedp.Click(fmt.Sprintf("//*[@id=\"home-screen\"]/div[2]/section[5]/div[5]/div/ul/li[%d]/a[1]", i.Index))))
 
-	newInstance, newCancelFunc := chromedp.NewContext(i.session.session.Context(), chromedp.WithTargetID(<-targetIDChannel))
+	newInstance, newCancelFunc := chromedp.NewContext(i.session.ctx, chromedp.WithTargetID(<-targetIDChannel))
 	i.ctx = newInstance
 	i.cancel = newCancelFunc
-
-	i.initialized = true
 }
 
 func matchTabWithNonEmptyURL(info *target.Info) bool {
@@ -144,9 +99,18 @@ func matchTabWithNonEmptyURL(info *target.Info) bool {
 }
 
 func (i *Instance) cleanup() {
-	i.session.waitGroup.Done()
+	if !i.initialized {
+		return
+	}
+
+	i.initialized = false
+	i.Worker.Cleanup()
+
 	i.cancel()
-	log.Info().Msgf("context done - %d", i.Index)
+	i.cancel = nil
+	i.ctx = nil
+
+	log.Info().Msgf("cleanup - %d", i.Index)
 }
 
 func (i *Instance) actions() {

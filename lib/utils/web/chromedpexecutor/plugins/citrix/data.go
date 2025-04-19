@@ -3,8 +3,8 @@ package citrix
 import (
 	"context"
 	"github.com/walterjwhite/go-code/lib/time/periodic"
-	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/session"
-	"sync"
+	"github.com/walterjwhite/go-code/lib/utils/worker"
+
 	"time"
 )
 
@@ -23,22 +23,14 @@ type Session struct {
 	PostAuthenticationDelay   *time.Duration
 	PostAuthenticationActions []string
 
-	EndHour   int
-	StartHour int
-
-	LunchBreakStartHour int
-	LunchBreakEndHour   int
+	Worker worker.Conf
 
 	Timeout *time.Duration
 
-	session session.ChromeDPSession
+	ctx    context.Context
+	cancel context.CancelFunc
 
 	keepAliveChannel <-chan time.Time
-	waitGroup        sync.WaitGroup
-}
-
-func (s *Session) Session() session.ChromeDPSession {
-	return s.session
 }
 
 type Credentials struct {
@@ -62,7 +54,6 @@ type Endpoint struct {
 
 type Tickle struct {
 	TickleInterval   *time.Duration
-	periodicInstance *periodic.PeriodicInstance
 }
 
 type Instance struct {
@@ -74,21 +65,13 @@ type Instance struct {
 
 	Actions []string
 
-	MovementWaitTime *time.Duration
-
-	Pomodoro *PomodoroInstance
+	Worker CitrixWorker
 
 	ctx    context.Context
 	cancel context.CancelFunc
 
 	session *Session
 
-	lastMouseX float64
-	lastMouseY float64
-
 	initialized        bool
 	actionsInitialized bool
-
-	breakChannel chan *time.Duration
-	stopChannel  chan bool
 }

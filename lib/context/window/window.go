@@ -2,7 +2,6 @@ package window
 
 import (
 	"context"
-	"fmt"
 	"time"
 )
 

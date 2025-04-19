@@ -14,6 +14,8 @@ type MouseLocation struct {
 }
 
 func AttachMousePositionListener(ctx context.Context) {
+	log.Warn().Msg("attaching mouse position listener")
+
 	err := chromedp.Run(ctx,
 		chromedp.ActionFunc(func(ctx context.Context) error {
 			return chromedp.Evaluate(`document.addEventListener('mousemove', function(event) {

@@ -1,50 +1,30 @@
 package main
 
 import (
-	"errors"
-	"flag"
-
 	"github.com/rs/zerolog/log"
 	"github.com/walterjwhite/go-code/lib/application"
-	"github.com/walterjwhite/go-code/lib/application/logging"
 
 	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/plugins/citrix"
 	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/plugins/citrix/token/cli"
 	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/plugins/citrix/token/google"
-	"time"
 )
 
 var (
-
-	tickleInterval = flag.String("i", "3m", "Tickle Interval")
-	session        = &citrix.Session{}
+	session = &citrix.Session{}
 )
 
 func init() {
 	application.Configure(session)
-
-	if len(*tickleInterval) > 0 {
-		i, err := time.ParseDuration(*tickleInterval)
-		logging.Panic(err)
-
-		session.Tickle = &citrix.Tickle{TickleInterval: &i}
-	}
-
 	session.Validate()
-	session.InitializeChromeDP(application.Context)
+	session.Init(application.Context)
 }
 
 func main() {
-	defer session.Session().Cancel()
+	defer session.Cancel()
 
 	token := getToken()
 
-	if !session.Run(*token) {
-		logging.Panic(errors.New("unable to authenticate"))
-	}
-
-	session.Launch()
-	application.Wait()
+	session.Run(*token)
 }
 
 func getToken() *string {

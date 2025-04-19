@@ -22,5 +22,5 @@ func (i *Instance) handlePrompt() {
 	}
 
 	log.Info().Msgf("handled prompt - %d", i.Index)
-	i.captureScreenshot("/tmp/2.gateway-prompt-%d.png")
+	saveScreenshot(i.ctx, "/tmp/2.gateway-prompt-%d.png", i.Index)
 }

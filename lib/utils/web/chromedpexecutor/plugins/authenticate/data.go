@@ -7,7 +7,6 @@ import (
 	"github.com/chromedp/chromedp"
 	"github.com/rs/zerolog/log"
 	"github.com/walterjwhite/go-code/lib/time/delay"
-	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/session"
 )
 
 type Session struct {
