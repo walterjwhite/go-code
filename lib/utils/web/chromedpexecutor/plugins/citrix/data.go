@@ -1,76 +1,78 @@
 package citrix
 
 import (
-	"context"
-	"github.com/walterjwhite/go-code/lib/utils/worker"
+  "context"
+  "github.com/walterjwhite/go-code/lib/utils/worker"
 
-	"time"
+  "time"
 )
 
 type Session struct {
-	Credentials *Credentials
-	Endpoint    *Endpoint
+  Credentials *Credentials
+  Endpoint    *Endpoint
 
-	Tickle   *Tickle
-	Headless bool
+  Tickle           *Tickle
+  KeepAliveTimeout *time.Duration
 
-	UseLightVersion bool
+  Headless bool
 
-	Delay     *time.Duration
-	Instances []Instance
+  UseLightVersion bool
 
-	PostAuthenticationDelay   *time.Duration
-	PostAuthenticationActions []string
+  Delay     *time.Duration
+  Instances []*Instance
 
-	Worker worker.Conf
+  PostAuthenticationDelay   *time.Duration
+  PostAuthenticationActions []string
 
-	Timeout *time.Duration
+  Worker worker.Conf
 
-	ctx    context.Context
-	cancel context.CancelFunc
+  Timeout *time.Duration
 
-	keepAliveChannel <-chan time.Time
+  ctx    context.Context
+  cancel context.CancelFunc
+
+  keepAliveChannel <-chan time.Time
 }
 
 type Credentials struct {
-	Domain   string
-	Username string
-	Password string
+  Domain   string
+  Username string
+  Password string
 
-	Pin string
+  Pin string
 }
 
 type Endpoint struct {
-	Uri string
+  Uri string
 
-	UsernameXPath    string
-	PasswordXPath    string
-	TokenXPath       string
-	LoginButtonXPath string
+  UsernameXPath    string
+  PasswordXPath    string
+  TokenXPath       string
+  LoginButtonXPath string
 
-	AuthenticationDelay *time.Duration
+  AuthenticationDelay *time.Duration
 }
 
 type Tickle struct {
-	TickleInterval   *time.Duration
+  TickleInterval *time.Duration
 }
 
 type Instance struct {
-	Index  int
-	Action string
+  Index  int
+  Action string
 
-	InitialActionDelay *time.Duration
-	TimeBetweenActions *time.Duration
+  InitialActionDelay *time.Duration
+  TimeBetweenActions *time.Duration
 
-	Actions []string
+  Actions []string
 
-	Worker CitrixWorker
+  Worker CitrixWorker
 
-	ctx    context.Context
-	cancel context.CancelFunc
+  ctx    context.Context
+  cancel context.CancelFunc
 
-	session *Session
+  session *Session
 
-	initialized        bool
-	actionsInitialized bool
+  initialized        bool
+  actionsInitialized bool
 }

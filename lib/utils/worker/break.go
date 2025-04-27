@@ -11,6 +11,10 @@ func (c *Conf) manageBreaks() {
 		return
 	}
 
+	if c.LunchStartTime.Till()+*c.LunchDuration < 0 {
+		c.hadLunch = true
+	}
+
 	for {
 		time.Sleep(*c.OnDuration)
 

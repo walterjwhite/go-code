@@ -23,7 +23,7 @@ func (t *TimeOfDay) SleepUntil() bool {
 		return false
 	}
 
-	log.Info().Msgf("sleeping: %v [%v]", sleepTime, t)
+	log.Info().Msgf("SleepUntil: %v [%v]", sleepTime, t)
 	time.Sleep(sleepTime)
 
 	return true

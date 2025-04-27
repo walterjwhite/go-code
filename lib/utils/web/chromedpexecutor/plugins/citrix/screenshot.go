@@ -17,6 +17,6 @@ func saveScreenshot(ctx context.Context, name_template string, args ...interface
 	}
 }
 
-func (i *Instance) Match(matchThreshold float64, referenceImageData []byte, x, y, width, height float64) []locateimage.Match {
+func (i *Instance) Match(matchThreshold float64, referenceImageData []byte, x, y, width, height float64) *locateimage.Match {
 	return action.Match(i.ctx, matchThreshold, referenceImageData, x, y, width, height)
 }

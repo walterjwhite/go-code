@@ -6,10 +6,13 @@ import (
 	"github.com/chromedp/chromedp/kb"
 	"github.com/rs/zerolog/log"
 	"github.com/walterjwhite/go-code/lib/application/logging"
+	"time"
 )
 
-func (i *Instance) handlePrompt() {
+func (i *Instance) handlePromptStatic() {
 	log.Info().Msgf("handling prompt - %d", i.Index)
+
+	time.Sleep(*i.InitialActionDelay)
 
 	logging.Panic(chromedp.Run(i.ctx,
 		chromedp.MouseEvent(input.MouseMoved, 100, 100)))

@@ -25,3 +25,7 @@ func (s *Session) initChromeDP(ctx context.Context) (context.Context, context.Ca
 	log.Warn().Msg("New headless session")
 	return headless.New(ctx)
 }
+
+func (s *Session) Runnable() bool {
+	return s.ctx != nil
+}

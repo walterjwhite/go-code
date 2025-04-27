@@ -8,6 +8,7 @@ require (
 	cloud.google.com/go/pubsub v1.49.0
 	github.com/TheCreeper/go-notify v0.2.0
 	github.com/andreyvit/locateimage v0.1.0
+	github.com/avast/retry-go v3.0.0+incompatible
 	github.com/chromedp/cdproto v0.0.0-20250126231910-1730200a0f74
 	github.com/chromedp/chromedp v0.12.1
 	github.com/emersion/go-imap v1.2.1

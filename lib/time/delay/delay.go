@@ -12,7 +12,7 @@ type Delayer interface {
 
 func doDelay(d time.Duration) {
 	if d > 0 {
-		log.Debug().Msgf("sleeping %v", d)
+		log.Debug().Msgf("doDelay %v", d)
 		time.Sleep(d)
 		return
 	}

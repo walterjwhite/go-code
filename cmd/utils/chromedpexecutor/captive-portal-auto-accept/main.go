@@ -22,8 +22,8 @@ type CaptivePortalSession struct {
 	Actions []string
 
 	ActionTimeout time.Duration
-	ctx context.Context
-	cancel context.CancelFunc
+	ctx           context.Context
+	cancel        context.CancelFunc
 }
 
 var captivePortalSession = &CaptivePortalSession{}

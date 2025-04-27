@@ -22,6 +22,8 @@ github.com/TheCreeper/go-notify v0.2.0 h1:akzlSD8IWx+uOZqGNwS0FYsThYuw11JkXsYiQX
 github.com/TheCreeper/go-notify v0.2.0/go.mod h1:paZnY8fMbaOyZLQWJitGWAMrO5ot3Ow7id47cyEL1KA=
 github.com/andreyvit/locateimage v0.1.0 h1:qL50YAPtRcYumfPDgR00SE4g7vRkBFzYA1sqEGBS0Ks=
 github.com/andreyvit/locateimage v0.1.0/go.mod h1:D8bRaMk+gDYeuEvQu/LQfbLUaMv5+FrYWFIa5gMU6VQ=
+github.com/avast/retry-go v3.0.0+incompatible h1:4SOWQ7Qs+oroOTQOYnAHqelpCO0biHSxpiH9JdtuBj0=
+github.com/avast/retry-go v3.0.0+incompatible/go.mod h1:XtSnn+n/sHqQIpZ10K1qAevBhOOCWBLXXy3hyiqqBrY=
 github.com/census-instrumentation/opencensus-proto v0.2.1/go.mod h1:f6KPmirojxKA12rnyqOA5BBL4O983OfeGPqjHWSTneU=
 github.com/chromedp/cdproto v0.0.0-20250126231910-1730200a0f74 h1:oul0R+ZyorVxVNr7bALbPolKvbXlpIefB4lDv5sjt00=
 github.com/chromedp/cdproto v0.0.0-20250126231910-1730200a0f74/go.mod h1:RTGuBeCeabAJGi3OZf71a6cGa7oYBfBP75VJZFLv6SU=

@@ -2,6 +2,7 @@ package worker
 
 import (
 	"github.com/rs/zerolog/log"
+	"github.com/walterjwhite/go-code/lib/application"
 )
 
 func (c *Conf) stop() {
@@ -9,7 +10,8 @@ func (c *Conf) stop() {
 		log.Warn().Msg("stop time already passed")
 	}
 
-	log.Info().Msg("time for quit")
+	log.Info().Msg("time to quit")
 	c.stopChannel <- true
 
+	application.Cancel()
 }

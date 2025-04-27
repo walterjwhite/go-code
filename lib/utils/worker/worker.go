@@ -68,7 +68,7 @@ func (c *Conf) Run() {
 	for {
 		select {
 		case <-c.stopChannel:
-			log.Warn().Msgf("exiting instance: %v", c)
+			log.Warn().Msgf("exiting instance: %v", c.Worker)
 			c.Worker.OnStop()
 
 			return

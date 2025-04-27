@@ -20,10 +20,14 @@ func init() {
 }
 
 func main() {
+	if !session.Runnable() {
+		log.Warn().Msg("Session will not start, past end time")
+		return
+	}
+
 	defer session.Cancel()
 
 	token := getToken()
-
 	session.Run(*token)
 }
 

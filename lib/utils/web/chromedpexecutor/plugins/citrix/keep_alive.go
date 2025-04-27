@@ -1,13 +1,16 @@
 package citrix
 
 import (
+	"context"
 	"errors"
+	"github.com/avast/retry-go"
 	"github.com/chromedp/chromedp"
 	"github.com/rs/zerolog/log"
 	"github.com/walterjwhite/go-code/lib/application"
 	"github.com/walterjwhite/go-code/lib/application/logging"
 	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/action"
 	"strings"
+	"time"
 )
 
 func (s *Session) keepAlive() {
@@ -28,11 +31,26 @@ func (s *Session) keepAlive() {
 func (s *Session) doKeepAlive() {
 	s.handleExpired()
 
-	sessionMutex.Lock()
-	defer sessionMutex.Unlock()
+	err := retry.Do(
+		func() error {
+			return s.doTryKeepAlive()
+		},
+		retry.Attempts(3),
+		retry.DelayType(func(n uint, err error, config *retry.Config) time.Duration {
+			return retry.BackOffDelay(n, err, config)
+		}),
+	)
+
+	logging.Panic(err)
+}
+
+func (s *Session) doTryKeepAlive() error {
+	ctx, cancel := context.WithTimeout(s.ctx, *s.KeepAliveTimeout)
+	defer cancel()
+
 
 	log.Debug().Msgf("tickling: %v", s.Endpoint.Uri)
-	action.Execute(s.ctx, chromedp.Navigate(s.Endpoint.Uri))
+	return chromedp.Run(ctx, chromedp.Navigate(s.Endpoint.Uri))
 }
 
 func (s *Session) handleExpired() {
