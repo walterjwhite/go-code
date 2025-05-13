@@ -2,6 +2,7 @@ package citrix
 
 import (
   "context"
+  "errors"
   "fmt"
   "github.com/chromedp/cdproto/target"
 
@@ -12,23 +13,39 @@ import (
   "github.com/walterjwhite/go-code/lib/application/logging"
   "github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/action"
   "github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/plugins/citrix/plugins/mouse_wiggle"
+  "github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/plugins/citrix/plugins/noop"
   "github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/plugins/run"
 
+  "strings"
   "sync"
   "time"
 )
 
 
 type CitrixWorker interface {
+  Name() string
   Work(ctx context.Context, headless bool)
   Cleanup()
+}
+
+func (s *Session) Name() string {
+  var builder strings.Builder
+
+  builder.WriteString("citrix: {")
+
+  for index := range s.Instances {
+    builder.WriteString(" worker: " + s.Instances[index].Worker.Name() + "\n")
+  }
+
+  builder.WriteString("}\n")
+  return builder.String()
 }
 
 func (s *Session) Work() {
   waitGroup := &sync.WaitGroup{}
 
   for index := range s.Instances {
-    log.Info().Msgf("Work [%v]", s.Instances[index])
+    log.Info().Msgf("Debug [%v]", s.Instances[index])
     s.Instances[index].session = s
 
     waitGroup.Add(1)
@@ -60,7 +77,15 @@ func (i *Instance) run(waitGroup *sync.WaitGroup) {
 
     movementWaitTime := 3 * time.Minute
     timeBetweenActions := 3 * time.Second
-    i.Worker = &mouse_wiggle.State{MovementWaitTime: &movementWaitTime, TimeBetweenActions: &timeBetweenActions}
+
+    switch i.WorkerType {
+    case MouseWiggler:
+      i.Worker = &mouse_wiggle.State{MovementWaitTime: &movementWaitTime, TimeBetweenActions: &timeBetweenActions}
+    case NOOP:
+      i.Worker = &noop.State{}
+    default:
+      logging.Panic(errors.New("WorkerType unspecified"))
+    }
 
     i.initialized = true
 
@@ -73,7 +98,7 @@ func (i *Instance) run(waitGroup *sync.WaitGroup) {
     }
   }
 
-  i.Worker.Work(i.ctx, i.session.Headless)
+  i.Worker.Work(i.ctx, i.session.Conf.Headless)
   log.Info().Msgf("run.end [%v]", i)
 }
 
@@ -84,7 +109,7 @@ func (i *Instance) launch() {
     func() error {
       return i.tryLaunch()
     },
-    retry.Attempts(3),
+    retry.Attempts(5),
     retry.DelayType(func(n uint, err error, config *retry.Config) time.Duration {
       return retry.BackOffDelay(n, err, config)
     }),
@@ -95,26 +120,33 @@ func (i *Instance) launch() {
 }
 
 func (i *Instance) tryLaunch() error {
-  log.Info().Msgf("launching instance: %d -> %d @ [%s]", i, i.Index, action.Location(i.session.ctx))
+  log.Debug().Msgf("launching instance: %d -> %d @ [%s]", i, i.Index, action.Location(i.session.ctx))
   targetElementXpath := fmt.Sprintf("//*[@id=\"home-screen\"]/div[2]/section[5]/div[5]/div/ul/li[%d]/a[1]", i.Index)
   targetIDChannel := chromedp.WaitNewTarget(i.session.ctx, matchTabWithNonEmptyURL)
 
   timeLimitedCtx, timeLimitedCancel := context.WithTimeout(i.session.ctx, 5*time.Second)
   defer timeLimitedCancel()
 
-  log.Info().Msgf("clicking: %s", targetElementXpath)
+  log.Debug().Msgf("clicking: %s", targetElementXpath)
   err := chromedp.Run(timeLimitedCtx, chromedp.Click(targetElementXpath))
   if err != nil {
     return err
   }
 
-  log.Info().Msg("clicked")
-  newInstance, newCancelFunc := chromedp.NewContext(i.session.ctx, chromedp.WithTargetID(<-targetIDChannel))
-  i.ctx = newInstance
-  i.cancel = newCancelFunc
+  log.Debug().Msg("clicked")
 
-  log.Info().Msg("new instance")
-  return nil
+  select {
+  case targetID := <-targetIDChannel:
+    newInstance, newCancelFunc := chromedp.NewContext(i.session.ctx, chromedp.WithTargetID(targetID))
+    i.ctx = newInstance
+    i.cancel = newCancelFunc
+
+    log.Debug().Msg("new instance")
+
+    return nil
+  case <-timeLimitedCtx.Done():
+    return timeLimitedCtx.Err()
+  }
 }
 
 func matchTabWithNonEmptyURL(info *target.Info) bool {

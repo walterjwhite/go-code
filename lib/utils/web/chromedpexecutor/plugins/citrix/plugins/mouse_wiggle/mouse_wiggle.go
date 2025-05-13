@@ -9,8 +9,12 @@ import (
   "time"
 )
 
+func (i *State) Name() string {
+  return "mouse wiggle"
+}
+
 func (i *State) Work(ctx context.Context, headless bool) {
-  log.Warn().Msgf("Mouse wiggle is enabled: %s", action.Location(ctx))
+  log.Debug().Msgf("Mouse wiggle is enabled: %s", action.Location(ctx))
 
   if !headless {
     if !i.initialized {

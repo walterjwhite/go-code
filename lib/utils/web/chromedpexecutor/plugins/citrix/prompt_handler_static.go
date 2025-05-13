@@ -10,7 +10,7 @@ import (
 )
 
 func (i *Instance) handlePromptStatic() {
-	log.Info().Msgf("handling prompt - %d", i.Index)
+	log.Debug().Msgf("handling prompt - %d", i.Index)
 
 	time.Sleep(*i.InitialActionDelay)
 
@@ -18,12 +18,12 @@ func (i *Instance) handlePromptStatic() {
 		chromedp.MouseEvent(input.MouseMoved, 100, 100)))
 
 	for iteration := 0; iteration < 3; iteration++ {
-		log.Info().Msgf("hitting enter - %d:%d", i.Index, iteration)
+		log.Debug().Msgf("hitting enter - %d:%d", i.Index, iteration)
 		logging.Panic(chromedp.Run(i.ctx,
 			chromedp.KeyEvent(kb.Enter),
 			chromedp.Sleep(*i.TimeBetweenActions)))
 	}
 
-	log.Info().Msgf("handled prompt - %d", i.Index)
+	log.Debug().Msgf("handled prompt - %d", i.Index)
 	saveScreenshot(i.ctx, "/tmp/2.gateway-prompt-%d.png", i.Index)
 }

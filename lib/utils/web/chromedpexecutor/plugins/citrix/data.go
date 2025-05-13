@@ -3,6 +3,7 @@ package citrix
 import (
   "context"
   "github.com/walterjwhite/go-code/lib/utils/worker"
+  "github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/provider"
 
   "time"
 )
@@ -14,7 +15,7 @@ type Session struct {
   Tickle           *Tickle
   KeepAliveTimeout *time.Duration
 
-  Headless bool
+  Conf *provider.Conf
 
   UseLightVersion bool
 
@@ -27,6 +28,8 @@ type Session struct {
   Worker worker.Conf
 
   Timeout *time.Duration
+
+  ProxyServerAddress string
 
   ctx    context.Context
   cancel context.CancelFunc
@@ -59,7 +62,7 @@ type Tickle struct {
 
 type Instance struct {
   Index  int
-  Action string
+  WorkerType WorkerType
 
   InitialActionDelay *time.Duration
   TimeBetweenActions *time.Duration
@@ -75,4 +78,15 @@ type Instance struct {
 
   initialized        bool
   actionsInitialized bool
+}
+
+type WorkerType int
+
+const (
+  MouseWiggler WorkerType = iota
+  NOOP
+)
+
+func (w WorkerType) String() string {
+  return [...]string{"MouseWiggler", "NOOP"}[w]
 }

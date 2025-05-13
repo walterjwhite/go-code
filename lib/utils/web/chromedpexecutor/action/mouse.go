@@ -41,13 +41,13 @@ func WasMouseMoved(ctx context.Context, lastX, lastY float64) (bool, float64, fl
 	mouseX, mouseY := GetMousePosition(ctx)
 	moved := (mouseX != lastX || mouseY != lastY)
 
-	log.Info().Msgf("mouse @: %f, %f <- %f, %f", mouseX, mouseY, lastX, lastY)
+	log.Debug().Msgf("mouse @: %f, %f <- %f, %f", mouseX, mouseY, lastX, lastY)
 
 	return moved, mouseX, mouseY
 }
 
 func MoveMouse(ctx context.Context, x, y float64) {
-	log.Info().Msgf("moving mouse to: %f,%f", x, y)
+	log.Debug().Msgf("moving mouse to: %f,%f", x, y)
 	logging.Panic(chromedp.Run(ctx,
 		chromedp.MouseEvent(input.MouseMoved, x, y)))
 }

@@ -1,69 +1,80 @@
 package citrix
 
 import (
-	"context"
-	"errors"
-	"github.com/avast/retry-go"
-	"github.com/chromedp/chromedp"
-	"github.com/rs/zerolog/log"
-	"github.com/walterjwhite/go-code/lib/application"
-	"github.com/walterjwhite/go-code/lib/application/logging"
-	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/action"
-	"strings"
-	"time"
+  "context"
+  "errors"
+  "github.com/avast/retry-go"
+  "github.com/chromedp/chromedp"
+  "github.com/rs/zerolog/log"
+  "github.com/walterjwhite/go-code/lib/application"
+  "github.com/walterjwhite/go-code/lib/application/logging"
+  "github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/action"
+  "strings"
+  "time"
 )
 
 func (s *Session) keepAlive() {
-	for {
-		select {
-		case <-s.keepAliveChannel:
-			s.doKeepAlive()
-		case <-s.ctx.Done():
-			log.Warn().Msg("session context ended, exiting keep-alive")
-			return
-		case <-application.Context.Done():
-			log.Warn().Msg("application context ended, exiting keep-alive")
-			return
-		}
-	}
+  for {
+    select {
+    case <-s.keepAliveChannel:
+      s.doKeepAlive()
+    case <-s.ctx.Done():
+      log.Warn().Msg("session context ended, exiting keep-alive")
+      return
+    case <-application.Context.Done():
+      log.Warn().Msg("application context ended, exiting keep-alive")
+      return
+    }
+  }
 }
 
 func (s *Session) doKeepAlive() {
-	s.handleExpired()
+  start := time.Now()
 
-	err := retry.Do(
-		func() error {
-			return s.doTryKeepAlive()
-		},
-		retry.Attempts(3),
-		retry.DelayType(func(n uint, err error, config *retry.Config) time.Duration {
-			return retry.BackOffDelay(n, err, config)
-		}),
-	)
+  s.handleExpired()
 
-	logging.Panic(err)
+  err := retry.Do(
+    func() error {
+      return s.doTryKeepAlive()
+    },
+    retry.Attempts(5),
+    retry.Delay(3*time.Second),
+  )
+
+  end := time.Now()
+
+  delta := end.Sub(start)
+
+  log.Warn().Msgf("Start Time: %v", start)
+  log.Warn().Msgf("End Time: %v", end)
+  log.Warn().Msgf("Delta: %v", delta)
+  log.Warn().Msgf("Delta in seconds: %v", delta.Seconds())
+
+  action.FullScreenshot(s.ctx, "/tmp/citrix-keep-alive-timeout-error.png")
+
+  logging.Panic(err)
 }
 
 func (s *Session) doTryKeepAlive() error {
-	ctx, cancel := context.WithTimeout(s.ctx, *s.KeepAliveTimeout)
-	defer cancel()
+  ctx, cancel := context.WithTimeout(s.ctx, *s.KeepAliveTimeout)
+  defer cancel()
 
 
-	log.Debug().Msgf("tickling: %v", s.Endpoint.Uri)
-	return chromedp.Run(ctx, chromedp.Navigate(s.Endpoint.Uri))
+  log.Debug().Msgf("tickling: %v", s.Endpoint.Uri)
+  return chromedp.Run(ctx, chromedp.Navigate(s.Endpoint.Uri))
 }
 
 func (s *Session) handleExpired() {
-	if s.isExpired() {
-		logging.Panic(errors.New("session expired"))
-	}
+  if s.isExpired() {
+    logging.Panic(errors.New("session expired"))
+  }
 }
 
 func (s *Session) isExpired() bool {
-	currentUrl := action.Location(s.ctx)
-	if strings.HasSuffix(currentUrl, "/logout.html") {
-		return true
-	}
+  currentUrl := action.Location(s.ctx)
+  if strings.HasSuffix(currentUrl, "/logout.html") {
+    return true
+  }
 
-	return strings.HasSuffix(currentUrl, "LogonPoint/tmindex.html")
+  return strings.HasSuffix(currentUrl, "LogonPoint/tmindex.html")
 }
