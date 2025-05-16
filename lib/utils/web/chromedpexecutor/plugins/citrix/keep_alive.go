@@ -42,15 +42,14 @@ func (s *Session) doKeepAlive() {
   )
 
   end := time.Now()
-
   delta := end.Sub(start)
-
-  log.Warn().Msgf("Start Time: %v", start)
-  log.Warn().Msgf("End Time: %v", end)
   log.Warn().Msgf("Delta: %v", delta)
-  log.Warn().Msgf("Delta in seconds: %v", delta.Seconds())
 
-  action.FullScreenshot(s.ctx, "/tmp/citrix-keep-alive-timeout-error.png")
+  if err != nil {
+    action.FullScreenshot(s.ctx, "/tmp/citrix-keep-alive-timeout-error.png")
+  } else {
+    action.FullScreenshot(s.ctx, "/tmp/citrix-keep-alive.png")
+  }
 
   logging.Panic(err)
 }
@@ -58,7 +57,6 @@ func (s *Session) doKeepAlive() {
 func (s *Session) doTryKeepAlive() error {
   ctx, cancel := context.WithTimeout(s.ctx, *s.KeepAliveTimeout)
   defer cancel()
-
 
   log.Debug().Msgf("tickling: %v", s.Endpoint.Uri)
   return chromedp.Run(ctx, chromedp.Navigate(s.Endpoint.Uri))
