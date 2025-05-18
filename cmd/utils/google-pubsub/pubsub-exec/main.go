@@ -79,6 +79,8 @@ func (e *Executor) MessageDeserialized() {
 			status = exitError.ExitCode()
 			log.Warn().Msgf("Error running: %s (%s) -> %v", *cmd, e.Cmd.Args, status)
 		}
+	} else {
+		log.Info().Msgf("Successfully ran: %s (%s) -> %v", *cmd, e.Cmd.Args, status)
 	}
 
 	respond(status, string(output))

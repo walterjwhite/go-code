@@ -1,92 +1,92 @@
 package citrix
 
 import (
-  "context"
-  "github.com/walterjwhite/go-code/lib/utils/worker"
-  "github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/provider"
+	"context"
+	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/provider"
+	"github.com/walterjwhite/go-code/lib/utils/worker"
 
-  "time"
+	"time"
 )
 
 type Session struct {
-  Credentials *Credentials
-  Endpoint    *Endpoint
+	Credentials *Credentials
+	Endpoint    *Endpoint
 
-  Tickle           *Tickle
-  KeepAliveTimeout *time.Duration
+	Tickle           *Tickle
+	KeepAliveTimeout *time.Duration
 
-  Conf *provider.Conf
+	Conf *provider.Conf
 
-  UseLightVersion bool
+	UseLightVersion bool
 
-  Delay     *time.Duration
-  Instances []*Instance
+	Delay     *time.Duration
+	Instances []*Instance
 
-  PostAuthenticationDelay   *time.Duration
-  PostAuthenticationActions []string
+	PostAuthenticationDelay   *time.Duration
+	PostAuthenticationActions []string
 
-  Worker worker.Conf
+	Worker worker.Conf
 
-  Timeout *time.Duration
+	Timeout *time.Duration
 
-  ProxyServerAddress string
+	ProxyServerAddress string
 
-  ctx    context.Context
-  cancel context.CancelFunc
+	ctx    context.Context
+	cancel context.CancelFunc
 
-  keepAliveChannel <-chan time.Time
+	keepAliveChannel <-chan time.Time
 }
 
 type Credentials struct {
-  Domain   string
-  Username string
-  Password string
+	Domain   string
+	Username string
+	Password string
 
-  Pin string
+	Pin string
 }
 
 type Endpoint struct {
-  Uri string
+	Uri string
 
-  UsernameXPath    string
-  PasswordXPath    string
-  TokenXPath       string
-  LoginButtonXPath string
+	UsernameXPath    string
+	PasswordXPath    string
+	TokenXPath       string
+	LoginButtonXPath string
 
-  AuthenticationDelay *time.Duration
+	AuthenticationDelay *time.Duration
 }
 
 type Tickle struct {
-  TickleInterval *time.Duration
+	TickleInterval *time.Duration
 }
 
 type Instance struct {
-  Index  int
-  WorkerType WorkerType
+	Index      int
+	WorkerType WorkerType
 
-  InitialActionDelay *time.Duration
-  TimeBetweenActions *time.Duration
+	InitialActionDelay *time.Duration
+	TimeBetweenActions *time.Duration
 
-  Actions []string
+	Actions []string
 
-  Worker CitrixWorker
+	Worker CitrixWorker
 
-  ctx    context.Context
-  cancel context.CancelFunc
+	ctx    context.Context
+	cancel context.CancelFunc
 
-  session *Session
+	session *Session
 
-  initialized        bool
-  actionsInitialized bool
+	initialized        bool
+	actionsInitialized bool
 }
 
 type WorkerType int
 
 const (
-  MouseWiggler WorkerType = iota
-  NOOP
+	MouseWiggler WorkerType = iota
+	NOOP
 )
 
 func (w WorkerType) String() string {
-  return [...]string{"MouseWiggler", "NOOP"}[w]
+	return [...]string{"MouseWiggler", "NOOP"}[w]
 }
