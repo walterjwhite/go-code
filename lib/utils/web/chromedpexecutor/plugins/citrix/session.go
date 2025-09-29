@@ -1,14 +1,12 @@
 package citrix
 
 import (
+	"context"
 	"github.com/chromedp/chromedp"
 	"github.com/rs/zerolog/log"
 
-	"github.com/walterjwhite/go-code/lib/application"
-	"github.com/walterjwhite/go-code/lib/application/logging"
-
-	"errors"
 	"github.com/chromedp/cdproto/browser"
+	"github.com/walterjwhite/go-code/lib/application/logging"
 	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/action"
 	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/plugins/run"
 
@@ -20,69 +18,112 @@ const (
 )
 
 func (s *Session) Run(token string) {
-	defer s.Cancel()
+	log.Debug().Msg("Session.Run - start")
 
-	s.authenticate(token)
-	saveScreenshot(s.ctx, "/tmp/%d.gateway-authenticate.png", 0)
+	defer s.cancel()
 
-	if !s.isAuthenticated() {
-		saveScreenshot(s.ctx, "/tmp/%d.gateway-failed-to-authenticate.png", 1)
-		logging.Panic(errors.New("failed to authenticate"))
+	var javascriptListenCancel context.CancelFunc
+	if log.Debug().Enabled() {
+		javascriptListenCancel = s.captureJavascript()
 	}
 
-	saveScreenshot(s.ctx, "/tmp/%d.gateway-authenticated.png", 1)
-
+	s.authenticate(token)
 	s.useLightVersion()
+
 	action.Grant(s.ctx, []browser.PermissionType{"windowManagement"})
 
 	s.runPostAuthenticationActions()
+	if javascriptListenCancel != nil {
+		javascriptListenCancel()
+	}
 
-	s.keepAliveChannel = time.Tick(*s.Timeout)
+	s.keepAliveTicker = time.NewTicker(*s.Timeout)
 	go s.keepAlive()
+	go s.onDone()
 
-	s.Worker.Worker = s
-	s.Worker.Run()
+
+	s.Worker.WithWorker(s)
+	s.Worker.Run(s.ctx)
+
+	log.Debug().Msg("Session.Run - end")
+}
+
+func (s *Session) onDone() {
+	<-s.ctx.Done()
+	s.cleanup()
 }
 
 func (s *Session) runPostAuthenticationActions() {
+	log.Debug().Msg("Session.runPostAuthenticationActions - start")
+
 	if len(s.PostAuthenticationActions) > 0 {
-		log.Info().Msgf("running post authentication actions - delay: %v", *s.PostAuthenticationDelay)
+		log.Info().Msgf("Session.runPostAuthenticationActions - running post authentication actions - delay: %v", *s.PostAuthenticationDelay)
 		time.Sleep(*s.PostAuthenticationDelay)
 
-		log.Info().Msgf("running post authentication actions: %v", s.PostAuthenticationActions)
+		log.Info().Msgf("Session.runPostAuthenticationActions - running post authentication actions: %v", s.PostAuthenticationActions)
 		action.Execute(s.ctx, run.ParseActions(s.PostAuthenticationActions...)...)
 	}
+
+	log.Debug().Msg("Session.runPostAuthenticationActions - end")
 }
 
 func (s *Session) useLightVersion() {
-	log.Info().Msgf("useLightVersion: %v", s.UseLightVersion)
+	log.Info().Msgf("Session.useLightVersion - UseLightVersion: %v", s.UseLightVersion)
 
 	if !s.UseLightVersion {
 		return
 	}
 
-	if action.Exists(s.ctx, time.Duration(time.Second*5), useLightVersionPromptId, chromedp.ByID) {
-		log.Info().Msg("switching to light version")
+	select {
+	case <-s.ctx.Done():
+		log.Debug().Msg("Session.useLightVersion - context done")
+	default:
+	}
+
+	if action.ExistsById(s.ctx, useLightVersionPromptId) {
+		log.Info().Msg("Session.useLightVersion - switching to light version")
 		action.Execute(s.ctx,
 			chromedp.Click(useLightVersionPromptId, chromedp.ByID),
 		)
 	}
 }
 
-func (s *Session) Cancel() {
-	log.Warn().Msg("cancelling session")
-	if s.cancel != nil {
-		s.cancel()
-		s.cancel = nil
-	}
+func (s *Session) cleanup() {
+	log.Info().Msg("Session.cleanup - cleaning up")
+	s.GoogleProvider.PublishStatus("cleanup session", true)
 
-	s.cleanup()
-	application.Cancel()
+	s.keepAliveTicker.Stop()
 }
 
-func (s *Session) cleanup() {
-	for index := range s.Instances {
-		log.Info().Msgf("on break, cancelling context: %v", s.Instances[index])
-		s.Instances[index].cleanup()
+func (s *Session) cleanupWorkers() {
+	for i := range s.Instances {
+		if s.Instances[i] == nil || s.Instances[i].active == nil {
+			log.Warn().Msg("Session.cleanupWorkers - instance is not initialized")
+			continue
+		}
+
+		if s.Instances[i].active.Load() {
+			log.Warn().Msgf("Session.cleanupWorkers - instance is active, not cancelling worker: %d", i)
+		} else {
+			log.Warn().Msgf("Session.cleanupWorkers - cancelling context of worker: %d", i)
+			s.Instances[i].cancel()
+		}
+	}
+}
+
+func (s *Session) lockWorkers() {
+	for i := range s.Instances {
+		if s.Instances[i].active == nil {
+			log.Warn().Msg("Session.lockWorkers - instance has not yet been initialized")
+			continue
+		}
+
+		if s.Instances[i].active.Load() {
+			log.Warn().Msgf("Session.lockWorkers - worker is active, not locking: %d", i)
+			continue
+		}
+
+		log.Warn().Msgf("Session.lockWorkers - locking worker: %d", i)
+		logging.Warn(s.Instances[i].lock(), false, "Session.lockWorkers - error locking worker")
 	}
 }

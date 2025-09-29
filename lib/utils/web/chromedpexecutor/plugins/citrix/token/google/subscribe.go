@@ -1,27 +1,29 @@
 package google
 
 import (
-	"context"
 	"fmt"
+	"github.com/rs/zerolog/log"
 )
 
-func (p *Provider) ReadToken(ctx context.Context) *string {
-	p.session.Subscribe(p.TokenTopicName, p.TokenSubscriptionName, p)
+func (p *Provider) ReadToken() *string {
+	log.Info().Msg("reading token")
+	p.Conf.Subscribe(p.TokenTopicName, p.TokenSubscriptionName, p)
+
+	log.Info().Msgf("read token: %s", p.token)
+
 	return &p.token
 }
 
-func (p *Provider) New() any {
-	return &p.token
-}
+func (p *Provider) MessageDeserialized(message []byte) {
+	p.token = string(message)
 
-func (p *Provider) MessageDeserialized() {
-	p.publishStatus(fmt.Sprintf("unmarshalled token: %s", p.token), true)
+	log.Info().Msgf("read token: %s", p.token)
+	p.PublishStatus(fmt.Sprintf("read token: %s", p.token), true)
 
-	p.session.Cancel()
+	p.Conf.Cancel()
 }
 
 func (p *Provider) MessageParseError(err error) {
-	p.publishStatus(fmt.Sprintf("error unmarshalling message: %s", err), false)
+	log.Error().Msgf("error reading token: %s", p.token)
+	p.PublishStatus(fmt.Sprintf("error reading message: %s", err), false)
 }
-
-

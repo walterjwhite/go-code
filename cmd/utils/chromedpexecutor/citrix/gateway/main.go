@@ -6,44 +6,45 @@ import (
 
 	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/plugins/citrix"
 	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/plugins/citrix/token/cli"
-	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/plugins/citrix/token/google"
 )
 
 var (
-	session = &citrix.Session{}
+	session       = &citrix.Session{}
+	firstRun bool = true
 )
 
 func init() {
 	application.Configure(session)
 	session.Validate()
-	session.Init(application.Context)
+
+	log.Debug().Msg("initializing google pubsub")
+
+	application.Load(session.GoogleProvider)
+	session.GoogleProvider.Init(application.Context)
+
+	log.Debug().Msgf("conf: %v", session.GoogleProvider)
 }
 
 func main() {
-	if !session.Runnable() {
-		log.Warn().Msg("Session will not start, past end time")
-		return
+	for {
+		token := getToken()
+
+		session.Init(application.Context)
+		session.Run(*token)
+
+		firstRun = false
 	}
-
-	defer session.Cancel()
-
-	token := getToken()
-	session.Run(*token)
 }
 
 func getToken() *string {
-	token := cli.New().ReadToken(application.Context)
-	if token != nil {
-		log.Info().Msg("Using cmdline token")
-		return token
+	if firstRun {
+		token := cli.New().ReadToken()
+		if token != nil {
+			log.Info().Msg("using cmdline token")
+			return token
+		}
 	}
 
-	googleProvider := &google.Provider{}
-	application.Load(googleProvider)
-	googleProvider.Init(application.Context)
-
-	log.Info().Msgf("google: %v | %v | %v | %v", googleProvider.TokenTopicName, googleProvider.TokenSubscriptionName, googleProvider.StatusTopicName, googleProvider.StatusSubscriptionName)
-	log.Info().Msgf("google Conf: %v | %v", googleProvider.Conf.CredentialsFile, googleProvider.Conf.ProjectId)
-
-	return googleProvider.ReadToken(application.Context)
+	log.Info().Msg("using google pubsub")
+	return session.GoogleProvider.ReadToken()
 }

@@ -8,8 +8,8 @@ import (
 func Panic(err error, contextuals ...interface{}) {
 	if err != nil {
 		if contextuals != nil || len(contextuals) > 0 {
-			for i, c := range contextuals {
-				log.Warn().Interface(fmt.Sprintf("contextual: %d", i), c).Msg("Contextual")
+			for i := range contextuals {
+				log.Warn().Interface(fmt.Sprintf("contextual: %d", i), contextuals[i]).Msg("Contextual")
 			}
 		}
 

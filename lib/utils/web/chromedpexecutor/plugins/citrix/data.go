@@ -2,9 +2,11 @@ package citrix
 
 import (
 	"context"
+	"fmt"
+	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/plugins/citrix/token/google"
 	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/provider"
 	"github.com/walterjwhite/go-code/lib/utils/worker"
-
+	"sync"
 	"time"
 )
 
@@ -14,6 +16,8 @@ type Session struct {
 
 	Tickle           *Tickle
 	KeepAliveTimeout *time.Duration
+	KeepAliveTries   uint
+	KeepAliveDelay   *time.Duration
 
 	Conf *provider.Conf
 
@@ -31,10 +35,19 @@ type Session struct {
 
 	ProxyServerAddress string
 
+	GoogleProvider *google.Provider
+
 	ctx    context.Context
 	cancel context.CancelFunc
 
-	keepAliveChannel <-chan time.Time
+	keepAliveTicker *time.Ticker
+
+	mutex     sync.RWMutex
+	waitGroup *sync.WaitGroup
+}
+
+func (s *Session) String() string {
+	return fmt.Sprintf("Endpoint: %s", s.Endpoint)
 }
 
 type Credentials struct {
@@ -48,45 +61,9 @@ type Credentials struct {
 type Endpoint struct {
 	Uri string
 
-	UsernameXPath    string
-	PasswordXPath    string
-	TokenXPath       string
-	LoginButtonXPath string
-
 	AuthenticationDelay *time.Duration
 }
 
 type Tickle struct {
 	TickleInterval *time.Duration
-}
-
-type Instance struct {
-	Index      int
-	WorkerType WorkerType
-
-	InitialActionDelay *time.Duration
-	TimeBetweenActions *time.Duration
-
-	Actions []string
-
-	Worker CitrixWorker
-
-	ctx    context.Context
-	cancel context.CancelFunc
-
-	session *Session
-
-	initialized        bool
-	actionsInitialized bool
-}
-
-type WorkerType int
-
-const (
-	MouseWiggler WorkerType = iota
-	NOOP
-)
-
-func (w WorkerType) String() string {
-	return [...]string{"MouseWiggler", "NOOP"}[w]
 }

@@ -7,5 +7,5 @@ import (
 
 func LoadEnv(config interface{}) {
 	err := envconfig.Init(config)
-	log.Warn().Msgf("Error reading properties from env: %v", err)
+	log.Debug().Msgf("Error reading properties from env: %v", err)
 }

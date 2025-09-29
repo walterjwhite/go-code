@@ -6,19 +6,13 @@ import (
 )
 
 type RandomDelay struct {
-	min       time.Duration
-	deviation time.Duration
+	amount time.Duration
 }
 
-func NewRandom(m time.Duration, d time.Duration) *RandomDelay {
-	return &RandomDelay{min: m, deviation: d}
+func NewRandom(d time.Duration) *RandomDelay {
+	return &RandomDelay{amount: d}
 }
 
 func (d *RandomDelay) Delay() {
-	if d.deviation > 0 {
-		doDelay(d.min + time.Duration(rand.Int63n(d.deviation.Nanoseconds()))*time.Nanosecond)
-		return
-	}
-
-	doDelay(d.min)
+	doDelay(time.Duration(rand.Int63n(d.amount.Nanoseconds())) * time.Nanosecond)
 }

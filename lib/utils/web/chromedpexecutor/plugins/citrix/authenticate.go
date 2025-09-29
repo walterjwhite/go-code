@@ -1,6 +1,8 @@
 package citrix
 
 import (
+	"context"
+	"errors"
 	"github.com/chromedp/chromedp"
 
 	"github.com/rs/zerolog/log"
@@ -8,60 +10,75 @@ import (
 	"time"
 
 	"github.com/walterjwhite/go-code/lib/application/logging"
-	"github.com/walterjwhite/go-code/lib/time/delay"
 	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/action"
 )
 
 const (
+	usernameXPath    = "//*[@id=\"login\"]"
+	passwordXPath    = "//*[@id=\"passwd\"]"
+	tokenXPath       = "//*[@id=\"passwd1\"]"
+	loginButtonXPath = "//*[@id=\"loginBtn\"]"
+
 	menuButtonXpath   = "//*[@id=\"userMenuBtn\"]/div"
 	logoffButtonXpath = "//*[@id=\"menuLogOffBtn\"]"
+
+	loginTimeout  = 30 * time.Second
+	logoutTimeout = 5 * time.Second
+	existsTimeout = 1 * time.Second
 )
 
 func (s *Session) authenticate(token string) {
 	token = s.trim(token)
 	validateToken(token)
 
-	log.Info().Msgf("running with: %v", token)
+	log.Info().Msgf("Session.authenticate - authenticating with token: %v", token)
+	log.Debug().Msgf("Session.authenticate - credentials: %v | %v | %v | %v", s.Credentials.Username, s.Credentials.Domain, s.Credentials.Password, s.getTokenAndPin(token))
 
-	action.Execute(s.ctx, chromedp.Navigate(s.Endpoint.Uri))
+	ctx, cancel := context.WithTimeout(s.ctx, loginTimeout)
+	defer cancel()
 
-	log.Debug().Msgf("username: %v", s.Credentials.Username)
-	log.Debug().Msgf("domain: %v", s.Credentials.Domain)
-	log.Debug().Msgf("password: %v", s.Credentials.Password)
-	log.Debug().Msgf("pin/token: %v", s.getTokenAndPin(token))
+	action.Execute(ctx, chromedp.Navigate(s.Endpoint.Uri))
 
-	action.ExecuteWithDelay(s.ctx,
-		delay.NewRandom(*s.Delay, *s.Delay),
+	action.Execute(ctx,
+		chromedp.SendKeys(usernameXPath, strings.TrimSpace(s.Credentials.Domain+"\\"+s.Credentials.Username)),
 
-		chromedp.SendKeys(s.Endpoint.UsernameXPath, strings.TrimSpace(s.Credentials.Domain+"\\"+s.Credentials.Username)),
-
-		chromedp.SendKeys(s.Endpoint.PasswordXPath, strings.TrimSpace(s.Credentials.Password)),
-		chromedp.SendKeys(s.Endpoint.TokenXPath, strings.TrimSpace(s.getTokenAndPin(token))),
+		chromedp.SendKeys(passwordXPath, strings.TrimSpace(s.Credentials.Password)),
+		chromedp.SendKeys(tokenXPath, strings.TrimSpace(s.getTokenAndPin(token))),
 	)
 
-	_, err := chromedp.RunResponse(s.ctx, chromedp.Click(s.Endpoint.LoginButtonXPath))
+	_, err := chromedp.RunResponse(ctx, chromedp.Click(loginButtonXPath))
 	logging.Panic(err)
+
+	if !s.IsAuthenticated() {
+		s.GoogleProvider.PublishStatus("failed to authenticate", false)
+		logging.Panic(errors.New("Session.authenticate - failed to authenticate"))
+	}
+
+	s.GoogleProvider.PublishStatus("authenticated", true)
 }
 
 func (s *Session) getTokenAndPin(token string) string {
 	return s.Credentials.Pin + token
 }
 
-func (s *Session) logout() {
-	action.Execute(s.ctx,
+func (s *Session) Logout() {
+	ctx, cancel := context.WithTimeout(s.ctx, logoutTimeout)
+	defer cancel()
+
+	action.Execute(ctx,
 		chromedp.Click(menuButtonXpath),
 		chromedp.Click(logoffButtonXpath),
 	)
 }
 
-func (s *Session) isAuthenticated() bool {
-	if action.Exists(s.ctx, time.Duration(time.Second*5), "userMenuBtn", chromedp.ByID) {
-		log.Warn().Msg("user is authenticated - userMenuBtn is present")
+func (s *Session) IsAuthenticated() bool {
+	if action.ExistsById(s.ctx, "userMenuBtn") {
+		log.Debug().Msg("Session.IsAuthenticated - user is authenticated - userMenuBtn is present")
 		return true
 	}
 
-	citrixLightInstallButtonExists := action.Exists(s.ctx, time.Duration(time.Second*5), "protocolhandler-welcome-installButton", chromedp.ByID)
-	log.Warn().Msgf("user is authenticated - light install button: %v", citrixLightInstallButtonExists)
+	citrixLightInstallButtonExists := action.ExistsById(s.ctx, "protocolhandler-welcome-installButton")
+	log.Debug().Msgf("Session.IsAuthenticated - user is authenticated - light install button: %v", citrixLightInstallButtonExists)
 
 	return citrixLightInstallButtonExists
 }

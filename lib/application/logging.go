@@ -15,7 +15,7 @@ const (
 )
 
 var (
-	logLevel  = flag.String("log-level", "warn", "log level")
+	logLevel  = flag.String("log-level", "info", "log level")
 	logTarget = flag.String("log-target", "", "log file, if empty, stderr is used, if SYSLOG, syslog is used")
 	logWriter io.WriteCloser
 )

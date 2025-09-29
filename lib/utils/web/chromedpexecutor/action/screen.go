@@ -4,8 +4,6 @@ import (
 	"context"
 
 	"github.com/chromedp/chromedp"
-
-	"github.com/walterjwhite/go-code/lib/application/logging"
 )
 
 type Size struct {
@@ -13,18 +11,16 @@ type Size struct {
 	Height int
 }
 
-func GetScreenSize(ctx context.Context) Size {
+func GetScreenSize(ctx context.Context) (Size, error) {
 	var screenSize Size
-	err := chromedp.Run(ctx, chromedp.Evaluate(`({Width: screenWidth, Height: screenHeight})`, &screenSize))
-	logging.Panic(err)
+	err := chromedp.Run(ctx, chromedp.Evaluate(`({Width: window.screen.width, Height: window.screen.height})`, &screenSize))
 
-	return screenSize
+	return screenSize, err
 }
 
-func GetWindowSize(ctx context.Context) Size {
+func GetWindowSize(ctx context.Context) (Size, error) {
 	var windowSize Size
 	err := chromedp.Run(ctx, chromedp.Evaluate(`({Width: window.innerWidth, Height: window.innerHeight})`, &windowSize))
-	logging.Panic(err)
 
-	return windowSize
+	return windowSize, err
 }

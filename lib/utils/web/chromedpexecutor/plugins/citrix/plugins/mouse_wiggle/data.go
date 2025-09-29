@@ -4,12 +4,26 @@ import (
 	"time"
 )
 
-type State struct {
-	MovementWaitTime   *time.Duration
-	TimeBetweenActions *time.Duration
+type Conf struct {
+	MovementWaitTime   time.Duration
+	TimeBetweenActions time.Duration
+	Points             []Point // Change from Point[] to []Point
+}
 
-	lastMouseX float64
-	lastMouseY float64
+type Point struct {
+	X float64
+	Y float64
+}
 
-	initialized bool
+func New(movementWaitTime, timeBetweenActions time.Duration) *Conf {
+	return &Conf{
+		MovementWaitTime:   movementWaitTime,
+		TimeBetweenActions: timeBetweenActions,
+		Points: []Point{ // Use a slice instead of an array
+			{X: 100, Y: 100},
+			{X: 200, Y: 100},
+			{X: 200, Y: 200},
+			{X: 100, Y: 200},
+		},
+	}
 }

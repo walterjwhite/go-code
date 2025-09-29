@@ -5,9 +5,9 @@ import (
 )
 
 func (p *Provider) PublishToken(token string) {
-	p.session.Publish(p.TokenTopicName, token)
+	p.Conf.Publish(p.TokenTopicName, []byte(token))
 }
 
-func (p *Provider) publishStatus(status string, successful bool) {
-	p.session.Publish(p.StatusTopicName, fmt.Sprintf("%s|%v", status, successful))
+func (p *Provider) PublishStatus(status string, successful bool) {
+	p.Conf.Publish(p.StatusTopicName, []byte(fmt.Sprintf("%s|%v", status, successful)))
 }

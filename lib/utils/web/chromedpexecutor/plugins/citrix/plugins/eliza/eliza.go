@@ -12,6 +12,6 @@ import (
 )
 
 func (i *Instance) Work() {
-	log.Warn().Msgf("eliza is enabled - %d", i.Index)
+	log.Warn().Msgf("Instance.Work - eliza is enabled - %d", i.Index)
 
 }

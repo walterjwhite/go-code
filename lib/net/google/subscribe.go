@@ -1,7 +1,7 @@
 package google
 
 import (
-	"cloud.google.com/go/pubsub"
+	"cloud.google.com/go/pubsub/v2"
 	"context"
 	"encoding/json"
 	"github.com/rs/zerolog/log"
@@ -9,58 +9,73 @@ import (
 	"github.com/walterjwhite/go-code/lib/io/compression/zstd"
 )
 
-func (s *Session) Subscribe(topicName string, subscriptionName string, ms MessageSubscriber) {
-	_ = s.getOrCreateTopic(topicName)
-
-	sub := s.client.Subscription(subscriptionName)
+func (c *Conf) Subscribe(topicName string, subscriptionName string, ms MessageSubscriber) {
+	sub := c.client.Subscriber(subscriptionName)
 	log.Info().Msgf("subscribed to: %s", subscriptionName)
 
-	err := sub.Receive(s.Ctx, func(ctx context.Context, m *pubsub.Message) {
+	err := sub.Receive(c.ctx, func(ctx context.Context, m *pubsub.Message) {
 		log.Info().Msgf("received raw message: %v", m)
 
-		decrypted := s.decrypt(m.Data)
-		decompressed := s.decompress(decrypted)
-
-		log.Info().Msgf("received message (decompressed): %s", decompressed)
-		var deserialized = ms.New()
-		err := json.Unmarshal(decompressed, &deserialized)
+		decrypted, err := c.decrypt(m.Data)
 		if err != nil {
-			ms.MessageParseError(err)
-			logging.Panic(err)
+			logging.Warn(err, false, "pubsub.Subscribe.Receive")
+			return
 		}
 
-		log.Info().Msgf("received message: %s", deserialized)
+		decompressed := c.decompress(decrypted)
+		log.Info().Msgf("received message (decompressed): %s", decompressed)
 
-		ms.MessageDeserialized()
+		deserialized, err := c.deserialize(ms, decompressed)
+		if err != nil {
+			logging.Warn(err, false, "pubsub.Subscribe.Deserialize")
+			return
+		}
+
+		ms.MessageDeserialized(deserialized)
 
 		m.Ack() // Acknowledge that we've consumed the message.
 	})
-
-	logging.Panic(err)
+	logging.Warn(err, false, "google_pubsub.subscribe.Receive")
 }
 
-func (s *Session) decrypt(data []byte) []byte {
-	if s.AesConf == nil {
-		return data
+func (c *Conf) decrypt(data []byte) ([]byte, error) {
+	if c.aes == nil {
+		return data, nil
 	}
 
-	return s.AesConf.Decrypt(data)
+	return c.aes.Decrypt(data)
 }
 
-func (s *Session) decompress(data []byte) []byte {
-	if !s.EnableCompression {
+func (c *Conf) decompress(data []byte) []byte {
+	if !c.Compress {
 		return data
 	}
 
 	decompressed, err := zstd.DecompressBuffer(data)
-	logging.Panic(err)
+	logging.Warn(err, false, "google_pubsub.subscribe.decompress")
 
 	return decompressed
 }
 
-type MessageSubscriber interface {
-	New() any
+func (c *Conf) deserialize(ms MessageSubscriber, decompressed []byte) ([]byte, error) {
+	if !c.Serialize {
+		log.Debug().Msg("not deserializing")
+		return decompressed, nil
+	}
 
-	MessageDeserialized()
+	var deserialized []byte
+	err := json.Unmarshal(decompressed, &deserialized)
+	if err != nil {
+		ms.MessageParseError(err)
+		logging.Warn(err, false, "google_pubsub.subscribe.Unmarshal")
+		return nil, err
+	}
+
+	log.Info().Msgf("received message: %s", deserialized)
+	return deserialized, nil
+}
+
+type MessageSubscriber interface {
+	MessageDeserialized(deserialized []byte)
 	MessageParseError(err error)
 }

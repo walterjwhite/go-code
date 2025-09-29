@@ -2,53 +2,26 @@ package until
 
 import (
 	"context"
-	"time"
-
 	"github.com/rs/zerolog/log"
-	"github.com/walterjwhite/go-code/lib/time/periodic"
+	"time"
 )
 
-type instance struct {
-	periodic *periodic.PeriodicInstance
-	function func() bool
+func Until(ctx context.Context, interval time.Duration, fn func() bool) error {
+	ticker := time.NewTicker(interval)
+	defer ticker.Stop()
 
-	channel chan bool
-}
+	for {
+		select {
+		case <-ctx.Done():
+			log.Warn().Msg("Operation timed out.")
+			return ctx.Err()
+		case <-ticker.C:
+			if fn() {
+				log.Debug().Msg("Function completed successfully.")
+				return nil
+			}
 
-func New(ctx context.Context, interval *time.Duration, limit *time.Duration, f func() bool) {
-	channel := make(chan bool, 1)
-
-	ctx, cancel := context.WithCancel(ctx)
-	if limit != nil {
-		ctx, cancel = context.WithTimeout(ctx, *limit)
+			log.Debug().Msg("Function not yet completed.")
+		}
 	}
-
-	defer cancel()
-
-	w := &instance{channel: channel, function: f}
-	w.periodic = periodic.Now(ctx, interval, w.monitorFunction)
-
-	w.doWait()
-}
-
-func (w *instance) doWait() {
-	defer close(w.channel)
-
-	<-w.channel
-}
-
-func (w *instance) Cancel() {
-	w.periodic.Cancel()
-}
-
-func (w *instance) monitorFunction() error {
-	if w.function() {
-		log.Debug().Msg("Completed:")
-		w.channel <- true
-
-		return nil
-	}
-
-	log.Debug().Msg("Not yet completed:")
-	return nil
 }

@@ -2,6 +2,7 @@ package google
 
 import (
 	"context"
+	"fmt"
 	google_pubsub "github.com/walterjwhite/go-code/lib/net/google"
 )
 
@@ -14,10 +15,18 @@ type Provider struct {
 	StatusTopicName        string
 	StatusSubscriptionName string
 
-	session *google_pubsub.Session
-	token   string
+	token string
+}
+
+func (p *Provider) String() string {
+	return fmt.Sprintf("Provider: {TokenTopicName: %s, TokenSubscriptionName: %s, StatusTopicName: %s, StatusSubscriptionName: %s, Conf: %s}", p.TokenTopicName, p.TokenSubscriptionName, p.StatusTopicName,
+		p.StatusSubscriptionName, p.Conf)
 }
 
 func (p *Provider) Init(ctx context.Context) {
-	p.session = google_pubsub.New(p.Conf.CredentialsFile, p.Conf.ProjectId, ctx)
+	p.Conf.Init(ctx)
+}
+
+func (p *Provider) Cleanup() {
+	p.Conf.Cancel()
 }

@@ -3,10 +3,10 @@ package action
 import (
 	"bytes"
 	"github.com/andreyvit/locateimage"
-	"io/ioutil"
 
 	"github.com/rs/zerolog/log"
 	"github.com/walterjwhite/go-code/lib/application/logging"
+	"image"
 	"image/png"
 
 	"context"
@@ -14,61 +14,62 @@ import (
 	"os"
 )
 
-func Match(ctx context.Context, matchThreshold float64, referenceImageData []byte, x, y, width, height float64) *locateimage.Match {
+func Match(ctx context.Context, matchThreshold float64, referenceImageData image.Image, x, y, width, height float64) *locateimage.Match {
 	log.Debug().Msg("match start")
-
-	referenceImage, err := png.Decode(bytes.NewReader(referenceImageData))
-	logging.Panic(err)
 
 	screenshotData := TakeScreenshotOf(ctx, x, y, width, height)
 	screenshotDataImg, err := png.Decode(bytes.NewReader(screenshotData))
-	logging.Panic(err)
+	logging.Warn(err, false, "Match")
+	if err != nil {
+		return nil
+	}
 
 	if log.Debug().Enabled() {
-		tempFile, err := ioutil.TempFile("/tmp", "match-*.png")
-		logging.Panic(err)
+		tempFile, err := os.CreateTemp("", "match-*.png")
+		logging.Warn(err, false, "Match.CreateTempFile-1")
+		if err != nil {
+			return nil
+		}
+
 
 		log.Debug().Msgf("capturing screenshot: %v", tempFile.Name())
-		logging.Panic(os.WriteFile(tempFile.Name(), screenshotData, 0644))
+		err = os.WriteFile(tempFile.Name(), screenshotData, 0644)
+		logging.Warn(err, false, "Match.WriteFile")
+		if err != nil {
+			return nil
+		}
 
-		fullTempFile, err := ioutil.TempFile("/tmp", "full-*.png")
-		logging.Panic(err)
+		fullTempFile, err := os.CreateTemp("", "full-*.png")
+		logging.Warn(err, false, "Match.CreateTempFile-2")
+		if err != nil {
+			return nil
+		}
 
 		FullScreenshot(ctx, fullTempFile.Name())
 	}
 
-	match, err := locateimage.Find(context.Background(), locateimage.Convert(screenshotDataImg), locateimage.Convert(referenceImage), matchThreshold, locateimage.Fastest)
-	/*
-	   serr, ok := err.(*locateimage.ErrNotFound)
-
-	   if err.(*locateimage.ErrNotFound); ok {
-	     return nil
-	   } else {
-	     logging.Panic(err)
-	   }
-	*/
-	target := locateimage.ErrNotFound
-	if errors.As(err, &target) {
+	match, err := locateimage.Find(context.Background(), locateimage.Convert(screenshotDataImg), referenceImageData, matchThreshold, locateimage.Fastest)
+	if errors.Is(err, locateimage.ErrNotFound) {
 		log.Debug().Msg("match end - no matches")
 		return nil
 	} else {
 		log.Debug().Msg("match end - err")
-		logging.Panic(err)
+		logging.Warn(err, false, "Match.locateimage.Find")
+		if err != nil {
+			return nil
+		}
 	}
 
 	log.Info().Msgf("matches: %v", match)
 	return &match
 }
 
-func Matches(ctx context.Context, matchThreshold float64, referenceImageData []byte, x, y, width, height float64) []locateimage.Match {
-	referenceImage, err := png.Decode(bytes.NewReader(referenceImageData))
-	logging.Panic(err)
-
+func Matches(ctx context.Context, matchThreshold float64, referenceImageData image.Image, x, y, width, height float64) []locateimage.Match {
 	screenshotData := TakeScreenshotOf(ctx, x, y, width, height)
 	screenshotDataImg, err := png.Decode(bytes.NewReader(screenshotData))
 	logging.Panic(err)
 
-	matches, err := locateimage.All(context.Background(), locateimage.Convert(screenshotDataImg), locateimage.Convert(referenceImage), matchThreshold)
+	matches, err := locateimage.All(context.Background(), locateimage.Convert(screenshotDataImg), referenceImageData, matchThreshold)
 	logging.Panic(err)
 
 	log.Info().Msgf("matches: %v", matches)

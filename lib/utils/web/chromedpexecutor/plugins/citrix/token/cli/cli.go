@@ -1,8 +1,6 @@
 package cli
 
 import (
-	"context"
-
 	"flag"
 )
 
@@ -17,7 +15,7 @@ func New() *Provider {
 	return &Provider{}
 }
 
-func (p *Provider) ReadToken(ctx context.Context) *string {
+func (p *Provider) ReadToken() *string {
 	if len(*tokenFlag) == 6 {
 		return tokenFlag
 	}

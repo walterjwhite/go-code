@@ -3,33 +3,62 @@ package action
 import (
 	"context"
 
+	"fmt"
 	"math"
 
 	"github.com/chromedp/cdproto/page"
 	"github.com/chromedp/chromedp"
 
 	"github.com/chromedp/cdproto/emulation"
+	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"github.com/walterjwhite/go-code/lib/application/logging"
 
 	"os"
+	"time"
 )
 
-func Screenshot(ctx context.Context, filename string) {
+const (
+	screenshotTimeout = 5 * time.Second
+)
+
+
+func ScreenshotIfDebug(ctx context.Context, name_template string, args ...interface{}) {
+	ScreenshotIf(ctx, log.Debug(), name_template, args...)
+}
+
+func ScreenshotIf(ctx context.Context, logLevel *zerolog.Event, name_template string, args ...interface{}) {
+	if logLevel.Enabled() {
+		Screenshot(ctx, fmt.Sprintf(name_template, args...))
+	}
+}
+
+func Screenshot(pctx context.Context, filename string) {
+	log.Debug().Msgf("capturing screenshot: %v", filename)
+	ctx, cancel := context.WithTimeout(pctx, screenshotTimeout)
+	defer cancel()
+
 	var buf []byte
 
-	log.Debug().Msgf("capturing screenshot: %v", filename)
-	logging.Panic(chromedp.Run(ctx, chromedp.CaptureScreenshot(&buf)))
+	err := chromedp.Run(ctx, chromedp.CaptureScreenshot(&buf))
+	if err != nil {
+		logging.Warn(err, false, "Screenshot.Run")
+		return
+	}
 
 	log.Debug().Msgf("took screenshot - writing to: %v", filename)
 
-	logging.Panic(os.WriteFile(filename, buf, 0644))
+	logging.Warn(os.WriteFile(filename, buf, 0644), false, "Screenshot.WriteFile")
 	log.Debug().Msgf("captured screenshot: %v", filename)
 }
 
-func FullScreenshot(ctx context.Context, filename string) {
+func FullScreenshot(pctx context.Context, filename string) {
+	log.Debug().Msg("FullScreenshot - start")
+	ctx, cancel := context.WithTimeout(pctx, screenshotTimeout)
+	defer cancel()
+
 	var buf []byte
-	logging.Panic(chromedp.Run(ctx, chromedp.Tasks{
+	logging.Warn(chromedp.Run(ctx, chromedp.Tasks{
 		chromedp.ActionFunc(func(ctx context.Context) error {
 			_, _, contentSize, _, _, _, err := page.GetLayoutMetrics().Do(ctx)
 			logging.Panic(err)
@@ -58,14 +87,15 @@ func FullScreenshot(ctx context.Context, filename string) {
 				}).Do(ctx)
 			return err
 		}),
-	}))
+	}), false, "FullScreenshot")
 
-	logging.Panic(os.WriteFile(filename, buf, 0644))
+	logging.Warn(os.WriteFile(filename, buf, 0644), false, "FullScreenshot.WriteFile")
 	log.Debug().Msgf("captured screenshot: %v", filename)
 }
 
 func TakeScreenshotOf(ctx context.Context, x, y, width, height float64) []byte {
-	log.Info().Msgf("taking screenshot: [%f, %f] [%f, %f]", x, y, width, height)
+
+	log.Debug().Msgf("taking screenshot: [%f, %f] [%f, %f]", x, y, width, height)
 
 	var buf []byte
 	logging.Panic(chromedp.Run(ctx, chromedp.ActionFunc(func(ctx context.Context) error {

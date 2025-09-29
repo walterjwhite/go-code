@@ -63,7 +63,7 @@ func (s *Session) With(ctx context.Context, chromedpsession session.ChromeDPSess
 	s.activityChannel = make(chan bool)
 	if s.Website.SessionTimeout != nil {
 		s.keepAliveChannel = time.Tick(*s.Website.SessionTimeout)
-		go s.keepAlive
+		go s.keepAlive()
 	}
 
 	if s.MinLocateDelay != nil {
@@ -78,5 +78,3 @@ func (s *Session) With(ctx context.Context, chromedpsession session.ChromeDPSess
 
 	return s
 }
-
-

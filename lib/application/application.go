@@ -4,25 +4,31 @@ import (
 	"context"
 	"flag"
 
-	"os"
-	"sync"
-
 	"github.com/rs/zerolog/log"
-	"github.com/walterjwhite/go-code/lib/application/logging"
+
 	"github.com/walterjwhite/go-code/lib/application/property"
-	"github.com/walterjwhite/go-code/lib/application/shutdown"
+
+	"os"
+	"os/signal"
+	"syscall"
 )
 
 var (
 	Context context.Context
 	Cancel  context.CancelFunc
-	endCall sync.Once
 )
 
 func init() {
 	Context, Cancel = context.WithCancel(context.Background())
-
 	configureLogging()
+
+	go func() {
+		sigchan := make(chan os.Signal, 1)
+		signal.Notify(sigchan, os.Interrupt, syscall.SIGTERM)
+		<-sigchan
+
+		Cancel()
+	}()
 }
 
 func Configure(configurations ...interface{}) {
@@ -33,8 +39,8 @@ func Configure(configurations ...interface{}) {
 }
 
 func Load(configurations ...interface{}) {
-	for _, config := range configurations {
-		property.Load(config)
+	for i := range configurations {
+		property.Load(configurations[i])
 	}
 }
 
@@ -43,36 +49,14 @@ func doConfigure() {
 
 	logIdentifier()
 	logStart()
-	shutdown.Add(Context, &defaultHandler{})
 }
 
 func logStart() {
 	log.Info().Msg("Application started")
 }
 
-func OnEnd() {
-	endCall.Do(doEnd)
-}
-
-type defaultHandler struct{}
-
-func (a *defaultHandler) OnShutdown() {
-	OnEnd()
-}
-
-func (a *defaultHandler) OnContextClosed() {
-	OnEnd()
-}
-
-func doEnd() {
-	log.Info().Msg("Application stopped")
-
-	Cancel()
-	os.Exit(0)
-}
-
 func Wait() {
 	<-Context.Done()
-	defer logging.Panic(logWriter.Close())
-	log.Info().Msg("Context Done")
+
+	log.Info().Msg("Application Context Done")
 }

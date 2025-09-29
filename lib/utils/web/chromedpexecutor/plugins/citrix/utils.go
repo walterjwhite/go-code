@@ -1,15 +1,24 @@
 package citrix
 
 import (
+	"context"
+	"fmt"
+	"github.com/walterjwhite/go-code/lib/application/logging"
+	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/action"
 	"strings"
 )
 
-func (s *Session) trim(token string) string {
-	s.Credentials.Username = strings.TrimSpace(s.Credentials.Username)
-	s.Credentials.Domain = strings.TrimSpace(s.Credentials.Domain)
-	s.Credentials.Password = strings.TrimSpace(s.Credentials.Password)
+func validateToken(token string) {
+	if len(token) != 6 {
+		logging.Panic(fmt.Errorf("please enter the 6-digit token: %v", token))
+	}
+}
 
-	s.Credentials.Pin = strings.TrimSpace(s.Credentials.Pin)
+func isExpired(ctx context.Context) bool {
+	currentUrl := action.Location(ctx)
+	if strings.HasSuffix(currentUrl, "/logout.html") {
+		return true
+	}
 
-	return strings.TrimSpace(token)
+	return strings.HasSuffix(currentUrl, "LogonPoint/tmindex.html")
 }

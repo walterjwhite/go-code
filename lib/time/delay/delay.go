@@ -6,6 +6,13 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
+type DelayType int
+
+const (
+	Fixed DelayType = iota
+	Random
+)
+
 type Delayer interface {
 	Delay()
 }

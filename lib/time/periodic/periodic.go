@@ -15,27 +15,25 @@ type PeriodicInstance struct {
 
 	ctx            context.Context
 	cancelFunction context.CancelFunc
-	mutex          *sync.RWMutex
-	runCount       int
+
+	mutex sync.Mutex
 }
 
-func Now(parentContext context.Context, interval *time.Duration, fn func() error) *PeriodicInstance {
-	return Periodic(parentContext, interval, true, fn)
+func Now(ctx context.Context, cancel context.CancelFunc, interval time.Duration, fn func() error) *PeriodicInstance {
+	return Periodic(ctx, cancel, interval, true, fn)
 }
 
-func After(parentContext context.Context, interval *time.Duration, fn func() error) *PeriodicInstance {
-	return Periodic(parentContext, interval, false, fn)
+func After(ctx context.Context, cancel context.CancelFunc, interval time.Duration, fn func() error) *PeriodicInstance {
+	return Periodic(ctx, cancel, interval, false, fn)
 }
 
-func Periodic(parentContext context.Context, interval *time.Duration, runImmediately bool, fn func() error) *PeriodicInstance {
-	ticker := time.NewTicker(*interval)
+func Periodic(ctx context.Context, cancel context.CancelFunc, interval time.Duration, runImmediately bool, fn func() error) *PeriodicInstance {
+	ticker := time.NewTicker(interval)
 
-	ctx, cancel := context.WithCancel(parentContext)
-
-	p := &PeriodicInstance{function: fn, ticker: ticker, ctx: ctx, cancelFunction: cancel, mutex: &sync.RWMutex{}}
+	p := &PeriodicInstance{function: fn, ticker: ticker, ctx: ctx, cancelFunction: cancel}
 
 	if runImmediately {
-		p.tryRun()
+		p.doRun()
 	}
 
 	go p.run()
@@ -46,45 +44,32 @@ func Periodic(parentContext context.Context, interval *time.Duration, runImmedia
 
 func (p *PeriodicInstance) Cancel() {
 	p.ticker.Stop()
-}
-
-func (p *PeriodicInstance) run() {
-	for {
-		<-p.ticker.C
-		p.tryRun()
-	}
-}
-
-func (p *PeriodicInstance) tryRun() {
-	p.mutex.RLock()
-	count := p.runCount
-	p.mutex.RUnlock()
-
-	if count == 0 {
-		p.doRun()
-	}
+	p.cancelFunction()
 }
 
 func (p *PeriodicInstance) doRun() {
 	p.mutex.Lock()
 	defer p.mutex.Unlock()
 
-	p.runCount++
+	logging.Warn(p.function(), false, "doRun")
+}
 
-	logging.Panic(p.function())
-	p.runCount--
+func (p *PeriodicInstance) run() {
+	for {
+		select {
+		case <-p.ticker.C:
+			p.doRun()
+		case <-p.ctx.Done():
+			return
+		}
+	}
 }
 
 func (p *PeriodicInstance) cancel() {
 	<-p.ctx.Done()
 	p.ticker.Stop()
-
-	p.cancelFunction()
 }
 
-func GetInterval(intervalString string) *time.Duration {
-	duration, err := time.ParseDuration(intervalString)
-	logging.Panic(err)
-
-	return &duration
+func (p *PeriodicInstance) Done() <-chan struct{} {
+	return p.ctx.Done()
 }

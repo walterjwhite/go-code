@@ -1,43 +1,54 @@
 package google
 
 import (
-	"cloud.google.com/go/pubsub"
+	"cloud.google.com/go/pubsub/v2"
 	"encoding/json"
 	"github.com/rs/zerolog/log"
-	"github.com/walterjwhite/go-code/lib/application/logging"
 	"github.com/walterjwhite/go-code/lib/io/compression/zstd"
 )
 
-func (s *Session) Publish(topicName string, message interface{}) {
-	log.Info().Msgf("publishing to: %v", topicName)
+func (c *Conf) Publish(topicName string, message []byte) error {
+	log.Debug().Msgf("publishing to: %v", topicName)
 
-	topic := s.getOrCreateTopic(topicName)
+	data, err := c.serialize(message)
+	if err != nil {
+		return err
+	}
 
-	data, err := json.Marshal(message)
-	logging.Panic(err)
+	compressed := c.compress(data)
+	encrypted := c.encrypt(compressed)
 
-	compressed := s.compress(data)
-	encrypted := s.encrypt(compressed)
+	publisher := c.client.Publisher(topicName)
+	defer publisher.Stop()
 
-	result := topic.Publish(s.Ctx, &pubsub.Message{
-		Data: encrypted,
-	})
-	id, err := result.Get(s.Ctx)
-	logging.Panic(err)
+	publishResult := publisher.Publish(c.ctx, &pubsub.Message{Data: encrypted})
+	id, err := publishResult.Get(c.ctx)
+	if err != nil {
+		return err
+	}
 
-	log.Info().Msgf("published message with ID %s, message: %s, data: %s", id, message, data)
+	log.Debug().Msgf("published message with ID %s, message: %s, data: %s", id, message, data)
+	return nil
 }
 
-func (s *Session) encrypt(data []byte) []byte {
-	if s.AesConf == nil {
+func (c *Conf) serialize(message []byte) ([]byte, error) {
+	if !c.Serialize {
+		return message, nil
+	}
+
+	return json.Marshal(message)
+}
+
+func (c *Conf) encrypt(data []byte) []byte {
+	if c.aes == nil {
 		return data
 	}
 
-	return s.AesConf.Encrypt(data)
+	return c.aes.Encrypt(data)
 }
 
-func (s *Session) compress(data []byte) []byte {
-	if !s.EnableCompression {
+func (c *Conf) compress(data []byte) []byte {
+	if !c.Compress {
 		return data
 	}
 

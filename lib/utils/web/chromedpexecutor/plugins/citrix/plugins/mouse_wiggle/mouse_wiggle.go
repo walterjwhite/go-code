@@ -6,59 +6,35 @@ import (
 
 	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/action"
 
+	"github.com/walterjwhite/go-code/lib/application/logging"
 	"time"
 )
 
-func (i *State) Name() string {
+func (c *Conf) Name() string {
 	return "mouse wiggle"
 }
 
-func (i *State) Work(ctx context.Context, headless bool) {
-	log.Debug().Msgf("Mouse wiggle is enabled: %s", action.Location(ctx))
+func (c *Conf) Work(ctx context.Context, headless bool) {
+	log.Debug().Msgf("Conf.Work - mouse wiggle is enabled: %s", action.Location(ctx))
+	defer log.Debug().Msg("Conf.Work - mouse wiggle - done")
+	defer action.ScreenshotIfDebug(ctx, "/tmp/gateway-mouse-wiggle-%v.png", time.Now().Unix())
 
-	if !headless {
-		if !i.initialized {
-			action.AttachMousePositionListener(ctx)
-			i.initialized = true
-		}
-
-		if i.handleExternalMouseMovement(ctx) {
+	for _, coordinates := range c.Points {
+		err, wasMoved := action.WasMouseMoved(ctx)
+		logging.Warn(err, false, "Conf.Work - error checking if mouse was moved")
+		if wasMoved {
+			log.Warn().Msg("Conf.Work - mouse was moved")
 			return
 		}
+
+		c.moveMouse(ctx, coordinates.X, coordinates.Y)
 	}
-
-	i.moveMouse(ctx, 100, 100)
-	i.moveMouse(ctx, 200, 100)
-	i.moveMouse(ctx, 200, 200)
-	i.moveMouse(ctx, 100, 200)
-
-	action.FullScreenshot(ctx, "/tmp/3.gateway-mouse-wiggle.png")
 }
 
-func (i *State) handleExternalMouseMovement(ctx context.Context) bool {
-	wasMoved, x, y := action.WasMouseMoved(ctx, i.lastMouseX, i.lastMouseY)
-	if wasMoved {
-		i.lastMouseX = x
-		i.lastMouseY = y
-
-		i.onMouseMovedExternally()
-		return true
-	}
-
-	return false
-}
-
-func (i *State) onMouseMovedExternally() {
-	log.Warn().Msg("mouse was moved, skipping run")
-}
-
-func (i *State) moveMouse(ctx context.Context, x, y float64) {
+func (c *Conf) moveMouse(ctx context.Context, x, y float64) {
 	action.MoveMouse(ctx, x, y)
-	i.lastMouseX = x
-	i.lastMouseY = y
-	time.Sleep(*i.TimeBetweenActions)
+	time.Sleep(c.TimeBetweenActions)
 }
 
-func (i *State) Cleanup() {
-	i.initialized = false
+func (c *Conf) Cleanup() {
 }
