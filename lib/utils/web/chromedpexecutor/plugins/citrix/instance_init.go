@@ -59,12 +59,46 @@ func (i *Instance) acceptTerms() {
 		return
 	}
 
+	visible, err := i.waitForTermsAcceptance()
+	if err != nil {
+		logging.Warn(err, false, "acceptTerms,waitForTermsAcceptance")
+		return
+	}
+
+	if !visible {
+		log.Warn().Msg("terms acceptance was required, but not found")
+		return
+	}
+
 	ctx, cancel := context.WithTimeout(i.ctx, 1*time.Second)
 	defer cancel()
-
 	logging.Warn(chromedp.Run(ctx, chromedp.MouseClickXY(100, 100), chromedp.KeyEvent(kb.Enter)), false, "Instance.acceptTerms - error accepting terms")
 
 	log.Info().Msgf("%v - Instance.acceptTerms - end", i)
+}
+
+func (i *Instance) waitForTermsAcceptance() (bool, error) {
+	ctx, cancel := context.WithTimeout(i.ctx, 15*time.Second)
+	defer cancel()
+
+	ticker := time.NewTicker(3 * time.Second)
+	defer ticker.Stop()
+
+	for {
+		select {
+		case <-ctx.Done():
+			return false, ctx.Err()
+		case <-ticker.C:
+			visible, err := i.WindowsConf.IsTermsAcceptanceButtonVisible(ctx)
+			if err != nil {
+				return false, err
+			}
+
+			if visible {
+				return true, nil
+			}
+		}
+	}
 }
 
 func (i *Instance) waitForSessionReady() {

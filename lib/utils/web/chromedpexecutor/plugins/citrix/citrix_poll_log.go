@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/chromedp/chromedp"
 	"github.com/rs/zerolog/log"
+	"strings"
 	"time"
 )
 
@@ -35,5 +36,5 @@ func waitForCitrixSessionReady(ctx context.Context) error {
 func waitForCitrixLog(ctx context.Context, pollInterval time.Duration, logMessage string) error {
 	log.Debug().Msgf("waitForCitrixLog - waiting for message: %s", logMessage)
 	return chromedp.Run(ctx,
-		chromedp.Poll(fmt.Sprintf(citrixPollStatement, logMessage), nil, chromedp.WithPollingInterval(pollInterval)))
+		chromedp.Poll(fmt.Sprintf(citrixPollStatement, strings.ReplaceAll(logMessage, "'", "\\'")), nil, chromedp.WithPollingInterval(pollInterval)))
 }

@@ -6,8 +6,11 @@ import (
 
 	"context"
 
+	"github.com/rs/zerolog/log"
 	"github.com/walterjwhite/go-code/lib/application/logging"
 	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/action"
+
+	"strings"
 )
 
 const (
@@ -49,6 +52,7 @@ func (s *Session) getSectionTitle() (string, error) {
 	err := chromedp.Run(ctx,
 		chromedp.Evaluate(getSectionTitleQuery, &value))
 
+	log.Debug().Msgf("title: %s", value)
 	return value, err
 }
 
@@ -59,7 +63,7 @@ func (s *Session) getSectionIndex(title string) (int, error) {
 	var value int
 
 	return value, chromedp.Run(ctx,
-		chromedp.Evaluate(fmt.Sprintf(getSectionIndexQuery, title), &value))
+		chromedp.Evaluate(fmt.Sprintf(getSectionIndexQuery, strings.ReplaceAll(title, "'", "\\'")), &value))
 }
 
 func (s *Session) clickSection(sectionIndex int) error {

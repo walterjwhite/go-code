@@ -1,9 +1,9 @@
 package learning
 
 import (
-	"github.com/chromedp/chromedp"
-	"errors"
 	"context"
+	"errors"
+	"github.com/chromedp/chromedp"
 
 	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/action"
 )

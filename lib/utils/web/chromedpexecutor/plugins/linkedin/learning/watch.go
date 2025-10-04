@@ -76,9 +76,6 @@ func (s *Session) watchContent(course *Course) error {
 		}
 
 		switch {
-		case s.isCourseComplete():
-			log.Info().Msg("watchContent.isCourseComplete")
-			return nil
 		case s.isContinueCourse():
 			log.Info().Msg("watchContent.isContinueCourse")
 		case s.tryAgain():

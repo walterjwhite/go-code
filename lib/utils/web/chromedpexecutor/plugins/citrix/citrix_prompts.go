@@ -10,6 +10,7 @@ import (
 	"github.com/rs/zerolog/log"
 	"github.com/walterjwhite/go-code/lib/application/logging"
 
+	"strings"
 	"time"
 )
 
@@ -46,7 +47,7 @@ func closePermissionPrompt(ctx context.Context, innerText string) {
 
 	var exists bool
 
-	javascriptPromptScriptFormatted := fmt.Sprintf(javascriptPromptScript, innerText)
+	javascriptPromptScriptFormatted := fmt.Sprintf(javascriptPromptScript, strings.ReplaceAll(innerText, "'", "\\'"))
 
 	log.Debug().Msgf("closePermissionPrompt - running javascript: %s", javascriptPromptScriptFormatted)
 	err := chromedp.Run(ctx,

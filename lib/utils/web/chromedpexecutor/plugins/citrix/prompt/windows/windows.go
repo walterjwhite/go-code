@@ -73,3 +73,5 @@ func (c *WindowsConf) getScreenshotCoordinates(ctx context.Context) (float64, fl
 
 	return 0, float64(size.Height) - c.StartButtonHeight, c.StartButtonHeight * 2, c.StartButtonHeight, nil
 }
+
+

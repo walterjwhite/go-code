@@ -26,5 +26,5 @@ func (s *Session) InProgress() []*Course {
 		return nil
 	}
 
-	return s.extractCourses()
+	return s.extractCourses(inProgressDurationPath)
 }

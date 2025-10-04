@@ -7,19 +7,16 @@ import (
 	"github.com/chromedp/chromedp"
 
 	"github.com/walterjwhite/go-code/lib/application/logging"
+	"strings"
 )
 
-const (
-	courseCompleteXPath = "media-screen__content media-screens-course-complete__content"
-)
-
-func (s *Session) isCourseComplete() bool {
+func (s *Session) isCourseComplete(course *Course) bool {
 	ctx, cancel := context.WithTimeout(s.ctx, extractTimeout)
 	defer cancel()
 
 	var courseComplete bool
 	err := chromedp.Run(ctx,
-		chromedp.Evaluate(fmt.Sprintf(hasElementWithText, courseCompleteXPath), &courseComplete))
+		chromedp.Evaluate(fmt.Sprintf(hasElementWithText, strings.ReplaceAll(course.Title, "'", "\\'")), &courseComplete))
 
 	logging.Warn(err, false, "isCourseComplete")
 	return courseComplete

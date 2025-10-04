@@ -25,7 +25,7 @@ func Match(ctx context.Context, matchThreshold float64, referenceImageData image
 	}
 
 	if log.Debug().Enabled() {
-		tempFile, err := os.CreateTemp("", "match-*.png")
+		tempFile, err := os.CreateTemp("", "region-*.png")
 		logging.Warn(err, false, "Match.CreateTempFile-1")
 		if err != nil {
 			return nil

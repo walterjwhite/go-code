@@ -51,7 +51,7 @@ func (i *Instance) lock() error {
 
 func (i *Instance) unlock() error {
 	if !i.locked {
-		log.Warn().Msgf("%v - Instance.unlock - already unlocked", i)
+		log.Debug().Msgf("%v - Instance.unlock - already unlocked", i)
 		return nil
 	}
 

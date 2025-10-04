@@ -75,3 +75,8 @@ func (c *Conf) isTimeForLunch() bool {
 
 	return false
 }
+
+func (c *Conf) Reset() {
+	c.hadLunch = false
+	c.pomodoroCycles = 0
+}

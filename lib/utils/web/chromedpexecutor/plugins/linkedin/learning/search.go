@@ -2,10 +2,12 @@ package learning
 
 import (
 	"context"
+	"fmt"
 	"github.com/chromedp/chromedp"
 
 	"github.com/rs/zerolog/log"
 
+	"github.com/walterjwhite/go-code/lib/application/logging"
 	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/action"
 	"time"
 )
@@ -24,11 +26,16 @@ const (
 				return {
 					title: element.children[1].children[0].children[0].children[0].children[0].children[0].textContent.trim(),
 					url: element.children[1].children[0].children[0].children[0].children[0].children[0].href,
-					durationstring: element.children[0].children[0].children[0].children[0].children[3].textContent.trim().replace(/\s+/g, ''),
+					durationstring: %s.textContent.trim().replace(/\s+/g, ''),
 				};
 			}
 		)
 	`
+
+	inProgressDurationPath = `element.children[0].children[0].children[0].children[0].children[3]`
+	searchDurationPath     = `element.children[1].children[0].children[1].children[0]`
+
+	visibleCourseCount = `document.getElementsByClassName('lls-card-detail-card__main').length`
 
 	courseQueueSize     = 10
 	linkedInLearningUrl = "https://www.linkedin.com/learning"
@@ -56,17 +63,25 @@ func (s *Session) Search(searchTerm string) []*Course {
 
 	log.Info().Msg("Session.Search - entered search criteria, now, we just need to parse the results")
 
-	return s.extractCourses()
+	return s.extractCourses(searchDurationPath)
 }
 
-func (s *Session) extractCourses() []*Course {
-	lastCourseCount := 0
-
+func (s *Session) extractCourses(durationPath string) []*Course {
 	var courses []*Course
 
 	for {
-		foundCourses := s.doExtractCourses()
-		log.Info().Interface("courses", foundCourses).Msg("Session.extractCourses - non-completed courses")
+		visibleCourseCount, err := s.visibleCourseCount()
+		if err != nil {
+			logging.Warn(err, false, "extractCourses.visibleCourseCount")
+		} else {
+			if visibleCourseCount == 0 {
+				log.Warn().Msg("no visible courses")
+				return courses
+			}
+		}
+
+		foundCourses := s.doExtractCourses(durationPath)
+		log.Info().Msgf("Session.extractCourses - non-completed courses: %v / %d", foundCourses, visibleCourseCount)
 
 		for _, course := range foundCourses {
 			log.Info().Interface("course", &course).Msg("Session.extractCourses - found course")
@@ -74,23 +89,18 @@ func (s *Session) extractCourses() []*Course {
 			courses = append(courses, &course)
 		}
 
-		if len(courses) >= courseQueueSize {
+		if len(courses) > 0 {
 			return courses
 		}
 
-		if len(courses) == lastCourseCount {
-			log.Warn().Int("courseCount", lastCourseCount).Msg("Session.extractCourses - no more courses found")
-			return courses
-		}
-
-		err := s.scrollToEnd()
+		log.Warn().Msg("no courses were added, scrolling")
+		err = s.scrollToEnd()
 		if err != nil {
 			log.Warn().Err(err).Msg("Session.extractCourses - scrollToEnd - Error")
 			return courses
 		}
 
 		time.Sleep(delayBetweenScrolls)
-		lastCourseCount = len(courses)
 	}
 
 	return courses
@@ -103,14 +113,14 @@ func (s *Session) scrollToEnd() error {
 	return action.End(ctx)
 }
 
-func (s *Session) doExtractCourses() []Course {
+func (s *Session) doExtractCourses(durationPath string) []Course {
 	ctx, cancel := context.WithTimeout(s.ctx, extractTimeout)
 	defer cancel()
 
 	var values []Course
 
 	err := chromedp.Run(ctx,
-		chromedp.Evaluate(coursesNotCompleted, &values),
+		chromedp.Evaluate(fmt.Sprintf(coursesNotCompleted, durationPath), &values),
 	)
 
 	if err != nil {
@@ -128,4 +138,14 @@ func (s *Session) doExtractCourses() []Course {
 	}
 
 	return values
+}
+
+func (s *Session) visibleCourseCount() (int, error) {
+	ctx, cancel := context.WithTimeout(s.ctx, extractTimeout)
+	defer cancel()
+
+	var courseCount int
+
+	return courseCount, chromedp.Run(ctx,
+		chromedp.Evaluate(visibleCourseCount, &courseCount))
 }

@@ -19,6 +19,12 @@ var (
 
 	windows11StartButtonData  []byte
 	windows11StartButtonImage image.Image
+
+	windows10TermsAcceptanceButtonData  []byte
+	windows10TermsAcceptanceButtonImage image.Image
+
+	windows11TermsAcceptanceButtonData  []byte
+	windows11TermsAcceptanceButtonImage image.Image
 )
 
 func init() {
@@ -31,4 +37,14 @@ func init() {
 	logging.Panic(err)
 
 	windows11StartButtonImage = locateimage.Convert(windows11PngData)
+
+	windows10TermsAcceptancePngData, err := png.Decode(bytes.NewReader(windows10TermsAcceptanceButtonData))
+	logging.Panic(err)
+
+	windows10TermsAcceptanceButtonImage = locateimage.Convert(windows10TermsAcceptancePngData)
+
+	windows11TermsAcceptancePngData, err := png.Decode(bytes.NewReader(windows11TermsAcceptanceButtonData))
+	logging.Panic(err)
+
+	windows11TermsAcceptanceButtonImage = locateimage.Convert(windows11TermsAcceptancePngData)
 }
