@@ -13,8 +13,6 @@ import (
 )
 
 const (
-	loadDelay = 10 * time.Second
-
 	tryAgainClick = `(
 	function() {
 		tryAgainButton = Array.from(document.querySelectorAll('*'))
@@ -90,10 +88,7 @@ func (s *Session) watchContent(course *Course) error {
 			err = s.coderPadNext()
 		case s.isText():
 			log.Info().Msg("watchContent.isText")
-			exists, err := s.textNext()
-			if !exists && err == nil {
-				err = errors.New("watchContent.isText.error")
-			}
+			_, err = s.textNext()
 		case s.isVideo():
 			log.Info().Msg("watchContent.isVideo")
 			err = s.waitPlaying(course)
@@ -123,15 +118,7 @@ func (s *Session) tryAgain() bool {
 	return err == nil && exists
 }
 
-func (s *Session) courseCompletion(course *Course) {
-	log.Info().Msgf("watch.courseCompletion - watched: %s", course.Title)
 
-	if s.WasCompleted(course) {
-		log.Info().Msgf("watch.courseCompletion - completed: %s", course.Title)
-	} else {
-		log.Info().Msgf("watch.courseCompletion - NOT completed: %s", course.Title)
-	}
-}
 
 func (s *Session) onPlaybackError(course *Course, errorTimeStamps *[]time.Time, errorTimeWindow time.Duration, err error) error {
 	log.Warn().Msgf("watch.onPlaybackError - %s - watchContent: %v", course.Title, err)

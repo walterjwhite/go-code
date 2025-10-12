@@ -35,12 +35,6 @@ const (
 	getMousePositionJavaScript     = `({x: window.mouseX, y: window.mouseY})`
 	getLastMousePositionJavaScript = `({x: window.lastMouseX, y: window.lastMouseY})`
 
-	setMousePositionJavaScript = `(
-	function() {
-		window.lastMouseX = %f;
-		window.lastMouseY = %f;
-	})()`
-
 	delayBetweenMouseMoves = 1 * time.Second
 )
 

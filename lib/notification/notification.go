@@ -22,12 +22,10 @@ type Notifier interface {
 	Notify(notification Notification)
 }
 
-var NotifierInstance = New()
-
-func OnCompletion() {
+func Build() *Notification {
 	if r := recover(); r != nil {
-		NotifierInstance.Notify(Notification{Title: "Error", Description: "Application execution completed abnormally.", Type: Error})
-	} else {
-		NotifierInstance.Notify(Notification{Title: "Success", Description: "Application execution completed normally.", Type: Info})
+		return &Notification{Title: "Error", Description: "Application execution completed abnormally.", Type: Error}
 	}
+
+	return &Notification{Title: "Success", Description: "Application execution completed normally.", Type: Info}
 }

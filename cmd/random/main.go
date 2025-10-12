@@ -17,7 +17,5 @@ func init() {
 }
 
 func main() {
-	defer application.OnEnd()
-
 	fmt.Println(random.StringWithCharset(*lengthFlag, *characterSetFlag))
 }

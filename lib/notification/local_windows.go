@@ -5,9 +5,9 @@ import (
 	"github.com/walterjwhite/go-code/lib/application/logging"
 )
 
-type windowsNotification struct{}
+type WindowsNotification struct{}
 
-func (n *windowsNotification) Notify(notification Notification) {
+func (n *WindowsNotification) Notify(notification Notification) {
 	toastNotification := toast.Notification{
 		AppID:   application.GetApplicationId(),
 		Title:   notification.Title,
@@ -26,8 +26,4 @@ func (n *windowsNotification) Notify(notification Notification) {
 	}
 
 	logging.Panic(toastNotification.Push())
-}
-
-func New() Notifier {
-	return &windowsNotification{}
 }

@@ -42,7 +42,6 @@ type Session struct {
 
 	keepAliveTicker *time.Ticker
 
-	mutex     sync.RWMutex
 	waitGroup *sync.WaitGroup
 }
 

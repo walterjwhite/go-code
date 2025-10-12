@@ -5,51 +5,35 @@ import (
 	"github.com/walterjwhite/go-code/lib/application"
 
 	"github.com/walterjwhite/go-code/lib/net/google"
-	"github.com/walterjwhite/go-code/lib/security/encryption/aes"
-	"github.com/walterjwhite/go-code/lib/security/encryption/providers/file"
 )
 
 type ReadSubscriberConfiguration struct {
-	CredentialsFile string
-	ProjectId       string
-
 	TopicName        string
 	SubscriptionName string
-
-	EncryptionKeyFilename string
+	PubSubConf       *google.Conf
 }
 
 type Callback struct {
-	data string
 }
 
 var (
-	googleConf = &ReadSubscriberConfiguration{}
-	aesConf    = &aes.Configuration{}
+	readSubscriberConf = &ReadSubscriberConfiguration{}
 )
 
 func init() {
-	application.Configure(googleConf)
-
-	aesConf.Encryption = file.New(googleConf.EncryptionKeyFilename)
+	application.Configure(readSubscriberConf)
+	readSubscriberConf.PubSubConf.Init(application.Context)
 }
 
 func main() {
 	c := &Callback{}
-	session := google.New(googleConf.CredentialsFile, googleConf.ProjectId, application.Context)
-	session.AesConf = aesConf
-	session.EnableCompression = true
 
-	session.Subscribe(googleConf.TopicName, googleConf.SubscriptionName, c)
+	readSubscriberConf.PubSubConf.Subscribe(readSubscriberConf.TopicName, readSubscriberConf.SubscriptionName, c)
 	application.Wait()
 }
 
-func (c *Callback) New() any {
-	return &c.data
-}
-
-func (c *Callback) MessageDeserialized() {
-	log.Info().Msgf("callback: %s", c.data)
+func (c *Callback) MessageDeserialized(deserialized []byte) {
+	log.Info().Msgf("callback: %s", string(deserialized))
 }
 
 func (c *Callback) MessageParseError(err error) {

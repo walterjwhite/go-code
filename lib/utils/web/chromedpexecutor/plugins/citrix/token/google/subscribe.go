@@ -3,6 +3,7 @@ package google
 import (
 	"fmt"
 	"github.com/rs/zerolog/log"
+	"github.com/walterjwhite/go-code/lib/application/logging"
 )
 
 func (p *Provider) ReadToken() *string {
@@ -18,12 +19,12 @@ func (p *Provider) MessageDeserialized(message []byte) {
 	p.token = string(message)
 
 	log.Info().Msgf("read token: %s", p.token)
-	p.PublishStatus(fmt.Sprintf("read token: %s", p.token), true)
+	logging.Warn(p.PublishStatus(fmt.Sprintf("read token: %s", p.token), true), false, "MessageDeserialized")
 
 	p.Conf.Cancel()
 }
 
 func (p *Provider) MessageParseError(err error) {
 	log.Error().Msgf("error reading token: %s", p.token)
-	p.PublishStatus(fmt.Sprintf("error reading message: %s", err), false)
+	logging.Warn(p.PublishStatus(fmt.Sprintf("error reading message: %s", err), false), false, "MessageParseError")
 }

@@ -103,7 +103,6 @@ func (s *Session) extractCourses(durationPath string) []*Course {
 		time.Sleep(delayBetweenScrolls)
 	}
 
-	return courses
 }
 
 func (s *Session) scrollToEnd() error {

@@ -14,7 +14,14 @@ func New(c *Conf, pctx context.Context) (context.Context, context.CancelFunc) {
 	ctx = c.withDelayer(ctx)
 
 	if c.Headless {
-		logging.Panic(chromedp.Run(ctx, chromedp.EmulateViewport(1920, 1080)))
+		if c.HeadlessViewport.Width == 0 {
+			c.HeadlessViewport.Width = 1920
+		}
+		if c.HeadlessViewport.Height == 0 {
+			c.HeadlessViewport.Height = 1080
+		}
+
+		logging.Panic(chromedp.Run(ctx, chromedp.EmulateViewport(c.HeadlessViewport.Width, c.HeadlessViewport.Height)))
 	}
 
 	logging.Panic(chromedp.Run(ctx))

@@ -5,9 +5,9 @@ import (
 	"github.com/walterjwhite/go-code/lib/application/logging"
 )
 
-type linuxNotification struct{}
+type LinuxNotification struct{}
 
-func (n *linuxNotification) Notify(notification Notification) {
+func (n *LinuxNotification) Notify(notification Notification) {
 	ntf := notify.NewNotification(notification.Title, notification.Description)
 	ntf.AppIcon = notification.Icon
 	if len(notification.AudioFile) > 0 {
@@ -17,8 +17,4 @@ func (n *linuxNotification) Notify(notification Notification) {
 
 	_, err := ntf.Show()
 	logging.Panic(err)
-}
-
-func New() Notifier {
-	return &linuxNotification{}
 }

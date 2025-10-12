@@ -4,7 +4,7 @@ import (
 	"github.com/chromedp/chromedp"
 
 	"context"
-
+	"errors"
 	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/action"
 )
 
@@ -36,6 +36,12 @@ func (s *Session) textNext() (bool, error) {
 	defer cancel()
 
 	var exists bool
-	return exists, chromedp.Run(ctx,
+	err := chromedp.Run(ctx,
 		chromedp.Evaluate(classroomTextNextClick, &exists))
+
+	if !exists && err == nil {
+		return false, errors.New("watchContent.isText.error")
+	}
+
+	return exists, err
 }

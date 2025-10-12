@@ -7,9 +7,16 @@ import (
 
 type Conf struct {
 	Headless     bool
+	HeadlessViewport *HeadlessViewport
+
 	ProxyAddress string
 	Remote       string
 
 	Delay     time.Duration
 	DelayType delay.DelayType
+}
+
+type HeadlessViewport struct {
+	Width int64
+	Height int64
 }

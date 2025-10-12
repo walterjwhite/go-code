@@ -19,7 +19,6 @@ import (
 )
 
 const (
-	signInButton = "/html/body/header/nav/div/a[1]"
 
 	authInput  = "#auth-id-input"
 	authButton = "#auth-id-button"
@@ -31,7 +30,6 @@ const (
 
 	linkedInLearningLoginUrl = "https://www.linkedin.com/learning-login"
 
-	existsTimeout = 1 * time.Second
 )
 
 func (s *Session) authenticate(publisher publisher.Publisher) {
@@ -70,13 +68,13 @@ func (s *Session) doTryAuthenticate(publisher publisher.Publisher) error {
 		return err
 	}
 
-	s.enterEmailAddress()
+	err = s.enterEmailAddress()
 	if err != nil {
 		log.Warn().Err(err).Msg("Session.doTryAuthenticate - enterEmailAddress - Error")
 		return err
 	}
 
-	s.selectEnvironment()
+	err = s.selectEnvironment()
 	if err != nil {
 		log.Warn().Err(err).Msg("Session.doTryAuthenticate - selectEnvironment - Error")
 		return err

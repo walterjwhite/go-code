@@ -10,11 +10,9 @@ import (
 )
 
 const (
-	citrixReady = "GBufferFrameProducer(Main): ossSupportState is: false"
-
+	citrixReady        = "GBufferFrameProducer(Main): ossSupportState is: false"
 	citrixSessionReady = "Received session info :  {\"caption\":"
 
-	citrixFatal = "Session launch failed - Citrix Workspace app cannot connect to the server"
 
 	citrixPollStatement = `
 	typeof globalThis.html5Logger !== 'undefined' && 

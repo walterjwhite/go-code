@@ -61,7 +61,7 @@ func (s *Session) runPostAuthenticationActions() {
 		time.Sleep(*s.PostAuthenticationDelay)
 
 		log.Info().Msgf("Session.runPostAuthenticationActions - running post authentication actions: %v", s.PostAuthenticationActions)
-		action.Execute(s.ctx, run.ParseActions(s.PostAuthenticationActions...)...)
+		logging.Warn(action.Execute(s.ctx, run.ParseActions(s.PostAuthenticationActions...)...), false, "session.runPostAuthenticationActions")
 	}
 
 	log.Debug().Msg("Session.runPostAuthenticationActions - end")
@@ -82,33 +82,17 @@ func (s *Session) useLightVersion() {
 
 	if action.ExistsById(s.ctx, useLightVersionPromptId) {
 		log.Info().Msg("Session.useLightVersion - switching to light version")
-		action.Execute(s.ctx,
+		logging.Warn(action.Execute(s.ctx,
 			chromedp.Click(useLightVersionPromptId, chromedp.ByID),
-		)
+		), false, "session.useLightVersion - error selecting use light version")
 	}
 }
 
 func (s *Session) cleanup() {
 	log.Info().Msg("Session.cleanup - cleaning up")
-	s.GoogleProvider.PublishStatus("cleanup session", true)
+	logging.Warn(s.GoogleProvider.PublishStatus("cleanup session", true), false, "session.cleanup")
 
 	s.keepAliveTicker.Stop()
-}
-
-func (s *Session) cleanupWorkers() {
-	for i := range s.Instances {
-		if s.Instances[i] == nil || s.Instances[i].active == nil {
-			log.Warn().Msg("Session.cleanupWorkers - instance is not initialized")
-			continue
-		}
-
-		if s.Instances[i].active.Load() {
-			log.Warn().Msgf("Session.cleanupWorkers - instance is active, not cancelling worker: %d", i)
-		} else {
-			log.Warn().Msgf("Session.cleanupWorkers - cancelling context of worker: %d", i)
-			s.Instances[i].cancel()
-		}
-	}
 }
 
 func (s *Session) lockWorkers() {
@@ -124,6 +108,7 @@ func (s *Session) lockWorkers() {
 		}
 
 		log.Warn().Msgf("Session.lockWorkers - locking worker: %d", i)
+
 		logging.Warn(s.Instances[i].lock(), false, "Session.lockWorkers - error locking worker")
 	}
 }

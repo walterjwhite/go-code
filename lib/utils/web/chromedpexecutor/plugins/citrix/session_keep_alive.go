@@ -11,24 +11,6 @@ import (
 	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/action"
 )
 
-const (
-	javascriptRefreshScript = `(
-	function(){
-		try {
-			refreshButton = document.getElementsByClassName('messageBoxAction')[0].childNodes[0];
-			if(refreshButton != null && refreshButton.offsetHeight > 0 && refreshButton.offsetWidth > 0) {
-				refreshButton.click();
-				return true;
-			}
-			
-			return false;
-		} catch(error) {
-			return false;
-		}
-	}
-	)()`
-)
-
 func (s *Session) keepAlive() {
 	log.Debug().Msg("session.keepAlive - start")
 
@@ -98,17 +80,4 @@ func (s *Session) doTryKeepAlive() error {
 func (s *Session) doTryKeepAliveByRefresh(ctx context.Context) error {
 	log.Debug().Msgf("session.doTryKeepAlive: %v", s.Endpoint.Uri)
 	return chromedp.Run(ctx, chromedp.Navigate(s.Endpoint.Uri))
-}
-
-func (s *Session) doTryKeepAliveByClickingRefreshButton(ctx context.Context) error {
-	var exists bool
-	err := chromedp.Run(ctx,
-		chromedp.Evaluate(javascriptRefreshScript, &exists),
-	)
-	logging.Warn(err, false, "doTryKeepAlive.clickRefreshButton")
-
-	log.Debug().Msgf("session.doTryKeepAlive.clickRefreshButton: %v", exists)
-
-	logging.Warn(err, false, "doTryKeepAlive")
-	return err
 }

@@ -9,9 +9,9 @@ import (
 	"github.com/walterjwhite/go-code/lib/application/logging"
 )
 
-type bsdNotification struct{}
+type BsdNotification struct{}
 
-func (n *bsdNotification) Notify(notification Notification) {
+func (n *BsdNotification) Notify(notification Notification) {
 	conn, err := dbus.SessionBusPrivate()
 	logging.Panic(err)
 
@@ -31,8 +31,4 @@ func (n *bsdNotification) Notify(notification Notification) {
 
 	_, err = notify.SendNotification(conn, dbusNotification)
 	logging.Panic(err)
-}
-
-func New() Notifier {
-	return &bsdNotification{}
 }

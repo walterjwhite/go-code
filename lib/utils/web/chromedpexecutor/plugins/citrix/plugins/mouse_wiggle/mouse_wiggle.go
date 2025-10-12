@@ -32,7 +32,9 @@ func (c *Conf) Work(ctx context.Context, headless bool) {
 }
 
 func (c *Conf) moveMouse(ctx context.Context, x, y float64) {
-	action.MoveMouse(ctx, x, y)
+	err := action.MoveMouse(ctx, x, y)
+	logging.Warn(err, false, "Conf.moveMouse - error moving mouse")
+
 	time.Sleep(c.TimeBetweenActions)
 }
 

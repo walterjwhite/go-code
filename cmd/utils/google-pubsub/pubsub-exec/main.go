@@ -10,27 +10,21 @@ import (
 	"github.com/walterjwhite/go-code/lib/application/logging"
 	"github.com/walterjwhite/go-code/lib/net/exec"
 	"github.com/walterjwhite/go-code/lib/net/google"
-	"github.com/walterjwhite/go-code/lib/security/encryption/aes"
-	"github.com/walterjwhite/go-code/lib/security/encryption/providers/file"
 
 	oexec "os/exec"
+	"strings"
 )
 
 type SubscriberConfiguration struct {
-	CredentialsFile string
-	ProjectId       string
-
 	TopicName        string
 	SubscriptionName string
 
-	ResponseTopicName     string
-	EncryptionKeyFilename string
+	ResponseTopicName string
+	PubSubConf        *google.Conf
 }
 
 var (
-	googleConf = &SubscriberConfiguration{}
-	aesConf    = &aes.Configuration{}
-	session    *google.Session
+	subscriberConf = &SubscriberConfiguration{}
 
 	cmd = flag.String("cmd", "", "cmd to execute on receipt of pubsub message")
 )
@@ -40,9 +34,8 @@ type Executor struct {
 }
 
 func init() {
-	application.Configure(googleConf)
-
-	aesConf.Encryption = file.New(googleConf.EncryptionKeyFilename)
+	application.Configure(subscriberConf)
+	subscriberConf.PubSubConf.Init(application.Context)
 }
 
 func main() {
@@ -52,20 +45,19 @@ func main() {
 
 	e := Executor{}
 
-	session = google.New(googleConf.CredentialsFile, googleConf.ProjectId, application.Context)
-	session.AesConf = aesConf
-	session.EnableCompression = true
-
-	session.Subscribe(googleConf.TopicName, googleConf.SubscriptionName, &e)
+	subscriberConf.PubSubConf.Subscribe(subscriberConf.TopicName, subscriberConf.SubscriptionName, &e)
 	application.Wait()
 }
 
-func (e *Executor) New() any {
-	e.Cmd = &exec.Cmd{}
-	return e.Cmd
-}
+func (e *Executor) MessageDeserialized(deserialized []byte) {
+	parts := strings.Fields(string(deserialized))
+	if len(parts) == 0 {
+		log.Warn().Msg("No cmd received")
+		return
+	}
 
-func (e *Executor) MessageDeserialized() {
+	e.Cmd.FunctionName = parts[0]
+	e.Cmd.Args = parts[1:]
 	log.Info().Msgf("running: %s -> %s", e.Cmd.FunctionName, e.Cmd.Args)
 
 	e.Cmd.Args = append([]string{e.Cmd.FunctionName}, e.Cmd.Args...)
@@ -96,5 +88,5 @@ func respond(status int, output string) {
 	response := fmt.Sprintf("Status: %v, Output: \n%v\n", status, output)
 	log.Info().Msgf("response: %v", response)
 
-	session.Publish(googleConf.ResponseTopicName, response)
+	logging.Warn(subscriberConf.PubSubConf.Publish(subscriberConf.ResponseTopicName, []byte(response)), false, "respond")
 }

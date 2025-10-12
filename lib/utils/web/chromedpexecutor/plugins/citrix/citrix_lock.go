@@ -32,14 +32,18 @@ func (i *Instance) lock() error {
 		return nil
 	}
 
-	i.sendCtrlAltDelete()
+	err := i.sendCtrlAltDelete()
+	if err != nil {
+		log.Info().Msgf("%v - error sending ctrl+alt+delete", i)
+		return err
+	}
 
 	ctx, cancel := context.WithTimeout(i.ctx, postCtrlAltDeleteTimeout)
 	defer cancel()
 
 	time.Sleep(ctrlAltDeleteTimeout)
 
-	err := chromedp.Run(ctx,
+	err = chromedp.Run(ctx,
 		chromedp.KeyEvent(kb.Enter))
 	if err == nil {
 		log.Info().Msgf("%v - Instance.lock - locked", i)

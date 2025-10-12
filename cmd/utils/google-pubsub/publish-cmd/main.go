@@ -9,32 +9,24 @@ import (
 	"github.com/walterjwhite/go-code/lib/net/google"
 
 	"flag"
-	"github.com/walterjwhite/go-code/lib/security/encryption/providers/file"
-
-	"github.com/walterjwhite/go-code/lib/security/encryption/aes"
 	"strings"
 )
 
 type PublisherConfiguration struct {
-	CredentialsFile string
-	ProjectId       string
-
-	TopicName string
-
-	EncryptionKeyFilename string
+	TopicName  string
+	GoogleConf *google.Conf
 }
 
 var (
-	googleConf = &PublisherConfiguration{}
-	aesConf    = &aes.Configuration{}
+	publisherConfiguration = &PublisherConfiguration{}
 
 	functionName = flag.String("functionName", "", "function to execute remotely")
 	arguments    = flag.String("arguments", "", "arguments to pass functionName, optional")
 )
 
 func init() {
-	application.Configure(googleConf)
-	aesConf.Encryption = file.New(googleConf.EncryptionKeyFilename)
+	application.Configure(publisherConfiguration)
+	publisherConfiguration.GoogleConf.Init(application.Context)
 }
 
 func main() {
@@ -47,9 +39,5 @@ func main() {
 		c.Args = strings.Fields(*arguments)
 	}
 
-	session := google.New(googleConf.CredentialsFile, googleConf.ProjectId, application.Context)
-	session.AesConf = aesConf
-	session.EnableCompression = true
-
-	session.Publish(googleConf.TopicName, c)
+	logging.Warn(publisherConfiguration.GoogleConf.Publish(publisherConfiguration.TopicName, []byte("TODO: convert c to string using json, then return byte array")), false, "main")
 }

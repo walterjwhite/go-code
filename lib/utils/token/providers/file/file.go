@@ -18,7 +18,11 @@ type FileReader struct {
 }
 
 func (r *FileReader) Get() string {
-	until.New(r.Context, r.Interval, r.Timeout, r.fileExists)
+	ctx, cancel := context.WithTimeout(r.Context, *r.Timeout)
+	defer cancel()
+
+	logging.Panic(until.Until(ctx, *r.Interval, r.fileExists))
+
 	return r.read()
 }
 

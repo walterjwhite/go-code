@@ -9,8 +9,6 @@ import (
 
 	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/action"
 	"time"
-
-	"strconv"
 )
 
 const (
@@ -33,9 +31,6 @@ const (
 
 	mediaProgressQuery = `Array.from(document.getElementsByClassName("vjs-progress-holder")).map(el => el.getAttribute("aria-valuenow").trim())`
 
-	playbackErrorText                = "Try Again"
-	playbackFinishedSkipConnecting   = "Skip"
-	playbackFinishedConnectToProfile = "Connect my Profile"
 
 	watchIterationTimeout = 5 * time.Second
 )
@@ -61,7 +56,7 @@ func (s *Session) waitPlaying(course *Course) error {
 
 		if isNotPlaying(progress, currentProgress) {
 			log.Warn().Msgf("watch.video.waitPlaying: content appears to be stopped: %s | %s", currentProgress, progress)
-			return errors.New(fmt.Sprintf("watch.video.waitPlaying: content appears to be stopped: %s | %s", currentProgress, progress))
+			return fmt.Errorf("watch.video.waitPlaying: content appears to be stopped: %s | %s", currentProgress, progress)
 		}
 
 		log.Debug().Msg("watch.video.waitPlaying: playing, sleeping")
@@ -90,10 +85,6 @@ func (s *Session) fetchMediaProgress() (string, error) {
 	return currentProgress[0], nil
 }
 
-func isNumeric(s string) bool {
-	_, err := strconv.ParseFloat(s, 64) // Parse as float
-	return err == nil
-}
 
 func (s *Session) extract(expression string) ([]string, error) {
 	ctx, cancel := context.WithTimeout(s.ctx, extractTimeout)
