@@ -3,7 +3,7 @@ module github.com/walterjwhite/go-code
 go 1.25
 
 require (
-	cloud.google.com/go/pubsub/v2 v2.2.0
+	cloud.google.com/go/pubsub/v2 v2.2.1
 	github.com/TheCreeper/go-notify v0.2.0
 	github.com/andreyvit/locateimage v0.1.0
 	github.com/avast/retry-go v3.0.0+incompatible
