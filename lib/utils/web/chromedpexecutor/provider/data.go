@@ -6,7 +6,7 @@ import (
 )
 
 type Conf struct {
-	Headless     bool
+	Headless         bool
 	HeadlessViewport *HeadlessViewport
 
 	ProxyAddress string
@@ -17,6 +17,6 @@ type Conf struct {
 }
 
 type HeadlessViewport struct {
-	Width int64
+	Width  int64
 	Height int64
 }

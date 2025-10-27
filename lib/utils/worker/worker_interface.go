@@ -1,6 +1,8 @@
 package worker
 
 type Worker interface {
+	Name() string
+
 	Work()
 
 	ShortBreak()
@@ -10,3 +12,4 @@ type Worker interface {
 
 	Stop()
 }
+

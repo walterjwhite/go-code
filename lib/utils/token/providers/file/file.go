@@ -26,13 +26,13 @@ func (r *FileReader) Get() string {
 	return r.read()
 }
 
-func (r *FileReader) fileExists() bool {
+func (r *FileReader) fileExists() (bool, error) {
 	info, err := os.Stat(r.Filename)
 	if os.IsNotExist(err) {
-		return false
+		return false, nil
 	}
 
-	return !info.IsDir()
+	return !info.IsDir(), nil
 }
 
 func (r *FileReader) read() string {

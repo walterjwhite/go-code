@@ -34,6 +34,11 @@ func ParseActions(lines ...string) []chromedp.Action {
 
 
 func ParseAction(line string) chromedp.Action {
+	if len(line) == 0 || strings.HasPrefix(line, "#") {
+		log.Debug().Msg("line is a comment or empty")
+		return nil
+	}
+
 	arguments := strings.Split(line, ",")
 
 	switch arguments[0] {
@@ -52,7 +57,7 @@ func ParseAction(line string) chromedp.Action {
 	case "sendKeys":
 		return chromedp.SendKeys(arguments[1], arguments[2])
 	case "sendKeysSecret":
-		return chromedp.SendKeys(arguments[1], process(arguments[2]))
+		return chromedp.SendKeys(arguments[1], secret(arguments[2]))
 	case "clear":
 		return chromedp.Clear(arguments[1])
 	case "key":
@@ -90,16 +95,11 @@ func ParseAction(line string) chromedp.Action {
 }
 
 func process(value string) string {
-	return getKeyFromString(secret(stdIn(value)))
+	return getKeyFromString(stdIn(value))
 }
 
-func secret(value string) string {
-	if strings.Index(value, "secret:") == 0 {
-		key := value[7:]
-		return secrets.Get(key)
-	}
-
-	return value
+func secret(key string) string {
+	return strings.TrimSpace(secrets.Get(key))
 }
 
 func stdIn(value string) string {

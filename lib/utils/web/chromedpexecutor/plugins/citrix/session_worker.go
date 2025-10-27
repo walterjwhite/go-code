@@ -1,8 +1,6 @@
 package citrix
 
 import (
-	"context"
-
 	"github.com/chromedp/cdproto/target"
 
 	"github.com/rs/zerolog/log"
@@ -14,6 +12,23 @@ import (
 const (
 	tabType = "page"
 )
+
+func (s *Session) Name() string {
+	var builder strings.Builder
+
+	builder.WriteString("citrix: {")
+
+	for index := range s.Instances {
+		if s.Instances[index].Worker != nil {
+			builder.WriteString(" worker: " + s.Instances[index].Worker.Name())
+		} else {
+			builder.WriteString(" worker: NOT INITIALIZED")
+		}
+	}
+
+	builder.WriteString("}\n")
+	return builder.String()
+}
 
 func (s *Session) Work() {
 	s.waitGroup = &sync.WaitGroup{}
@@ -48,29 +63,6 @@ func (s *Session) Lunch() {
 func (s *Session) Stop() {
 	log.Info().Msgf("session.Stop: %v", s.Name())
 	s.lockWorkers()
-}
-
-type CitrixWorker interface {
-	Name() string
-	Work(ctx context.Context, headless bool)
-	Cleanup()
-}
-
-func (s *Session) Name() string {
-	var builder strings.Builder
-
-	builder.WriteString("citrix: {")
-
-	for index := range s.Instances {
-		if s.Instances[index].Worker != nil {
-			builder.WriteString(" worker: " + s.Instances[index].Worker.Name())
-		} else {
-			builder.WriteString(" worker: NOT INITIALIZED")
-		}
-	}
-
-	builder.WriteString("}\n")
-	return builder.String()
 }
 
 func matchTabWithNonEmptyURL(info *target.Info) bool {

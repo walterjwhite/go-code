@@ -3,19 +3,23 @@ package citrix
 import (
 	"context"
 	"fmt"
-	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/plugins/citrix/prompt/windows"
+	"github.com/walterjwhite/go-code/lib/utils/ui/windows"
+	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/plugins/worker"
 	"sync/atomic"
+	"time"
 )
 
 type Instance struct {
 	Index      int
-	WorkerType WorkerType
+	WorkerType worker.WorkerType
+	Lockable bool
 
-	FullScreen bool
+	FullScreen          bool
+	InitializationDelay time.Duration
 
 	Actions []string
 
-	Worker CitrixWorker
+	Worker worker.ChromeDPWorker
 
 	active *atomic.Bool
 
@@ -31,5 +35,5 @@ type Instance struct {
 }
 
 func (i *Instance) String() string {
-	return fmt.Sprintf("instance.%d, %d", i.Index, i.WorkerType)
+	return fmt.Sprintf("instance.%d, %s", i.Index, i.WorkerType)
 }

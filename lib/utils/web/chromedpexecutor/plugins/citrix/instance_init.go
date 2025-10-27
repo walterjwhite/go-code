@@ -2,16 +2,38 @@ package citrix
 
 import (
 	"context"
-
+	"errors"
 	"github.com/chromedp/chromedp"
 	"github.com/chromedp/chromedp/kb"
 	"github.com/rs/zerolog/log"
+	"github.com/walterjwhite/go-code/lib/application"
 	"github.com/walterjwhite/go-code/lib/application/logging"
+	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor"
 	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/action"
+
+	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/plugins/worker"
+	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/plugins/worker/agent"
+	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/plugins/worker/mouse_wiggle"
+	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/plugins/worker/noop"
 
 	"sync/atomic"
 	"time"
 )
+
+func (i *Instance) PostLoad(ctx context.Context) {
+	switch i.WorkerType {
+	case worker.MouseWiggler:
+		i.Worker = &mouse_wiggle.Conf{}
+	case worker.Agent:
+		i.Worker = &agent.Conf{}
+	case worker.NOOP:
+		i.Worker = &noop.State{}
+	default:
+		logging.Panic(errors.New("WorkerType unspecified"))
+	}
+
+	application.Load(i.Worker)
+}
 
 func (i *Instance) init() {
 	if i.isInitialized() {
@@ -25,13 +47,24 @@ func (i *Instance) init() {
 
 	i.launch()
 
+	if i.session.controller == nil {
+		i.session.controller = &chromedpexecutor.ChromeDPController{}
+	}
+
+	i.WindowsConf.Controller = i.session.controller
+
 	i.acceptTerms()
 	i.waitForSessionReady()
 
-	closePermissionPrompts(i.ctx)
+	i.closePermissionPrompts()
 
 	if !i.session.Conf.Headless {
 		logging.Warn(action.AttachMousePositionListener(i.ctx), false, "AttachMousePositionListener")
+	}
+
+	if i.InitializationDelay > 0 {
+		log.Info().Msgf("%v - Instance.init - delay - %v", i, i.InitializationDelay)
+		time.Sleep(i.InitializationDelay)
 	}
 
 	i.initializeWorker()

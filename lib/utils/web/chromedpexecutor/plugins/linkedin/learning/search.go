@@ -37,9 +37,29 @@ const (
 
 	visibleCourseCount = `document.getElementsByClassName('lls-card-detail-card__main').length`
 
-	courseQueueSize     = 10
+	showMoreClick = `(function() {
+		e = Array.from(document.querySelectorAll('button'))
+			.find(d => d.textContent.trim() === 'Show more');
+		if(e !== undefined) {
+			e.click();
+			return true;
+		}
+
+		return false;
+	})()
+	`
+
 	linkedInLearningUrl = "https://www.linkedin.com/learning"
 )
+
+func (s *Session) showMore() (bool, error) {
+	ctx, cancel := context.WithTimeout(s.ctx, *s.StepTimeout)
+	defer cancel()
+
+	var exists bool
+	return exists, chromedp.Run(ctx,
+		chromedp.Evaluate(showMoreClick, &exists))
+}
 
 func (s *Session) Search(searchTerm string) []*Course {
 	log.Info().Msg("Session.Search - start")
@@ -69,7 +89,13 @@ func (s *Session) Search(searchTerm string) []*Course {
 func (s *Session) extractCourses(durationPath string) []*Course {
 	var courses []*Course
 
+	scrollTries := 5
+	previousCourseCount := 0
 	for {
+		if scrollTries <= 0 {
+			return courses
+		}
+
 		visibleCourseCount, err := s.visibleCourseCount()
 		if err != nil {
 			logging.Warn(err, false, "extractCourses.visibleCourseCount")
@@ -100,9 +126,16 @@ func (s *Session) extractCourses(durationPath string) []*Course {
 			return courses
 		}
 
-		time.Sleep(delayBetweenScrolls)
-	}
+		if previousCourseCount == visibleCourseCount {
+			showMore, err := s.showMore()
 
+			logging.Warn(err, false, "session.showMore - error")
+			log.Info().Msgf("extractCourses.showMore => %v", showMore)
+		}
+
+		time.Sleep(delayBetweenScrolls)
+		scrollTries--
+	}
 }
 
 func (s *Session) scrollToEnd() error {

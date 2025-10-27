@@ -1,6 +1,7 @@
 package citrix
 
 import (
+	"context"
 	"github.com/chromedp/chromedp"
 
 	"github.com/rs/zerolog/log"
@@ -29,7 +30,10 @@ func (i *Instance) run() {
 	if moved {
 		log.Warn().Msgf("%v - Instance.run - mouse was moved, skipping this iteration of Work", i)
 	} else {
-		i.Worker.Work(i.ctx, i.session.Conf.Headless)
+		ctx, cancel := context.WithTimeout(i.ctx, i.session.Worker.WorkTickInterval/2)
+		defer cancel()
+
+		i.Worker.Work(ctx, i.session.Conf.Headless)
 	}
 }
 

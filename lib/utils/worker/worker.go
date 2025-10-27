@@ -8,7 +8,7 @@ import (
 )
 
 func (c *Conf) Run(pctx context.Context) {
-	log.Debug().Msg("worker.Run - start")
+	log.Debug().Msgf("worker.Run.%s - start", c.worker.Name())
 	c.ctx, c.cancel = context.WithCancel(pctx)
 	defer c.cancel()
 
@@ -17,7 +17,7 @@ func (c *Conf) Run(pctx context.Context) {
 	for !c.isPastEndTime() {
 		select {
 		case <-c.ctx.Done():
-			log.Warn().Msg("worker.Run - context is done")
+			log.Warn().Msgf("worker.Run.%s - context is done", c.worker.Name())
 			return
 		default:
 			c.work()
@@ -27,9 +27,9 @@ func (c *Conf) Run(pctx context.Context) {
 		}
 	}
 
-	log.Debug().Msg("worker.Run - past end time")
+	log.Debug().Msgf("worker.Run.%s - past end time", c.worker.Name())
 	c.stop()
-	log.Debug().Msg("worker.Run - end")
+	log.Debug().Msgf("worker.Run.%s - end", c.worker.Name())
 }
 
 func (c *Conf) isPastEndTime() bool {

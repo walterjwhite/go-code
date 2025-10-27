@@ -4,8 +4,10 @@ import (
 	"github.com/chromedp/cdproto/browser"
 	"github.com/rs/zerolog/log"
 
+	"github.com/walterjwhite/go-code/lib/application"
 	"github.com/walterjwhite/go-code/lib/utils/publisher"
 	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/action"
+	"time"
 )
 
 func (s *Session) Run(publisher publisher.Publisher) {
@@ -22,8 +24,22 @@ func (s *Session) Run(publisher publisher.Publisher) {
 
 	s.authenticate(publisher)
 
+	go func() {
+		duration := 8 * time.Hour
+
+		<-time.After(duration)
+
+		application.Cancel()
+	}()
+
 	for {
-		s.consumeContent()
+		select {
+		case <-application.Context.Done():
+			log.Warn().Msg("context cancelled, skipping work ...")
+			return
+		default:
+			s.consumeContent()
+		}
 	}
 }
 
@@ -32,7 +48,12 @@ func (s *Session) consumeContent() {
 
 	courses := s.InProgress()
 	if len(courses) == 0 {
-		courses = s.Search(s.SearchCriteria)
+		courses = s.Search(s.SearchCriteria[s.SearchCriteriaIndex])
+
+		if len(courses) == 0 {
+			log.Info().Msgf("Session.consumeContent - no courses found for: %s, advancing to next criteria", s.SearchCriteria[s.SearchCriteriaIndex])
+			s.SearchCriteriaIndex++
+		}
 	}
 
 	for i := range courses {

@@ -59,5 +59,5 @@ func runStep(index int, chromeAction chromedp.Action) {
 	defer stepFetchCancel()
 	logging.Panic(chromedp.Run(stepTimeoutContext, chromeAction))
 
-	action.FullScreenshot(captivePortalSession.ctx, fmt.Sprintf("/tmp/%d.connectivity-check.png", index))
+	action.Screenshot(captivePortalSession.ctx, fmt.Sprintf("/tmp/%d.connectivity-check.png", index))
 }

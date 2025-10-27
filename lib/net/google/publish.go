@@ -8,6 +8,12 @@ import (
 )
 
 func (c *Conf) Publish(topicName string, message []byte) error {
+	select {
+	case <-c.ctx.Done():
+		return c.ctx.Err()
+	default:
+	}
+
 	log.Debug().Msgf("publishing to: %v", topicName)
 
 	data, err := c.serialize(message)

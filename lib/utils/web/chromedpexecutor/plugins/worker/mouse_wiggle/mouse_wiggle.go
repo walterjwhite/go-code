@@ -4,14 +4,17 @@ import (
 	"context"
 	"github.com/rs/zerolog/log"
 
-	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/action"
-
 	"github.com/walterjwhite/go-code/lib/application/logging"
+	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/action"
 	"time"
 )
 
 func (c *Conf) Name() string {
 	return "mouse wiggle"
+}
+
+func (c *Conf) Init(ctx context.Context, headless bool, contextuals ...interface{}) error {
+	return nil
 }
 
 func (c *Conf) Work(ctx context.Context, headless bool) {

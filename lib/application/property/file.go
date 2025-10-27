@@ -20,8 +20,8 @@ var (
 	configFilePrefixFlag = flag.String("conf-prefix", "", "If specified, configuration files will be expected to be nested in this directory, ie. ~/.config/walterjwhite/<prefix>/<TypeName>.yaml")
 )
 
-func LoadFile(config interface{}) {
-	LoadFileWithPath(config, getFile(config))
+func LoadFile(applicationName string, config interface{}) {
+	LoadFileWithPath(config, getFile(applicationName, config))
 }
 
 func LoadFileWithPath(config interface{}, filename string) {
@@ -40,9 +40,9 @@ func LoadFileWithPath(config interface{}, filename string) {
 	yaml.Read(filename, config)
 }
 
-func getFile(config interface{}) string {
+func getFile(applicationName string, config interface{}) string {
 	path, err := homedir.Expand(propertyConfigurationLocation)
 	logging.Panic(err)
 
-	return filepath.Join(path, *configFilePrefixFlag, typename.Get(config)+".yaml")
+	return filepath.Join(path, applicationName, *configFilePrefixFlag, typename.Get(config)+".yaml")
 }

@@ -10,7 +10,7 @@ import (
 
 func validateToken(token string) {
 	if len(token) != 6 {
-		logging.Panic(fmt.Errorf("please enter the 6-digit token: %v", token))
+		logging.Panic(fmt.Errorf("please enter the 6-digit token"))
 	}
 }
 

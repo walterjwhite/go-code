@@ -1,13 +1,15 @@
 package citrix
 
 import (
-	"github.com/andreyvit/locateimage"
-
-	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/action"
-
+	"github.com/walterjwhite/go-code/lib/utils/ui/graphical"
 	"image"
 )
 
-func (i *Instance) Match(matchThreshold float64, referenceImageData image.Image, x, y, width, height float64) *locateimage.Match {
-	return action.Match(i.ctx, matchThreshold, referenceImageData, x, y, width, height)
+func (i *Instance) Match(matchThreshold float64, referenceImageData image.Image, x, y, width, height float64) (bool, error) {
+	m := graphical.ImageMatch{Ctx: i.ctx, Image: referenceImageData,
+		MatchRegion:    &graphical.MatchRegion{X: x, Y: y, Width: width, Height: height},
+		MatchThreshold: matchThreshold,
+		Controller:     i.WindowsConf.Controller}
+
+	return m.Matches()
 }

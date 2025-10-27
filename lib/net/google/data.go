@@ -21,13 +21,13 @@ type Conf struct {
 	aes *aes.AES
 
 	ctx    context.Context
-	Cancel context.CancelFunc
+	cancel context.CancelFunc
 
 	client *pubsub.Client
 }
 
 func (c *Conf) Init(pctx context.Context) {
-	c.ctx, c.Cancel = context.WithCancel(pctx)
+	c.ctx, c.cancel = context.WithCancel(pctx)
 
 	client, err := pubsub.NewClient(c.ctx, c.ProjectId, option.WithCredentialsFile(c.CredentialsFile))
 	logging.Panic(err)
@@ -44,4 +44,10 @@ func (c *Conf) Init(pctx context.Context) {
 
 func (c *Conf) String() string {
 	return fmt.Sprintf("Conf: {CredentialsFile: %s, ProjectId: %s}", c.CredentialsFile, c.ProjectId)
+}
+
+func (c *Conf) Cancel() {
+	if c.cancel != nil {
+		c.cancel()
+	}
 }

@@ -29,7 +29,9 @@ type Session struct {
 	AuthRetryAttempts uint
 	AuthRetryDelay    time.Duration
 
-	SearchCriteria string
+	SearchCriteria []string
+
+	SearchCriteriaIndex int
 
 	Conf *provider.Conf
 

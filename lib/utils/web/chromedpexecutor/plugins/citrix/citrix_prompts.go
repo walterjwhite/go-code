@@ -8,7 +8,6 @@ import (
 	"github.com/chromedp/chromedp"
 
 	"github.com/rs/zerolog/log"
-	"github.com/walterjwhite/go-code/lib/application/logging"
 
 	"strings"
 	"time"
@@ -35,25 +34,27 @@ const (
 	})()`
 )
 
-func closePermissionPrompts(ctx context.Context) {
-	permissionPromptCtx, permissionPromptCancel := context.WithTimeout(ctx, 1*time.Second)
+func (i *Instance) closePermissionPrompts() {
+	permissionPromptCtx, permissionPromptCancel := context.WithTimeout(i.ctx, 1*time.Second)
 	defer permissionPromptCancel()
 
-	closePermissionPrompt(permissionPromptCtx, multipleMonitorPrompt)
+	i.closePermissionPrompt(permissionPromptCtx, multipleMonitorPrompt)
 }
 
-func closePermissionPrompt(ctx context.Context, innerText string) {
-	log.Info().Msgf("closePermissionPrompt - closing permission prompt if it exists: %s", innerText)
+func (i *Instance) closePermissionPrompt(ctx context.Context, innerText string) {
+	log.Info().Msgf("%v - closePermissionPrompt - closing permission prompt if it exists: %s", i, innerText)
 
 	var exists bool
 
 	javascriptPromptScriptFormatted := fmt.Sprintf(javascriptPromptScript, strings.ReplaceAll(innerText, "'", "\\'"))
 
-	log.Debug().Msgf("closePermissionPrompt - running javascript: %s", javascriptPromptScriptFormatted)
+	log.Debug().Msgf("%v - closePermissionPrompt - running javascript: %s", i, javascriptPromptScriptFormatted)
 	err := chromedp.Run(ctx,
 		chromedp.Evaluate(javascriptPromptScriptFormatted, &exists),
 	)
-	logging.Warn(err, false, "closePermissionPrompt - error closing prompt")
+	if err != nil {
+		log.Warn().Msgf("%v - closePermissionPrompt - error closing prompt - %s", i, err.Error())
+	}
 
-	log.Info().Msgf("closePermissionPrompt - prompt closed: %v", exists)
+	log.Info().Msgf("%v - closePermissionPrompt - prompt closed: %v", i, exists)
 }

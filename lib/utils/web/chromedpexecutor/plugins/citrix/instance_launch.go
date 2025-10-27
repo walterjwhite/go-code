@@ -48,7 +48,7 @@ func (i *Instance) launch() {
 		return
 	}
 
-	go i.onClose()
+	action.OnTabClosed(i.ctx, i.cleanup)
 
 	log.Debug().Msgf("%v - Instance.launch - end", i)
 }
@@ -90,7 +90,7 @@ func (i *Instance) tryLaunch() error {
 			return err
 		}
 
-		log.Info().Msgf("%v - Instance.tryLaunch - VDS successfully initialized", i)
+		log.Info().Msgf("%v - Instance.tryLaunch - instance successfully initialized", i)
 
 		i.ctx = tabCtx
 		i.cancel = tabCancel

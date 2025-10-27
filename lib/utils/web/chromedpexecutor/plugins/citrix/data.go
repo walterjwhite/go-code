@@ -3,9 +3,11 @@ package citrix
 import (
 	"context"
 	"fmt"
+	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor"
 	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/plugins/citrix/token/google"
 	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/provider"
 	"github.com/walterjwhite/go-code/lib/utils/worker"
+
 	"sync"
 	"time"
 )
@@ -42,7 +44,8 @@ type Session struct {
 
 	keepAliveTicker *time.Ticker
 
-	waitGroup *sync.WaitGroup
+	waitGroup  *sync.WaitGroup
+	controller *chromedpexecutor.ChromeDPController
 }
 
 func (s *Session) String() string {

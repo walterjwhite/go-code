@@ -4,24 +4,16 @@ import (
 	"context"
 
 	"fmt"
-	"math"
 
 	"github.com/chromedp/cdproto/page"
 	"github.com/chromedp/chromedp"
 
-	"github.com/chromedp/cdproto/emulation"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"github.com/walterjwhite/go-code/lib/application/logging"
 
 	"os"
-	"time"
 )
-
-const (
-	screenshotTimeout = 5 * time.Second
-)
-
 
 func ScreenshotIfDebug(ctx context.Context, name_template string, args ...interface{}) {
 	ScreenshotIf(ctx, log.Debug(), name_template, args...)
@@ -35,70 +27,29 @@ func ScreenshotIf(ctx context.Context, logLevel *zerolog.Event, name_template st
 
 func Screenshot(pctx context.Context, filename string) {
 	log.Debug().Msgf("capturing screenshot: %v", filename)
-	ctx, cancel := context.WithTimeout(pctx, screenshotTimeout)
-	defer cancel()
-
-	var buf []byte
-
-	err := chromedp.Run(ctx, chromedp.CaptureScreenshot(&buf))
-	if err != nil {
-		logging.Warn(err, false, "Screenshot.Run")
-		return
-	}
 
 	log.Debug().Msgf("took screenshot - writing to: %v", filename)
+
+	buf, err := TakeScreenshot(pctx)
+	if err != nil {
+		log.Warn().Msgf("error taking screenshot: %v", err)
+		return
+	}
 
 	logging.Warn(os.WriteFile(filename, buf, 0644), false, "Screenshot.WriteFile")
 	log.Debug().Msgf("captured screenshot: %v", filename)
 }
 
-func FullScreenshot(pctx context.Context, filename string) {
-	log.Debug().Msg("FullScreenshot - start")
-	ctx, cancel := context.WithTimeout(pctx, screenshotTimeout)
-	defer cancel()
-
+func TakeScreenshot(ctx context.Context) ([]byte, error) {
 	var buf []byte
-	logging.Warn(chromedp.Run(ctx, chromedp.Tasks{
-		chromedp.ActionFunc(func(ctx context.Context) error {
-			_, _, contentSize, _, _, _, err := page.GetLayoutMetrics().Do(ctx)
-			logging.Panic(err)
-
-			width, height := int64(math.Ceil(contentSize.Width)), int64(math.Ceil(contentSize.Height))
-
-			log.Debug().Msgf("screen: [%d, %d]", width, height)
-			err = emulation.SetDeviceMetricsOverride(width, height, 1, false).
-				WithScreenOrientation(&emulation.ScreenOrientation{
-					Type:  emulation.OrientationTypePortraitPrimary,
-					Angle: 0,
-				}).
-				Do(ctx)
-			logging.Panic(err)
-
-			log.Debug().Msgf("capture position: [%f, %f]", contentSize.X, contentSize.Y)
-			log.Debug().Msgf("capture size: [%f, %f]", contentSize.Width, contentSize.Height)
-
-			buf, err = page.CaptureScreenshot().
-				WithClip(&page.Viewport{
-					X:      contentSize.X,
-					Y:      contentSize.Y,
-					Width:  contentSize.Width,
-					Height: contentSize.Height,
-					Scale:  1,
-				}).Do(ctx)
-			return err
-		}),
-	}), false, "FullScreenshot")
-
-	logging.Warn(os.WriteFile(filename, buf, 0644), false, "FullScreenshot.WriteFile")
-	log.Debug().Msgf("captured screenshot: %v", filename)
+	return buf, chromedp.Run(ctx, chromedp.CaptureScreenshot(&buf))
 }
 
-func TakeScreenshotOf(ctx context.Context, x, y, width, height float64) []byte {
-
+func TakeScreenshotOf(ctx context.Context, x, y, width, height float64) ([]byte, error) {
 	log.Debug().Msgf("taking screenshot: [%f, %f] [%f, %f]", x, y, width, height)
 
 	var buf []byte
-	logging.Panic(chromedp.Run(ctx, chromedp.ActionFunc(func(ctx context.Context) error {
+	return buf, chromedp.Run(ctx, chromedp.ActionFunc(func(ctx context.Context) error {
 		var err error
 		buf, err = page.CaptureScreenshot().
 			WithClip(&page.Viewport{
@@ -111,6 +62,5 @@ func TakeScreenshotOf(ctx context.Context, x, y, width, height float64) []byte {
 				Scale: 1,
 			}).Do(ctx)
 		return err
-	})))
-	return buf
+	}))
 }

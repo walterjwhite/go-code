@@ -1,14 +1,23 @@
 package property
 
 import (
+	"context"
 	"github.com/rs/zerolog/log"
 )
 
 
-func Load(config interface{}) {
+type PreLoad interface {
+	PreLoad()
+}
+
+type PostLoad interface {
+	PostLoad(ctx context.Context)
+}
+
+func Load(applicationName string, config interface{}) {
 	log.Debug().Msgf("before configuration: %v", config)
 
-	LoadFile(config)
+	LoadFile(applicationName, config)
 
 	LoadEnv(config)
 	LoadCli(config)

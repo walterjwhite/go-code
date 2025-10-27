@@ -15,7 +15,6 @@ var (
 
 func init() {
 	application.Configure(session)
-	session.Validate()
 
 	log.Debug().Msg("initializing google pubsub")
 

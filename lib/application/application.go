@@ -40,7 +40,15 @@ func Configure(configurations ...interface{}) {
 
 func Load(configurations ...interface{}) {
 	for i := range configurations {
-		property.Load(configurations[i])
+		if i, ok := configurations[i].(property.PreLoad); ok {
+			i.PreLoad()
+		}
+
+		property.Load(ApplicationName, configurations[i])
+
+		if i, ok := configurations[i].(property.PostLoad); ok {
+			i.PostLoad(Context)
+		}
 	}
 }
 

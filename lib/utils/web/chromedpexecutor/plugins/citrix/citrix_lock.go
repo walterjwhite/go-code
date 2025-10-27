@@ -27,6 +27,11 @@ const (
 )
 
 func (i *Instance) lock() error {
+	if !i.Lockable {
+		log.Warn().Msgf("%v - Instance.lock - instance cannot be locked", i)
+		return nil
+	}
+
 	if i.locked {
 		log.Warn().Msgf("%v - Instance.lock - already locked", i)
 		return nil

@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-func Until(ctx context.Context, interval time.Duration, fn func() bool) error {
+func Until(ctx context.Context, interval time.Duration, fn func() (bool, error)) error {
 	ticker := time.NewTicker(interval)
 	defer ticker.Stop()
 
@@ -16,7 +16,12 @@ func Until(ctx context.Context, interval time.Duration, fn func() bool) error {
 			log.Warn().Msg("Operation timed out.")
 			return ctx.Err()
 		case <-ticker.C:
-			if fn() {
+			success, err := fn()
+			if err != nil {
+				return err
+			}
+
+			if success {
 				log.Debug().Msg("Function completed successfully.")
 				return nil
 			}
