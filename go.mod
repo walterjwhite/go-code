@@ -20,7 +20,7 @@ require (
 	github.com/godbus/dbus/v5 v5.1.0
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/kellydunn/golang-geo v0.7.0
-	github.com/klauspost/compress v1.18.0
+	github.com/klauspost/compress v1.18.1
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/olivere/elastic/v7 v7.0.32
 	github.com/rs/zerolog v1.34.0
