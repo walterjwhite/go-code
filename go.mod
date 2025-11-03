@@ -29,7 +29,7 @@ require (
 	github.com/urfave/sflags v0.4.1
 	github.com/vrischmann/envconfig v1.4.1
 	golang.org/x/crypto v0.43.0
-	google.golang.org/api v0.253.0
+	google.golang.org/api v0.254.0
 	gopkg.in/headzoo/surf.v1 v1.0.1
 	gopkg.in/yaml.v2 v2.4.0
 )
