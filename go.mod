@@ -17,7 +17,7 @@ require (
 	github.com/go-mail/gomail v2.3.1+incompatible
 	github.com/go-tts/tts v1.0.1
 	github.com/go-vgo/robotgo v0.110.8
-	github.com/godbus/dbus/v5 v5.1.0
+	github.com/godbus/dbus/v5 v5.2.0
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/kellydunn/golang-geo v0.7.0
 	github.com/klauspost/compress v1.18.1
