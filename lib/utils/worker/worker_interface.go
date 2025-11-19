@@ -1,7 +1,7 @@
 package worker
 
 type Worker interface {
-	Name() string
+	String() string
 
 	Work()
 

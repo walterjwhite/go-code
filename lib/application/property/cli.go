@@ -6,5 +6,5 @@ import (
 )
 
 func LoadCli(config interface{}) {
-	logging.Warn(gflag.ParseToDef(config), false, "LoadCli")
+	logging.Warn(gflag.ParseToDef(config), "LoadCli")
 }

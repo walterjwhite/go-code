@@ -12,7 +12,14 @@ func OnTabClosed(ctx context.Context, fn func()) {
 		if ev, ok := ev.(*target.EventTargetDestroyed); ok {
 			if c := chromedp.FromContext(ctx); c != nil {
 				if c.Target.TargetID == ev.TargetID {
-					log.Warn().Msg("detected tab/browser closure")
+					log.Warn().Msg("OnTabClosed.detected tab/browser closure")
+
+					select {
+					case <-ctx.Done():
+						log.Warn().Msg("OnTabClosed.ctx is done")
+					default:
+						log.Info().Msg("OnTabClosed.ctx is still alive")
+					}
 
 					fn()
 				}

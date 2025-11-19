@@ -88,5 +88,5 @@ func respond(status int, output string) {
 	response := fmt.Sprintf("Status: %v, Output: \n%v\n", status, output)
 	log.Info().Msgf("response: %v", response)
 
-	logging.Warn(subscriberConf.PubSubConf.Publish(subscriberConf.ResponseTopicName, []byte(response)), false, "respond")
+	logging.Warn(subscriberConf.PubSubConf.Publish(subscriberConf.ResponseTopicName, []byte(response)), "respond")
 }

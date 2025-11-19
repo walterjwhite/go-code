@@ -24,5 +24,5 @@ func main() {
 		return
 	}
 
-	logging.Warn(provider.Publish([]byte(os.Args[1])), false, "publish-event.Publish")
+	logging.Warn(provider.Publish([]byte(os.Args[1])), "publish-event.Publish")
 }

@@ -39,5 +39,5 @@ func main() {
 		c.Args = strings.Fields(*arguments)
 	}
 
-	logging.Warn(publisherConfiguration.GoogleConf.Publish(publisherConfiguration.TopicName, []byte("TODO: convert c to string using json, then return byte array")), false, "main")
+	logging.Warn(publisherConfiguration.GoogleConf.Publish(publisherConfiguration.TopicName, []byte("TODO: convert c to string using json, then return byte array")), "main")
 }

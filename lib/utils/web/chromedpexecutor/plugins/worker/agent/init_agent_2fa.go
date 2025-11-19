@@ -45,7 +45,7 @@ func (c *Conf) waitFor2FAToComplete(pctx context.Context) error {
 
 	token, err := ocr.Text(bytes)
 	if err != nil {
-		logging.Warn(err, false, "waitFor2FAToComplete.ocr.Text")
+		logging.Warn(err, "waitFor2FAToComplete.ocr.Text")
 		return err
 	}
 

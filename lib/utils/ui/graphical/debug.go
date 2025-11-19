@@ -15,8 +15,8 @@ func (i *ImageMatch) debug(image image.Image) {
 	log.Debug().Msg("match end - no matches")
 
 	if log.Debug().Enabled() {
-		logging.Warn(i.write(image, "screenshot-*.png"), false, "Matches.debug.write - screenshot")
-		logging.Warn(i.write(i.Image, "search-*.png"), false, "Matches.debug.write - image")
+		logging.Warn(i.write(image, "screenshot-*.png"), "Matches.debug.write - screenshot")
+		logging.Warn(i.write(i.Image, "search-*.png"), "Matches.debug.write - image")
 	}
 }
 

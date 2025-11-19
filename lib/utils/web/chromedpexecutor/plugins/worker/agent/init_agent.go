@@ -37,7 +37,7 @@ func (c *Conf) read() {
 }
 
 func close(file *os.File) {
-	logging.Warn(file.Close(), false, "read.close")
+	logging.Warn(file.Close(), "read.close")
 }
 
 func (c *Conf) Init(ctx context.Context, headless bool, contextuals ...interface{}) error {

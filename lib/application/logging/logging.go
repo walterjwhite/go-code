@@ -3,6 +3,7 @@ package logging
 import (
 	"fmt"
 	"github.com/rs/zerolog/log"
+	"runtime/debug"
 )
 
 func Panic(err error, contextuals ...interface{}) {
@@ -17,17 +18,12 @@ func Panic(err error, contextuals ...interface{}) {
 	}
 }
 
-func Warn(err error, isError bool, message ...string) {
+func Warn(err error, message string) {
 	if err == nil {
 		return
 	}
 
-	if isError {
-		log.Error().Msgf("%v", message)
-		Panic(err)
-		return
-	}
-
-	log.Warn().Msgf("%v", message)
-	log.Warn().Msg(err.Error())
+	log.Error().Msgf("%s - %s", message, err.Error())
+	stackTrace := debug.Stack()
+	log.Error().Msgf("Stack trace:\n%s", stackTrace)
 }

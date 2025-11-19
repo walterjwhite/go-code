@@ -18,5 +18,5 @@ func Text(data []byte) (string, error) {
 }
 
 func close(client *gosseract.Client) {
-	logging.Warn(client.Close(), false, "close")
+	logging.Warn(client.Close(), "close")
 }

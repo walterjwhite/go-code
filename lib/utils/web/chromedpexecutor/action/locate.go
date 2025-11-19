@@ -10,15 +10,15 @@ import (
 	"github.com/walterjwhite/go-code/lib/time/delay"
 )
 
-func Locate(ctx context.Context, visibleTimeout time.Duration, locateDelay delay.Delayer, selector interface{}, opts ...chromedp.QueryOption) error {
+func Locate(pctx context.Context, visibleTimeout time.Duration, locateDelay delay.Delayer, selector interface{}, opts ...chromedp.QueryOption) error {
 	log.Debug().Msgf("timeout: %v", visibleTimeout)
 
-	vctx, vcancel := timeout(ctx, visibleTimeout)
-	defer vcancel()
+	ctx, cancel := timeout(pctx, visibleTimeout)
+	defer cancel()
 
 	log.Debug().Msgf("set timeout: %#v", selector)
 
-	err := chromedp.Run(vctx, chromedp.WaitVisible(selector, opts...))
+	err := chromedp.Run(ctx, chromedp.WaitVisible(selector, opts...))
 	if err != nil {
 		logging.Panic(err)
 		return err

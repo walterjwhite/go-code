@@ -23,14 +23,10 @@ func TestPanic(t *testing.T) {
 
 func TestWarn(t *testing.T) {
 	assert.NotPanics(t, func() {
-		Warn(nil, false, "test message")
-	})
-
-	assert.Panics(t, func() {
-		Warn(errors.New("test error"), true, "test message")
+		Warn(nil, "test message")
 	})
 
 	assert.NotPanics(t, func() {
-		Warn(errors.New("test error"), false, "test message")
+		Warn(errors.New("test error"), "test message")
 	})
 }

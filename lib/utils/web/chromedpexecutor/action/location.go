@@ -14,7 +14,7 @@ func Location(pctx context.Context) string {
 	defer cancel()
 
 	var currentUrl string
-	logging.Warn(chromedp.Run(ctx, chromedp.Location(&currentUrl)), false, "Location()")
+	logging.Warn(chromedp.Run(ctx, chromedp.Location(&currentUrl)), "Location()")
 
 	log.Debug().Msgf("current url: %s", currentUrl)
 	return currentUrl

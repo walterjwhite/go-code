@@ -6,36 +6,55 @@ import (
 	"github.com/chromedp/cdproto/input"
 	"github.com/chromedp/chromedp"
 	"github.com/rs/zerolog/log"
-	"github.com/walterjwhite/go-code/lib/application/logging"
+
 	"time"
 )
 
 type MouseLocation struct {
-	X float64
-	Y float64
+	X             float64
+	Y             float64
+	ExpectedX     float64
+	ExpectedY     float64
+
+	MouseMoveTime int64
 }
 
 const (
 	mouseMoveEventListenerJavaScript = `
-	if(globalThis.mouseListener !== null) {
+	if (globalThis.mouseListener === undefined) {
 		globalThis.mouseListener = true;
-
 		document.addEventListener('mousemove', function(event) {
+			if (!('expectedMouseX' in window)) {
+				window.expectedMouseX = event.clientX;
+				window.expectedMouseY = event.clientY;
+			}
+
 			window.mouseX = event.clientX;
 			window.mouseY = event.clientY;
+			window.mouseMoveTime = Math.floor(Date.now() / 1000);
 		});
 	}
 	`
 
-	updateMouseLastPositionJavaScript = `
-		window.lastMouseX = window.mouseX;
-		window.lastMouseY = window.mouseY;
+	getMousePositionJavaScript = `({
+		x: window.mouseX,
+		y: window.mouseY,
+
+		expectedx: window.expectedMouseX,
+		expectedy: window.expectedMouseY,
+		
+		mousemovetime: window.mouseMoveTime
+	})`
+
+
+	updateMousePositionJavaScript = `
+		window.expectedMouseX = window.mouseX;
+		window.expectedMouseY = window.mouseY;
 	`
 
-	getMousePositionJavaScript     = `({x: window.mouseX, y: window.mouseY})`
-	getLastMousePositionJavaScript = `({x: window.lastMouseX, y: window.lastMouseY})`
 
 	delayBetweenMouseMoves = 1 * time.Second
+	movementTimeout        = 30 * time.Second
 )
 
 var (
@@ -47,6 +66,11 @@ var (
 	}
 )
 
+func updateMousePosition(ctx context.Context) error {
+	return chromedp.Run(ctx,
+		chromedp.Evaluate(updateMousePositionJavaScript, nil))
+}
+
 func AttachMousePositionListener(ctx context.Context) error {
 	log.Debug().Msg("attaching mouse position listener")
 
@@ -54,51 +78,44 @@ func AttachMousePositionListener(ctx context.Context) error {
 		chromedp.Evaluate(mouseMoveEventListenerJavaScript, nil))
 }
 
-func GetMousePosition(ctx context.Context) (float64, float64, error) {
+func GetMousePosition(ctx context.Context) (MouseLocation, error) {
 	var mouseLocation MouseLocation
 
-	err := chromedp.Run(ctx,
+	return mouseLocation, chromedp.Run(ctx,
 		chromedp.Evaluate(getMousePositionJavaScript, &mouseLocation))
-	if err != nil {
-		return 0, 0, err
-	}
-
-	return mouseLocation.X, mouseLocation.Y, nil
 }
 
-func UpdateMousePosition(ctx context.Context) error {
-	return chromedp.Run(ctx,
-		chromedp.Evaluate(updateMouseLastPositionJavaScript, nil))
-}
-
-func WasMouseMoved(ctx context.Context) (error, bool) {
-	mouseX, mouseY, err := GetMousePosition(ctx)
+func WasMouseMoved(ctx context.Context) (bool, error) {
+	mouseLocation, err := GetMousePosition(ctx)
 	if err != nil {
-		logging.Warn(err, false, "GetMousePosition")
-		return err, false
+		return false, err
 	}
 
-	var lastMouseLocation MouseLocation
-	err = chromedp.Run(ctx,
-		chromedp.Evaluate(getLastMousePositionJavaScript, &lastMouseLocation))
-	if err != nil {
-		logging.Warn(err, false, "getLastMousePositionJavaScript")
-		return err, false
-	}
+	lastMovementTime := time.Unix(mouseLocation.MouseMoveTime, 0)
+	timeSinceLastMouseMovement := time.Since(lastMovementTime)
 
-	moved := (mouseX != lastMouseLocation.X || mouseY != lastMouseLocation.Y)
-	log.Debug().Msgf("mouse @: (%f, %f) <- (%f, %f)", mouseX, mouseY, lastMouseLocation.X, lastMouseLocation.Y)
+	log.Info().Msgf("WasMouseMoved.lastMovement: %f, %f [%f, %f] @ %v", mouseLocation.X, mouseLocation.Y, mouseLocation.ExpectedX, mouseLocation.ExpectedY, timeSinceLastMouseMovement)
 
-	err = UpdateMousePosition(ctx)
-	return err, moved
+	if mouseLocation.X == mouseLocation.ExpectedX &&
+		mouseLocation.Y == mouseLocation.ExpectedY {
+			return false, nil
+		}
+	
+	wasMoved := timeSinceLastMouseMovement < movementTimeout
+	err = updateMousePosition(ctx)
+
+	return wasMoved, err
 }
 
 func MoveMouse(ctx context.Context, x, y float64) error {
 	log.Debug().Msgf("moving mouse to: %f,%f", x, y)
 
-	return chromedp.Run(ctx,
-		chromedp.MouseEvent(input.MouseMoved, x, y),
-	)
+	err := chromedp.Run(ctx, chromedp.MouseEvent(input.MouseMoved, x, y))
+	if err != nil {
+		return err
+	}
+
+	return updateMousePosition(ctx)
 }
 
 func Wiggle(ctx context.Context) error {
@@ -107,13 +124,13 @@ func Wiggle(ctx context.Context) error {
 		return err
 	}
 
-	x, y, err := GetMousePosition(ctx)
+	mouseLocation, err := GetMousePosition(ctx)
 	if err != nil {
 		return err
 	}
 
 	for i, delta := range wiggleDeltas {
-		err, wasMoved := WasMouseMoved(ctx)
+		wasMoved, err := WasMouseMoved(ctx)
 		if err != nil {
 			return nil
 		}
@@ -121,7 +138,7 @@ func Wiggle(ctx context.Context) error {
 			log.Warn().Msg("mouse was moved")
 		}
 
-		err = MoveMouse(ctx, x+delta[0], y+delta[1])
+		err = MoveMouse(ctx, mouseLocation.X+delta[0], mouseLocation.Y+delta[1])
 		if err != nil {
 			return err
 		}

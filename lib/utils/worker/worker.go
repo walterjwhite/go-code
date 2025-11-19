@@ -2,13 +2,22 @@ package worker
 
 import (
 	"context"
+	"errors"
 	"github.com/rs/zerolog/log"
 	"github.com/walterjwhite/go-code/lib/time/until"
 	"time"
 )
 
+func (c *Conf) Validate() error {
+	if c.isPastEndTime() {
+		return errors.New("end hour already passed")
+	}
+
+	return nil
+}
+
 func (c *Conf) Run(pctx context.Context) {
-	log.Debug().Msgf("worker.Run.%s - start", c.worker.Name())
+	log.Debug().Msgf("worker.Run.%s - start", c.worker.String())
 	c.ctx, c.cancel = context.WithCancel(pctx)
 	defer c.cancel()
 
@@ -17,7 +26,7 @@ func (c *Conf) Run(pctx context.Context) {
 	for !c.isPastEndTime() {
 		select {
 		case <-c.ctx.Done():
-			log.Warn().Msgf("worker.Run.%s - context is done", c.worker.Name())
+			log.Warn().Msgf("worker.Run.%s - context is done", c.worker.String())
 			return
 		default:
 			c.work()
@@ -27,9 +36,9 @@ func (c *Conf) Run(pctx context.Context) {
 		}
 	}
 
-	log.Debug().Msgf("worker.Run.%s - past end time", c.worker.Name())
+	log.Debug().Msgf("worker.Run.%s - past end time", c.worker.String())
 	c.stop()
-	log.Debug().Msgf("worker.Run.%s - end", c.worker.Name())
+	log.Debug().Msgf("worker.Run.%s - end", c.worker.String())
 }
 
 func (c *Conf) isPastEndTime() bool {

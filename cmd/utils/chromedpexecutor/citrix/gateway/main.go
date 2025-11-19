@@ -4,8 +4,8 @@ import (
 	"github.com/rs/zerolog/log"
 	"github.com/walterjwhite/go-code/lib/application"
 
+	"github.com/walterjwhite/go-code/lib/utils/token/providers/cli"
 	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/plugins/citrix"
-	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/plugins/citrix/token/cli"
 )
 
 var (
@@ -29,21 +29,21 @@ func main() {
 		token := getToken()
 
 		session.Init(application.Context)
-		session.Run(*token)
+		session.Run(token)
 
 		firstRun = false
 	}
 }
 
-func getToken() *string {
+func getToken() string {
 	if firstRun {
-		token := cli.New().ReadToken()
-		if token != nil {
+		token := cli.New().Get()
+		if len(token) > 0 {
 			log.Info().Msg("using cmdline token")
 			return token
 		}
 	}
 
 	log.Info().Msg("using google pubsub")
-	return session.GoogleProvider.ReadToken()
+	return session.GoogleProvider.Get()
 }

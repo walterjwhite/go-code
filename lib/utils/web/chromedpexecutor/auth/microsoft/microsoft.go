@@ -118,7 +118,7 @@ func twoFactor(pctx context.Context, publisher publisher.Publisher) error {
 
 	log.Info().Msgf("Microsoft token: %s", token)
 	if publisher != nil {
-		logging.Warn(publisher.Publish([]byte(fmt.Sprintf("microsoft token: %s", token))), false, "microsoft.twoFactor.publisher.Publish")
+		logging.Warn(publisher.Publish([]byte(fmt.Sprintf("microsoft token: %s", token))), "microsoft.twoFactor.publisher.Publish")
 	}
 
 	ctx2, cancel2 := context.WithTimeout(pctx, stepTimeout)

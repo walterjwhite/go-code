@@ -14,5 +14,7 @@ func NewRandom(d time.Duration) *RandomDelay {
 }
 
 func (d *RandomDelay) Delay() {
-	doDelay(time.Duration(rand.Int63n(d.amount.Nanoseconds())) * time.Nanosecond)
+	if d.amount > 0 {
+		doDelay(time.Duration(rand.Int63n(d.amount.Nanoseconds())) * time.Nanosecond)
+	}
 }

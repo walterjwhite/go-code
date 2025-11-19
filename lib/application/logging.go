@@ -4,6 +4,7 @@ import (
 	"flag"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
+	"github.com/rs/zerolog/pkgerrors"
 	"github.com/walterjwhite/go-code/lib/application/logging"
 	"github.com/walterjwhite/go-code/lib/application/logging/pubsub"
 	"github.com/walterjwhite/go-code/lib/application/property"
@@ -23,6 +24,7 @@ var (
 
 func configureLogging() {
 	zerolog.TimeFieldFormat = logDateTimeFormat
+	zerolog.ErrorStackMarshaler = pkgerrors.MarshalStack
 
 	log.Logger = zerolog.New(zerolog.SyncWriter(getLogWriter())).With().Timestamp().Logger()
 	setLogLevel()

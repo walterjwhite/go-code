@@ -51,7 +51,7 @@ func (p *PeriodicInstance) doRun() {
 	p.mutex.Lock()
 	defer p.mutex.Unlock()
 
-	logging.Warn(p.function(), false, "doRun")
+	logging.Warn(p.function(), "doRun")
 }
 
 func (p *PeriodicInstance) run() {

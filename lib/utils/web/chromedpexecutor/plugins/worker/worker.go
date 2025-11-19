@@ -7,13 +7,13 @@ import (
 type WorkerType int
 
 const (
-	MouseWiggler WorkerType = iota
+	MouseDriver WorkerType = iota
 	Agent
 	NOOP
 )
 
 func (w WorkerType) String() string {
-	return [...]string{"MouseWiggler", "Agent", "NOOP"}[w]
+	return [...]string{"MouseDriver", "Agent", "NOOP"}[w]
 }
 
 type ChromeDPWorker interface {

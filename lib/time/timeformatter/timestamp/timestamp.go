@@ -19,10 +19,13 @@ func init() {
 }
 
 func UseNested() {
-	Default = &Configuration{Template: "%d/%0d.%s/%d/%d.%d.%d"}
+	Default = &Configuration{Template: "%d/%02d.%s/%d/%d.%d.%d"}
 }
 
 func (c *Configuration) Format(t time.Time) string {
+	if c.Template == "%d/%02d.%s/%d/%d.%d.%d" {
+		return fmt.Sprintf(c.Template, t.Year(), t.Month(), t.Month().String(), t.Day(), t.Hour(), t.Minute(), t.Second())
+	}
 	return fmt.Sprintf(c.Template, t.Year(), t.Month(), t.Month(), t.Day(), t.Hour(), t.Minute(), t.Second())
 }
 

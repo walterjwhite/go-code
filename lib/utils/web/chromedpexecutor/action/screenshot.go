@@ -36,7 +36,7 @@ func Screenshot(pctx context.Context, filename string) {
 		return
 	}
 
-	logging.Warn(os.WriteFile(filename, buf, 0644), false, "Screenshot.WriteFile")
+	logging.Warn(os.WriteFile(filename, buf, 0644), "Screenshot.WriteFile")
 	log.Debug().Msgf("captured screenshot: %v", filename)
 }
 

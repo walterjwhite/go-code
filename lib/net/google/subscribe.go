@@ -18,7 +18,7 @@ func (c *Conf) Subscribe(topicName string, subscriptionName string, ms MessageSu
 
 		decrypted, err := c.decrypt(m.Data)
 		if err != nil {
-			logging.Warn(err, false, "pubsub.Subscribe.Receive")
+			logging.Warn(err, "pubsub.Subscribe.Receive")
 			return
 		}
 
@@ -27,7 +27,7 @@ func (c *Conf) Subscribe(topicName string, subscriptionName string, ms MessageSu
 
 		deserialized, err := c.deserialize(ms, decompressed)
 		if err != nil {
-			logging.Warn(err, false, "pubsub.Subscribe.Deserialize")
+			logging.Warn(err, "pubsub.Subscribe.Deserialize")
 			return
 		}
 
@@ -35,7 +35,7 @@ func (c *Conf) Subscribe(topicName string, subscriptionName string, ms MessageSu
 
 		m.Ack() // Acknowledge that we've consumed the message.
 	})
-	logging.Warn(err, false, "google_pubsub.subscribe.Receive")
+	logging.Warn(err, "google_pubsub.subscribe.Receive")
 }
 
 func (c *Conf) decrypt(data []byte) ([]byte, error) {
@@ -52,7 +52,7 @@ func (c *Conf) decompress(data []byte) []byte {
 	}
 
 	decompressed, err := zstd.DecompressBuffer(data)
-	logging.Warn(err, false, "google_pubsub.subscribe.decompress")
+	logging.Warn(err, "google_pubsub.subscribe.decompress")
 
 	return decompressed
 }
@@ -67,7 +67,7 @@ func (c *Conf) deserialize(ms MessageSubscriber, decompressed []byte) ([]byte, e
 	err := json.Unmarshal(decompressed, &deserialized)
 	if err != nil {
 		ms.MessageParseError(err)
-		logging.Warn(err, false, "google_pubsub.subscribe.Unmarshal")
+		logging.Warn(err, "google_pubsub.subscribe.Unmarshal")
 		return nil, err
 	}
 

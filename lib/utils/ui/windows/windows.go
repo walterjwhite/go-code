@@ -13,13 +13,17 @@ const (
 )
 
 func (c *WindowsConf) IsLocked(ctx context.Context) (bool, error) {
+	isPresent, err := c.IsStartMenuButtonPresent(ctx)
+	return !isPresent, err
+}
+
+func (c *WindowsConf) IsStartMenuButtonPresent(ctx context.Context) (bool, error) {
 	i, err := c.WindowsStartButtonMatcher(ctx)
 	if err != nil {
 		return false, err
 	}
 
-	unlocked, err := i.Matches()
-	return !unlocked, err
+	return i.Matches()
 }
 
 func (c *WindowsConf) WindowsStartButtonMatcher(ctx context.Context) (*graphical.ImageMatch, error) {
@@ -55,5 +59,3 @@ func (c *WindowsConf) getScreenshotCoordinates(ctx context.Context) (float64, fl
 
 	return 0, float64(size.Height) - c.StartButtonHeight, c.StartButtonHeight * 2, c.StartButtonHeight, nil
 }
-
-

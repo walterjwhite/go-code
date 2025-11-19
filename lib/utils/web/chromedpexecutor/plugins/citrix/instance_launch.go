@@ -4,9 +4,9 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/chromedp/chromedp"
-
 	"github.com/avast/retry-go"
+	"github.com/chromedp/cdproto/target"
+	"github.com/chromedp/chromedp"
 	"github.com/rs/zerolog/log"
 	"github.com/walterjwhite/go-code/lib/application/logging"
 
@@ -16,18 +16,19 @@ import (
 )
 
 const (
-	intervalBetweenChecks = 500 * time.Millisecond
-	launchTimeout         = 1 * time.Minute
-	launchRetryAttempts   = 5
-	launchRetryDelay      = 5 * time.Second
+	launchTimeout       = 1 * time.Minute
+	launchRetryAttempts = 5
+	launchRetryDelay    = 5 * time.Second
 
 	instanceLaunchXPath = "//*[@id=\"home-screen\"]/div[2]/section[5]/div[5]/div/ul/li[%d]/a[1]"
+
+	tabType = "page"
 )
 
 func (i *Instance) launch() {
 	log.Debug().Msgf("%v - Instance.launch - start", i)
 
-	if isExpired(i.session.ctx) {
+	if IsContextExpired(i.session.ctx) {
 		log.Warn().Msgf("%v - Instance.launch - session appears to have expired", i)
 		return
 	}
@@ -43,7 +44,7 @@ func (i *Instance) launch() {
 		retry.Delay(launchRetryDelay),
 	)
 
-	logging.Warn(err, false, "Instance.launch - error launching")
+	logging.Warn(err, "Instance.launch - error launching")
 	if err != nil {
 		return
 	}
@@ -58,11 +59,11 @@ func (i *Instance) tryLaunch() error {
 	targetElementXpath := fmt.Sprintf(instanceLaunchXPath, i.Index)
 	targetIDChannel := chromedp.WaitNewTarget(i.session.ctx, matchTabWithNonEmptyURL)
 
-	launchCtx, launchCancel := context.WithTimeout(i.session.ctx, launchTimeout)
-	defer launchCancel()
+	ctx, cancel := context.WithTimeout(i.session.ctx, launchTimeout)
+	defer cancel()
 
 	log.Debug().Msgf("%v - Instance.tryLaunch - clicking: %s", i, targetElementXpath)
-	err := chromedp.Run(launchCtx, chromedp.Click(targetElementXpath))
+	err := chromedp.Run(ctx, chromedp.Click(targetElementXpath))
 	if err != nil {
 		return err
 	}
@@ -73,7 +74,7 @@ func (i *Instance) tryLaunch() error {
 	case targetID := <-targetIDChannel:
 		tabCtx, tabCancel := chromedp.NewContext(i.session.ctx, chromedp.WithTargetID(targetID))
 		err = chromedp.Run(tabCtx)
-		logging.Warn(err, false, "Instance.tryLaunch - error marking context for tab")
+		logging.Warn(err, "Instance.tryLaunch - error marking context for tab")
 		if err != nil {
 			tabCancel()
 			return err
@@ -81,14 +82,7 @@ func (i *Instance) tryLaunch() error {
 
 		log.Debug().Msgf("%v - Instance.tryLaunch - new instance", i)
 
-		citrixSessionInitializationCtx, citrixSessionInitializationCancel := context.WithTimeout(tabCtx, citrixSessionInitializationTimeout)
-		defer citrixSessionInitializationCancel()
-
-		err := waitForCitrixInitialization(citrixSessionInitializationCtx)
-		logging.Warn(err, false, "Instance.tryLaunch - error waiting for citrix initialization")
-		if err != nil {
-			return err
-		}
+		logging.Warn(i.waitForInitialization(tabCtx), "Instance.tryLaunch - error waiting for initialization")
 
 		log.Info().Msgf("%v - Instance.tryLaunch - instance successfully initialized", i)
 
@@ -98,9 +92,13 @@ func (i *Instance) tryLaunch() error {
 		log.Debug().Msgf("%v - Instance.tryLaunch - end - success", i)
 
 		return nil
-	case <-launchCtx.Done():
+	case <-ctx.Done():
 		log.Debug().Msgf("%v - Instance.tryLaunch - launch context done", i)
 
-		return launchCtx.Err()
+		return ctx.Err()
 	}
+}
+
+func matchTabWithNonEmptyURL(info *target.Info) bool {
+	return info.Type == tabType && info.URL != ""
 }
