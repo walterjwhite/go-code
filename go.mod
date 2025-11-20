@@ -28,7 +28,7 @@ require (
 	github.com/stretchr/testify v1.11.1
 	github.com/urfave/sflags v0.4.1
 	github.com/vrischmann/envconfig v1.4.1
-	golang.org/x/crypto v0.44.0
+	golang.org/x/crypto v0.45.0
 	google.golang.org/api v0.256.0
 	gopkg.in/headzoo/surf.v1 v1.0.1
 	gopkg.in/yaml.v2 v2.4.0
