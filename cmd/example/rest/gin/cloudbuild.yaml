@@ -1,0 +1,8 @@
+steps:
+- name: 'golang:1.25'
+  entrypoint: 'bash'
+  args: ['-c', 'go mod tidy && go build -o /layers/google.go.build/bin/main ./']
+
+- name: 'gcr.io/cloud-builders/gcloud'
+  args: ['app', 'deploy', 'app.yaml']
+  
