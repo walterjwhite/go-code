@@ -36,8 +36,16 @@ func (c *WindowsConf) WaitReady(pctx context.Context) (bool, error) {
 				log.Debug().Msg("windows.WaitReady.IsTermsAcceptanceButtonVisible - visible")
 
 				err = c.Controller.Click(ctx, 100, 100)
-				err = c.Controller.Type(ctx, "\r")
+				if err != nil {
+					log.Warn().Msgf("windows.WaitReady.Click - err - %v", err)
+					return false, err
+				}
 
+				err = c.Controller.Type(ctx, "\r")
+				if err != nil {
+					log.Warn().Msgf("windows.WaitReady.Click - err - %v", err)
+					return false, err
+				}
 				time.Sleep(termsAcceptanceRefreshTimeout)
 
 				log.Debug().Msg("windows.WaitReady.IsTermsAcceptanceButtonVisible - click, type, sleep")

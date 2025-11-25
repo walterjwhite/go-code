@@ -11,10 +11,10 @@ import (
 )
 
 type MouseLocation struct {
-	X             float64
-	Y             float64
-	ExpectedX     float64
-	ExpectedY     float64
+	X         float64
+	Y         float64
+	ExpectedX float64
+	ExpectedY float64
 
 	MouseMoveTime int64
 }
@@ -98,9 +98,9 @@ func WasMouseMoved(ctx context.Context) (bool, error) {
 
 	if mouseLocation.X == mouseLocation.ExpectedX &&
 		mouseLocation.Y == mouseLocation.ExpectedY {
-			return false, nil
-		}
-	
+		return false, nil
+	}
+
 	wasMoved := timeSinceLastMouseMovement < movementTimeout
 	err = updateMousePosition(ctx)
 

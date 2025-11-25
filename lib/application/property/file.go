@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	propertyConfigurationLocation = "~/.config/walterjwhite"
+	propertyConfigurationLocation = "~/.config/walterjwhite/go"
 )
 
 var (
