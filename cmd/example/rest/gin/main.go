@@ -1,15 +1,17 @@
 package main
 
 import (
-	"github.com/gin-gonic/gin"
-	"github.com/walterjwhite/go-code/lib/application/logging"
+	"sync"
 )
 
 func main() {
-	router := gin.Default()
-	router.GET("/albums", getAlbums)
-	router.GET("/albums/:id", getAlbumByID)
-	router.POST("/albums", postAlbums)
+	wg := sync.WaitGroup{}
 
-	logging.Panic(router.Run("localhost:8080"))
+	wg.Add(1)
+	go serve(&wg)
+
+	wg.Add(1)
+	go contactWorker(&wg)
+
+	wg.Wait()
 }

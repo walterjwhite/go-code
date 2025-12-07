@@ -6,6 +6,7 @@ import (
 
 	"github.com/rs/zerolog/log"
 
+	"github.com/walterjwhite/go-code/lib/application/logging"
 	"github.com/walterjwhite/go-code/lib/application/property"
 
 	"os"
@@ -47,7 +48,7 @@ func Load(configurations ...interface{}) {
 		property.Load(ApplicationName, configurations[i])
 
 		if i, ok := configurations[i].(property.PostLoad); ok {
-			i.PostLoad(Context)
+			logging.Panic(i.PostLoad(Context))
 		}
 	}
 }

@@ -1,10 +1,11 @@
 package download
 
 import (
-	"github.com/walterjwhite/go-code/lib/application/logging"
+	"github.com/rs/zerolog/log"
 	"io"
 	"net/http"
 	"os"
+	"time"
 )
 
 type HttpDownload struct {
@@ -13,16 +14,32 @@ type HttpDownload struct {
 }
 
 func (h *HttpDownload) Fetch() {
-	response, err := http.Get(h.Url)
-	logging.Panic(err)
+	client := &http.Client{Timeout: 30 * time.Second}
 
-	defer logging.Panic(response.Body.Close())
+	response, err := client.Get(h.Url)
+	if err != nil {
+		log.Error().Err(err).Msg("http fetch failed")
+		return
+	}
+	defer func() {
+		if cerr := response.Body.Close(); cerr != nil {
+			log.Error().Err(cerr).Msg("response.Body.Close failed")
+		}
+	}()
 
 	out, err := os.Create(h.LocalFilepath)
-	logging.Panic(err)
+	if err != nil {
+		log.Error().Err(err).Msg("failed to create local file for download")
+		return
+	}
+	defer func() {
+		if cerr := out.Close(); cerr != nil {
+			log.Error().Err(cerr).Msg("out.Close failed")
+		}
+	}()
 
-	defer logging.Panic(out.Close())
-
-	_, err = io.Copy(out, response.Body)
-	logging.Panic(err)
+	if _, err = io.Copy(out, response.Body); err != nil {
+		log.Error().Err(err).Msg("failed to copy response body to file")
+		return
+	}
 }

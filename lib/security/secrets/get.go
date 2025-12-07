@@ -1,22 +1,37 @@
 package secrets
 
 import (
-	"github.com/rs/zerolog/log"
-	"github.com/walterjwhite/go-code/lib/application/logging"
+	"context"
+	"os"
 	"os/exec"
+	"strings"
+	"time"
+
+	"github.com/rs/zerolog/log"
 )
 
 func Get(secretName string) string {
-	log.Debug().Msgf("secretName: %v", secretName)
-
-	cmd := exec.Command("secrets", "get", "-out=stdout", secretName)
-	cmd.Env = append(cmd.Environ(), "_FORCE_INTERACTIVE=1")
-
-	out, err := cmd.Output()
-	if len(out) == 0 {
-		logging.Panic(err)
+	if strings.TrimSpace(secretName) == "" {
+		log.Warn().Msg("secrets.Get called with empty secretName")
+		return ""
 	}
 
-	log.Debug().Msgf("output: %v", out)
-	return string(out[:])
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	cmd := exec.CommandContext(ctx, "secrets", "get", "-out=stdout", secretName)
+	cmd.Env = append(os.Environ(), "_FORCE_INTERACTIVE=1")
+
+	out, err := cmd.Output()
+	if err != nil {
+		log.Error().Err(err).Msgf("secrets.Get failed for key")
+		return ""
+	}
+
+	s := strings.TrimSpace(string(out))
+	if s == "" {
+		log.Warn().Msgf("secrets.Get returned empty value for %s", secretName)
+	}
+
+	return s
 }

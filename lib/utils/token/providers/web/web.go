@@ -22,8 +22,15 @@ type WebReader struct {
 	channel chan string
 }
 
-func NewRandomWebReader() *WebReader {
-	return &WebReader{Port: 1024 + rand.Intn(64512), Path: "/" + random.String(4+rand.Intn(4)) + "/", channel: make(chan string, 1)}
+func NewRandomWebReader() (*WebReader, error) {
+	path, err := random.String(4 + rand.Intn(4))
+	if err != nil {
+		return nil, err
+	}
+
+	return &WebReader{Port: 1024 + rand.Intn(64512),
+		Path:    "/" + path + "/",
+		channel: make(chan string, 1)}, nil
 }
 
 func (r *WebReader) Get() string {

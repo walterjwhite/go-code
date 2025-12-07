@@ -1,4 +1,4 @@
-package email
+package write
 
 import (
 	"github.com/emersion/go-imap"
@@ -9,9 +9,11 @@ import (
 	"github.com/emersion/go-imap-idle"
 )
 
-func (s *EmailSession) ReadAsync(folderName string, function func(msg *imap.Message), incrementIndex bool) {
+func (s *EmailSession) ReadAsync(folderName string, function func(msg *imap.Message), incrementIndex bool) error {
 	_, err := s.client.Select(folderName, false)
-	logging.Panic(err)
+	if err != nil {
+		return err
+	}
 
 	idleClient := idle.NewClient(s.client)
 
@@ -30,21 +32,38 @@ func (s *EmailSession) ReadAsync(folderName string, function func(msg *imap.Mess
 
 			mailboxUpdate, ok := update.(*client.MailboxUpdate)
 			if ok {
-				s.readFolder(mailboxUpdate, function, incrementIndex)
+				err = s.readFolder(mailboxUpdate, function, incrementIndex)
+				if err != nil {
+					return err
+				}
 			}
 		case err := <-done:
 			logging.Panic(err)
 			log.Info().Msg("Not idling anymore")
-			return
+			return nil
 		}
 	}
+
 }
 
-func (s *EmailSession) readFolder(mailboxUpdate *client.MailboxUpdate, function func(msg *imap.Message), incrementIndex bool) {
+func (s *EmailSession) readFolder(mailboxUpdate *client.MailboxUpdate, function func(msg *imap.Message), incrementIndex bool) error {
 	log.Info().Msgf("Mailbox Update: %v %v", mailboxUpdate.Mailbox.Name, mailboxUpdate.Mailbox.Items)
 
-	sClone := s.Clone()
+	sClone, err := s.clone()
+	if err != nil {
+		return err
+	}
+
 	defer sClone.Close()
 
-	sClone.Read(mailboxUpdate.Mailbox.Name, function, incrementIndex)
+	return sClone.Read(mailboxUpdate.Mailbox.Name, function, incrementIndex)
+}
+
+func (s *EmailSession) clone() (*EmailSession, error) {
+	ns, err := New(s.EmailAccount)
+	if err != nil {
+		return nil, err
+	}
+
+	return ns, nil
 }

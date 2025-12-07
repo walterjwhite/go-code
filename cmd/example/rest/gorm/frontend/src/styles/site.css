@@ -1,0 +1,92 @@
+/* Project-specific site styles adapted from the reference demo */
+:root{
+  --bg:#f6f8fb;
+  --card:#ffffff;
+  --muted:#6b7280;
+  --brand:#0b3d91;
+  --accent:#f59e0b;
+  --max-width:1100px;
+  --panel-radius:12px;
+  --shadow:0 6px 18px rgba(18,22,47,0.04);
+  --focus: 3px;
+  --focus-color: rgba(11,61,145,0.15);
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:#0f172a}
+.container{max-width:var(--max-width);margin:18px auto;padding:0 18px}
+
+/* panels / cards */
+.panel{padding:14px;border-radius:var(--panel-radius);background:var(--card);box-shadow:var(--shadow)}
+.panel .panel-title{margin:0 0 8px;font-size:1.1rem}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border-radius:8px;font-weight:600;font-size:0.9rem;cursor:pointer;border:0}
+.btn-primary{background:var(--brand);color:#fff}
+.btn-outline{background:transparent;color:var(--brand);border:1px solid rgba(11,61,145,0.12);padding:7px 10px}
+.btn-danger,.btn.warn{background:var(--accent);color:#fff}
+.btn-ghost{background:transparent;color:var(--muted);border:1px solid rgba(15,23,42,0.04)}
+
+/* Simplified utility classes used by components to avoid inline styles */
+.gap-12 { gap: 12px; }
+.mb-12 { margin-bottom: 12px; }
+.flex-gap-18 { display: flex; gap: 18px; align-items: flex-start; flex-wrap: wrap; }
+.flex-1-1-520 { flex: 1 1 520px; }
+.flex-0-0-320 { flex: 0 0 320px; }
+.flex-0-0-220 { flex: 0 0 220px; }
+.btn-small { padding: 6px 10px; }
+.hr-sep { margin: 16px 0; border: none; border-top: 1px solid rgba(15,23,42,0.04); }
+.panel-dashed { padding: 12px; box-shadow: none; border: 1px dashed rgba(15,23,42,0.04); }
+.no-underline { text-decoration: none; }
+.transition-colors { transition: background-color .18s cubic-bezier(.2,.8,.2,1); }
+
+/* small utilities */
+.m-0 { margin: 0; }
+.gap-8 { gap: 8px; }
+.mt-12 { margin-top: 12px; }
+.mt-2 { margin-top: 8px; }
+.mb-2 { margin-bottom: 8px; }
+.flex-1-1-320 { flex: 1 1 320px; }
+
+/* Table striping used for user list rows */
+.striped-rows tr:nth-child(odd) { background: #ffffff; }
+.striped-rows tr:nth-child(even) { background: #f8fafc; }
+.striped-rows tr:hover { background: #f1f5f9; }
+/* form helpers */
+.field{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
+.field-label{font-size:0.9rem;color:var(--muted)}
+.form-actions{margin-top:10px}
+
+/* small helpers */
+.small{color:var(--muted);font-size:0.95rem}
+.empty{padding:14px;border-radius:8px;text-align:center;color:var(--muted);background:linear-gradient(180deg,#fff,#f9fafb)}
+
+/* alert */
+.alert{padding:12px 16px;border-radius:10px;margin:12px 0;font-weight:600;display:flex;align-items:center}
+.alert-error{background:linear-gradient(180deg, rgba(255,245,245,0.98), #fff5f5);border:1px solid rgba(239,68,68,0.12);color:#7f1d1d}
+
+/* layout helpers similar to the reference */
+.layout{display:grid;grid-template-columns:1fr 340px;gap:28px;align-items:start}
+
+/* table helpers */
+.table-card{width:100%;border-collapse:collapse;margin-top:12px}
+.table-card th,.table-card td{padding:8px;border-bottom:1px solid #eef3fb;text-align:left;vertical-align:top}
+.table-card th{background:#fbfdff;font-weight:700}
+
+/* responsive */
+@media (max-width:880px){
+  .layout{grid-template-columns:1fr;padding-bottom:20px}
+}
+
+/* focus and hover interactions */
+a,.btn,button{transition:all 180ms cubic-bezier(.2,.8,.2,1)}
+.btn:hover,button:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(11,61,145,0.06)}
+.btn:focus,button:focus{outline:none;box-shadow:0 0 0 var(--focus) var(--focus-color);border-radius:8px}
+
+/* form fields */
+input[type="email"], input[type="text"], input[type="search"], input[type="number"], input[type="password"], textarea, select {
+  width:100%;padding:8px 10px;border:1px solid #d7e0ef;border-radius:6px;background:#fbfdff;color:#0f172a;font-size:0.95rem;box-sizing:border-box
+}
+
+/* ensure small tweaks to better match template */
+.card{background:var(--card);border:1px solid #e6eef8;border-radius:8px;padding:12px}
+.card-title{font-weight:600;color:#0f172a;text-decoration:none}

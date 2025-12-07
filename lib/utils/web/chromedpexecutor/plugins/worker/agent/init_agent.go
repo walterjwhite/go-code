@@ -15,8 +15,9 @@ import (
 )
 
 
-func (c *Conf) PostLoad(ctx context.Context) {
+func (c *Conf) PostLoad(ctx context.Context) error {
 	c.read()
+	return nil
 }
 
 func (c *Conf) read() {

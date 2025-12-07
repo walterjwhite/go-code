@@ -13,7 +13,7 @@ func (s *Session) PostLoad(ctx context.Context) {
 	s.validate()
 
 	for i := range s.Instances {
-		s.Instances[i].PostLoad(ctx)
+		logging.Panic(s.Instances[i].PostLoad(ctx))
 	}
 
 	logging.Panic(s.Worker.Validate())

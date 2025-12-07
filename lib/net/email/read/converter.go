@@ -1,4 +1,4 @@
-package email
+package write
 
 import (
 	"bytes"
@@ -7,12 +7,13 @@ import (
 	"github.com/emersion/go-message/mail"
 	"github.com/rs/zerolog/log"
 	"github.com/walterjwhite/go-code/lib/application/logging"
+	"github.com/walterjwhite/go-code/lib/net/email"
 	"io"
 )
 
-func Process(msg *imap.Message) *EmailMessage {
+func ImapMessageToEmailMessage(msg *imap.Message) *email.EmailMessage {
 
-	emailMessage := &EmailMessage{}
+	emailMessage := &email.EmailMessage{}
 
 	var section imap.BodySectionName
 	r := msg.GetBody(&section)
@@ -68,7 +69,7 @@ func Process(msg *imap.Message) *EmailMessage {
 	return emailMessage
 }
 
-func handleInlineAttachments(msg *imap.Message, p *mail.Part, h *mail.InlineHeader, emailMessage *EmailMessage) {
+func handleInlineAttachments(msg *imap.Message, p *mail.Part, h *mail.InlineHeader, emailMessage *email.EmailMessage) {
 	log.Info().Msgf("Inline header: %v", h)
 	/*
 		headerDisplay, cdparams, err := h.ContentDisposition()
@@ -87,12 +88,12 @@ func handleInlineAttachments(msg *imap.Message, p *mail.Part, h *mail.InlineHead
 	*/
 }
 
-func handleAttachment(msg *imap.Message, p *mail.Part, h *mail.AttachmentHeader, emailMessage *EmailMessage) {
+func handleAttachment(msg *imap.Message, p *mail.Part, h *mail.AttachmentHeader, emailMessage *email.EmailMessage) {
 	filename, _ := h.Filename()
 
 	buffer := new(bytes.Buffer)
 	_, err := io.Copy(buffer, p.Body)
 	logging.Panic(err)
 
-	emailMessage.Attachments = append(emailMessage.Attachments, &EmailAttachment{Data: buffer, Name: filename})
+	emailMessage.Attachments = append(emailMessage.Attachments, &email.EmailAttachment{Data: buffer, Name: filename})
 }

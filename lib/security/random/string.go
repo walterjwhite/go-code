@@ -1,41 +1,45 @@
 package random
 
 import (
+	"crypto/rand"
 	"errors"
-	"github.com/walterjwhite/go-code/lib/application/logging"
-	"math/rand"
-	"time"
+	"math/big"
 )
 
 const (
 	defaultCharset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 )
 
-var (
-	seededRand = rand.New(rand.NewSource(time.Now().UnixNano()))
-)
-
-func validateInput(length int, charset string) {
+func validateInput(length int, charset string) error {
 	if length <= 0 {
-		logging.Panic(errors.New("please enter a non-zero length"))
+		return errors.New("please enter a non-zero length")
 	}
 
 	if len(charset) <= 0 {
-		logging.Panic(errors.New("please enter a non-empty charset"))
-	}
-}
-
-func StringWithCharset(length int, charset string) string {
-	validateInput(length, charset)
-
-	b := make([]byte, length)
-	for i := range b {
-		b[i] = charset[seededRand.Intn(len(charset))]
+		return errors.New("please enter a non-empty charset")
 	}
 
-	return string(b)
+	return nil
 }
 
-func String(length int) string {
+func StringWithCharset(length int, charset string) (string, error) {
+	if err := validateInput(length, charset); err != nil {
+		return "", err
+	}
+
+	out := make([]byte, length)
+	max := big.NewInt(int64(len(charset)))
+	for i := 0; i < length; i++ {
+		n, err := rand.Int(rand.Reader, max)
+		if err != nil {
+			return "", err
+		}
+		out[i] = charset[n.Int64()]
+	}
+
+	return string(out), nil
+}
+
+func String(length int) (string, error) {
 	return StringWithCharset(length, defaultCharset)
 }

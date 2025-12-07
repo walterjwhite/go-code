@@ -1,4 +1,4 @@
-package email
+package write
 
 import (
 	"github.com/emersion/go-imap"
@@ -6,9 +6,11 @@ import (
 	"github.com/walterjwhite/go-code/lib/application/logging"
 )
 
-func (s *EmailSession) Read(folderName string, function func(msg *imap.Message), incrementIndex bool) {
+func (s *EmailSession) Read(folderName string, function func(msg *imap.Message), incrementIndex bool) error {
 	mbox, err := s.client.Select(folderName, false)
-	logging.Panic(err)
+	if err != nil {
+		return err
+	}
 
 	log.Info().Msgf("%v Messages.", mbox.Messages)
 
@@ -38,6 +40,8 @@ func (s *EmailSession) Read(folderName string, function func(msg *imap.Message),
 			i++
 		}
 	}
+
+	return nil
 }
 
 /*

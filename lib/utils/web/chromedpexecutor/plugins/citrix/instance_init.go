@@ -13,7 +13,7 @@ import (
 	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/plugins/worker/noop"
 )
 
-func (i *Instance) PostLoad(ctx context.Context) {
+func (i *Instance) PostLoad(ctx context.Context) error {
 	switch i.WorkerType {
 	case worker.MouseDriver:
 		i.Worker = &mouse_driver.Conf{}
@@ -26,4 +26,6 @@ func (i *Instance) PostLoad(ctx context.Context) {
 	}
 
 	application.Load(i.Worker)
+
+	return nil
 }

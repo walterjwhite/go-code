@@ -20,15 +20,23 @@ func LoadSecrets(config interface{}) {
 		return
 	}
 
-	if secretPropertyConfiguration.SecretFields() != nil {
+	fields := secretPropertyConfiguration.SecretFields()
+	if fields != nil {
 		log.Debug().Msgf("Handling encrypted properties: %v", config)
-		val := reflect.ValueOf(config).Elem()
 
-		log.Debug().Msgf("val: %v", val)
+		rv := reflect.ValueOf(config)
+		if rv.Kind() != reflect.Ptr || rv.IsNil() {
+			log.Warn().Msgf("LoadSecrets expects a pointer to a struct; got: %v", rv.Kind())
+			return
+		}
 
-		for _, fieldName := range secretPropertyConfiguration.SecretFields() {
-			log.Debug().Msgf("fieldName: %v", fieldName)
+		val := rv.Elem()
+		if val.Kind() != reflect.Struct {
+			log.Warn().Msgf("LoadSecrets expects a pointer to a struct; got: %v", val.Kind())
+			return
+		}
 
+		for _, fieldName := range fields {
 			setFieldValue(secretPropertyConfiguration, val, fieldName)
 		}
 	}
@@ -36,6 +44,21 @@ func LoadSecrets(config interface{}) {
 
 func setFieldValue(config SecretPropertyConfiguration, value reflect.Value, fieldName string) {
 	f := getField(value, fieldName)
+
+	if !f.IsValid() {
+		log.Warn().Msgf("field %s not found or invalid", fieldName)
+		return
+	}
+
+	if f.Kind() != reflect.String {
+		log.Warn().Msgf("field %s is not a string, skipping", fieldName)
+		return
+	}
+
+	if !f.CanSet() {
+		log.Warn().Msgf("field %s cannot be set (unexported?), skipping", fieldName)
+		return
+	}
 
 	fieldValue := f.String()
 	log.Debug().Msgf("fieldValue: %v / %v / %v", f, fieldValue, fieldName)

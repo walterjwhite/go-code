@@ -11,7 +11,7 @@ type PreLoad interface {
 }
 
 type PostLoad interface {
-	PostLoad(ctx context.Context)
+	PostLoad(ctx context.Context) error
 }
 
 func Load(applicationName string, config interface{}) {
