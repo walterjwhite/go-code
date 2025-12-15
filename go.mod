@@ -16,7 +16,7 @@ require (
 	github.com/emersion/go-message v0.18.2
 	github.com/esiqveland/notify v0.13.3
 	github.com/gin-gonic/gin v1.11.0
-	github.com/go-playground/validator/v10 v10.28.0
+	github.com/go-playground/validator/v10 v10.29.0
 	github.com/go-tts/tts v1.0.1
 	github.com/go-vgo/robotgo v1.0.0
 	github.com/godbus/dbus/v5 v5.2.0
@@ -26,11 +26,9 @@ require (
 	github.com/joho/godotenv v1.5.1
 	github.com/kellydunn/golang-geo v0.7.0
 	github.com/klauspost/compress v1.18.2
-	github.com/mattn/go-sqlite3 v1.14.32
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/olivere/elastic/v7 v7.0.32
 	github.com/otiai10/gosseract/v2 v2.4.1
-	github.com/robfig/cron/v3 v3.0.1
 	github.com/rs/zerolog v1.34.0
 	github.com/stretchr/testify v1.11.1
 	github.com/urfave/sflags v0.4.1
@@ -126,6 +124,7 @@ require (
 	github.com/mailru/easyjson v0.9.1 // indirect
 	github.com/mattn/go-colorable v0.1.14 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
+	github.com/mattn/go-sqlite3 v1.14.32 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.3-0.20250322232337-35a7c28c31ee // indirect
 	github.com/mtibben/percent v0.2.1 // indirect
