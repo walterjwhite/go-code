@@ -32,7 +32,7 @@ func Load() (*Config, error) {
 
 	dbURL := os.Getenv("DATABASE_URL")
 	if dbURL == "" {
-		dbURL = "postgres://postgres:password@localhost:5432/myapp?sslmode=disable"
+		dbURL = "postgres://$USERNAME:$PASSWORD@$HOSTNAME:$PORT/$DATABASE?sslmode=disable"
 	}
 
 	return &Config{

@@ -14,7 +14,7 @@ func (c *Conf) Publish(topicName string, message []byte) error {
 	default:
 	}
 
-	log.Debug().Msgf("publishing to: %v", topicName)
+	log.Info().Msgf("publishing to: %v", topicName)
 
 	data, err := c.serialize(message)
 	if err != nil {
@@ -33,7 +33,7 @@ func (c *Conf) Publish(topicName string, message []byte) error {
 		return err
 	}
 
-	log.Debug().Msgf("published message with ID %s, message: %s, data: %s", id, message, data)
+	log.Info().Msgf("published message with ID %s, message: %s, data: %s", id, message, data)
 	return nil
 }
 

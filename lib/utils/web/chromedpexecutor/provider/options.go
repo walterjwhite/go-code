@@ -8,6 +8,11 @@ import (
 )
 
 func (c *Conf) getAllocator(pctx context.Context) (context.Context, context.CancelFunc) {
+	if c.Lightpanda {
+		log.Info().Msgf("using lightpanda")
+		return newLightpandaAllocator(pctx)
+	}
+
 	if len(c.Remote) == 0 {
 		log.Info().Msgf("using exec: %v", c.Remote)
 		return chromedp.NewExecAllocator(pctx, c.getOptions()...)

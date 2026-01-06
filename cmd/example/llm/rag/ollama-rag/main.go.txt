@@ -1,0 +1,82 @@
+package main
+
+import (
+	"context"
+	"flag"
+	"fmt"
+
+	"github.com/rs/zerolog/log"
+	"github.com/tmc/langchaingo/agents"
+	"github.com/tmc/langchaingo/chains"
+	"github.com/tmc/langchaingo/embeddings"
+	"github.com/tmc/langchaingo/llms/ollama"
+	"github.com/tmc/langchaingo/memory"
+	"github.com/walterjwhite/go-code/lib/application"
+	"github.com/walterjwhite/go-code/lib/application/logging"
+)
+
+var (
+	promptFlag = flag.String("prompt", "", "prompt")
+)
+
+func init() {
+	application.Configure()
+}
+
+func main() {
+	if len(*promptFlag) == 0 {
+		logging.Panic(fmt.Errorf("prompt is nil"))
+	}
+
+	llm, err := ollama.New(ollama.WithModel("mistral"))
+	logging.Panic(err)
+
+	ctx := context.Background()
+
+	ollamaEmbedderModel, err := ollama.New(ollama.WithModel("nomic-embed-text:latest"))
+	logging.Panic(err)
+
+	ollamaEmbedder, err := embeddings.NewEmbedder(ollamaEmbedderModel)
+	logging.Panic(err)
+
+	log.Info().Msg("processing test.txt")
+	docs := load("/home/w/projects/git/programming/go/go/cmd/example/llm/rag/ollama-rag")
+	log.Info().Msg("processed test.txt")
+
+	log.Info().Msg("useStorage - start")
+	store := useStorage(docs, ollamaEmbedder)
+	log.Info().Msg("useStorage - end")
+
+	docRetrieved := useRetriever(store, *promptFlag)
+	log.Info().Msg("useRetriever - after")
+
+	history := memory.NewChatMessageHistory()
+
+	for _, doc := range docRetrieved {
+		err = history.AddAIMessage(ctx, doc.PageContent)
+		logging.Warn(err, "history.AddAIMessage(ctx, doc.PageContent)")
+	}
+
+	// no tools passed, these are pre-existing:
+	// https://pkg.go.dev/github.com/tmc/langchaingo@v0.1.14/tools#Tool
+
+	conversation := memory.NewConversationBuffer(memory.WithChatHistory(history))
+	conversationalAgent := agents.NewConversationalAgent(
+		llm, nil,
+		agents.WithMemory(conversation),
+	)
+
+	log.Info().Msg("newExecutor - start")
+	executor := agents.NewExecutor(conversationalAgent)
+	options := []chains.ChainCallOption{
+		chains.WithTemperature(0.8),
+	}
+
+	log.Info().Msg("newExecutor - after")
+	res, err := chains.Run(ctx, executor, *promptFlag, options...)
+
+	logging.Panic(err)
+
+	log.Info().Msg("result - after")
+	fmt.Println(res)
+}

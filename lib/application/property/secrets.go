@@ -62,11 +62,20 @@ func setFieldValue(config SecretPropertyConfiguration, value reflect.Value, fiel
 
 	fieldValue := f.String()
 	log.Debug().Msgf("fieldValue: %v / %v / %v", f, fieldValue, fieldName)
-	if len(fieldValue) > 0 {
-		decrypted := secrets.Get(fieldValue)
+	if len(fieldValue) > 0 && strings.HasPrefix(fieldValue, "secret://") {
+		secretName := strings.TrimPrefix(fieldValue, "secret://")
+		if strings.TrimSpace(secretName) == "" {
+			log.Warn().Msgf("field %s has secret:// prefix but no secret name, skipping", fieldName)
+			return
+		}
 
-		f.SetString(decrypted)
+		secretValue := secrets.Get(secretName)
+
+		f.SetString(secretValue)
+		return
 	}
+
+	log.Debug().Msgf("field %s does not start with secret://; leaving value unchanged", fieldName)
 }
 
 func getField(value reflect.Value, fieldName string) reflect.Value {

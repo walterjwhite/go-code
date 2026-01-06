@@ -17,7 +17,7 @@ const (
 )
 
 var (
-	configFilePrefixFlag = flag.String("conf-prefix", "", "If specified, configuration files will be expected to be nested in this directory, ie. ~/.config/walterjwhite/<prefix>/<TypeName>.yaml")
+	configFilePrefixFlag = flag.String("conf-prefix", "", "additional sub-directory to help differentiate between configuration")
 )
 
 func LoadFile(applicationName string, config interface{}) {
@@ -41,6 +41,10 @@ func LoadFileWithPath(config interface{}, filename string) {
 }
 
 func getFile(applicationName string, config interface{}) string {
+	if len(applicationName) == 0 {
+		log.Warn().Msgf("application name is empty: %s", applicationName)
+	}
+
 	path, err := homedir.Expand(propertyConfigurationLocation)
 	logging.Panic(err)
 

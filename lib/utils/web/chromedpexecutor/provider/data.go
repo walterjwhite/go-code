@@ -8,6 +8,7 @@ import (
 type Conf struct {
 	Headless         bool
 	HeadlessViewport *HeadlessViewport
+	Lightpanda       bool
 
 	ProxyAddress string
 	Remote       string

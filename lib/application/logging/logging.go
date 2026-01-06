@@ -23,7 +23,7 @@ func Warn(err error, message string) {
 		return
 	}
 
-	log.Error().Msgf("%s - %s", message, err.Error())
+	log.Warn().Msgf("%s - %s", message, err.Error())
 	stackTrace := debug.Stack()
-	log.Error().Msgf("Stack trace:\n%s", stackTrace)
+	log.Warn().Msgf("Stack trace:\n%s", stackTrace)
 }

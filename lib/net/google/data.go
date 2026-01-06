@@ -29,7 +29,7 @@ type Conf struct {
 func (c *Conf) Init(pctx context.Context) {
 	c.ctx, c.cancel = context.WithCancel(pctx)
 
-	client, err := pubsub.NewClient(c.ctx, c.ProjectId, option.WithCredentialsFile(c.CredentialsFile))
+	client, err := pubsub.NewClient(c.ctx, c.ProjectId, option.WithAuthCredentialsFile(option.ServiceAccount, c.CredentialsFile))
 	logging.Panic(err)
 
 	if len(c.EncryptionKeyFile) > 0 {

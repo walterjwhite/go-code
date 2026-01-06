@@ -1,39 +1,6 @@
-name: build
-on: push
-jobs:
-  build:
-    runs-on: ${{ matrix.runner }}
-    strategy:
-      matrix:
-        include:
-          - { runner: macos-latest,  os: darwin,  arch: amd64, tags: netcgo        }
-          - { runner: ubuntu-latest, os: linux,   arch: amd64, env:  CGO_ENABLED=0 }
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-go@v3
-        with:
-          go-version: 1.19
-          cache: true
-      - name: build
-        run: |
-          _ORIGIN_PATH=$PWD
           
-          cd lib
-          _ORIGINAL_PWD=$PWD
-          for project in $(find . -type d ! -name .); do
-            cd $_ORIGINAL_PWD/$project
             
-            go get -u || continue
-            go mod tidy || continue
             
-            go build -a -race || continue
-          done
           
-          cd $_ORIGIN_PATH/cmd
-          _ORIGINAL_PWD=$PWD
-          for project in $(find . -type d ! -name .); do
-            cd $_ORIGINAL_PWD/$project  
-            go build -a -race || continue
-          done
           
         

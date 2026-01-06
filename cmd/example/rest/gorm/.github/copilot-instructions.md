@@ -4,7 +4,7 @@
 **Quick Start (developer)**
 - **Run locally:** copy environment example and run the app from the project root:
   - `cp env.example .env`
-  - `APP_PORT=8080 DATABASE_URL="postgres://postgres:password@localhost:5432/myapp?sslmode=disable" go run .`
+  - `APP_PORT=8080 DATABASE_URL="postgres://$USERNAME$:$PASSWORD$@$HOSTNAME:$PORT/$DATABASE?sslmode=disable" go run .`
 - **Build binary:** `go build -o bin/server .`
 - **Frontend (production asset build):** `cd frontend && npm install && npm run build` (output expected at `./frontend/dist` and served by `ServeStaticSPA`).
 - **Database:** `schema.sql` contains the `http_requests` table used by request logging. The Go code uses GORM for main models and `sqlx` (pgx) for request logging; they use separate DB connections.
@@ -46,7 +46,7 @@
 - Use existing helper functions: `JSONError`, `hashPassword`, `clientIP`.
 
 **Common commands & environment**
-- Start with `.env` or `env.example`. Default DB DSN used in code: `postgres://postgres:password@localhost:5432/myapp?sslmode=disable`.
+- Start with `.env` or `env.example`. Default DB DSN used in code: `postgres://$USERNAME:$PASSWORD@$HOSTNAME:$PORT/$DATABASE?sslmode=disable`.
 - Run server: `go run .` (from project root). Build: `go build -o bin/server .`.
 - Build frontend: `cd frontend && npm install && npm run build` -> files served from `./frontend/dist`.
 

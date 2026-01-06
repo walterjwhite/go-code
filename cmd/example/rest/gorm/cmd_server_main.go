@@ -35,8 +35,6 @@ func main() {
 	cfg, err := Load()
 	logging.Panic(err)
 
-	c := provider.Conf{}
-	sDB, err := c.New()
 
 
 	database, err := NewSQLite(cfg.DatabaseURL)
@@ -53,6 +51,7 @@ func main() {
 	handler := NewHandler(userSvc)
 
 	server := NewServer(handler.Router(cfg.DatabaseURL), cfg)
+	defer cleanup(database, server)
 
 	go func() {
 		if err := server.Start(); err != nil {

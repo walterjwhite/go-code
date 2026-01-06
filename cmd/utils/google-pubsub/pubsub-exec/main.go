@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"errors"
 
 	"flag"
@@ -12,7 +13,6 @@ import (
 	"github.com/walterjwhite/go-code/lib/net/google"
 
 	oexec "os/exec"
-	"strings"
 )
 
 type SubscriberConfiguration struct {
@@ -50,14 +50,14 @@ func main() {
 }
 
 func (e *Executor) MessageDeserialized(deserialized []byte) {
-	parts := strings.Fields(string(deserialized))
-	if len(parts) == 0 {
-		log.Warn().Msg("No cmd received")
+	e.Cmd = &exec.Cmd{}
+
+	err := json.Unmarshal(deserialized, e.Cmd)
+	if err != nil {
+		log.Warn().Msgf("error converting to exec.cmd, %v", err)
 		return
 	}
 
-	e.Cmd.FunctionName = parts[0]
-	e.Cmd.Args = parts[1:]
 	log.Info().Msgf("running: %s -> %s", e.Cmd.FunctionName, e.Cmd.Args)
 
 	e.Cmd.Args = append([]string{e.Cmd.FunctionName}, e.Cmd.Args...)

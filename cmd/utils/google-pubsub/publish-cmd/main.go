@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"errors"
 	"github.com/walterjwhite/go-code/lib/application"
 	"github.com/walterjwhite/go-code/lib/application/logging"
@@ -20,8 +21,8 @@ type PublisherConfiguration struct {
 var (
 	publisherConfiguration = &PublisherConfiguration{}
 
-	functionName = flag.String("functionName", "", "function to execute remotely")
-	arguments    = flag.String("arguments", "", "arguments to pass functionName, optional")
+	functionName = flag.String("func", "", "function to execute")
+	arguments    = flag.String("args", "", "arguments to pass function, optional")
 )
 
 func init() {
@@ -39,5 +40,11 @@ func main() {
 		c.Args = strings.Fields(*arguments)
 	}
 
-	logging.Warn(publisherConfiguration.GoogleConf.Publish(publisherConfiguration.TopicName, []byte("TODO: convert c to string using json, then return byte array")), "main")
+	jsonString, err := json.Marshal(c)
+	if err != nil {
+		logging.Warn(err, "unable to convert to json")
+		return
+	}
+
+	logging.Warn(publisherConfiguration.GoogleConf.Publish(publisherConfiguration.TopicName, jsonString), "main")
 }
