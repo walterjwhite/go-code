@@ -30,11 +30,11 @@ func (c *Conf) Init(pctx context.Context) {
 	c.ctx, c.cancel = context.WithCancel(pctx)
 
 	client, err := pubsub.NewClient(c.ctx, c.ProjectId, option.WithAuthCredentialsFile(option.ServiceAccount, c.CredentialsFile))
-	logging.Panic(err)
+	logging.Error(err)
 
 	if len(c.EncryptionKeyFile) > 0 {
 		aes, err := aes.FromFile(c.EncryptionKeyFile)
-		logging.Panic(err)
+		logging.Error(err)
 
 		c.aes = aes
 	}

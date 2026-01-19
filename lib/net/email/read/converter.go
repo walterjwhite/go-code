@@ -18,11 +18,11 @@ func ImapMessageToEmailMessage(msg *imap.Message) *email.EmailMessage {
 	var section imap.BodySectionName
 	r := msg.GetBody(&section)
 	if r == nil {
-		logging.Panic(errors.New("no message body returned"))
+		logging.Error(errors.New("no message body returned"))
 	}
 
 	mr, err := mail.CreateReader(r)
-	logging.Panic(err)
+	logging.Error(err)
 
 	emailMessage.DateSent = msg.Envelope.Date
 	emailMessage.Subject = msg.Envelope.Subject
@@ -49,7 +49,7 @@ func ImapMessageToEmailMessage(msg *imap.Message) *email.EmailMessage {
 		if err == io.EOF {
 			break
 		}
-		logging.Panic(err)
+		logging.Error(err)
 
 		switch h := p.Header.(type) {
 		case *mail.InlineHeader:
@@ -93,7 +93,7 @@ func handleAttachment(msg *imap.Message, p *mail.Part, h *mail.AttachmentHeader,
 
 	buffer := new(bytes.Buffer)
 	_, err := io.Copy(buffer, p.Body)
-	logging.Panic(err)
+	logging.Error(err)
 
 	emailMessage.Attachments = append(emailMessage.Attachments, &email.EmailAttachment{Data: buffer, Name: filename})
 }

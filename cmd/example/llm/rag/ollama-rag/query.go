@@ -49,7 +49,7 @@ func query() {
 	}
 
 	res, err := chains.Run(application.Context, executor, *promptFlag, options...)
-	logging.Panic(err)
+	logging.Error(err)
 
 	log.Info().Msg("result - after")
 	fmt.Println(res)
@@ -63,7 +63,7 @@ func useRetriever() []schema.Document {
 	retriever := vectorstores.ToRetriever(store, *docsFlag, optionsVector...)
 	docsRetrieved, err := retriever.GetRelevantDocuments(context.Background(), *promptFlag)
 	log.Info().Msgf("%v docs retrieved", len(docsRetrieved))
-	logging.Panic(err)
+	logging.Error(err)
 
 	return docsRetrieved
 }

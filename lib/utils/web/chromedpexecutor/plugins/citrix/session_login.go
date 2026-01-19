@@ -34,9 +34,9 @@ func (s *Session) authenticate(token string) {
 	ctx, cancel := context.WithTimeout(s.ctx, loginTimeout)
 	defer cancel()
 
-	logging.Panic(action.Execute(ctx, chromedp.Navigate(s.Endpoint.Uri)))
+	logging.Error(action.Execute(ctx, chromedp.Navigate(s.Endpoint.Uri)))
 
-	logging.Panic(action.Execute(ctx,
+	logging.Error(action.Execute(ctx,
 		chromedp.SendKeys(USERNAME, strings.TrimSpace(s.Credentials.Domain+"\\"+s.Credentials.Username)),
 
 		chromedp.SendKeys(PASSWORD, strings.TrimSpace(s.Credentials.Password)),
@@ -44,11 +44,11 @@ func (s *Session) authenticate(token string) {
 	))
 
 	_, err := chromedp.RunResponse(ctx, chromedp.Click(LOGIN_BUTTON))
-	logging.Panic(err)
+	logging.Error(err)
 
 	if !s.IsAuthenticated() {
 		logging.Warn(s.GoogleProvider.PublishStatus("failed to authenticate", false), "authenticate.IsAuthenticated")
-		logging.Panic(errors.New("session.authenticate - failed to authenticate"))
+		logging.Error(errors.New("session.authenticate - failed to authenticate"))
 	}
 
 	logging.Warn(s.GoogleProvider.PublishStatus("authenticated", true), "authenticate.authenticated")
@@ -66,7 +66,7 @@ func (s *Session) trim(token string) string {
 
 func validateToken(token string) {
 	if len(token) != 6 {
-		logging.Panic(fmt.Errorf("please enter the 6-digit token: %v", token))
+		logging.Error(fmt.Errorf("please enter the 6-digit token: %v", token))
 	}
 }
 

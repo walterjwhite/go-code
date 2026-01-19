@@ -17,6 +17,7 @@ func init() {
 }
 
 func main() {
+	defer application.OnPanic()
 	ctx, cancel := provider.New(browserConf, application.Context)
 	defer cancel()
 

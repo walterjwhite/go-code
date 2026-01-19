@@ -2,7 +2,6 @@ package pubsub
 
 import (
 	"context"
-	"github.com/walterjwhite/go-code/lib/net/google"
 )
 
 type Publisher interface {
@@ -12,15 +11,27 @@ type Publisher interface {
 }
 
 type PubsubWriter struct {
-	Conf      *google.Conf
-	TopicName string
-	Level     string
+	Publisher Publisher `yaml:"-"`
+	TopicName string    `yaml:"TopicName"`
+	Level     string    `yaml:"Level"`
+}
+
+func (w *PubsubWriter) Init(ctx context.Context, publisher Publisher) {
+	w.Publisher = publisher
+	if w.Publisher != nil {
+		w.Publisher.Init(ctx)
+	}
 }
 
 func (w *PubsubWriter) Write(p []byte) (n int, err error) {
-	return len(p), w.Conf.Publish(w.TopicName, p)
+	if w.Publisher == nil {
+		return len(p), nil
+	}
+	return len(p), w.Publisher.Publish(w.TopicName, p)
 }
 
 func (w *PubsubWriter) Close() {
-	w.Conf.Cancel()
+	if w.Publisher != nil {
+		w.Publisher.Cancel()
+	}
 }

@@ -22,7 +22,7 @@ func (i *Instance) PostLoad(ctx context.Context) error {
 	case worker.NOOP:
 		i.Worker = &noop.State{}
 	default:
-		logging.Panic(errors.New("WorkerType unspecified"))
+		logging.Error(errors.New("WorkerType unspecified"))
 	}
 
 	application.Load(i.Worker)

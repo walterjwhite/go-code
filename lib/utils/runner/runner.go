@@ -57,6 +57,6 @@ func Run(ctx context.Context, command string, arguments ...string) (int, error) 
 }
 
 func Panic(ctx context.Context, cmd *exec.Cmd) {
-	logging.Panic(cmd.Start())
-	logging.Panic(cmd.Wait())
+	logging.Error(cmd.Start())
+	logging.Error(cmd.Wait())
 }

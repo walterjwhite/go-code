@@ -5,7 +5,14 @@ import (
 	"io"
 )
 
-func DecompressStream(in io.Reader, out io.Writer) error {
+func DecompressStream(in io.Reader, out io.Writer) (err error) {
+	if closer, ok := in.(io.Closer); ok {
+		defer func() {
+			if cerr := closer.Close(); err == nil {
+				err = cerr
+			}
+		}()
+	}
 	d, err := zstd.NewReader(in)
 	if err != nil {
 		return err

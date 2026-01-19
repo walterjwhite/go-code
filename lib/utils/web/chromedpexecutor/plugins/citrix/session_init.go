@@ -13,24 +13,24 @@ func (s *Session) PostLoad(ctx context.Context) {
 	s.validate()
 
 	for i := range s.Instances {
-		logging.Panic(s.Instances[i].PostLoad(ctx))
+		logging.Error(s.Instances[i].PostLoad(ctx))
 	}
 
-	logging.Panic(s.Worker.Validate())
+	logging.Error(s.Worker.Validate())
 }
 
 func (s *Session) validate() {
 	if len(s.Credentials.Domain) == 0 {
-		logging.Panic(errors.New("domain is required"))
+		logging.Error(errors.New("domain is required"))
 	}
 	if len(s.Credentials.Username) == 0 {
-		logging.Panic(errors.New("username is required"))
+		logging.Error(errors.New("username is required"))
 	}
 	if len(s.Credentials.Password) == 0 {
-		logging.Panic(errors.New("password is required"))
+		logging.Error(errors.New("password is required"))
 	}
 	if len(s.Credentials.Pin) == 0 {
-		logging.Panic(errors.New("pin is required"))
+		logging.Error(errors.New("pin is required"))
 	}
 
 	log.Info().Msg("session.Validate - session configuration is valid")

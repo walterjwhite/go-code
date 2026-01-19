@@ -48,7 +48,7 @@ func Load(configurations ...interface{}) {
 		property.Load(ApplicationName, configurations[i])
 
 		if i, ok := configurations[i].(property.PostLoad); ok {
-			logging.Panic(i.PostLoad(Context))
+			logging.Error(i.PostLoad(Context))
 		}
 	}
 }
@@ -68,4 +68,13 @@ func Wait() {
 	<-Context.Done()
 
 	log.Info().Msg("Application Context Done")
+}
+
+func OnPanic() {
+	if r := recover(); r != nil {
+		log.Warn().Msgf("panic: %v", r)
+		Cancel()
+
+		return
+	}
 }

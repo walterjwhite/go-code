@@ -20,7 +20,7 @@ func Locate(pctx context.Context, visibleTimeout time.Duration, locateDelay dela
 
 	err := chromedp.Run(ctx, chromedp.WaitVisible(selector, opts...))
 	if err != nil {
-		logging.Panic(err)
+		logging.Error(err)
 		return err
 	}
 

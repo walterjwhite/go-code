@@ -8,6 +8,7 @@ import (
 	"github.com/walterjwhite/go-code/lib/application/logging"
 	"github.com/walterjwhite/go-code/lib/application/logging/pubsub"
 	"github.com/walterjwhite/go-code/lib/application/property"
+	"github.com/walterjwhite/go-code/lib/net/google"
 	"io"
 	"log/syslog"
 	"os"
@@ -55,14 +56,14 @@ func getWriter() io.WriteCloser {
 
 func setLogLevel() {
 	zlogLevel, err := zerolog.ParseLevel(*logLevel)
-	logging.Panic(err)
+	logging.Error(err)
 
 	zerolog.SetGlobalLevel(zlogLevel)
 }
 
 func getSysLogger() io.WriteCloser {
 	syslogger, err := syslog.New(syslog.LOG_KERN|syslog.LOG_EMERG|syslog.LOG_ERR|syslog.LOG_INFO|syslog.LOG_CRIT|syslog.LOG_WARNING|syslog.LOG_NOTICE|syslog.LOG_DEBUG, ApplicationName)
-	logging.Panic(err)
+	logging.Error(err)
 
 	return zerolog.ConsoleWriter{Out: syslogger, TimeFormat: logDateTimeFormat, NoColor: true}
 }
@@ -70,7 +71,7 @@ func getSysLogger() io.WriteCloser {
 func getFileLogger() io.WriteCloser {
 	var f io.WriteCloser
 	f, err := os.OpenFile(*logTarget, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
-	logging.Panic(err)
+	logging.Error(err)
 
 	return f
 }
@@ -80,7 +81,8 @@ func setupPubsubLogging() io.Writer {
 	property.LoadFile(ApplicationName, w)
 
 	if len(w.TopicName) > 0 {
-		w.Conf.Init(Context)
+		conf := &google.Conf{}
+		w.Init(Context, conf)
 		cw := zerolog.ConsoleWriter{Out: w, TimeFormat: logDateTimeFormat, NoColor: true}
 		l := &LevelWriter{Writer: cw}
 

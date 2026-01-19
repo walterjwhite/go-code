@@ -24,12 +24,13 @@ func init() {
 }
 
 func main() {
+	defer application.OnPanic()
 	llm, err := ollama.New(ollama.WithModel(*modelFlag))
-	logging.Panic(err)
+	logging.Error(err)
 
 
 	embedder, err = embeddings.NewEmbedder(llm /*ollamaEmbedderModel*/)
-	logging.Panic(err)
+	logging.Error(err)
 
 	storage()
 

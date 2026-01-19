@@ -28,5 +28,5 @@ func serve(wg *sync.WaitGroup) {
 	}
 
 	addr := "localhost:" + port
-	logging.Panic(router.Run(addr))
+	logging.Error(router.Run(addr))
 }

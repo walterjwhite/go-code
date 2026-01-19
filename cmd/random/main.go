@@ -17,5 +17,6 @@ func init() {
 }
 
 func main() {
+	defer application.OnPanic()
 	fmt.Println(random.StringWithCharset(*lengthFlag, *characterSetFlag))
 }

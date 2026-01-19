@@ -26,6 +26,13 @@ type EmailServer struct {
 
 }
 
+func (s *EmailServer) String() string {
+	if s == nil {
+		return "<nil EmailServer>"
+	}
+	return fmt.Sprintf("%s:%d", s.Host, s.Port)
+}
+
 type EmailAttachment struct {
 	Name string
 	Data *bytes.Buffer

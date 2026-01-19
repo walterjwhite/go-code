@@ -12,12 +12,16 @@ import (
 	"strings"
 )
 
+var gomailDialAndSend = func(dialer *gomail.Dialer, m ...*gomail.Message) error {
+	return dialer.DialAndSend(m...)
+}
+
 func Send(e *email.EmailAccount, emailMessage *email.EmailMessage) error {
 	m, attachmentFilenames := buildMessage(e.EmailAddress, emailMessage)
 	defer cleanupAttachments(attachmentFilenames)
 
 	d := gomail.NewDialer(e.SmtpServer.Host, e.SmtpServer.Port, e.Username, e.Password)
-	return d.DialAndSend(m)
+	return gomailDialAndSend(d, m)
 }
 
 func buildMessage(emailAddress *mail.Address, e *email.EmailMessage) (*gomail.Message, []string) {
@@ -40,11 +44,14 @@ func buildMessage(emailAddress *mail.Address, e *email.EmailMessage) (*gomail.Me
 	return m, attachmentFilenames
 }
 
+var osCreateTemp = os.CreateTemp
+var fileWrite = func(f *os.File, b []byte) (n int, err error) { return f.Write(b) }
+
 func addAttachments(e *email.EmailMessage, m *gomail.Message) []string {
 	attachmentFilenames := make([]string, 0)
 	if len(e.Attachments) > 0 {
 		for _, attachment := range e.Attachments {
-			tmpFile, err := os.CreateTemp("", "attach-*")
+			tmpFile, err := osCreateTemp("", "attach-*")
 			if err != nil {
 				log.Error().Err(err).Msg("failed to create temp file for attachment")
 				continue
@@ -56,7 +63,7 @@ func addAttachments(e *email.EmailMessage, m *gomail.Message) []string {
 			}()
 
 			log.Debug().Msgf("attachment size: %v", len(attachment.Data.Bytes()))
-			if _, err := tmpFile.Write(attachment.Data.Bytes()); err != nil {
+			if _, err := fileWrite(tmpFile, attachment.Data.Bytes()); err != nil {
 				log.Error().Err(err).Msg("failed to write attachment to temp file")
 				_ = tmpFile.Close()
 				_ = os.Remove(name)
@@ -96,7 +103,7 @@ func addrsValToStrings(addrs []*mail.Address) []string {
 }
 
 func setHeader(m *gomail.Message, headerName string, value ...string) {
-	if len(value) > 0 {
+	if len(value) > 0 && strings.Join(value, "") != "" {
 		log.Debug().Msgf("setting header: %s -> %v", headerName, strings.Join(value, ", "))
 		m.SetHeader(headerName, value...)
 	}

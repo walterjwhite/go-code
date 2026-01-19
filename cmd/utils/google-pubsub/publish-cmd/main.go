@@ -31,8 +31,9 @@ func init() {
 }
 
 func main() {
+	defer application.OnPanic()
 	if len(*functionName) == 0 {
-		logging.Panic(errors.New("expecting command to be non-empty"))
+		logging.Error(errors.New("expecting command to be non-empty"))
 	}
 
 	c := exec.Cmd{FunctionName: *functionName}

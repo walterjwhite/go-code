@@ -28,12 +28,12 @@ var (
 
 func init() {
 	microsoft2FAHeaderPNGData, err := png.Decode(bytes.NewReader(microsoft2FAHeaderData))
-	logging.Panic(err)
+	logging.Error(err)
 
 	microsoft2FAHeaderImage = locateimage.Convert(microsoft2FAHeaderPNGData)
 
 	edgeIconPNGData, err := png.Decode(bytes.NewReader(edgeIconData))
-	logging.Panic(err)
+	logging.Error(err)
 
 	edgeIconImage = locateimage.Convert(edgeIconPNGData)
 

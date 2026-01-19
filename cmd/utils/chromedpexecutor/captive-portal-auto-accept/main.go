@@ -39,6 +39,7 @@ func init() {
 }
 
 func main() {
+	defer application.OnPanic()
 	captivePortalSession.ctx, captivePortalSession.cancel = provider.New(captivePortalSession.Conf, application.Context)
 	defer captivePortalSession.cancel()
 
@@ -57,7 +58,7 @@ func main() {
 func runStep(index int, chromeAction chromedp.Action) {
 	stepTimeoutContext, stepFetchCancel := context.WithTimeout(captivePortalSession.ctx, captivePortalSession.ActionTimeout)
 	defer stepFetchCancel()
-	logging.Panic(chromedp.Run(stepTimeoutContext, chromeAction))
+	logging.Error(chromedp.Run(stepTimeoutContext, chromeAction))
 
 	action.Screenshot(captivePortalSession.ctx, fmt.Sprintf("/tmp/%d.connectivity-check.png", index))
 }

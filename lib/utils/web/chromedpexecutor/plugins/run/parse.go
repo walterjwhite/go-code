@@ -48,10 +48,10 @@ func ParseAction(line string) chromedp.Action {
 		return chromedp.Click(arguments[1])
 	case "mouseClick":
 		x, err := strconv.ParseFloat(arguments[1], 64)
-		logging.Panic(err)
+		logging.Error(err)
 
 		y, err := strconv.ParseFloat(arguments[2], 64)
-		logging.Panic(err)
+		logging.Error(err)
 
 		return chromedp.MouseClickXY(x, y)
 	case "sendKeys":
@@ -70,12 +70,12 @@ func ParseAction(line string) chromedp.Action {
 		return chromedp.ScrollIntoView(arguments[1])
 	case "sleep":
 		d, err := time.ParseDuration(arguments[1])
-		logging.Panic(err)
+		logging.Error(err)
 
 		return chromedp.Sleep(d)
 	case "tickle":
 		/*d*/ _, err := time.ParseDuration(arguments[1])
-		logging.Panic(err)
+		logging.Error(err)
 
 
 	case "waitVisible":
@@ -88,7 +88,7 @@ func ParseAction(line string) chromedp.Action {
 			return nil
 		}
 
-		logging.Panic(fmt.Errorf("unsupported action: %v", arguments[0]))
+		logging.Error(fmt.Errorf("unsupported action: %v", arguments[0]))
 	}
 
 	return nil

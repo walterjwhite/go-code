@@ -22,10 +22,10 @@ func (c *Conf) PostLoad(ctx context.Context) error {
 
 func (c *Conf) read() {
 	path, err := homedir.Expand(c.QuestionFile)
-	logging.Panic(err)
+	logging.Error(err)
 
 	file, err := os.Open(path)
-	logging.Panic(err)
+	logging.Error(err)
 
 	defer close(file)
 
@@ -34,7 +34,7 @@ func (c *Conf) read() {
 		c.questions = append(c.questions, scanner.Text())
 	}
 
-	logging.Panic(scanner.Err())
+	logging.Error(scanner.Err())
 }
 
 func close(file *os.File) {

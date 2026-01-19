@@ -20,7 +20,7 @@ func init() {
 
 func main() {
 	if len(os.Args) < 2 {
-		logging.Panic(errors.New("expected message"))
+		logging.Error(errors.New("expected message"))
 		return
 	}
 

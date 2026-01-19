@@ -6,7 +6,14 @@ import (
 	"io"
 )
 
-func CompressStream(in io.Reader, out io.Writer) error {
+func CompressStream(in io.Reader, out io.Writer) (err error) {
+	if closer, ok := out.(io.Closer); ok {
+		defer func() {
+			if cerr := closer.Close(); err == nil {
+				err = cerr
+			}
+		}()
+	}
 	enc, err := zstd.NewWriter(out)
 	if err != nil {
 		return err

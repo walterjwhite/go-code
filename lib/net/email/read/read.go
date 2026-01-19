@@ -31,7 +31,7 @@ func (s *EmailSession) Read(folderName string, function func(msg *imap.Message),
 			done <- s.client.Fetch(seqSet, items, messageChannel)
 		}()
 
-		logging.Panic(<-done)
+		logging.Error(<-done)
 
 		function(<-messageChannel)
 		seqSet.Clear()

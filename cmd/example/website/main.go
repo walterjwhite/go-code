@@ -41,6 +41,7 @@ func init() {
 }
 
 func main() {
+	defer application.OnPanic()
 	server := serve()
 	defer shutdown(server)
 
@@ -51,7 +52,7 @@ func main() {
 		log.Warn().Msgf("starting server on %s", server.Addr)
 
 		if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-			logging.Panic(err)
+			logging.Error(err)
 		}
 	}()
 
@@ -61,7 +62,7 @@ func main() {
 func shutdown(server *http.Server) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	logging.Panic(server.Shutdown(ctx))
+	logging.Error(server.Shutdown(ctx))
 }
 
 func initRequestLog() {

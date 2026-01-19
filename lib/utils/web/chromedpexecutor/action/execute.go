@@ -63,5 +63,5 @@ func TryExecute(ctx context.Context, attemptCount int, actions ...chromedp.Actio
 		}
 	}
 
-	logging.Panic(fmt.Errorf("failed after %v attempts", attemptCount))
+	logging.Error(fmt.Errorf("failed after %v attempts", attemptCount))
 }

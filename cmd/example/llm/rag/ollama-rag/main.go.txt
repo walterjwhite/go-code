@@ -24,20 +24,21 @@ func init() {
 }
 
 func main() {
+defer application.OnPanic()
 	if len(*promptFlag) == 0 {
-		logging.Panic(fmt.Errorf("prompt is nil"))
+		logging.Error(fmt.Errorf("prompt is nil"))
 	}
 
 	llm, err := ollama.New(ollama.WithModel("mistral"))
-	logging.Panic(err)
+	logging.Error(err)
 
 	ctx := context.Background()
 
 	ollamaEmbedderModel, err := ollama.New(ollama.WithModel("nomic-embed-text:latest"))
-	logging.Panic(err)
+	logging.Error(err)
 
 	ollamaEmbedder, err := embeddings.NewEmbedder(ollamaEmbedderModel)
-	logging.Panic(err)
+	logging.Error(err)
 
 	log.Info().Msg("processing test.txt")
 	docs := load("/home/w/projects/git/programming/go/go/cmd/example/llm/rag/ollama-rag")
@@ -75,7 +76,7 @@ func main() {
 	log.Info().Msg("newExecutor - after")
 	res, err := chains.Run(ctx, executor, *promptFlag, options...)
 
-	logging.Panic(err)
+	logging.Error(err)
 
 	log.Info().Msg("result - after")
 	fmt.Println(res)

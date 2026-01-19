@@ -1,6 +1,7 @@
 package property
 
 import (
+	"github.com/rs/zerolog/log"
 	"regexp"
 	"strings"
 
@@ -10,7 +11,9 @@ import (
 )
 
 func LoadEnv(config interface{}) {
-	logging.Warn(envconfig.InitWithOptions(config, envconfig.Options{Prefix: getShortPrefix(config), AllOptional: true}), "LoadEnv - InitWithTypePrefix failed")
+	prefix := getShortPrefix(config)
+	log.Debug().Msgf("Loading environment variables with prefix: %s", prefix)
+	logging.Warn(envconfig.InitWithOptions(config, envconfig.Options{Prefix: prefix, AllOptional: true}), "LoadEnv - InitWithTypePrefix failed")
 }
 
 func getShortPrefix(config interface{}) string {

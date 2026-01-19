@@ -20,7 +20,7 @@ var (
 
 func storage() {
 	qdrantUrl, err := url.Parse(*qdrantUrlFlag)
-	logging.Panic(err)
+	logging.Error(err)
 
 	qdrant, err := qdrant.New(
 		qdrant.WithURL(*qdrantUrl),
@@ -28,7 +28,7 @@ func storage() {
 		qdrant.WithEmbedder(embedder),
 	)
 
-	logging.Panic(err)
+	logging.Error(err)
 
 	store = &qdrant
 }

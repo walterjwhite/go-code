@@ -42,7 +42,7 @@ func indexDo(ctx context.Context, collectionName string, fileName string) error 
 		qdrant.WithCollectionName(collectionName),
 		qdrant.WithEmbedder(e),
 	)
-	logging.Panic(err)
+	logging.Error(err)
 
 	if info.IsDir() {
 		err := traverse(ctx, reqCharacterSplitter, store, fileName)
@@ -87,7 +87,7 @@ func indexDocument(ctx context.Context, reqCharacterSplitter textsplitter.Recurs
 		pagesList, err = indexText(fileName)
 	}
 
-	logging.Panic(err)
+	logging.Error(err)
 
 
 	chunksDocList, _ := textsplitter.SplitDocuments(reqCharacterSplitter, pagesList)

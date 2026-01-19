@@ -22,7 +22,7 @@ func main() {
 
 	for i := 0; i < 5; i++ {
 		log.Info().Msgf("cmd+1 - %d", i)
-		logging.Panic(robotgo.KeyTap("cmd", "1"))
+		logging.Error(robotgo.KeyTap("cmd", "1"))
 
 		time.Sleep(1 * time.Second)
 	}

@@ -13,5 +13,5 @@ func main() {
 	s := audio.NewSpeaker()
 
 	speechStream := speech.FromTextStream(strings.NewReader("Hello there!"), speech.LangEn)
-	logging.Panic(s.Play(speechStream))
+	logging.Error(s.Play(speechStream))
 }

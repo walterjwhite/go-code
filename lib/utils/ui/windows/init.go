@@ -29,22 +29,22 @@ var (
 
 func init() {
 	windows10PngData, err := png.Decode(bytes.NewReader(windows10StartButtonData))
-	logging.Panic(err)
+	logging.Error(err)
 
 	windows10StartButtonImage = locateimage.Convert(windows10PngData)
 
 	windows11PngData, err := png.Decode(bytes.NewReader(windows11StartButtonData))
-	logging.Panic(err)
+	logging.Error(err)
 
 	windows11StartButtonImage = locateimage.Convert(windows11PngData)
 
 	windows10TermsAcceptancePngData, err := png.Decode(bytes.NewReader(windows10TermsAcceptanceButtonData))
-	logging.Panic(err)
+	logging.Error(err)
 
 	windows10TermsAcceptanceButtonImage = locateimage.Convert(windows10TermsAcceptancePngData)
 
 	windows11TermsAcceptancePngData, err := png.Decode(bytes.NewReader(windows11TermsAcceptanceButtonData))
-	logging.Panic(err)
+	logging.Error(err)
 
 	windows11TermsAcceptanceButtonImage = locateimage.Convert(windows11TermsAcceptancePngData)
 }

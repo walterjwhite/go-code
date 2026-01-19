@@ -26,6 +26,7 @@ func init() {
 }
 
 func main() {
+	defer application.OnPanic()
 	c := &Callback{}
 
 	readSubscriberConf.PubSubConf.Subscribe(readSubscriberConf.TopicName, readSubscriberConf.SubscriptionName, c)

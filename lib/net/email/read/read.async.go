@@ -38,7 +38,7 @@ func (s *EmailSession) ReadAsync(folderName string, function func(msg *imap.Mess
 				}
 			}
 		case err := <-done:
-			logging.Panic(err)
+			logging.Error(err)
 			log.Info().Msg("Not idling anymore")
 			return nil
 		}

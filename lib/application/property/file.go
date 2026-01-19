@@ -18,10 +18,12 @@ const (
 
 var (
 	configFilePrefixFlag = flag.String("conf-prefix", "", "additional sub-directory to help differentiate between configuration")
+
+	getFileFunc = getFile
 )
 
 func LoadFile(applicationName string, config interface{}) {
-	LoadFileWithPath(config, getFile(applicationName, config))
+	LoadFileWithPath(config, getFileFunc(applicationName, config))
 }
 
 func LoadFileWithPath(config interface{}, filename string) {
@@ -37,7 +39,7 @@ func LoadFileWithPath(config interface{}, filename string) {
 	}
 
 	log.Info().Msgf("Reading %v", filename)
-	yaml.Read(filename, config)
+	logging.Error(yaml.Read(filename, config))
 }
 
 func getFile(applicationName string, config interface{}) string {
@@ -46,7 +48,7 @@ func getFile(applicationName string, config interface{}) string {
 	}
 
 	path, err := homedir.Expand(propertyConfigurationLocation)
-	logging.Panic(err)
+	logging.Error(err)
 
 	return filepath.Join(path, applicationName, *configFilePrefixFlag, typename.Get(config)+".yaml")
 }

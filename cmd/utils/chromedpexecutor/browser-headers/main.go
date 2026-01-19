@@ -19,13 +19,13 @@ func main() {
 	ctx, cancel := provider.New(&provider.Conf{Headless: false}, application.Context)
 	defer cancel()
 
-	logging.Panic(chromedp.Run(ctx,
+	logging.Error(chromedp.Run(ctx,
 		chromedp.Navigate(browserHeadersUrl),
 		chromedp.WaitReady("body")))
 
 	action.Screenshot(ctx, "/tmp/browser-headers.png")
 
-	logging.Panic(chromedp.Run(ctx,
+	logging.Error(chromedp.Run(ctx,
 		chromedp.Navigate(botDetectionUrl),
 		chromedp.WaitReady("body")))
 

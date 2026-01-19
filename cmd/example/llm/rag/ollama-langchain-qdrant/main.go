@@ -30,17 +30,18 @@ func init() {
 }
 
 func main() {
+	defer application.OnPanic()
 	var err error
 	llm, err = NewOllama()
-	logging.Panic(err)
+	logging.Error(err)
 
 	e, err = embeddings.NewEmbedder(llm)
-	logging.Panic(err)
+	logging.Error(err)
 
 	urlAPI, err = url.Parse(*qdrantUrlFlag)
-	logging.Panic(err)
+	logging.Error(err)
 
 	cmd := cliCommand()
 
-	logging.Panic(cmd.Run(application.Context, os.Args))
+	logging.Error(cmd.Run(application.Context, os.Args))
 }

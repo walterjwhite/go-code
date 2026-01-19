@@ -9,7 +9,6 @@ import (
 	"time"
 
 	"github.com/rs/zerolog/log"
-	"github.com/walterjwhite/go-code/lib/application/logging"
 )
 
 type Flusher interface {
@@ -62,7 +61,9 @@ func (r *Reader) Start() {
 				}
 			}
 
-			logging.Warn(f.Close(), "pipe.Reader.Start - closing pipe file")
+			if err := f.Close(); err != nil {
+				log.Warn().Err(err).Msg("pipe.Reader.Start - closing pipe file")
+			}
 
 			time.Sleep(500 * time.Millisecond)
 		}

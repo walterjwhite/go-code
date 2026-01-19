@@ -34,12 +34,12 @@ func query(ctx context.Context, cmd *cli.Command) error {
 		qdrant.WithCollectionName(collectionName),
 		qdrant.WithEmbedder(e),
 	)
-	logging.Panic(err)
+	logging.Error(err)
 
 	docs, err := store.SimilaritySearch(ctx,
 		question, nDocs,
 		vectorstores.WithScoreThreshold(float32(threshold)))
-	logging.Panic(err)
+	logging.Error(err)
 
 	stringContext := ""
 	for i := range len(docs) {
@@ -63,7 +63,7 @@ func query(ctx context.Context, cmd *cli.Command) error {
 		llms.WithMaxTokens(1024),
 		llms.WithTemperature(0),
 	)
-	logging.Panic(err)
+	logging.Error(err)
 
 	fmt.Println(output.Choices[0].Content)
 

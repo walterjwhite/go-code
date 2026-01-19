@@ -25,6 +25,7 @@ func init() {
 }
 
 func main() {
+	defer application.OnPanic()
 	for {
 		token := getToken()
 

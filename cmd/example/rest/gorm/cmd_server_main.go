@@ -32,8 +32,9 @@ func cleanup(database *gorm.DB, server *Server) {
 }
 
 func main() {
+	defer application.OnPanic()
 	cfg, err := Load()
-	logging.Panic(err)
+	logging.Error(err)
 
 
 

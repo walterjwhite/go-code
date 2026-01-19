@@ -24,17 +24,19 @@ var (
 )
 
 func main() {
+	defer application.OnPanic()
+
 	application.Configure(providerConf)
 
 	if len(*filename) == 0 {
-		logging.Panic(errors.New("filename is required"))
+		logging.Error(errors.New("filename is required"))
 	}
 
 	sessionDuration, err := time.ParseDuration(*timeString)
-	logging.Panic(err)
+	logging.Error(err)
 
 	lines, err := readActions()
-	logging.Panic(err)
+	logging.Error(err)
 
 	ctx, cancel := provider.New(providerConf, application.Context)
 	defer cancel()
@@ -43,7 +45,7 @@ func main() {
 
 	action.OnTabClosed(ctx, onTabClosed)
 
-	logging.Panic(action.Execute(ctx, run.ParseActions(lines...)...))
+	logging.Error(action.Execute(ctx, run.ParseActions(lines...)...))
 
 	select {
 	case <-time.After(sessionDuration):
@@ -75,7 +77,7 @@ func readActions() ([]string, error) {
 }
 
 func close(f *os.File) {
-	logging.Panic(f.Close())
+	logging.Error(f.Close())
 }
 
 func onTabClosed() {

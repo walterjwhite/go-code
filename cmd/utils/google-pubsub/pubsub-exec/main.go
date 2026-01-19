@@ -39,8 +39,9 @@ func init() {
 }
 
 func main() {
+	defer application.OnPanic()
 	if len(*cmd) == 0 {
-		logging.Panic(errors.New("-cmd=<COMMAND>"))
+		logging.Error(errors.New("-cmd=<COMMAND>"))
 	}
 
 	e := Executor{}

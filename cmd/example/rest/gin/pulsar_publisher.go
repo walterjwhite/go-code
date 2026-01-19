@@ -10,21 +10,21 @@ import (
 
 func publishContactMessageToPulsar(req ContactRequest) error {
 	serviceURL, topic, _, err := getPulsarConfigFromEnv()
-	logging.Panic(err)
+	logging.Error(err)
 
 	client, err := pulsar.NewClient(pulsar.ClientOptions{
 		URL:               serviceURL,
 		OperationTimeout:  30 * time.Second,
 		ConnectionTimeout: 30 * time.Second,
 	})
-	logging.Panic(err)
+	logging.Error(err)
 
 	defer client.Close()
 
 	prod, err := client.CreateProducer(pulsar.ProducerOptions{
 		Topic: topic,
 	})
-	logging.Panic(err)
+	logging.Error(err)
 	defer prod.Close()
 
 	payload, err := json.Marshal(req)

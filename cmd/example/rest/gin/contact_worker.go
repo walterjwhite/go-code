@@ -29,7 +29,7 @@ func contactWorker(wg *sync.WaitGroup) {
 	}
 
 	emailCfg, err := getEmailConfigFromEnv()
-	logging.Panic(err)
+	logging.Error(err)
 
 	client, err := pulsar.NewClient(pulsar.ClientOptions{
 		URL:               serviceURL,
@@ -47,7 +47,7 @@ func contactWorker(wg *sync.WaitGroup) {
 		SubscriptionName: subscription,
 		Type:             pulsar.Shared,
 	})
-	logging.Panic(err)
+	logging.Error(err)
 	defer consumer.Close()
 
 	fmt.Printf("Worker started: listening on topic=%s subscription=%s\n", topic, subscription)

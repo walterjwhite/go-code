@@ -1,6 +1,12 @@
 package application
 
-import "testing"
+import (
+	"bytes"
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
+	"strings"
+	"testing"
+)
 
 func TestIsConfigured(t *testing.T) {
 	oldVersion, oldBuild := ApplicationVersion, BuildDate
@@ -38,5 +44,25 @@ func TestGetApplicationId(t *testing.T) {
 	want := "myapp.v2.abc123"
 	if got != want {
 		t.Fatalf("GetApplicationId() = %q; want %q", got, want)
+	}
+}
+
+func TestLogIdentifier_NotConfigured(t *testing.T) {
+	oldVersion, oldBuild := ApplicationVersion, BuildDate
+	defer func() {
+		ApplicationVersion = oldVersion
+		BuildDate = oldBuild
+	}()
+
+	ApplicationVersion = ""
+	BuildDate = ""
+
+	var buf bytes.Buffer
+	log.Logger = zerolog.New(&buf)
+
+	logIdentifier()
+
+	if !strings.Contains(buf.String(), "Application was not built properly") {
+		t.Fatalf("expected log message not found")
 	}
 }

@@ -9,5 +9,5 @@ import (
 )
 
 func Grant(ctx context.Context, permissions []browser.PermissionType) {
-	logging.Panic(chromedp.Run(ctx, browser.GrantPermissions(permissions)))
+	logging.Error(chromedp.Run(ctx, browser.GrantPermissions(permissions)))
 }

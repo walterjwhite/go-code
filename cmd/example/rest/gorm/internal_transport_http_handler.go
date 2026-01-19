@@ -28,7 +28,7 @@ func (h *Handler) Router(dsn string) *gin.Engine {
 
 
 	db, err := NewSQLXDBSQLite(dsn)
-	logging.Panic(err)
+	logging.Error(err)
 
 	ch := StartRequestLogWorker(db, 1000)
 	h.router.Use(RequestLoggerMiddleware(ch))

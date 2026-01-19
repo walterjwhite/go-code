@@ -42,6 +42,8 @@ func LoadSecrets(config interface{}) {
 	}
 }
 
+var getSecretFunc = secrets.Get
+
 func setFieldValue(config SecretPropertyConfiguration, value reflect.Value, fieldName string) {
 	f := getField(value, fieldName)
 
@@ -69,7 +71,7 @@ func setFieldValue(config SecretPropertyConfiguration, value reflect.Value, fiel
 			return
 		}
 
-		secretValue := secrets.Get(secretName)
+		secretValue := getSecretFunc(secretName)
 
 		f.SetString(secretValue)
 		return
@@ -100,5 +102,5 @@ func getFieldRecurse(value reflect.Value, fieldNamePath []string) reflect.Value 
 }
 
 func Decrypt(secretKey string) string {
-	return secrets.Get(secretKey)
+	return getSecretFunc(secretKey)
 }
