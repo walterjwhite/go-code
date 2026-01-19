@@ -35,7 +35,7 @@ require (
 	github.com/rs/zerolog v1.34.0
 	github.com/stretchr/testify v1.11.1
 	github.com/tmc/langchaingo v0.1.14
-	github.com/urfave/cli/v3 v3.6.1
+	github.com/urfave/cli/v3 v3.6.2
 	github.com/urfave/sflags v0.4.1
 	github.com/vrischmann/envconfig v1.4.1
 	golang.org/x/crypto v0.46.0
