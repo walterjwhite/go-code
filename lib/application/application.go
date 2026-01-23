@@ -36,7 +36,10 @@ func Configure(configurations ...interface{}) {
 	flag.Parse()
 	Load(configurations...)
 
-	doConfigure()
+	configureLogging()
+
+	logIdentifier()
+	logStart()
 }
 
 func Load(configurations ...interface{}) {
@@ -51,13 +54,6 @@ func Load(configurations ...interface{}) {
 			logging.Error(i.PostLoad(Context))
 		}
 	}
-}
-
-func doConfigure() {
-	configureLogging()
-
-	logIdentifier()
-	logStart()
 }
 
 func logStart() {

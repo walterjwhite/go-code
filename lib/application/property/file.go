@@ -2,6 +2,7 @@ package property
 
 import (
 	"flag"
+	"fmt"
 	"os"
 	"path/filepath"
 
@@ -22,24 +23,22 @@ var (
 	getFileFunc = getFile
 )
 
-func LoadFile(applicationName string, config interface{}) {
-	LoadFileWithPath(config, getFileFunc(applicationName, config))
+func LoadFile(applicationName string, config interface{}) error {
+	return LoadFileWithPath(config, getFileFunc(applicationName, config))
 }
 
-func LoadFileWithPath(config interface{}, filename string) {
+func LoadFileWithPath(config interface{}, filename string) error {
 	finfo, err := os.Stat(filename)
-	if os.IsNotExist(err) {
-		log.Warn().Msgf("%v does not exist", filename)
-		return
+	if err != nil {
+		return err
 	}
 
 	if finfo.IsDir() {
-		log.Warn().Msgf("File is a directory %v", filename)
-		return
+		return fmt.Errorf("file is a directory: %s", filename)
 	}
 
 	log.Info().Msgf("Reading %v", filename)
-	logging.Error(yaml.Read(filename, config))
+	return yaml.Read(filename, config)
 }
 
 func getFile(applicationName string, config interface{}) string {

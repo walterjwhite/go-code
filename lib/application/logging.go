@@ -2,16 +2,14 @@ package application
 
 import (
 	"flag"
+	"io"
+	"log/syslog"
+	"os"
+
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"github.com/rs/zerolog/pkgerrors"
 	"github.com/walterjwhite/go-code/lib/application/logging"
-	"github.com/walterjwhite/go-code/lib/application/logging/pubsub"
-	"github.com/walterjwhite/go-code/lib/application/property"
-	"github.com/walterjwhite/go-code/lib/net/google"
-	"io"
-	"log/syslog"
-	"os"
 )
 
 const (
@@ -27,19 +25,8 @@ func configureLogging() {
 	zerolog.TimeFieldFormat = logDateTimeFormat
 	zerolog.ErrorStackMarshaler = pkgerrors.MarshalStack
 
-	log.Logger = zerolog.New(zerolog.SyncWriter(getLogWriter())).With().Timestamp().Logger()
+	log.Logger = zerolog.New(zerolog.SyncWriter(getWriter())).With().Timestamp().Logger()
 	setLogLevel()
-}
-
-func getLogWriter() io.Writer {
-	rw := setupPubsubLogging()
-	w := getWriter()
-
-	if rw != nil {
-		return zerolog.MultiLevelWriter(rw, w)
-	}
-
-	return w
 }
 
 func getWriter() io.WriteCloser {
@@ -74,41 +61,4 @@ func getFileLogger() io.WriteCloser {
 	logging.Error(err)
 
 	return f
-}
-
-func setupPubsubLogging() io.Writer {
-	w := &pubsub.PubsubWriter{}
-	property.LoadFile(ApplicationName, w)
-
-	if len(w.TopicName) > 0 {
-		conf := &google.Conf{}
-		w.Init(Context, conf)
-		cw := zerolog.ConsoleWriter{Out: w, TimeFormat: logDateTimeFormat, NoColor: true}
-		l := &LevelWriter{Writer: cw}
-
-
-		if len(w.Level) > 0 {
-			level, err := zerolog.ParseLevel(w.Level)
-			if err == nil {
-				l.Level = level
-			}
-		}
-
-		return l
-	}
-
-	return nil
-}
-
-type LevelWriter struct {
-	io.Writer
-	Level zerolog.Level
-}
-
-func (lw *LevelWriter) WriteLevel(l zerolog.Level, p []byte) (n int, err error) {
-	if l >= lw.Level {
-		return lw.Write(p)
-	}
-
-	return len(p), nil
 }

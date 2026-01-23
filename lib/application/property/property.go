@@ -2,7 +2,9 @@ package property
 
 import (
 	"context"
+
 	"github.com/rs/zerolog/log"
+	"github.com/walterjwhite/go-code/lib/application/logging"
 )
 
 
@@ -17,7 +19,7 @@ type PostLoad interface {
 func Load(applicationName string, config interface{}) {
 	log.Debug().Msgf("before configuration: %v", config)
 
-	LoadFile(applicationName, config)
+	logging.Warn(LoadFile(applicationName, config), "LoadFile")
 
 	LoadEnv(config)
 	LoadCli(config)
