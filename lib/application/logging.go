@@ -60,5 +60,5 @@ func getFileLogger() io.WriteCloser {
 	f, err := os.OpenFile(*logTarget, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	logging.Error(err)
 
-	return f
+	return zerolog.ConsoleWriter{Out: f, TimeFormat: logDateTimeFormat, NoColor: true}
 }
