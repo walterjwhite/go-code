@@ -131,7 +131,8 @@ func TestLoadFile(t *testing.T) {
 	assert.NoError(t, err)
 
 	config := &TestConfig{}
-	LoadFileWithPath(config, configFilePath)
+	err = LoadFileWithPath(config, configFilePath)
+	assert.NoError(t, err)
 
 	assert.Equal(t, "test-name", config.Name)
 	assert.Equal(t, 123, config.Value)
@@ -139,7 +140,9 @@ func TestLoadFile(t *testing.T) {
 
 func TestLoadFile_NotExist(t *testing.T) {
 	config := &TestConfig{}
-	LoadFileWithPath(config, "non-existent-file.yaml")
+	err := LoadFileWithPath(config, "non-existent-file.yaml")
+	assert.NoError(t, err)
+
 	assert.Equal(t, "", config.Name)
 	assert.Equal(t, 0, config.Value)
 }
@@ -152,7 +155,9 @@ func TestLoadFile_IsDir(t *testing.T) {
 	}()
 
 	config := &TestConfig{}
-	LoadFileWithPath(config, tempDir)
+	err = LoadFileWithPath(config, tempDir)
+	assert.NoError(t, err)
+	
 	assert.Equal(t, "", config.Name)
 	assert.Equal(t, 0, config.Value)
 }

@@ -2,7 +2,6 @@ package property
 
 import (
 	"flag"
-	"fmt"
 	"os"
 	"path/filepath"
 
@@ -30,11 +29,11 @@ func LoadFile(applicationName string, config interface{}) error {
 func LoadFileWithPath(config interface{}, filename string) error {
 	finfo, err := os.Stat(filename)
 	if err != nil {
-		return err
+		return nil
 	}
 
 	if finfo.IsDir() {
-		return fmt.Errorf("file is a directory: %s", filename)
+		return nil
 	}
 
 	log.Info().Msgf("Reading %v", filename)

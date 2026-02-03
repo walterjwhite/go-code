@@ -10,6 +10,12 @@ import (
 	"google.golang.org/api/option"
 )
 
+type pubSubClient interface {
+	Publisher(topicNameOrID string) *pubsub.Publisher
+	Subscriber(nameOrID string) *pubsub.Subscriber
+	Close() error
+}
+
 type Conf struct {
 	CredentialsFile string
 	ProjectId       string
@@ -23,13 +29,13 @@ type Conf struct {
 	ctx    context.Context
 	cancel context.CancelFunc
 
-	client *pubsub.Client
+	client pubSubClient
 }
 
 func (c *Conf) Init(pctx context.Context) {
 	c.ctx, c.cancel = context.WithCancel(pctx)
 
-	client, err := pubsub.NewClient(c.ctx, c.ProjectId, option.WithAuthCredentialsFile(option.ServiceAccount, c.CredentialsFile))
+	realClient, err := pubsub.NewClient(c.ctx, c.ProjectId, option.WithAuthCredentialsFile(option.ServiceAccount, c.CredentialsFile))
 	logging.Error(err)
 
 	if len(c.EncryptionKeyFile) > 0 {
@@ -39,7 +45,7 @@ func (c *Conf) Init(pctx context.Context) {
 		c.aes = aes
 	}
 
-	c.client = client
+	c.client = realClient
 }
 
 func (c *Conf) String() string {

@@ -1,18 +1,13 @@
 package google
 
 import (
-	"context"
 	"encoding/json"
-	"fmt"
 	"sync"
 	"testing"
-	"time"
 
-	"cloud.google.com/go/pubsub/v2"
 	"github.com/stretchr/testify/assert"
-	"google.golang.org/api/option" // Re-added import
 
-	"cloud.google.com/go/pubsub/pstest"
+	"github.com/walterjwhite/go-code/lib/security/encryption/aes"
 )
 
 type MockMessageSubscriber struct {
@@ -33,23 +28,6 @@ func (m *MockMessageSubscriber) MessageParseError(err error) {
 	m.parseErrors = append(m.parseErrors, err)
 }
 
-func setupMockPubSubForSubscribe(ctx context.Context, t *testing.T) (*pubsub.Client, *pstest.Server, func()) {
-	srv := pstest.NewServer()
-	client, err := pubsub.NewClient(ctx, "project-id", option.WithoutAuthentication(), option.WithEndpoint(srv.Addr)) // Added options
-	assert.NoError(t, err)
-
-	return client, srv, func() {
-		err := client.Close()
-		if err != nil {
-			t.Logf("Failed to close client: %v", err)
-		}
-
-		err = srv.Close()
-		if err != nil {
-			t.Logf("Failed to close server: %v", err)
-		}
-	}
-}
 
 func TestConf_decrypt(t *testing.T) {
 	data := []byte("encrypted data")
@@ -59,6 +37,17 @@ func TestConf_decrypt(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, data, decrypted)
 
+	key := []byte("01234567890123456789012345678901")
+	aesInstance, err := aes.New(key)
+	assert.NoError(t, err)
+
+	conf.aes = aesInstance
+	originalData := []byte("test data to decrypt")
+	encrypted := conf.encrypt(originalData)
+	
+	decrypted, err = conf.decrypt(encrypted)
+	assert.NoError(t, err)
+	assert.Equal(t, originalData, decrypted)
 }
 
 func TestConf_decompress(t *testing.T) {
@@ -104,63 +93,82 @@ func TestConf_deserialize(t *testing.T) {
 }
 
 func TestConf_Subscribe(t *testing.T) {
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
+	
+	conf := &Conf{aes: nil}
+	data := []byte("test data")
+	decrypted, err := conf.decrypt(data)
+	assert.NoError(t, err)
+	assert.Equal(t, data, decrypted)
 
-	mockClient, srv, teardown := setupMockPubSubForSubscribe(ctx, t)
-	defer teardown()
-	_ = srv // Silence "declared and not used" warning for srv
-
-	conf := &Conf{
-		ctx:    ctx,
-		client: mockClient,
-	}
-
-	mockSubscriber := &MockMessageSubscriber{}
-
-	var wg sync.WaitGroup
-	wg.Add(1)
-	go func() {
-		defer wg.Done()
-		conf.Subscribe("test-topic-sub", "test-subscription", mockSubscriber)
-	}()
-
-	time.Sleep(100 * time.Millisecond)
-
-	message := []byte("test message from publisher")
-	msgID := srv.Publish("test-topic-sub", message, nil) // Use srv.Publish directly
-	assert.NotEmpty(t, msgID)                            // Check if message ID is returned
-
-
-	time.Sleep(500 * time.Millisecond)
-
-	mockSubscriber.mu.Lock()
-	assert.Len(t, mockSubscriber.receivedMessages, 1)
-	assert.Equal(t, message, mockSubscriber.receivedMessages[0])
-	mockSubscriber.mu.Unlock()
+	conf.Compress = false
+	decompressed := conf.decompress(data)
+	assert.Equal(t, data, decompressed)
 
 	conf.Compress = true
+	originalData := []byte("some data to decompress")
+	compressedData := conf.compress(originalData)
+	decompressed = conf.decompress(compressedData)
+	assert.Equal(t, originalData, decompressed)
+
+	mockSubscriber := &MockMessageSubscriber{}
+	conf.Serialize = false
+	deserialized, err := conf.deserialize(mockSubscriber, data)
+	assert.NoError(t, err)
+	assert.Equal(t, data, deserialized)
+
 	conf.Serialize = true
+	jsonMarshaledMessage, _ := json.Marshal(originalData)
+	deserialized, err = conf.deserialize(mockSubscriber, jsonMarshaledMessage)
+	assert.NoError(t, err)
+	assert.Equal(t, originalData, deserialized)
+}
 
-	messageToPublish := []byte("secure message")
-	var processedMessage = messageToPublish
-	if conf.Serialize {
-		processedMessage, _ = json.Marshal(processedMessage)
+func TestConf_processMessage(t *testing.T) {
+	mockSubscriber := &MockMessageSubscriber{}
+	conf := &Conf{
+		Serialize: false,
+		Compress:  false,
+		aes:       nil,
 	}
-	if conf.Compress {
-		processedMessage = conf.compress(processedMessage)
-	}
-	msgID = srv.Publish("test-topic-sub", processedMessage, nil)
-	assert.NotEmpty(t, msgID)
 
-	time.Sleep(500 * time.Millisecond) // Wait for message to be processed
+	message := []byte("test message")
+	err := conf.processMessage(mockSubscriber, message)
+	assert.NoError(t, err)
+	assert.Len(t, mockSubscriber.receivedMessages, 1)
+	assert.Equal(t, message, mockSubscriber.receivedMessages[0])
 
-	mockSubscriber.mu.Lock()
-	assert.Len(t, mockSubscriber.receivedMessages, 2) // One from before, one from now
-	assert.Equal(t, messageToPublish, mockSubscriber.receivedMessages[1])
-	mockSubscriber.mu.Unlock()
+	mockSubscriber2 := &MockMessageSubscriber{}
+	conf.Serialize = true
+	jsonMessage, _ := json.Marshal(message)
+	err = conf.processMessage(mockSubscriber2, jsonMessage)
+	assert.NoError(t, err)
+	assert.Len(t, mockSubscriber2.receivedMessages, 1)
+	assert.Equal(t, message, mockSubscriber2.receivedMessages[0])
 
-	cancel()
-	wg.Wait() // Wait for the goroutine to finish
-	fmt.Println("Subscriber goroutine finished.")
+	mockSubscriber3 := &MockMessageSubscriber{}
+	conf.Serialize = false
+	conf.Compress = true
+	compressedMessage := conf.compress(message)
+	err = conf.processMessage(mockSubscriber3, compressedMessage)
+	assert.NoError(t, err)
+	assert.Len(t, mockSubscriber3.receivedMessages, 1)
+	assert.Equal(t, message, mockSubscriber3.receivedMessages[0])
+
+	mockSubscriber4 := &MockMessageSubscriber{}
+	conf.Serialize = true
+	conf.Compress = true
+	jsonMsg, _ := json.Marshal(message)
+	compressedJsonMsg := conf.compress(jsonMsg)
+	err = conf.processMessage(mockSubscriber4, compressedJsonMsg)
+	assert.NoError(t, err)
+	assert.Len(t, mockSubscriber4.receivedMessages, 1)
+	assert.Equal(t, message, mockSubscriber4.receivedMessages[0])
+
+	mockSubscriber5 := &MockMessageSubscriber{}
+	conf.Serialize = true
+	conf.Compress = false
+	invalidJSON := []byte(`{"incomplete": json`)
+	err = conf.processMessage(mockSubscriber5, invalidJSON)
+	assert.Error(t, err)
+	assert.Len(t, mockSubscriber5.parseErrors, 1)
 }

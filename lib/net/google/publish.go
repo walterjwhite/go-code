@@ -7,6 +7,18 @@ import (
 	"github.com/walterjwhite/go-code/lib/io/compression/zstd"
 )
 
+func (c *Conf) prepareMessage(message []byte) ([]byte, error) {
+	data, err := c.serialize(message)
+	if err != nil {
+		return nil, err
+	}
+
+	compressed := c.compress(data)
+	encrypted := c.encrypt(compressed)
+	
+	return encrypted, nil
+}
+
 func (c *Conf) Publish(topicName string, message []byte) error {
 	select {
 	case <-c.ctx.Done():
@@ -16,13 +28,10 @@ func (c *Conf) Publish(topicName string, message []byte) error {
 
 	log.Info().Msgf("publishing to: %v", topicName)
 
-	data, err := c.serialize(message)
+	encrypted, err := c.prepareMessage(message)
 	if err != nil {
 		return err
 	}
-
-	compressed := c.compress(data)
-	encrypted := c.encrypt(compressed)
 
 	publisher := c.client.Publisher(topicName)
 	defer publisher.Stop()
@@ -33,7 +42,7 @@ func (c *Conf) Publish(topicName string, message []byte) error {
 		return err
 	}
 
-	log.Info().Msgf("published message with ID %s, message: %s, data: %s", id, message, data)
+	log.Info().Msgf("published message with ID %s, message: %s", id, message)
 	return nil
 }
 

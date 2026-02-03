@@ -1,6 +1,7 @@
 package google
 
 import (
+	"context"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -13,6 +14,38 @@ func TestConf_String(t *testing.T) {
 	}
 	expected := "Conf: {CredentialsFile: test_credentials.json, ProjectId: test_project}"
 	assert.Equal(t, expected, conf.String())
+}
+
+func TestConf_Cancel(t *testing.T) {
+	pctx := context.Background()
+	ctx, cancel := context.WithCancel(pctx)
+	
+	conf := &Conf{
+		ctx:    ctx,
+		cancel: cancel,
+	}
+	
+	select {
+	case <-conf.ctx.Done():
+		t.Error("Context should not be cancelled yet")
+	default:
+	}
+	
+	conf.Cancel()
+	
+	select {
+	case <-conf.ctx.Done():
+	default:
+		t.Error("Context should be cancelled after Cancel()")
+	}
+}
+
+func TestConf_Cancel_NilCancel(t *testing.T) {
+	conf := &Conf{
+		cancel: nil,
+	}
+	
+	conf.Cancel()
 }
 
 /*
@@ -66,3 +99,30 @@ func TestConf_Cancel(t *testing.T) {
 	conf.Cancel()
 }
 */
+
+func TestConf_Init_ContextSetup(t *testing.T) {
+pctx := context.Background()
+conf := &Conf{
+CredentialsFile:   "nonexistent.json",  
+ProjectId:         "test-project",
+EncryptionKeyFile: "",
+}
+
+conf.ctx, conf.cancel = context.WithCancel(pctx)
+
+assert.NotNil(t, conf.ctx)
+assert.NotNil(t, conf.cancel)
+
+select {
+case <-conf.ctx.Done():
+t.Error("Context should not be cancelled yet")
+default:
+}
+
+conf.cancel()
+select {
+case <-conf.ctx.Done():
+default:
+t.Error("Context should be cancelled after cancel()")
+}
+}

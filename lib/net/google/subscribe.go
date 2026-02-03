@@ -9,6 +9,23 @@ import (
 	"github.com/walterjwhite/go-code/lib/io/compression/zstd"
 )
 
+func (c *Conf) processMessage(ms MessageSubscriber, data []byte) error {
+	decrypted, err := c.decrypt(data)
+	if err != nil {
+		return err
+	}
+
+	decompressed := c.decompress(decrypted)
+	
+	deserialized, err := c.deserialize(ms, decompressed)
+	if err != nil {
+		return err
+	}
+
+	ms.MessageDeserialized(deserialized)
+	return nil
+}
+
 func (c *Conf) Subscribe(topicName string, subscriptionName string, ms MessageSubscriber) {
 	sub := c.client.Subscriber(subscriptionName)
 	log.Info().Msgf("subscribed to: %s", subscriptionName)
@@ -16,22 +33,10 @@ func (c *Conf) Subscribe(topicName string, subscriptionName string, ms MessageSu
 	err := sub.Receive(c.ctx, func(ctx context.Context, m *pubsub.Message) {
 		log.Info().Msgf("received raw message: %v", m)
 
-		decrypted, err := c.decrypt(m.Data)
+		err := c.processMessage(ms, m.Data)
 		if err != nil {
-			logging.Warn(err, "pubsub.Subscribe.Receive")
-			return
+			logging.Warn(err, "pubsub.Subscribe.ProcessMessage")
 		}
-
-		decompressed := c.decompress(decrypted)
-		log.Info().Msgf("received message (decompressed): %s", decompressed)
-
-		deserialized, err := c.deserialize(ms, decompressed)
-		if err != nil {
-			logging.Warn(err, "pubsub.Subscribe.Deserialize")
-			return
-		}
-
-		ms.MessageDeserialized(deserialized)
 
 		m.Ack() // Acknowledge that we've consumed the message.
 	})
