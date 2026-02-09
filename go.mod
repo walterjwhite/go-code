@@ -3,7 +3,7 @@ module github.com/walterjwhite/go-code
 go 1.25.0
 
 require (
-	cloud.google.com/go/pubsub/v2 v2.3.0
+	cloud.google.com/go/pubsub/v2 v2.4.0
 	github.com/andreyvit/locateimage v0.1.0
 	github.com/apache/pulsar-client-go v0.18.0
 	github.com/avast/retry-go v3.0.0+incompatible
