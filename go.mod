@@ -31,7 +31,7 @@ require (
 	github.com/urfave/cli/v3 v3.6.2
 	github.com/urfave/sflags v0.4.1
 	github.com/vrischmann/envconfig v1.4.1
-	golang.org/x/crypto v0.47.0
+	golang.org/x/crypto v0.48.0
 	google.golang.org/api v0.264.0
 	gopkg.in/gomail.v2 v2.0.0-20160411212932-81ebce5c23df
 	gopkg.in/headzoo/surf.v1 v1.0.1
@@ -201,8 +201,8 @@ require (
 	golang.org/x/net v0.49.0 // indirect
 	golang.org/x/oauth2 v0.34.0 // indirect
 	golang.org/x/sync v0.19.0 // indirect
-	golang.org/x/sys v0.40.0 // indirect
-	golang.org/x/text v0.33.0 // indirect
+	golang.org/x/sys v0.41.0 // indirect
+	golang.org/x/text v0.34.0 // indirect
 	golang.org/x/time v0.14.0 // indirect
 	google.golang.org/genproto v0.0.0-20260202165425-ce8ad4cf556b // indirect
 	google.golang.org/genproto/googleapis/api v0.0.0-20260202165425-ce8ad4cf556b // indirect
