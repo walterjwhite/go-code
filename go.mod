@@ -2,8 +2,6 @@ module github.com/walterjwhite/go-code
 
 go 1.26
 
-replace github.com/walterjwhite/go-code/lib/utils/ats-client => ./lib/utils/ats-client
-
 require (
 	cloud.google.com/go/pubsub/v2 v2.4.0
 	github.com/andreyvit/locateimage v0.1.0
