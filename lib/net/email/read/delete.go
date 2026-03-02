@@ -9,7 +9,7 @@ func (s *EmailSession) Delete(msg *imap.Message) error {
 	set.AddNum(msg.Uid)
 
 	item := imap.FormatFlagsOp(imap.AddFlags, true)
-	flags := []interface{}{imap.DeletedFlag}
+	flags := []any{imap.DeletedFlag}
 	err := s.client.Store(set, item, flags, nil)
 	if err != nil {
 		return err

@@ -23,17 +23,31 @@ var (
 
 	functionName = flag.String("func", "", "function to execute")
 	arguments    = flag.String("args", "", "arguments to pass function, optional")
+
+	allowedFunctions = map[string]bool{
+		"process":   true,
+		"publish":   true,
+		"subscribe": true,
+	}
 )
 
 func init() {
 	application.Configure(publisherConfiguration)
-	publisherConfiguration.GoogleConf.Init(application.Context)
+	if err := publisherConfiguration.GoogleConf.Init(application.Context); err != nil {
+		logging.Error(err)
+	}
 }
 
 func main() {
 	defer application.OnPanic()
+	flag.Parse()
+
 	if len(*functionName) == 0 {
 		logging.Error(errors.New("expecting command to be non-empty"))
+	}
+
+	if !isAllowedFunction(*functionName) {
+		logging.Error(errors.New("function not in allowed list"))
 	}
 
 	c := exec.Cmd{FunctionName: *functionName}
@@ -48,4 +62,8 @@ func main() {
 	}
 
 	logging.Warn(publisherConfiguration.GoogleConf.Publish(publisherConfiguration.TopicName, jsonString), "main")
+}
+
+func isAllowedFunction(functionName string) bool {
+	return allowedFunctions[functionName]
 }

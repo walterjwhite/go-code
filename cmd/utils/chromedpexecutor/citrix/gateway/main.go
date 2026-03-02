@@ -1,8 +1,12 @@
 package main
 
 import (
+	"context"
+	"errors"
+
 	"github.com/rs/zerolog/log"
 	"github.com/walterjwhite/go-code/lib/application"
+	"github.com/walterjwhite/go-code/lib/application/logging"
 
 	"github.com/walterjwhite/go-code/lib/utils/token/providers/cli"
 	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/plugins/citrix"
@@ -19,7 +23,7 @@ func init() {
 	log.Debug().Msg("initializing google pubsub")
 
 	application.Load(session.GoogleProvider)
-	session.GoogleProvider.Init(application.Context)
+	logging.Error(session.GoogleProvider.Init(application.Context))
 
 	log.Debug().Msgf("conf: %v", session.GoogleProvider)
 }
@@ -30,7 +34,12 @@ func main() {
 		token := getToken()
 
 		session.Init(application.Context)
-		session.Run(token)
+		err := session.Run(token)
+		if errors.Is(err, context.DeadlineExceeded) {
+			log.Warn().Msg("expected context deadline exceeded")
+		} else {
+			logging.Error(err)
+		}
 
 		firstRun = false
 	}

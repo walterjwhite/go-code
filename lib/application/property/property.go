@@ -16,7 +16,7 @@ type PostLoad interface {
 	PostLoad(ctx context.Context) error
 }
 
-func Load(applicationName string, config interface{}) {
+func Load(applicationName string, config any) {
 	log.Debug().Msgf("before configuration: %v", config)
 
 	logging.Warn(LoadFile(applicationName, config), "LoadFile")
@@ -24,6 +24,8 @@ func Load(applicationName string, config interface{}) {
 	LoadEnv(config)
 	LoadCli(config)
 	LoadSecrets(config)
+
+	validateRequiredFields(config)
 
 	log.Debug().Msgf("after configuration: %v", config)
 }

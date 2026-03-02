@@ -26,7 +26,15 @@ type Conf struct {
 	mu sync.RWMutex
 }
 
+const (
+	minHour = 0
+	maxHour = 23
+)
+
 func (c *Conf) WithWorker(worker Worker) {
+	if worker == nil {
+		return
+	}
 	c.mu.Lock()
 	defer c.mu.Unlock()
 	c.worker = worker

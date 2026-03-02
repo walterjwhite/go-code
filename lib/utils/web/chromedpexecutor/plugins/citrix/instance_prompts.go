@@ -35,7 +35,7 @@ const (
 )
 
 func (i *Instance) closePermissionPrompts() {
-	ctx, cancel := context.WithTimeout(i.ctx, 1*time.Second)
+	ctx, cancel := context.WithTimeout(i.ctx, 5*time.Second)
 	defer cancel()
 
 	i.closePermissionPrompt(ctx, multipleMonitorPrompt)

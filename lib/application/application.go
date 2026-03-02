@@ -32,7 +32,7 @@ func init() {
 	}()
 }
 
-func Configure(configurations ...interface{}) {
+func Configure(configurations ...any) {
 	flag.Parse()
 	Load(configurations...)
 
@@ -42,7 +42,7 @@ func Configure(configurations ...interface{}) {
 	logStart()
 }
 
-func Load(configurations ...interface{}) {
+func Load(configurations ...any) {
 	for i := range configurations {
 		if i, ok := configurations[i].(property.PreLoad); ok {
 			i.PreLoad()

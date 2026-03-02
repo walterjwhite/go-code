@@ -10,7 +10,7 @@ import (
 	"github.com/walterjwhite/go-code/lib/time/delay"
 )
 
-func Locate(pctx context.Context, visibleTimeout time.Duration, locateDelay delay.Delayer, selector interface{}, opts ...chromedp.QueryOption) error {
+func Locate(pctx context.Context, visibleTimeout time.Duration, locateDelay delay.Delayer, selector any, opts ...chromedp.QueryOption) error {
 	log.Debug().Msgf("timeout: %v", visibleTimeout)
 
 	ctx, cancel := timeout(pctx, visibleTimeout)

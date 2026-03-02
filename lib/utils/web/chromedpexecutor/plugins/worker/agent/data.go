@@ -15,7 +15,7 @@ type Conf struct {
 
 	questions   []string
 	iteration   int
-	contextuals []interface{}
+	contextuals []any
 }
 
 func (c *Conf) String() string {

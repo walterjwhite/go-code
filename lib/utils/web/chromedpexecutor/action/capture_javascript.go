@@ -18,7 +18,7 @@ func CaptureJavascript(ctx context.Context) context.CancelFunc {
 	}
 
 	listenCtx, listenCancel := context.WithCancel(ctx)
-	chromedp.ListenTarget(listenCtx, func(ev interface{}) {
+	chromedp.ListenTarget(listenCtx, func(ev any) {
 		switch e := ev.(type) {
 		case *network.EventRequestWillBeSent:
 			if e.Type == network.ResourceTypeScript && e.Request.URL != "" {

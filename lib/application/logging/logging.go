@@ -3,11 +3,10 @@ package logging
 import (
 	"fmt"
 	"github.com/rs/zerolog/log"
-
-	"runtime/debug"
+	"os"
 )
 
-func Error(err error, contextuals ...interface{}) {
+func Error(err error, contextuals ...any) {
 	if err == nil {
 		return
 	}
@@ -16,6 +15,12 @@ func Error(err error, contextuals ...interface{}) {
 		for i := range contextuals {
 			log.Warn().Interface(fmt.Sprintf("contextual: %d", i), contextuals[i]).Msg("Contextual")
 		}
+	}
+
+	log.Error().Msgf("error - %s", err.Error())
+
+	if os.Getenv("ENVIRONMENT") == "development" {
+		log.Debug().Msgf("Stack trace unavailable in production for security reasons")
 	}
 
 	log.Panic().Err(err).Msg("Error")
@@ -27,6 +32,4 @@ func Warn(err error, message string) {
 	}
 
 	log.Warn().Msgf("%s - %s", message, err.Error())
-	stackTrace := debug.Stack()
-	log.Warn().Msgf("Stack trace:\n%s", stackTrace)
 }

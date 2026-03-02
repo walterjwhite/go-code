@@ -2,13 +2,14 @@ package agent
 
 import (
 	"context"
+	"crypto/rand"
+	"math/big"
 
 	"github.com/chromedp/chromedp"
 	"github.com/chromedp/chromedp/kb"
 	"github.com/rs/zerolog/log"
 	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/action"
 
-	"math/rand"
 	"time"
 )
 
@@ -27,7 +28,12 @@ func (c *Conf) Work(ctx context.Context, headless bool) {
 }
 
 func (c *Conf) getQuestion() string {
-	randomIndex := rand.Intn(len(c.questions))
+	num, err := rand.Int(rand.Reader, big.NewInt(int64(len(c.questions))))
+	if err != nil {
+		log.Error().Msgf("failed to generate random index: %v", err)
+		return c.questions[0]
+	}
+	randomIndex := int(num.Int64())
 	log.Info().Msgf("selected question: [%d]", randomIndex)
 
 	return c.questions[randomIndex]

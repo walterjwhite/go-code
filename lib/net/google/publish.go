@@ -13,8 +13,15 @@ func (c *Conf) prepareMessage(message []byte) ([]byte, error) {
 		return nil, err
 	}
 
-	compressed := c.compress(data)
-	encrypted := c.encrypt(compressed)
+	compressed, err := c.compress(data)
+	if err != nil {
+		return nil, err
+	}
+
+	encrypted, err := c.encrypt(compressed)
+	if err != nil {
+		return nil, err
+	}
 
 	return encrypted, nil
 }
@@ -42,7 +49,7 @@ func (c *Conf) Publish(topicName string, message []byte) error {
 		return err
 	}
 
-	log.Info().Msgf("published message with ID %s, message: %s", id, message)
+	log.Info().Msgf("published message with ID %s", id)
 	return nil
 }
 
@@ -54,18 +61,18 @@ func (c *Conf) serialize(message []byte) ([]byte, error) {
 	return json.Marshal(message)
 }
 
-func (c *Conf) encrypt(data []byte) []byte {
-	if c.aes == nil {
-		return data
+func (c *Conf) encrypt(data []byte) ([]byte, error) {
+	if c.encryptor == nil {
+		return data, nil
 	}
 
-	return c.aes.Encrypt(data)
+	return c.encryptor.Encrypt(data)
 }
 
-func (c *Conf) compress(data []byte) []byte {
+func (c *Conf) compress(data []byte) ([]byte, error) {
 	if !c.Compress {
-		return data
+		return data, nil
 	}
 
-	return zstd.CompressBuffer(data)
+	return zstd.CompressBuffer(data), nil
 }

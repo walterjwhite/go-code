@@ -22,11 +22,11 @@ var (
 	getFileFunc = getFile
 )
 
-func LoadFile(applicationName string, config interface{}) error {
+func LoadFile(applicationName string, config any) error {
 	return LoadFileWithPath(config, getFileFunc(applicationName, config))
 }
 
-func LoadFileWithPath(config interface{}, filename string) error {
+func LoadFileWithPath(config any, filename string) error {
 	finfo, err := os.Stat(filename)
 	if err != nil {
 		log.Warn().Msgf("file does not exist: %v", filename)
@@ -42,7 +42,7 @@ func LoadFileWithPath(config interface{}, filename string) error {
 	return yaml.Read(filename, config)
 }
 
-func getFile(applicationName string, config interface{}) string {
+func getFile(applicationName string, config any) string {
 	if len(applicationName) == 0 {
 		log.Warn().Msgf("application name is empty: %s", applicationName)
 	}

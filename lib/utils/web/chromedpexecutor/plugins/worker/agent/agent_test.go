@@ -2,6 +2,7 @@ package agent
 
 import (
 	"context"
+	"slices"
 	"testing"
 )
 
@@ -19,15 +20,9 @@ func TestGetQuestion(t *testing.T) {
 		questions: questions,
 	}
 
-	for i := 0; i < 10; i++ {
+	for range 10 {
 		q := c.getQuestion()
-		found := false
-		for _, v := range questions {
-			if v == q {
-				found = true
-				break
-			}
-		}
+		found := slices.Contains(questions, q)
 
 		if !found {
 			t.Errorf("getQuestion() returned a value not in the original slice: %s", q)

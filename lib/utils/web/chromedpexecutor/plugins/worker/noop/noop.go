@@ -9,7 +9,7 @@ func (i *State) Name() string {
 	return "noop"
 }
 
-func (i *State) Init(ctx context.Context, headless bool, contextuals ...interface{}) error {
+func (i *State) Init(ctx context.Context, headless bool, contextuals ...any) error {
 	return nil
 }
 

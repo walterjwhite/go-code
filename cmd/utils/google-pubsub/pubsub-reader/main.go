@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/rs/zerolog/log"
 	"github.com/walterjwhite/go-code/lib/application"
+	"github.com/walterjwhite/go-code/lib/application/logging"
 
 	"github.com/walterjwhite/go-code/lib/net/google"
 )
@@ -22,7 +23,7 @@ var (
 
 func init() {
 	application.Configure(readSubscriberConf)
-	readSubscriberConf.PubSubConf.Init(application.Context)
+	logging.Error(readSubscriberConf.PubSubConf.Init(application.Context))
 }
 
 func main() {

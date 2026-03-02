@@ -14,13 +14,19 @@ type Provider struct {
 	Conf *google_pubsub.Conf
 }
 
-func New(ctx context.Context) *Provider {
+func New(ctx context.Context) (*Provider, error) {
 	provider := &Provider{}
 	application.Load(provider)
 
-	provider.Conf.Init(ctx)
+	if provider.Conf == nil {
+		return nil, fmt.Errorf("failed to load Google Pub/Sub configuration")
+	}
 
-	return provider
+	if err := provider.Conf.Init(ctx); err != nil {
+		return nil, fmt.Errorf("failed to initialize Google Pub/Sub: %w", err)
+	}
+
+	return provider, nil
 }
 
 func (p *Provider) String() string {

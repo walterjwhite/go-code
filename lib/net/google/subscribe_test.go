@@ -32,7 +32,7 @@ func (m *MockMessageSubscriber) MessageParseError(err error) {
 func TestConf_decrypt(t *testing.T) {
 	data := []byte("encrypted data")
 
-	conf := &Conf{aes: nil}
+	conf := &Conf{encryptor: nil}
 	decrypted, err := conf.decrypt(data)
 	assert.NoError(t, err)
 	assert.Equal(t, data, decrypted)
@@ -41,9 +41,10 @@ func TestConf_decrypt(t *testing.T) {
 	aesInstance, err := aes.New(key)
 	assert.NoError(t, err)
 
-	conf.aes = aesInstance
+	conf.encryptor = aesInstance
 	originalData := []byte("test data to decrypt")
-	encrypted := conf.encrypt(originalData)
+	encrypted, err := conf.encrypt(originalData)
+	assert.NoError(t, err)
 
 	decrypted, err = conf.decrypt(encrypted)
 	assert.NoError(t, err)
@@ -54,19 +55,22 @@ func TestConf_decompress(t *testing.T) {
 	originalData := []byte("some data to decompress")
 
 	conf := &Conf{Compress: false}
-	decompressed := conf.decompress(originalData)
+	decompressed, err := conf.decompress(originalData)
+	assert.NoError(t, err)
 	assert.Equal(t, originalData, decompressed)
 
 	conf.Compress = true
-	compressedData := conf.compress(originalData) // Use the compress method from publish.go (same package)
-	decompressed = conf.decompress(compressedData)
+	compressedData, err := conf.compress(originalData) // Use the compress method from publish.go (same package)
+	assert.NoError(t, err)
+	decompressed, err = conf.decompress(compressedData)
+	assert.NoError(t, err)
 	assert.Equal(t, originalData, decompressed)
 
 	conf.Compress = true
 	invalidCompressedData := []byte{0x01, 0x02, 0x03}
-	decompressed = conf.decompress(invalidCompressedData)
-	assert.NotEqual(t, originalData, decompressed) // Should not equal original
-	assert.Empty(t, decompressed)                  // Should return empty or error-like data if decompression fails
+	decompressed, err = conf.decompress(invalidCompressedData)
+	assert.Error(t, err) // Should return error for invalid data
+	assert.Nil(t, decompressed)
 }
 
 func TestConf_deserialize(t *testing.T) {
@@ -94,20 +98,23 @@ func TestConf_deserialize(t *testing.T) {
 
 func TestConf_Subscribe(t *testing.T) {
 
-	conf := &Conf{aes: nil}
+	conf := &Conf{encryptor: nil}
 	data := []byte("test data")
 	decrypted, err := conf.decrypt(data)
 	assert.NoError(t, err)
 	assert.Equal(t, data, decrypted)
 
 	conf.Compress = false
-	decompressed := conf.decompress(data)
+	decompressed, err := conf.decompress(data)
+	assert.NoError(t, err)
 	assert.Equal(t, data, decompressed)
 
 	conf.Compress = true
 	originalData := []byte("some data to decompress")
-	compressedData := conf.compress(originalData)
-	decompressed = conf.decompress(compressedData)
+	compressedData, err := conf.compress(originalData)
+	assert.NoError(t, err)
+	decompressed, err = conf.decompress(compressedData)
+	assert.NoError(t, err)
 	assert.Equal(t, originalData, decompressed)
 
 	mockSubscriber := &MockMessageSubscriber{}
@@ -128,7 +135,7 @@ func TestConf_processMessage(t *testing.T) {
 	conf := &Conf{
 		Serialize: false,
 		Compress:  false,
-		aes:       nil,
+		encryptor: nil,
 	}
 
 	message := []byte("test message")
@@ -148,7 +155,8 @@ func TestConf_processMessage(t *testing.T) {
 	mockSubscriber3 := &MockMessageSubscriber{}
 	conf.Serialize = false
 	conf.Compress = true
-	compressedMessage := conf.compress(message)
+	compressedMessage, err := conf.compress(message)
+	assert.NoError(t, err)
 	err = conf.processMessage(mockSubscriber3, compressedMessage)
 	assert.NoError(t, err)
 	assert.Len(t, mockSubscriber3.receivedMessages, 1)
@@ -158,7 +166,8 @@ func TestConf_processMessage(t *testing.T) {
 	conf.Serialize = true
 	conf.Compress = true
 	jsonMsg, _ := json.Marshal(message)
-	compressedJsonMsg := conf.compress(jsonMsg)
+	compressedJsonMsg, err := conf.compress(jsonMsg)
+	assert.NoError(t, err)
 	err = conf.processMessage(mockSubscriber4, compressedJsonMsg)
 	assert.NoError(t, err)
 	assert.Len(t, mockSubscriber4.receivedMessages, 1)

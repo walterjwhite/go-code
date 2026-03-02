@@ -41,6 +41,12 @@ func contactValidateRequest(c *gin.Context) *ContactRequest {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "all fields are required"})
 		return nil
 	}
+
+	if len(contactRequest.Message) > 5000 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "message exceeds maximum length of 5000 characters"})
+		return nil
+	}
+
 	if !validateEmailAddress(contactRequest.Email) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid email address"})
 		return nil
@@ -55,7 +61,7 @@ func validateEmailAddress(email string) bool {
 }
 
 func contactSendMessage(contactRequest *ContactRequest) error {
-	log.Debug().Msgf("attempting to send message: %v | %v", emailAccount, contactRequest)
+	log.Debug().Msg("attempting to send message")
 	err := write.Send(emailAccount, contactRequestToEmailMessage(contactRequest))
 	logging.Warn(err, "contactSendMessage - failed to send message")
 

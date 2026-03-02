@@ -23,8 +23,8 @@ func (p *Provider) String() string {
 		p.StatusSubscriptionName, p.Conf)
 }
 
-func (p *Provider) Init(ctx context.Context) {
-	p.Conf.Init(ctx)
+func (p *Provider) Init(ctx context.Context) error {
+	return p.Conf.Init(ctx)
 }
 
 func (p *Provider) Cleanup() {

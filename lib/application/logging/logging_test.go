@@ -15,7 +15,7 @@ import (
 func TestError(t *testing.T) {
 	type args struct {
 		err         error
-		contextuals []interface{}
+		contextuals []any
 	}
 	tests := []struct {
 		name      string
@@ -34,7 +34,7 @@ func TestError(t *testing.T) {
 		},
 		{
 			name:      "non-nil error with contextuals, should panic",
-			args:      args{err: errors.New("test error with context"), contextuals: []interface{}{"context1", 123}},
+			args:      args{err: errors.New("test error with context"), contextuals: []any{"context1", 123}},
 			wantPanic: true,
 		},
 	}
@@ -102,8 +102,6 @@ func TestWarn(t *testing.T) {
 				"level\":\"warn",
 
 				"message\":\"test message - warning error",
-
-				"Stack trace:",
 			},
 
 			notExpectedLogs: []string{
@@ -111,6 +109,8 @@ func TestWarn(t *testing.T) {
 				"level\":\"panic",
 
 				"error\":\"warning error",
+
+				"Stack trace:",
 			},
 		},
 	}

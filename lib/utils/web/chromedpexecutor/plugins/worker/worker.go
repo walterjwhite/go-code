@@ -18,7 +18,7 @@ func (w WorkerType) String() string {
 
 type ChromeDPWorker interface {
 	Name() string
-	Init(ctx context.Context, headless bool, contextuals ...interface{}) error
+	Init(ctx context.Context, headless bool, contextuals ...any) error
 	Work(ctx context.Context, headless bool)
 	Cleanup()
 }

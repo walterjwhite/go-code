@@ -106,7 +106,12 @@ func stdIn(value string) string {
 	if strings.Index(value, "stdin:") == 0 {
 		promptMessage := value[6:]
 		s := stdin.StdInReader{PromptMessage: promptMessage}
-		return s.Get()
+		text, err := s.Get()
+		if err != nil {
+			logging.Warn(err, "failed to read from stdin")
+			return ""
+		}
+		return text
 	}
 
 	return value

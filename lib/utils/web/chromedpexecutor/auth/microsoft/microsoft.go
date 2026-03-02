@@ -116,9 +116,10 @@ func twoFactor(pctx context.Context, publisher publisher.Publisher) error {
 		return err
 	}
 
-	log.Info().Msgf("Microsoft token: %s", token)
+	log.Info().Msg("Successfully retrieved authentication token")
+	_ = token // token extracted but not logged for security reasons
 	if publisher != nil {
-		logging.Warn(publisher.Publish([]byte(fmt.Sprintf("microsoft token: %s", token))), "microsoft.twoFactor.publisher.Publish")
+		logging.Warn(publisher.Publish([]byte("microsoft token received")), "microsoft.twoFactor.publisher.Publish")
 	}
 
 	ctx2, cancel2 := context.WithTimeout(pctx, stepTimeout)

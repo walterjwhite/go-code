@@ -13,7 +13,7 @@ type SecretPropertyConfiguration interface {
 	SecretFields() []string
 }
 
-func LoadSecrets(config interface{}) {
+func LoadSecrets(config any) {
 	secretPropertyConfiguration, ok := config.(SecretPropertyConfiguration)
 	if !ok {
 		log.Debug().Msgf("%v does not implement SecretPropertyConfiguration, not decrypting", typename.Get(config))
@@ -25,7 +25,7 @@ func LoadSecrets(config interface{}) {
 		log.Debug().Msgf("Handling encrypted properties: %v", config)
 
 		rv := reflect.ValueOf(config)
-		if rv.Kind() != reflect.Ptr || rv.IsNil() {
+		if rv.Kind() != reflect.Pointer || rv.IsNil() {
 			log.Warn().Msgf("LoadSecrets expects a pointer to a struct; got: %v", rv.Kind())
 			return
 		}
@@ -92,13 +92,22 @@ func getField(value reflect.Value, fieldName string) reflect.Value {
 }
 
 func getFieldRecurse(value reflect.Value, fieldNamePath []string) reflect.Value {
+	return getFieldRecurseWithDepth(value, fieldNamePath, 0)
+}
+
+func getFieldRecurseWithDepth(value reflect.Value, fieldNamePath []string, depth int) reflect.Value {
+	const maxRecursionDepth = 100
+	if depth > maxRecursionDepth {
+		return reflect.Value{}
+	}
+
 	field := reflect.Indirect(value).FieldByName(fieldNamePath[0])
 
 	if len(fieldNamePath) == 1 {
 		return field
 	}
 
-	return getFieldRecurse(field, fieldNamePath[1:])
+	return getFieldRecurseWithDepth(field, fieldNamePath[1:], depth+1)
 }
 
 func Decrypt(secretKey string) string {

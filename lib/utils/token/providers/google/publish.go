@@ -9,5 +9,5 @@ func (p *Provider) PublishToken(token string) error {
 }
 
 func (p *Provider) PublishStatus(status string, successful bool) error {
-	return p.Conf.Publish(p.StatusTopicName, []byte(fmt.Sprintf("%s|%v", status, successful)))
+	return p.Conf.Publish(p.StatusTopicName, fmt.Appendf(nil, "%s|%v", status, successful))
 }

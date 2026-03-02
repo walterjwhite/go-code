@@ -15,7 +15,10 @@ func (c *Conf) processMessage(ms MessageSubscriber, data []byte) error {
 		return err
 	}
 
-	decompressed := c.decompress(decrypted)
+	decompressed, err := c.decompress(decrypted)
+	if err != nil {
+		return err
+	}
 
 	deserialized, err := c.deserialize(ms, decompressed)
 	if err != nil {
@@ -31,7 +34,7 @@ func (c *Conf) Subscribe(topicName string, subscriptionName string, ms MessageSu
 	log.Info().Msgf("subscribed to: %s", subscriptionName)
 
 	err := sub.Receive(c.ctx, func(ctx context.Context, m *pubsub.Message) {
-		log.Info().Msgf("received raw message: %v", m)
+		log.Debug().Msg("received message from subscription")
 
 		err := c.processMessage(ms, m.Data)
 		if err != nil {
@@ -44,22 +47,25 @@ func (c *Conf) Subscribe(topicName string, subscriptionName string, ms MessageSu
 }
 
 func (c *Conf) decrypt(data []byte) ([]byte, error) {
-	if c.aes == nil {
+	if c.encryptor == nil {
 		return data, nil
 	}
 
-	return c.aes.Decrypt(data)
+	return c.encryptor.Decrypt(data)
 }
 
-func (c *Conf) decompress(data []byte) []byte {
+func (c *Conf) decompress(data []byte) ([]byte, error) {
 	if !c.Compress {
-		return data
+		return data, nil
 	}
 
 	decompressed, err := zstd.DecompressBuffer(data)
-	logging.Warn(err, "google_pubsub.subscribe.decompress")
+	if err != nil {
+		logging.Warn(err, "google_pubsub.subscribe.decompress")
+		return nil, err
+	}
 
-	return decompressed
+	return decompressed, nil
 }
 
 func (c *Conf) deserialize(ms MessageSubscriber, decompressed []byte) ([]byte, error) {
@@ -76,7 +82,7 @@ func (c *Conf) deserialize(ms MessageSubscriber, decompressed []byte) ([]byte, e
 		return nil, err
 	}
 
-	log.Info().Msgf("received message: %s", deserialized)
+	log.Debug().Msg("message deserialized successfully")
 	return deserialized, nil
 }
 

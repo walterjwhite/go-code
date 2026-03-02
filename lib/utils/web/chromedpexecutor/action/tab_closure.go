@@ -8,7 +8,7 @@ import (
 )
 
 func OnTabClosed(ctx context.Context, fn func()) {
-	chromedp.ListenBrowser(ctx, func(ev interface{}) {
+	chromedp.ListenBrowser(ctx, func(ev any) {
 		if ev, ok := ev.(*target.EventTargetDestroyed); ok {
 			if c := chromedp.FromContext(ctx); c != nil {
 				if c.Target.TargetID == ev.TargetID {

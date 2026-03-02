@@ -14,26 +14,25 @@ import (
 )
 
 func main() {
-	defer application.OnPanic()
-
 	config := &Config{}
+	config.PreLoad()
 	application.Configure(config)
 
 	if len(config.Proxy) == 0 {
-		logging.Error(errors.New("SOCKS proxy address is required"))
+		logging.Panic(errors.New("SOCKS proxy address is required"))
 	}
 
 	dbPath, err := resolveDBPath(config.DB)
-	logging.Error(err)
+	logging.Panic(err)
 
 	db, err := sql.Open(DBDriverName, dbPath)
-	logging.Error(err)
+	logging.Panic(err)
 	defer close(db)
 
-	logging.Error(createSessionTable(db))
+	logging.Panic(createSessionTable(db))
 
 	client, err := setupProxyClient(config.Proxy, config.HTTPTimeoutSeconds)
-	logging.Error(err)
+	logging.Panic(err)
 
 	startTime := time.Now()
 
@@ -75,5 +74,5 @@ func main() {
 }
 
 func close(db *sql.DB) {
-	logging.Warn(db.Close(), "Failed to close database")
+	logging.Warn(db.Close(), false, "Failed to close database")
 }

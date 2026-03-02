@@ -7,7 +7,7 @@ import (
 	"github.com/chromedp/chromedp"
 )
 
-func IsVisible(pctx context.Context, selector interface{}, value string, opts ...chromedp.QueryOption) bool {
+func IsVisible(pctx context.Context, selector any, value string, opts ...chromedp.QueryOption) bool {
 	ctx, cancel := timeout(pctx, 100*time.Millisecond)
 	defer cancel()
 

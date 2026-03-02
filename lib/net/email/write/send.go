@@ -38,9 +38,6 @@ func buildMessage(emailAddress *mail.Address, e *email.EmailMessage) (*gomail.Me
 	m.SetHeader("Subject", e.Subject)
 	m.SetBody("text/plain", e.Body)
 
-	log.Warn().Msgf("subject: %s", e.Subject)
-	log.Warn().Msgf("body: %s", e.Body)
-
 	return m, attachmentFilenames
 }
 

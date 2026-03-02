@@ -12,17 +12,33 @@ import (
 
 var (
 	provider *google.Provider
+	initErr  error
 )
 
 func init() {
-	provider = google.New(application.Context)
+	provider, initErr = google.New(application.Context)
+	if initErr != nil {
+		logging.Error(initErr)
+	}
 }
 
 func main() {
+	if initErr != nil {
+		logging.Error(errors.New("failed to initialize provider"))
+		return
+	}
+
 	if len(os.Args) < 2 {
 		logging.Error(errors.New("expected message"))
 		return
 	}
 
-	logging.Warn(provider.Publish([]byte(os.Args[1])), "publish-event.Publish")
+	const maxMessageSize = 10 * 1024 * 1024 // 10 MB limit
+	message := os.Args[1]
+	if len(message) > maxMessageSize {
+		logging.Error(errors.New("message size exceeds maximum limit"))
+		return
+	}
+
+	logging.Warn(provider.Publish([]byte(message)), "publish-event.Publish")
 }

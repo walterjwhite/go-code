@@ -116,11 +116,12 @@ func RequestLoggerMiddleware(out chan<- RequestLog) gin.HandlerFunc {
 
 func clientIP(forwarded string, fallback string) string {
 	if forwarded != "" {
-		parts := strings.Split(forwarded, ",")
-		for _, p := range parts {
+		parts := strings.SplitSeq(forwarded, ",")
+		for p := range parts {
 			p = strings.TrimSpace(p)
 			if p != "" {
-				if net.ParseIP(p) != nil {
+				ip := net.ParseIP(p)
+				if ip != nil && !isPrivateIP(ip) {
 					return p
 				}
 			}
@@ -131,4 +132,11 @@ func clientIP(forwarded string, fallback string) string {
 		return host
 	}
 	return fallback
+}
+
+func isPrivateIP(ip net.IP) bool {
+	if ip.IsLoopback() || ip.IsPrivate() || ip.IsLinkLocalUnicast() {
+		return true
+	}
+	return false
 }

@@ -28,8 +28,9 @@ func TestConf_serialize(t *testing.T) {
 func TestConf_encrypt(t *testing.T) {
 	data := []byte("test data")
 
-	conf := &Conf{aes: nil}
-	encrypted := conf.encrypt(data)
+	conf := &Conf{encryptor: nil}
+	encrypted, err := conf.encrypt(data)
+	assert.NoError(t, err)
 	assert.Equal(t, data, encrypted)
 }
 
@@ -37,11 +38,13 @@ func TestConf_compress(t *testing.T) {
 	data := []byte("test data for compression")
 
 	conf := &Conf{Compress: false}
-	compressed := conf.compress(data)
+	compressed, err := conf.compress(data)
+	assert.NoError(t, err)
 	assert.Equal(t, data, compressed)
 
 	conf.Compress = true
-	compressed = conf.compress(data)
+	compressed, err = conf.compress(data)
+	assert.NoError(t, err)
 	assert.NotEqual(t, data, compressed) // Should be different after compression
 	decompressed, err := zstd.DecompressBuffer(compressed)
 	assert.NoError(t, err)
@@ -67,10 +70,11 @@ func TestConf_encrypt_WithAES(t *testing.T) {
 	aesInstance, err := aes.New(key)
 	assert.NoError(t, err)
 
-	conf := &Conf{aes: aesInstance}
+	conf := &Conf{encryptor: aesInstance}
 	data := []byte("test data to encrypt")
 
-	encrypted := conf.encrypt(data)
+	encrypted, err := conf.encrypt(data)
+	assert.NoError(t, err)
 	assert.NotEqual(t, data, encrypted, "encrypted data should differ from original")
 	assert.NotEmpty(t, encrypted)
 }
@@ -80,10 +84,11 @@ func TestConf_decrypt_WithAES(t *testing.T) {
 	aesInstance, err := aes.New(key)
 	assert.NoError(t, err)
 
-	conf := &Conf{aes: aesInstance}
+	conf := &Conf{encryptor: aesInstance}
 	data := []byte("test data to encrypt")
 
-	encrypted := conf.encrypt(data)
+	encrypted, err := conf.encrypt(data)
+	assert.NoError(t, err)
 
 	decrypted, err := conf.decrypt(encrypted)
 	assert.NoError(t, err)
@@ -94,7 +99,7 @@ func TestConf_prepareMessage(t *testing.T) {
 	conf := &Conf{
 		Serialize: false,
 		Compress:  false,
-		aes:       nil,
+		encryptor: nil,
 	}
 
 	message := []byte("test message")

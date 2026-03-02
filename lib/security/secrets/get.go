@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"os/exec"
+	"regexp"
 	"strings"
 	"time"
 
@@ -16,6 +17,11 @@ func Get(secretName string) string {
 		return ""
 	}
 
+	if !isValidSecretName(secretName) {
+		log.Warn().Msg("secrets.Get called with invalid secret name format")
+		return ""
+	}
+
 	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
 	defer cancel()
 
@@ -23,14 +29,19 @@ func Get(secretName string) string {
 
 	out, err := cmd.Output()
 	if err != nil {
-		log.Error().Err(err).Msgf("secrets.Get failed for key")
+		log.Error().Msg("failed to retrieve secret from secrets service")
 		return ""
 	}
 
 	s := strings.TrimSpace(string(out))
 	if s == "" {
-		log.Warn().Msgf("secrets.Get returned empty value for %s", secretName)
+		log.Warn().Msg("secrets service returned empty value")
 	}
 
 	return s
+}
+
+func isValidSecretName(secretName string) bool {
+	re := regexp.MustCompile(`^[a-zA-Z0-9/_-]+$`)
+	return re.MatchString(secretName)
 }

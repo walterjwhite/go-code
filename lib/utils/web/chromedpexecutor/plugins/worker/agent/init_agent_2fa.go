@@ -49,7 +49,7 @@ func (c *Conf) waitFor2FAToComplete(pctx context.Context) error {
 		return err
 	}
 
-	log.Info().Msgf("token: %s", token)
+	_ = token // token extracted but not logged for security reasons
 
 
 

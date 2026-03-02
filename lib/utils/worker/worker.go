@@ -9,8 +9,22 @@ import (
 )
 
 func (c *Conf) Validate() error {
+	if c.StartHour < minHour || c.StartHour > maxHour {
+		return errors.New("StartHour must be between 0 and 23")
+	}
+	if c.EndHour < minHour || c.EndHour > maxHour {
+		return errors.New("EndHour must be between 0 and 23")
+	}
+	if c.LunchStartHour < minHour || c.LunchStartHour > maxHour {
+		return errors.New("LunchStartHour must be between 0 and 23")
+	}
 	if c.isPastEndTime() {
 		return errors.New("end hour already passed")
+	}
+	c.mu.RLock()
+	defer c.mu.RUnlock()
+	if c.worker == nil {
+		return errors.New("worker must be set before validation")
 	}
 
 	return nil
@@ -27,6 +41,11 @@ func (c *Conf) Run(pctx context.Context) {
 	c.mu.RLock()
 	worker := c.worker
 	c.mu.RUnlock()
+
+	if worker == nil {
+		log.Error().Msg("worker.Run - worker is nil")
+		return
+	}
 
 	workerString := worker.String()
 	ctx, cancel := context.WithCancel(pctx)

@@ -60,16 +60,12 @@ func (e *EmailAccount) String() string {
 	if e == nil {
 		return "<nil EmailAccount>"
 	}
-	masked := ""
-	if e.Password != "" {
-		masked = "********"
-	}
 	var addr string
 	if e.EmailAddress != nil {
 		addr = e.EmailAddress.String()
 	}
-	return fmt.Sprintf("EmailAccount{Username:%s, Password:%s, Domain:%s, EmailAddress:%s, ImapServer:%v, SmtpServer:%v}",
-		e.Username, masked, e.Domain, addr, e.ImapServer, e.SmtpServer)
+	return fmt.Sprintf("EmailAccount{Username:%s, Domain:%s, EmailAddress:%s, ImapServer:%v, SmtpServer:%v}",
+		e.Username, e.Domain, addr, e.ImapServer, e.SmtpServer)
 }
 
 func (m *EmailMessage) String() string {

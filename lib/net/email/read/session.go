@@ -1,6 +1,7 @@
 package write
 
 import (
+	"crypto/tls"
 	"fmt"
 	"github.com/emersion/go-imap/client"
 	"github.com/rs/zerolog/log"
@@ -15,7 +16,11 @@ type EmailSession struct {
 }
 
 func New(a *email.EmailAccount) (*EmailSession, error) {
-	c, err := client.DialTLS(fmt.Sprintf("%v:%v", a.ImapServer.Host, a.ImapServer.Port), nil)
+	tlsConfig := &tls.Config{
+		InsecureSkipVerify: false,
+		ServerName:         a.ImapServer.Host,
+	}
+	c, err := client.DialTLS(fmt.Sprintf("%v:%v", a.ImapServer.Host, a.ImapServer.Port), tlsConfig)
 	if err != nil {
 		return nil, err
 	}

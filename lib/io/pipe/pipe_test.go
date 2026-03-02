@@ -330,12 +330,10 @@ func TestReader_ConcurrentFlush(t *testing.T) {
 	var wg sync.WaitGroup
 	numConcurrentCalls := 10
 
-	for i := 0; i < numConcurrentCalls; i++ {
-		wg.Add(1)
-		go func() {
-			defer wg.Done()
+	for range numConcurrentCalls {
+		wg.Go(func() {
 			_ = r.Flush()
-		}()
+		})
 	}
 
 	wg.Wait()

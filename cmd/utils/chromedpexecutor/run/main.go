@@ -12,6 +12,8 @@ import (
 	"bufio"
 	"errors"
 	"flag"
+	"path/filepath"
+	"strings"
 
 	"os"
 	"time"
@@ -30,13 +32,20 @@ func main() {
 
 	if len(*filename) == 0 {
 		logging.Error(errors.New("filename is required"))
+		return
 	}
 
 	sessionDuration, err := time.ParseDuration(*timeString)
-	logging.Error(err)
+	if err != nil {
+		logging.Error(err)
+		return
+	}
 
 	lines, err := readActions()
-	logging.Error(err)
+	if err != nil {
+		logging.Error(err)
+		return
+	}
 
 	ctx, cancel := provider.New(providerConf, application.Context)
 	defer cancel()
@@ -58,7 +67,27 @@ func main() {
 func readActions() ([]string, error) {
 	var lines []string
 
-	file, err := os.Open(*filename)
+	cleanPath := filepath.Clean(*filename)
+	absPath, err := filepath.Abs(cleanPath)
+	if err != nil {
+		return nil, errors.New("invalid file path: unable to resolve absolute path")
+	}
+
+	wd, err := os.Getwd()
+	if err != nil {
+		return nil, errors.New("unable to determine working directory")
+	}
+
+	relPath, err := filepath.Rel(wd, absPath)
+	if err != nil {
+		return nil, errors.New("invalid file path: unable to resolve relative path")
+	}
+
+	if relPath == ".." || strings.HasPrefix(relPath, ".."+string(filepath.Separator)) {
+		return nil, errors.New("path traversal detected: file must be within the working directory")
+	}
+
+	file, err := os.Open(cleanPath)
 	if err != nil {
 		return nil, err
 	}

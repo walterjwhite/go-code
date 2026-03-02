@@ -10,7 +10,7 @@ import (
 	"github.com/walterjwhite/go-code/lib/utils/typename"
 )
 
-func LoadEnv(config interface{}) {
+func LoadEnv(config any) {
 	prefix := getShortPrefix(config)
 	log.Debug().Msgf("Loading environment variables with prefix: %s", prefix)
 
@@ -22,7 +22,7 @@ func LoadEnv(config interface{}) {
 	}
 }
 
-func getShortPrefix(config interface{}) string {
+func getShortPrefix(config any) string {
 	return sanitizeEnvKey(typename.Get(config))
 }
 

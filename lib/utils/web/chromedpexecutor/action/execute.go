@@ -56,7 +56,7 @@ func ExecuteWithDelay(ctx context.Context, delay delay.Delayer, actions ...chrom
 
 func TryExecute(ctx context.Context, attemptCount int, actions ...chromedp.Action) {
 	log.Debug().Msgf("running [%v] - %v: %v", ctx, actions, attemptCount)
-	for i := 0; i < attemptCount; i++ {
+	for range attemptCount {
 		err := chromedp.Run(ctx, actions...)
 		if err == nil {
 			return

@@ -63,24 +63,24 @@ func contactWorker(wg *sync.WaitGroup) {
 		var req ContactRequest
 		if err := json.Unmarshal(msg.Payload(), &req); err != nil {
 			fmt.Printf("invalid message payload: %v\n", err)
-			logging.Warn(consumer.Ack(msg), "error acking malformed message")
+			logging.Warn(consumer.Ack(msg), "error acknowledging malformed message")
 			continue
 		}
 
 		if strings.TrimSpace(req.Email) == "" || !validateEmailAddress(req.Email) {
-			fmt.Printf("invalid email in message, acking and skipping: %v\n", req.Email)
-			logging.Warn(consumer.Ack(msg), "error acking - invalid email address in message")
+			fmt.Printf("invalid email in message, acknowledging and skipping\n")
+			logging.Warn(consumer.Ack(msg), "error acknowledging - invalid email address in message")
 			continue
 		}
 
 		if err := sendContactEmail(emailCfg, req); err != nil {
-			fmt.Printf("failed to send email for %s: %v\n", req.Email, err)
+			fmt.Printf("failed to send email: %v\n", err)
 			consumer.Nack(msg)
 			time.Sleep(1 * time.Second)
 			continue
 		}
 
-		logging.Warn(consumer.Ack(msg), "error acking successful delivery of message")
-		fmt.Printf("email sent and message acked for %s\n", req.Email)
+		logging.Warn(consumer.Ack(msg), "error acknowledging successful delivery of message")
+		fmt.Printf("email sent and message acknowledged\n")
 	}
 }

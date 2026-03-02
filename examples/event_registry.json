@@ -1,0 +1,44 @@
+[
+  {
+    "details": "Server ran out of memory",
+    "event_id": 1,
+    "supported_actions": [
+      {
+        "action_id": 1,
+        "message": "Reboot Server",
+        "supports_args": false
+      },
+      {
+        "action_id": 2,
+        "message": "Restart Process",
+        "supports_args": true
+      },
+      {
+        "action_id": 3,
+        "message": "Ignore / Acknowledge",
+        "supports_args": false
+      }
+    ]
+  },
+  {
+    "details": "Build completed",
+    "event_id": 2,
+    "supported_actions": [
+      {
+        "action_id": 1,
+        "message": "Start App",
+        "supports_args": false
+      },
+      {
+        "action_id": 2,
+        "message": "Run Command",
+        "supports_args": true
+      },
+      {
+        "action_id": 3,
+        "message": "Ignore / Acknowledge",
+        "supports_args": false
+      }
+    ]
+  }
+]

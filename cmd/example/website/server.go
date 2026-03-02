@@ -13,6 +13,8 @@ import (
 func serve() *http.Server {
 	router := gin.Default()
 
+	router.Use(securityHeadersMiddleware)
+
 	router.Use(gin.CustomRecovery(recoveryHandler), gin.Logger())
 
 	router.POST("/api/contact", onContactRequest)
@@ -28,7 +30,15 @@ func serve() *http.Server {
 	}
 }
 
-func recoveryHandler(c *gin.Context, recovered interface{}) {
+func securityHeadersMiddleware(c *gin.Context) {
+	c.Header("X-Content-Type-Options", "nosniff")
+	c.Header("X-XSS-Protection", "1; mode=block")
+	c.Header("X-Frame-Options", "DENY")
+	c.Header("Content-Security-Policy", "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'")
+	c.Next()
+}
+
+func recoveryHandler(c *gin.Context, recovered any) {
 	log.Error().Interface("panic", recovered).Msg("internal server error")
 
 	JSONError(c, http.StatusInternalServerError, "internal server error")

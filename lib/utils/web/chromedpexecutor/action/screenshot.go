@@ -15,11 +15,11 @@ import (
 	"os"
 )
 
-func ScreenshotIfDebug(ctx context.Context, name_template string, args ...interface{}) {
+func ScreenshotIfDebug(ctx context.Context, name_template string, args ...any) {
 	ScreenshotIf(ctx, log.Debug(), name_template, args...)
 }
 
-func ScreenshotIf(ctx context.Context, logLevel *zerolog.Event, name_template string, args ...interface{}) {
+func ScreenshotIf(ctx context.Context, logLevel *zerolog.Event, name_template string, args ...any) {
 	if logLevel.Enabled() {
 		Screenshot(ctx, fmt.Sprintf(name_template, args...))
 	}
@@ -36,7 +36,7 @@ func Screenshot(pctx context.Context, filename string) {
 		return
 	}
 
-	logging.Warn(os.WriteFile(filename, buf, 0644), "Screenshot.WriteFile")
+	logging.Warn(os.WriteFile(filename, buf, 0600), "Screenshot.WriteFile")
 	log.Debug().Msgf("captured screenshot: %v", filename)
 }
 

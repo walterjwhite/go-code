@@ -28,7 +28,7 @@ func TestEmailAccount_String(t *testing.T) {
 				ImapServer: &EmailServer{Host: "imap.example.com", Port: 993},
 				SmtpServer: &EmailServer{Host: "smtp.example.com", Port: 587},
 			},
-			expected: "EmailAccount{Username:testuser, Password:********, Domain:example.com, EmailAddress:\"Test User\" <testuser@example.com>, ImapServer:imap.example.com:993, SmtpServer:smtp.example.com:587}",
+			expected: "EmailAccount{Username:testuser, Domain:example.com, EmailAddress:\"Test User\" <testuser@example.com>, ImapServer:imap.example.com:993, SmtpServer:smtp.example.com:587}",
 		},
 		{
 			name: "EmailAccount with no password",
@@ -43,7 +43,7 @@ func TestEmailAccount_String(t *testing.T) {
 				ImapServer: &EmailServer{Host: "imap.example.com", Port: 993},
 				SmtpServer: &EmailServer{Host: "smtp.example.com", Port: 587},
 			},
-			expected: "EmailAccount{Username:testuser, Password:, Domain:example.com, EmailAddress:\"Test User\" <testuser@example.com>, ImapServer:imap.example.com:993, SmtpServer:smtp.example.com:587}",
+			expected: "EmailAccount{Username:testuser, Domain:example.com, EmailAddress:\"Test User\" <testuser@example.com>, ImapServer:imap.example.com:993, SmtpServer:smtp.example.com:587}",
 		},
 		{
 			name: "EmailAccount with nil EmailAddress",
@@ -55,7 +55,7 @@ func TestEmailAccount_String(t *testing.T) {
 				ImapServer:   &EmailServer{Host: "imap.example.com", Port: 993},
 				SmtpServer:   &EmailServer{Host: "smtp.example.com", Port: 587},
 			},
-			expected: "EmailAccount{Username:testuser, Password:********, Domain:example.com, EmailAddress:, ImapServer:imap.example.com:993, SmtpServer:smtp.example.com:587}",
+			expected: "EmailAccount{Username:testuser, Domain:example.com, EmailAddress:, ImapServer:imap.example.com:993, SmtpServer:smtp.example.com:587}",
 		},
 		{
 			name:     "Nil EmailAccount",

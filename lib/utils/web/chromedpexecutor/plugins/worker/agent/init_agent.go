@@ -8,9 +8,12 @@ import (
 	"github.com/walterjwhite/go-code/lib/time/until"
 
 	"bufio"
+	"fmt"
 	"github.com/walterjwhite/go-code/lib/application/logging"
 	"github.com/walterjwhite/go-code/lib/utils/ui/windows"
 	"os"
+	"path/filepath"
+	"strings"
 	"time"
 )
 
@@ -24,7 +27,12 @@ func (c *Conf) read() {
 	path, err := homedir.Expand(c.QuestionFile)
 	logging.Error(err)
 
-	file, err := os.Open(path)
+	if err := validateFilePath(path); err != nil {
+		logging.Error(err)
+		return
+	}
+
+	file, err := os.Open(path) // #nosec G304 - path is validated by validateFilePath
 	logging.Error(err)
 
 	defer closeResource(file)
@@ -37,11 +45,38 @@ func (c *Conf) read() {
 	logging.Error(scanner.Err())
 }
 
+func validateFilePath(path string) error {
+	if strings.Contains(path, "..") {
+		return fmt.Errorf("path traversal detected in file path: %s", path)
+	}
+
+	info, err := os.Stat(path)
+	if err != nil {
+		return fmt.Errorf("cannot access file: %w", err)
+	}
+
+	if !info.Mode().IsRegular() {
+		return fmt.Errorf("path is not a regular file: %s", path)
+	}
+
+	absPath, err := filepath.Abs(path)
+	if err != nil {
+		return fmt.Errorf("cannot resolve absolute path: %w", err)
+	}
+
+	homeDir, err := homedir.Dir()
+	if err == nil && !strings.HasPrefix(absPath, homeDir) {
+		log.Warn().Msgf("Question file is outside home directory: %s", absPath)
+	}
+
+	return nil
+}
+
 func closeResource(file *os.File) {
 	logging.Warn(file.Close(), "read.close")
 }
 
-func (c *Conf) Init(ctx context.Context, headless bool, contextuals ...interface{}) error {
+func (c *Conf) Init(ctx context.Context, headless bool, contextuals ...any) error {
 	log.Info().Msgf("agent.Init.ctx: %v", ctx)
 	c.contextuals = contextuals
 	c.processContextuals()

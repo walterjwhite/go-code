@@ -268,7 +268,7 @@ func TestWrite_LoggerCoverage(t *testing.T) {
 
 type PanicOnUnmarshal struct{}
 
-func (p *PanicOnUnmarshal) UnmarshalYAML(unmarshal func(interface{}) error) error {
+func (p *PanicOnUnmarshal) UnmarshalYAML(unmarshal func(any) error) error {
 	panic("I am a string panic during unmarshal!") // Panic with a string
 }
 
@@ -288,7 +288,7 @@ func TestRead_UnmarshalNonErrorPanic(t *testing.T) {
 
 type PanicOnMarshal struct{}
 
-func (p PanicOnMarshal) MarshalYAML() (interface{}, error) {
+func (p PanicOnMarshal) MarshalYAML() (any, error) {
 	panic(123) // Panic with an int
 }
 

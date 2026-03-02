@@ -104,15 +104,15 @@ SecretField: "secret://my-secret"
 
 	originalGetFile := getFileFunc
 	defer func() { getFileFunc = originalGetFile }()
-	getFileFunc = func(appName string, cfg interface{}) string {
+	getFileFunc = func(appName string, cfg any) string {
 		return configFilePath
 	}
 
 	Load("test-app", config)
 
-	assert.Equal(t, "env-name", config.Name) // Env should override file
-	assert.Equal(t, 456, config.Value)       // Env should override file
-	assert.Equal(t, false, config.Enabled)  // Cli should override file
+	assert.Equal(t, "env-name", config.Name)            // Env should override file
+	assert.Equal(t, 456, config.Value)                  // Env should override file
+	assert.Equal(t, false, config.Enabled)              // Cli should override file
 	assert.Equal(t, "cli-nested", config.Nested.Field1) // Cli should override file
 	assert.Equal(t, 3.14, config.Nested.Field2)
 	assert.Equal(t, "decrypted-secret", config.SecretField)

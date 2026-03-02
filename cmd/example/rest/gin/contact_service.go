@@ -32,8 +32,6 @@ func contact(c *gin.Context) {
 
 
 
-	c.JSON(http.StatusOK, gin.H{"status": "ok"})
-
 	err := publishContactMessageToPulsar(req)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to publish message: " + err.Error()})

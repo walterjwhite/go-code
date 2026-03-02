@@ -3,9 +3,11 @@ package google
 import (
 	"context"
 	"fmt"
+	"os"
 
 	"cloud.google.com/go/pubsub/v2"
-	"github.com/walterjwhite/go-code/lib/application/logging"
+	"github.com/walterjwhite/go-code/lib/net/messaging"
+	"github.com/walterjwhite/go-code/lib/security/encryption"
 	"github.com/walterjwhite/go-code/lib/security/encryption/aes"
 	"google.golang.org/api/option"
 )
@@ -24,7 +26,8 @@ type Conf struct {
 	Compress          bool
 	Serialize         bool
 
-	aes *aes.AES
+	encryptor        encryption.Encryptor
+	messageProcessor *messaging.MessageProcessor
 
 	ctx    context.Context
 	cancel context.CancelFunc
@@ -32,20 +35,36 @@ type Conf struct {
 	client pubSubClient
 }
 
-func (c *Conf) Init(pctx context.Context) {
+func (c *Conf) Init(pctx context.Context) error {
 	c.ctx, c.cancel = context.WithCancel(pctx)
 
+	if len(c.CredentialsFile) == 0 {
+		return fmt.Errorf("credentials file path is empty: must be configured")
+	}
+
+	if _, err := os.Stat(c.CredentialsFile); err != nil {
+		if os.IsNotExist(err) {
+			return fmt.Errorf("credentials file not found: %s", c.CredentialsFile)
+		}
+		return fmt.Errorf("credentials file validation failed: %w", err)
+	}
+
 	realClient, err := pubsub.NewClient(c.ctx, c.ProjectId, option.WithAuthCredentialsFile(option.ServiceAccount, c.CredentialsFile))
-	logging.Error(err)
+	if err != nil {
+		return fmt.Errorf("failed to create pubsub client: %w", err)
+	}
 
 	if len(c.EncryptionKeyFile) > 0 {
-		aes, err := aes.FromFile(c.EncryptionKeyFile)
-		logging.Error(err)
+		encryptor, err := aes.NewAESFromFile(c.EncryptionKeyFile)
+		if err != nil {
+			return fmt.Errorf("failed to initialize encryption: %w", err)
+		}
 
-		c.aes = aes
+		c.encryptor = encryptor
 	}
 
 	c.client = realClient
+	return nil
 }
 
 func (c *Conf) String() string {

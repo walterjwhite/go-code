@@ -7,7 +7,7 @@ import (
 	"os"
 )
 
-func Read(configurationFile string, out interface{}) (readErr error) {
+func Read(configurationFile string, out any) (readErr error) {
 	log.Debug().Msgf("reading: %v / %v", configurationFile, out)
 
 	yamlFile, readErr := os.ReadFile(configurationFile)
@@ -31,7 +31,7 @@ func Read(configurationFile string, out interface{}) (readErr error) {
 	return readErr
 }
 
-func Write(in interface{}, outFile string) (writeErr error) {
+func Write(in any, outFile string) (writeErr error) {
 	var buf []byte
 
 	defer func() {
@@ -49,7 +49,7 @@ func Write(in interface{}, outFile string) (writeErr error) {
 		return // Return the error from Marshal or panic
 	}
 
-	writeErr = os.WriteFile(outFile, buf, 0644)
+	writeErr = os.WriteFile(outFile, buf, 0600)
 	log.Debug().Msgf("Wrote:\n%v", outFile)
 
 	return // Return writeErr

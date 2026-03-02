@@ -8,7 +8,7 @@ import (
 	"github.com/walterjwhite/go-code/lib/time/delay"
 )
 
-func SetValue(ctx context.Context, visibleTimeout time.Duration, locateDelay delay.Delayer, selector interface{}, value string, opts ...chromedp.QueryOption) error {
+func SetValue(ctx context.Context, visibleTimeout time.Duration, locateDelay delay.Delayer, selector any, value string, opts ...chromedp.QueryOption) error {
 	err := Locate(ctx, visibleTimeout, locateDelay, selector, opts...)
 
 	if err != nil {

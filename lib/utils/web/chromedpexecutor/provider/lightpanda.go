@@ -31,7 +31,7 @@ func launchLightpanda(pctx context.Context) int {
 
 	ctx, cancel := context.WithCancel(pctx)
 
-	cmd := exec.CommandContext(ctx, lightpandaCmd, "serve", "--host", "127.0.0.1", "--port", strconv.Itoa(port))
+	cmd := exec.CommandContext(ctx, lightpandaCmd, "serve", "--host", "127.0.0.1", "--port", strconv.Itoa(port)) // #nosec G204 - command is hardcoded constant
 
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr

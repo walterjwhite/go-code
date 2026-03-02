@@ -11,6 +11,9 @@ func serve(wg *sync.WaitGroup) {
 	defer wg.Done()
 
 	router := gin.Default()
+
+	router.MaxMultipartMemory = 1 << 20
+
 	router.GET("/albums", getAlbums)
 	router.GET("/albums/:id", getAlbumByID)
 	router.POST("/albums", postAlbums)

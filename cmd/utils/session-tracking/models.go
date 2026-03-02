@@ -1,9 +1,12 @@
 package main
 
 import (
+	"context"
 	"database/sql"
+	"encoding/json"
 	"fmt"
 	"io"
+	"net"
 	"net/http"
 	"strings"
 	"time"
@@ -40,27 +43,22 @@ func getPublicIP(client *http.Client, serviceURL string) (string, error) {
 		return "", fmt.Errorf("HTTP request failed with status: %d", resp.StatusCode)
 	}
 
-	body := make([]byte, ResponseBufferSize) // Read only first ResponseBufferSize bytes
-	n, err := resp.Body.Read(body)
-	if err != nil && err.Error() != "EOF" {
+	body, err := io.ReadAll(resp.Body)
+	if err != nil && err != io.EOF {
 		return "", err
 	}
 
-	responseText := string(body[:n])
+	responseText := string(body)
 
-	if strings.Contains(responseText, OriginField) {
-		startIdx := strings.Index(responseText, `"origin"`) + len(`"origin"`)
-		startIdx = strings.Index(responseText[startIdx:], ":") + startIdx + 1
-		endIdx := strings.Index(responseText[startIdx:], ",")
-		if endIdx == -1 {
-			endIdx = strings.Index(responseText[startIdx:], "}")
+	var jsonResp map[string]any
+	if err := json.Unmarshal([]byte(responseText), &jsonResp); err == nil {
+		if origin, ok := jsonResp["origin"]; ok {
+			if ipStr, ok := origin.(string); ok {
+				if net.ParseIP(ipStr) != nil {
+					return ipStr, nil
+				}
+			}
 		}
-
-		ipPart := responseText[startIdx : endIdx+startIdx]
-		ipPart = strings.TrimSpace(ipPart)
-		ipPart = strings.Trim(ipPart, `" `)
-
-		return ipPart, nil
 	}
 
 	return extractIP(responseText), nil
@@ -75,61 +73,19 @@ func getDevicePublicIP(serviceURL string, timeoutSeconds int) (string, error) {
 }
 
 func extractIP(text string) string {
-	parts := strings.Split(text, ".")
-	if len(parts) != 4 {
-		return ""
-	}
-
-	for _, part := range parts {
-		num := 0
-		for _, c := range part {
-			if c >= '0' && c <= '9' {
-				num = num*10 + int(c-'0')
-			} else {
-				newPart := ""
-				for _, ch := range part {
-					if ch >= '0' && ch <= '9' {
-						newPart += string(ch)
-					}
-				}
-				num = 0
-				for _, ch := range newPart {
-					num = num*10 + int(ch-'0')
-				}
-				break
+	parts := strings.FieldsSeq(text)
+	for part := range parts {
+		cleaned := ""
+		for _, ch := range part {
+			if (ch >= '0' && ch <= '9') || ch == '.' {
+				cleaned += string(ch)
 			}
 		}
-		if num > 255 {
-			return ""
+		if net.ParseIP(cleaned) != nil {
+			return cleaned
 		}
 	}
-
-	for i, part := range parts {
-		num := 0
-		for _, c := range part {
-			if c >= '0' && c <= '9' {
-				num = num*10 + int(c-'0')
-			} else {
-				newPart := ""
-				for _, ch := range part {
-					if ch >= '0' && ch <= '9' {
-						newPart += string(ch)
-					}
-				}
-				parts[i] = newPart
-				num = 0
-				for _, digit := range newPart {
-					num = num*10 + int(digit-'0')
-				}
-				break
-			}
-		}
-		if num > 255 {
-			return ""
-		}
-	}
-
-	return strings.Join(parts, ".")
+	return ""
 }
 
 func saveSession(db *sql.DB, session Session) error {
@@ -144,7 +100,9 @@ func setupProxyClient(socksProxy string, timeoutSeconds int) (*http.Client, erro
 	}
 
 	transport := &http.Transport{
-		Dial: dialer.Dial,
+		DialContext: func(ctx context.Context, network, addr string) (net.Conn, error) {
+			return dialer.Dial(network, addr)
+		},
 	}
 	client := &http.Client{
 		Transport: transport,
@@ -155,5 +113,5 @@ func setupProxyClient(socksProxy string, timeoutSeconds int) (*http.Client, erro
 }
 
 func closeBody(body io.ReadCloser) {
-	logging.Warn(body.Close(), "Failed to close body")
+	logging.Warn(body.Close(), false, "Failed to close body")
 }

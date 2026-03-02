@@ -75,6 +75,110 @@ func TestWorker_Run(t *testing.T) {
 	}
 }
 
+func TestWorker_ValidateSuccess(t *testing.T) {
+	mw := &mockWorker{}
+	conf := &Conf{
+		WorkDuration:       10 * time.Millisecond,
+		WorkTickInterval:   5 * time.Millisecond,
+		ShortBreakDuration: 5 * time.Millisecond,
+		LongBreakDuration:  10 * time.Millisecond,
+		LunchStartHour:     12,
+		LunchDuration:      60 * time.Minute,
+		StartHour:          9,
+		EndHour:            17,
+	}
+	conf.WithWorker(mw)
+
+	err := conf.Validate()
+	if err != nil {
+		t.Errorf("expected no error, got: %v", err)
+	}
+}
+
+func TestWorker_ValidateInvalidStartHour(t *testing.T) {
+	mw := &mockWorker{}
+	conf := &Conf{
+		StartHour:      25,
+		EndHour:        17,
+		LunchStartHour: 12,
+	}
+	conf.WithWorker(mw)
+
+	err := conf.Validate()
+	if err == nil {
+		t.Error("expected validation error for invalid StartHour")
+	}
+}
+
+func TestWorker_ValidateInvalidEndHour(t *testing.T) {
+	mw := &mockWorker{}
+	conf := &Conf{
+		StartHour:      9,
+		EndHour:        24,
+		LunchStartHour: 12,
+	}
+	conf.WithWorker(mw)
+
+	err := conf.Validate()
+	if err == nil {
+		t.Error("expected validation error for invalid EndHour")
+	}
+}
+
+func TestWorker_ValidateInvalidLunchStartHour(t *testing.T) {
+	mw := &mockWorker{}
+	conf := &Conf{
+		StartHour:      9,
+		EndHour:        17,
+		LunchStartHour: -1,
+	}
+	conf.WithWorker(mw)
+
+	err := conf.Validate()
+	if err == nil {
+		t.Error("expected validation error for invalid LunchStartHour")
+	}
+}
+
+func TestWorker_ValidateNoWorker(t *testing.T) {
+	conf := &Conf{
+		StartHour:      9,
+		EndHour:        17,
+		LunchStartHour: 12,
+	}
+
+	err := conf.Validate()
+	if err == nil {
+		t.Error("expected validation error for nil worker")
+	}
+}
+
+func TestWorker_WithNilWorker(t *testing.T) {
+	conf := &Conf{}
+	conf.WithWorker(nil)
+
+	conf.mu.RLock()
+	if conf.worker != nil {
+		t.Error("expected worker to remain nil when setting nil worker")
+	}
+	conf.mu.RUnlock()
+}
+
+func TestWorker_RunWithNilWorker(t *testing.T) {
+	conf := &Conf{
+		StartHour: 0,
+		EndHour:   1,
+	}
+
+	ctx, cancel := context.WithCancel(context.Background())
+	go conf.Run(ctx)
+
+	time.Sleep(10 * time.Millisecond)
+	cancel()
+
+	time.Sleep(10 * time.Millisecond)
+}
+
 func TestWorker_Concurrency(t *testing.T) {
 	mw1 := &mockWorker{}
 	mw2 := &mockWorker{}

@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"net/url"
 
 	"github.com/rs/zerolog/log"
 	"github.com/walterjwhite/go-code/lib/application"
@@ -14,6 +15,7 @@ import (
 
 	"github.com/chromedp/chromedp"
 
+	"path/filepath"
 	"time"
 )
 
@@ -40,6 +42,12 @@ func init() {
 
 func main() {
 	defer application.OnPanic()
+
+	if err := validateURL(captivePortalSession.Url); err != nil {
+		logging.Error(err)
+		return
+	}
+
 	captivePortalSession.ctx, captivePortalSession.cancel = provider.New(captivePortalSession.Conf, application.Context)
 	defer captivePortalSession.cancel()
 
@@ -60,5 +68,28 @@ func runStep(index int, chromeAction chromedp.Action) {
 	defer stepFetchCancel()
 	logging.Error(chromedp.Run(stepTimeoutContext, chromeAction))
 
-	action.Screenshot(captivePortalSession.ctx, fmt.Sprintf("/tmp/%d.connectivity-check.png", index))
+	filename := fmt.Sprintf("%d.connectivity-check.png", index)
+	safePath := filepath.Join("/tmp", filepath.Base(filename))
+	action.Screenshot(captivePortalSession.ctx, safePath)
+}
+
+func validateURL(urlStr string) error {
+	if urlStr == "" {
+		return fmt.Errorf("URL is required and cannot be empty")
+	}
+
+	parsedURL, err := url.Parse(urlStr)
+	if err != nil {
+		return fmt.Errorf("invalid URL format: %w", err)
+	}
+
+	if parsedURL.Scheme != "http" && parsedURL.Scheme != "https" {
+		return fmt.Errorf("unsupported URL scheme '%s': only http and https are allowed", parsedURL.Scheme)
+	}
+
+	if parsedURL.Host == "" {
+		return fmt.Errorf("URL must include a valid hostname")
+	}
+
+	return nil
 }

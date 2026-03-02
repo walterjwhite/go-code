@@ -32,7 +32,7 @@ func (i *ImageMatch) write(image image.Image, fileNameTemplate string) error {
 		return err
 	}
 
-	err = os.WriteFile(tempFile.Name(), bytes, 0644)
+	err = os.WriteFile(tempFile.Name(), bytes, 0600)
 	if err != nil {
 		return err
 	}

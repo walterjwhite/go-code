@@ -26,15 +26,17 @@ const (
 
 func (s *Session) authenticate(token string) error {
 	token = s.trim(token)
-	validateToken(token)
+	err := validateToken(token)
+	if err != nil {
+		return err
+	}
 
-	log.Info().Msgf("session.authenticate - authenticating with token: %v", token)
-	log.Debug().Msgf("session.authenticate - credentials: %v | %v | %v | %v", s.Credentials.Username, s.Credentials.Domain, s.Credentials.Password, s.getTokenAndPin(token))
+	log.Info().Msg("session.authenticate - authenticating with provided credentials")
 
 	ctx, cancel := context.WithTimeout(s.ctx, loginTimeout)
 	defer cancel()
 
-	err := action.Execute(ctx, chromedp.Navigate(s.Endpoint.Uri))
+	err = action.Execute(ctx, chromedp.Navigate(s.Endpoint.Uri))
 	if err != nil {
 		return err
 	}
@@ -48,7 +50,6 @@ func (s *Session) authenticate(token string) error {
 	if err != nil {
 		return err
 	}
-
 
 	_, err = chromedp.RunResponse(ctx, chromedp.Click(LOGIN_BUTTON))
 	if err != nil {
@@ -80,10 +81,11 @@ func (s *Session) trim(token string) string {
 	return strings.TrimSpace(token)
 }
 
-func validateToken(token string) {
+func validateToken(token string) error {
 	if len(token) != 6 {
-		logging.Error(fmt.Errorf("please enter the 6-digit token: %v", token))
+		return fmt.Errorf("invalid token format: expected 6-digit token")
 	}
+	return nil
 }
 
 func (s *Session) getTokenAndPin(token string) string {

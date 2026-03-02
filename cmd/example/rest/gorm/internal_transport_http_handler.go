@@ -24,6 +24,7 @@ func NewHandler(userSvc UserService) *Handler {
 }
 
 func (h *Handler) Router(dsn string) *gin.Engine {
+	h.router.Use(CORSMiddleware())
 	h.router.Use(LoggerMiddleware())
 
 
@@ -62,7 +63,7 @@ func (h *Handler) parseUintParam(c *gin.Context, name string) (uint, bool) {
 	return uint(id), true
 }
 
-func (h *Handler) bindAndValidate(c *gin.Context, v interface{}) bool {
+func (h *Handler) bindAndValidate(c *gin.Context, v any) bool {
 	if err := c.ShouldBindJSON(v); err != nil {
 		JSONError(c, http.StatusBadRequest, err.Error())
 		return false
@@ -95,8 +96,16 @@ func (h *Handler) createUser(c *gin.Context) {
 func (h *Handler) listUsers(c *gin.Context) {
 	pageStr := c.DefaultQuery("page", "1")
 	sizeStr := c.DefaultQuery("size", "20")
-	page, _ := strconv.Atoi(pageStr)
-	size, _ := strconv.Atoi(sizeStr)
+	page, err := strconv.Atoi(pageStr)
+	if err != nil {
+		JSONError(c, http.StatusBadRequest, "Invalid page parameter")
+		return
+	}
+	size, err := strconv.Atoi(sizeStr)
+	if err != nil {
+		JSONError(c, http.StatusBadRequest, "Invalid size parameter")
+		return
+	}
 	list, total, err := h.userSvc.List(c.Request.Context(), page, size)
 	if err != nil {
 		JSONError(c, http.StatusInternalServerError, err.Error())

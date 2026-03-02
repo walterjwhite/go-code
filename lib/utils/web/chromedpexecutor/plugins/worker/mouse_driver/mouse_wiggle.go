@@ -14,7 +14,7 @@ func (c *Conf) Name() string {
 	return "mouse wiggle"
 }
 
-func (c *Conf) Init(ctx context.Context, headless bool, contextuals ...interface{}) error {
+func (c *Conf) Init(ctx context.Context, headless bool, contextuals ...any) error {
 	return nil
 }
 

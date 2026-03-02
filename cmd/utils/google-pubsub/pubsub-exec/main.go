@@ -13,6 +13,8 @@ import (
 	"github.com/walterjwhite/go-code/lib/net/google"
 
 	oexec "os/exec"
+	"regexp"
+	"unicode"
 )
 
 type SubscriberConfiguration struct {
@@ -35,7 +37,9 @@ type Executor struct {
 
 func init() {
 	application.Configure(subscriberConf)
-	subscriberConf.PubSubConf.Init(application.Context)
+	if err := subscriberConf.PubSubConf.Init(application.Context); err != nil {
+		logging.Error(fmt.Errorf("failed to initialize PubSub configuration: %v", err))
+	}
 }
 
 func main() {
@@ -61,9 +65,21 @@ func (e *Executor) MessageDeserialized(deserialized []byte) {
 
 	log.Info().Msgf("running: %s -> %s", e.Cmd.FunctionName, e.Cmd.Args)
 
+	if !isValidCommandName(e.Cmd.FunctionName) {
+		log.Warn().Msgf("invalid function name: %s", e.Cmd.FunctionName)
+		return
+	}
+
+	for _, arg := range e.Cmd.Args {
+		if !isValidArgument(arg) {
+			log.Warn().Msgf("invalid argument detected: %s", arg)
+			return
+		}
+	}
+
 	e.Cmd.Args = append([]string{e.Cmd.FunctionName}, e.Cmd.Args...)
 
-	ecmd := oexec.Command(*cmd, e.Cmd.Args...)
+	ecmd := oexec.Command(*cmd, e.Cmd.Args...) // #nosec
 	output, err := ecmd.Output()
 
 	status := 0
@@ -79,15 +95,44 @@ func (e *Executor) MessageDeserialized(deserialized []byte) {
 	respond(status, string(output))
 }
 
+func isValidCommandName(name string) bool {
+	if len(name) == 0 || len(name) > 256 {
+		return false
+	}
+	matched, _ := regexp.MatchString(`^[a-zA-Z0-9_\-.]+$`, name)
+	return matched
+}
+
+func isValidArgument(arg string) bool {
+	const maxArgLength = 4096
+	if len(arg) > maxArgLength {
+		return false
+	}
+
+	for _, r := range arg {
+		if !isValidCharacter(r) {
+			return false
+		}
+	}
+	return true
+}
+
+func isValidCharacter(r rune) bool {
+	return unicode.IsLetter(r) || unicode.IsDigit(r) ||
+		unicode.IsSpace(r) ||
+		r == '.' || r == ',' || r == '-' || r == '_' ||
+		r == '+' || r == '='
+}
+
 func (e *Executor) MessageParseError(err error) {
 	log.Error().Msgf("Error parsing message: %v", err)
 }
 
 func respond(status int, output string) {
-	log.Info().Msgf("status: %v, output: %s", status, output)
+	log.Info().Msgf("status: %v", status)
 
 	response := fmt.Sprintf("Status: %v, Output: \n%v\n", status, output)
-	log.Info().Msgf("response: %v", response)
+	log.Debug().Msgf("response published with status: %v", status)
 
 	logging.Warn(subscriberConf.PubSubConf.Publish(subscriberConf.ResponseTopicName, []byte(response)), "respond")
 }
