@@ -1,30 +1,29 @@
 package google
 
 import (
-	"fmt"
 	"github.com/rs/zerolog/log"
 	"github.com/walterjwhite/go-code/lib/application/logging"
 )
 
 func (p *Provider) Get() string {
-	log.Info().Msg("reading token")
+	log.Info().Msg("retrieving token from subscription")
 	p.Conf.Subscribe(p.TokenTopicName, p.TokenSubscriptionName, p)
 
-	log.Info().Msgf("read token: %s", p.token)
+	log.Info().Msg("token retrieval complete")
 
-	return p.token
+	return p.GetToken()
 }
 
 func (p *Provider) MessageDeserialized(message []byte) {
-	p.token = string(message)
+	p.SetToken(string(message))
 
-	log.Info().Msgf("read token: %s", p.token)
-	logging.Warn(p.PublishStatus(fmt.Sprintf("read token: %s", p.token), true), "MessageDeserialized")
+	log.Info().Msg("token processed successfully")
+	logging.Warn(p.PublishStatus("token retrieved", true), "MessageDeserialized")
 
 	p.Conf.Cancel()
 }
 
 func (p *Provider) MessageParseError(err error) {
-	log.Error().Msgf("error reading token: %s", p.token)
-	logging.Warn(p.PublishStatus(fmt.Sprintf("error reading message: %s", err), false), "MessageParseError")
+	log.Error().Err(err).Msg("token retrieval failed")
+	logging.Warn(p.PublishStatus("token retrieval error", false), "MessageParseError")
 }

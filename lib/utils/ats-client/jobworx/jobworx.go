@@ -4,16 +4,40 @@ import (
 	"fmt"
 	"log"
 	"strings"
+	"sync"
+	"time"
 
 	atsclient "github.com/walterjwhite/go-code/lib/utils/ats-client"
 )
 
 type Account = atsclient.Account
 
-type JobworxATS struct{}
+const (
+	maxInputLength = 1024
+	maxEmailLength = 254
+	rateLimitDelay = 500 * time.Millisecond
+)
+
+type JobworxATS struct {
+	mu           sync.Mutex
+	lastActionAt time.Time
+}
 
 func (j *JobworxATS) GetName() string {
 	return "jobworx"
+}
+
+func (j *JobworxATS) applyRateLimit() {
+	j.mu.Lock()
+	defer j.mu.Unlock()
+
+	if !j.lastActionAt.IsZero() {
+		elapsed := time.Since(j.lastActionAt)
+		if elapsed < rateLimitDelay {
+			time.Sleep(rateLimitDelay - elapsed)
+		}
+	}
+	j.lastActionAt = time.Now()
 }
 
 func (j *JobworxATS) RegisterAccount(executor *atsclient.Executor, account *Account) error {
@@ -98,6 +122,8 @@ func (j *JobworxATS) RegisterAccount(executor *atsclient.Executor, account *Acco
 }
 
 func (j *JobworxATS) LoginAccount(executor *atsclient.Executor, email, password string) error {
+	j.applyRateLimit()
+
 	log.Println("Starting Jobworx login")
 
 	err := executor.Navigate("https://www.jobworx.com/")

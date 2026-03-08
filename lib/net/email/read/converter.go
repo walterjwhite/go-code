@@ -3,26 +3,27 @@ package write
 import (
 	"bytes"
 	"errors"
+	"fmt"
 	"github.com/emersion/go-imap"
 	"github.com/emersion/go-message/mail"
 	"github.com/rs/zerolog/log"
-	"github.com/walterjwhite/go-code/lib/application/logging"
 	"github.com/walterjwhite/go-code/lib/net/email"
 	"io"
 )
 
-func ImapMessageToEmailMessage(msg *imap.Message) *email.EmailMessage {
-
+func ImapMessageToEmailMessage(msg *imap.Message) (*email.EmailMessage, error) {
 	emailMessage := &email.EmailMessage{}
 
 	var section imap.BodySectionName
 	r := msg.GetBody(&section)
 	if r == nil {
-		logging.Error(errors.New("no message body returned"))
+		return nil, errors.New("no message body returned")
 	}
 
 	mr, err := mail.CreateReader(r)
-	logging.Error(err)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create mail reader: %w", err)
+	}
 
 	emailMessage.DateSent = msg.Envelope.Date
 	emailMessage.Subject = msg.Envelope.Subject
@@ -43,30 +44,34 @@ func ImapMessageToEmailMessage(msg *imap.Message) *email.EmailMessage {
 		emailMessage.Cc = cc
 	}
 
-
 	for {
 		p, err := mr.NextPart()
 		if err == io.EOF {
 			break
 		}
-		logging.Error(err)
+		if err != nil {
+			return nil, fmt.Errorf("failed to read message part: %w", err)
+		}
 
 		switch h := p.Header.(type) {
 		case *mail.InlineHeader:
-			b, _ := io.ReadAll(p.Body)
+			b, err := io.ReadAll(p.Body)
+			if err != nil {
+				return nil, fmt.Errorf("failed to read message body: %w", err)
+			}
 			emailMessage.Body = string(b)
-
-			log.Info().Msgf("header: %v", p.Header)
-			log.Info().Msgf("body: %v", emailMessage.Body[0:4])
 
 			handleInlineAttachments(msg, p, h, emailMessage)
 
 		case *mail.AttachmentHeader:
-			handleAttachment(msg, p, h, emailMessage)
+			err := handleAttachment(p, h, emailMessage)
+			if err != nil {
+				return nil, err
+			}
 		}
 	}
 
-	return emailMessage
+	return emailMessage, nil
 }
 
 func handleInlineAttachments(msg *imap.Message, p *mail.Part, h *mail.InlineHeader, emailMessage *email.EmailMessage) {
@@ -88,12 +93,18 @@ func handleInlineAttachments(msg *imap.Message, p *mail.Part, h *mail.InlineHead
 	*/
 }
 
-func handleAttachment(msg *imap.Message, p *mail.Part, h *mail.AttachmentHeader, emailMessage *email.EmailMessage) {
-	filename, _ := h.Filename()
+func handleAttachment(p *mail.Part, h *mail.AttachmentHeader, emailMessage *email.EmailMessage) error {
+	filename, err := h.Filename()
+	if err != nil {
+		return fmt.Errorf("failed to get attachment filename: %w", err)
+	}
 
 	buffer := new(bytes.Buffer)
-	_, err := io.Copy(buffer, p.Body)
-	logging.Error(err)
+	_, err = io.Copy(buffer, p.Body)
+	if err != nil {
+		return fmt.Errorf("failed to read attachment data: %w", err)
+	}
 
 	emailMessage.Attachments = append(emailMessage.Attachments, &email.EmailAttachment{Data: buffer, Name: filename})
+	return nil
 }

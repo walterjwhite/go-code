@@ -63,7 +63,7 @@ func setFieldValue(config SecretPropertyConfiguration, value reflect.Value, fiel
 	}
 
 	fieldValue := f.String()
-	log.Debug().Msgf("fieldValue: %v / %v / %v", f, fieldValue, fieldName)
+	log.Debug().Msgf("processing field: %s", fieldName)
 	if len(fieldValue) > 0 && strings.HasPrefix(fieldValue, "secret://") {
 		secretName := strings.TrimPrefix(fieldValue, "secret://")
 		if strings.TrimSpace(secretName) == "" {
@@ -74,6 +74,7 @@ func setFieldValue(config SecretPropertyConfiguration, value reflect.Value, fiel
 		secretValue := getSecretFunc(secretName)
 
 		f.SetString(secretValue)
+		log.Debug().Msgf("field %s decrypted successfully", fieldName)
 		return
 	}
 
@@ -88,11 +89,7 @@ func getField(value reflect.Value, fieldName string) reflect.Value {
 		return field
 	}
 
-	return getFieldRecurse(field, fieldNamePath[1:])
-}
-
-func getFieldRecurse(value reflect.Value, fieldNamePath []string) reflect.Value {
-	return getFieldRecurseWithDepth(value, fieldNamePath, 0)
+	return getFieldRecurseWithDepth(field, fieldNamePath[1:], 0)
 }
 
 func getFieldRecurseWithDepth(value reflect.Value, fieldNamePath []string, depth int) reflect.Value {

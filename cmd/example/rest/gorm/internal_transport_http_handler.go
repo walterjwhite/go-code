@@ -3,10 +3,10 @@ package main
 import (
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
-	"github.com/walterjwhite/go-code/lib/application/logging"
 )
 
 type Handler struct {
@@ -25,11 +25,12 @@ func NewHandler(userSvc UserService) *Handler {
 
 func (h *Handler) Router(dsn string) *gin.Engine {
 	h.router.Use(CORSMiddleware())
+	h.router.Use(SecurityHeadersMiddleware())
+	h.router.Use(BodySizeLimitMiddleware(1 << 20)) // 1 MiB max request body
 	h.router.Use(LoggerMiddleware())
 
-
 	db, err := NewSQLXDBSQLite(dsn)
-	logging.Error(err)
+	Error(err)
 
 	ch := StartRequestLogWorker(db, 1000)
 	h.router.Use(RequestLoggerMiddleware(ch))
@@ -65,11 +66,15 @@ func (h *Handler) parseUintParam(c *gin.Context, name string) (uint, bool) {
 
 func (h *Handler) bindAndValidate(c *gin.Context, v any) bool {
 	if err := c.ShouldBindJSON(v); err != nil {
-		JSONError(c, http.StatusBadRequest, err.Error())
+		if strings.Contains(err.Error(), "http: request body too large") {
+			JSONError(c, http.StatusRequestEntityTooLarge, "request body too large")
+			return false
+		}
+		JSONError(c, http.StatusBadRequest, "invalid request payload")
 		return false
 	}
 	if err := h.validate.Struct(v); err != nil {
-		JSONError(c, http.StatusBadRequest, err.Error())
+		JSONError(c, http.StatusBadRequest, "validation failed")
 		return false
 	}
 	return true

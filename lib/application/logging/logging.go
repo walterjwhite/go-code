@@ -6,24 +6,38 @@ import (
 	"os"
 )
 
+func logContextuals(contextuals ...any) {
+	if len(contextuals) == 0 {
+		return
+	}
+	for i := range contextuals {
+		log.Warn().Interface(fmt.Sprintf("contextual: %d", i), contextuals[i]).Msg("Contextual")
+	}
+}
+
+func isDevEnvironment() bool {
+	return os.Getenv("ENVIRONMENT") == "development"
+}
+
+func logErrorMessage(err error) {
+	log.Error().Msgf("error - %s", err.Error())
+}
+
+func logSecurityNote() {
+	log.Debug().Msgf("Stack trace unavailable in production for security reasons")
+}
+
 func Error(err error, contextuals ...any) {
 	if err == nil {
 		return
 	}
 
-	if contextuals != nil || len(contextuals) > 0 {
-		for i := range contextuals {
-			log.Warn().Interface(fmt.Sprintf("contextual: %d", i), contextuals[i]).Msg("Contextual")
-		}
+	logContextuals(contextuals...)
+	logErrorMessage(err)
+
+	if isDevEnvironment() {
+		logSecurityNote()
 	}
-
-	log.Error().Msgf("error - %s", err.Error())
-
-	if os.Getenv("ENVIRONMENT") == "development" {
-		log.Debug().Msgf("Stack trace unavailable in production for security reasons")
-	}
-
-	log.Panic().Err(err).Msg("Error")
 }
 
 func Warn(err error, message string) {

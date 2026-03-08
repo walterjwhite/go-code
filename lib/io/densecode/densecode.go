@@ -79,71 +79,91 @@ func Encode(data []byte, errorLevel int) (*DenseCode, error) {
 	})
 }
 
-func EncodeWithOptions(data []byte, opts *Options) (*DenseCode, error) {
+func validateAndNormalizeOptions(opts *Options) (*Options, int, error) {
 	if opts == nil {
 		opts = &Options{ErrorLevel: 0, ModuleSize: 10, BitsPerModule: 3}
 	}
 	if opts.ModuleSize == 0 {
 		opts.ModuleSize = 10
 	}
-	bitsPerModule, bitsErr := normalizeBitsPerModule(opts.BitsPerModule)
-	if bitsErr != nil {
-		return nil, bitsErr
+	bitsPerModule, err := normalizeBitsPerModule(opts.BitsPerModule)
+	if err != nil {
+		return nil, 0, err
 	}
+	return opts, bitsPerModule, nil
+}
 
+func processDataPipeline(data []byte, opts *Options) ([]byte, error) {
 	processed := data
-	var err error
-
 	if opts.Compressor != nil {
-		processed, err = opts.Compressor.Compress(processed)
+		compressed, err := opts.Compressor.Compress(processed)
 		if err != nil {
 			return nil, fmt.Errorf("compression failed: %w", err)
 		}
+		processed = compressed
 	}
-
 	if opts.Encryptor != nil {
-		processed, err = opts.Encryptor.Encrypt(processed)
+		encrypted, err := opts.Encryptor.Encrypt(processed)
 		if err != nil {
 			return nil, fmt.Errorf("encryption failed: %w", err)
 		}
+		processed = encrypted
 	}
+	return processed, nil
+}
 
-	hash := sha256.Sum256(data)
-
-	metadata := encodeMetadata(opts.ErrorLevel, bitsPerModule, false)
-	dataLen := len(processed) + 8 // processed data + 8 byte checksum (increased from 4 to 8 for better security)
+func buildPayload(processed, originalData []byte, errorLevel, bitsPerModule int) ([]byte, error) {
+	hash := sha256.Sum256(originalData)
+	metadata := encodeMetadata(errorLevel, bitsPerModule, false)
+	dataLen := len(processed) + 8
 	if dataLen > 0xFFFF {
 		return nil, fmt.Errorf("data too large: %d bytes (max 65535)", dataLen)
 	}
-
 	payload := make([]byte, 0, 3+len(processed)+8)
 	payload = append(payload, metadata)
-	payload = append(payload, byte(dataLen>>8), byte(dataLen&0xFF)) // 2-byte length
+	payload = append(payload, byte(dataLen>>8), byte(dataLen&0xFF))
 	payload = append(payload, processed...)
-	payload = append(payload, hash[:8]...) // Use 8 bytes instead of 4 for better integrity verification
+	payload = append(payload, hash[:8]...)
+	return payload, nil
+}
 
-	encoded := addErrorCorrection(payload, opts.ErrorLevel)
-
-	bitsNeeded := len(encoded) * 8
+func calculateGridSize(encodedLen, bitsPerModule int) (int, error) {
+	bitsNeeded := encodedLen * 8
 	modulesNeeded := (bitsNeeded + bitsPerModule - 1) / bitsPerModule
 
 	size := max(int(sqrt(modulesNeeded))+1, 21)
-
 	for {
 		totalModules := size * size
 		reservedModules := 3*7*7 + 2*(size-14)
-		usableModules := totalModules - reservedModules
-
-		if usableModules >= modulesNeeded {
+		if totalModules-reservedModules >= modulesNeeded {
 			break
 		}
 		size++
-
 		if size > 1000 {
-			return nil, fmt.Errorf("data too large: requires matrix size > 1000")
+			return 0, fmt.Errorf("data too large: requires matrix size > 1000")
 		}
 	}
+	return size, nil
+}
 
+func EncodeWithOptions(data []byte, opts *Options) (*DenseCode, error) {
+	opts, bitsPerModule, err := validateAndNormalizeOptions(opts)
+	if err != nil {
+		return nil, err
+	}
+	processed, err := processDataPipeline(data, opts)
+	if err != nil {
+		return nil, err
+	}
+	payload, err := buildPayload(processed, data, opts.ErrorLevel, bitsPerModule)
+	if err != nil {
+		return nil, err
+	}
+	encoded := addErrorCorrection(payload, opts.ErrorLevel)
+	size, err := calculateGridSize(len(encoded), bitsPerModule)
+	if err != nil {
+		return nil, err
+	}
 	return &DenseCode{
 		Data:          encoded,
 		Size:          size,
@@ -502,66 +522,82 @@ func extractBytesFromMatrix(matrix [][]int, bitsPerModule int) []byte {
 	return bits
 }
 
-func decodeMatrixWithBits(matrix [][]int, opts *Options, bitsPerModule int) ([]byte, error) {
-	bits := extractBytesFromMatrix(matrix, bitsPerModule)
+func extractAndValidateMetadata(bits []byte, bitsPerModule int) (int, int, error) {
 	if len(bits) < 3 {
-		return nil, fmt.Errorf("insufficient data: got %d bytes, need at least 3", len(bits))
+		return 0, 0, fmt.Errorf("insufficient data: got %d bytes, need at least 3", len(bits))
 	}
-
-	metadata := bits[0]
-	errorLevel, storedBits, _, metadataErr := decodeMetadata(metadata)
-	if metadataErr != nil {
-		return nil, metadataErr
+	errorLevel, storedBits, _, err := decodeMetadata(bits[0])
+	if err != nil {
+		return 0, 0, err
 	}
 	if storedBits != bitsPerModule {
-		return nil, fmt.Errorf("bit density mismatch: metadata=%d extracted=%d", storedBits, bitsPerModule)
+		return 0, 0, fmt.Errorf("bit density mismatch: metadata=%d extracted=%d", storedBits, bitsPerModule)
 	}
+	return errorLevel, int(bits[1])<<8 | int(bits[2]), nil
+}
 
-	dataLen := int(bits[1])<<8 | int(bits[2])
+func calculateDataBounds(bits []byte, errorLevel, dataLen int) ([]byte, error) {
 	redundancy := []int{10, 20, 30, 40}[errorLevel]
 	totalNeeded := 3 + dataLen
 	encodedLen := min((totalNeeded*(100+redundancy)+99)/100, len(bits))
 	bits = bits[:encodedLen]
-
-	originalLen := max((len(bits)*100)/(100+redundancy), totalNeeded)
-	if originalLen > len(bits) {
-		originalLen = len(bits)
-	}
+	originalLen := min(max((len(bits)*100)/(100+redundancy), totalNeeded), len(bits))
 	bits = bits[:originalLen]
-
 	if len(bits) < totalNeeded {
 		return nil, fmt.Errorf("insufficient data: need %d bytes, have %d", totalNeeded, len(bits))
 	}
+	return bits[3:totalNeeded], nil
+}
 
-	bits = bits[3:totalNeeded]
-	if len(bits) < 8 {
-		return nil, fmt.Errorf("insufficient data for checksum: got %d bytes", len(bits))
-	}
-
-	checksumStart := len(bits) - 8
-	checksum := bits[checksumStart:]
-	processed := bits[:checksumStart]
-
-	var err error
+func decryptAndDecompress(data []byte, opts *Options) ([]byte, error) {
+	processed := data
 	if opts.Encryptor != nil {
-		processed, err = opts.Encryptor.Decrypt(processed)
+		decrypted, err := opts.Encryptor.Decrypt(processed)
 		if err != nil {
 			return nil, fmt.Errorf("decryption failed: %w", err)
 		}
+		processed = decrypted
 	}
 	if opts.Compressor != nil {
-		processed, err = opts.Compressor.Decompress(processed)
+		decompressed, err := opts.Compressor.Decompress(processed)
 		if err != nil {
 			return nil, fmt.Errorf("decompression failed: %w", err)
 		}
+		processed = decompressed
 	}
+	return processed, nil
+}
 
+func verifyChecksum(processed, checksum []byte) error {
 	hash := sha256.Sum256(processed)
 	for i := range 8 {
 		if checksum[i] != hash[i] {
-			return nil, fmt.Errorf("checksum mismatch at byte %d: expected %02x, got %02x", i, hash[i], checksum[i])
+			return fmt.Errorf("checksum mismatch at byte %d: expected %02x, got %02x", i, hash[i], checksum[i])
 		}
 	}
+	return nil
+}
 
+func decodeMatrixWithBits(matrix [][]int, opts *Options, bitsPerModule int) ([]byte, error) {
+	bits := extractBytesFromMatrix(matrix, bitsPerModule)
+	errorLevel, dataLen, err := extractAndValidateMetadata(bits, bitsPerModule)
+	if err != nil {
+		return nil, err
+	}
+	bits, err = calculateDataBounds(bits, errorLevel, dataLen)
+	if err != nil {
+		return nil, err
+	}
+	if len(bits) < 8 {
+		return nil, fmt.Errorf("insufficient data for checksum: got %d bytes", len(bits))
+	}
+	checksumStart := len(bits) - 8
+	processed, err := decryptAndDecompress(bits[:checksumStart], opts)
+	if err != nil {
+		return nil, err
+	}
+	if err := verifyChecksum(processed, bits[checksumStart:]); err != nil {
+		return nil, err
+	}
 	return processed, nil
 }

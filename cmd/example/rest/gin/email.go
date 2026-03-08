@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-
 	"strings"
 
 	gomail "gopkg.in/gomail.v2"
@@ -15,6 +14,7 @@ func sendContactEmail(cfg *EmailConfig, req ContactRequest) error {
 	}
 	m.SetHeader("To", cfg.To)
 	subj := strings.TrimSpace(req.Subject)
+	subj = sanitizeSubject(subj)
 	if subj == "" {
 		subj = "Contact form message"
 	}
@@ -32,4 +32,10 @@ func sendContactEmail(cfg *EmailConfig, req ContactRequest) error {
 		return err
 	}
 	return nil
+}
+
+func sanitizeSubject(subject string) string {
+	subject = strings.ReplaceAll(subject, "\n", "")
+	subject = strings.ReplaceAll(subject, "\r", "")
+	return subject
 }

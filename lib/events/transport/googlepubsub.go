@@ -21,23 +21,15 @@ func NewGooglePubSubPublisher(
 	client *pubsub.Client,
 	serializer serialization.Serializer,
 	compressor compression.Compressor,
-	encryptor any,
+	encryptor encryption.Encryptor,
 	enableCompression bool,
 	enableEncryption bool,
 ) *GooglePubSubPublisher {
-	var encInt encryption.Encryptor
-	if encryptor != nil {
-		var ok bool
-		encInt, ok = encryptor.(encryption.Encryptor)
-		if !ok {
-			panic("encryptor must implement encryption.Encryptor interface")
-		}
-	}
 
 	processor := messaging.NewMessageProcessor(
 		serializer,
 		compressor,
-		encInt,
+		encryptor,
 		false, // serialization handled separately
 		enableCompression,
 		enableEncryption,
@@ -66,16 +58,17 @@ func (p *GooglePubSubPublisher) Publish(ctx context.Context, topic string, event
 	}
 
 	publisher := p.client.Publisher(topic)
-	defer publisher.Stop()
 	result := publisher.Publish(ctx, &pubsub.Message{
 		Data: processed,
 	})
 
 	_, err = result.Get(ctx)
 	if err != nil {
+		publisher.Stop()
 		return fmt.Errorf("failed to publish to topic %s: %w", topic, err)
 	}
 
+	publisher.Stop()
 	return nil
 }
 
@@ -96,23 +89,15 @@ func NewGooglePubSubSubscriber(
 	client *pubsub.Client,
 	serializer serialization.Serializer,
 	compressor compression.Compressor,
-	encryptor any,
+	encryptor encryption.Encryptor,
 	enableCompression bool,
 	enableEncryption bool,
 ) *GooglePubSubSubscriber {
-	var encInt encryption.Encryptor
-	if encryptor != nil {
-		var ok bool
-		encInt, ok = encryptor.(encryption.Encryptor)
-		if !ok {
-			panic("encryptor must implement encryption.Encryptor interface")
-		}
-	}
 
 	processor := messaging.NewMessageProcessor(
 		serializer,
 		compressor,
-		encInt,
+		encryptor,
 		false, // serialization handled separately
 		enableCompression,
 		enableEncryption,
@@ -132,7 +117,14 @@ func (s *GooglePubSubSubscriber) Subscribe(ctx context.Context, subscription str
 
 	sub := s.client.Subscriber(subscription)
 
-	err := sub.Receive(ctx, func(ctx context.Context, msg *pubsub.Message) {
+	err := sub.Receive(ctx, func(_ context.Context, msg *pubsub.Message) {
+		select {
+		case <-ctx.Done():
+			msg.Nack()
+			return
+		default:
+		}
+
 		unprocessed, err := s.processor.Unprocess(msg.Data)
 		if err != nil {
 			msg.Nack()

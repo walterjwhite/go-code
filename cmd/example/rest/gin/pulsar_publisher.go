@@ -3,28 +3,34 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"github.com/apache/pulsar-client-go/pulsar"
-	"github.com/walterjwhite/go-code/lib/application/logging"
 	"time"
 )
 
 func publishContactMessageToPulsar(req ContactRequest) error {
 	serviceURL, topic, _, err := getPulsarConfigFromEnv()
-	logging.Error(err)
+	if err != nil {
+		return fmt.Errorf("failed to get pulsar config: %w", err)
+	}
 
 	client, err := pulsar.NewClient(pulsar.ClientOptions{
 		URL:               serviceURL,
 		OperationTimeout:  30 * time.Second,
 		ConnectionTimeout: 30 * time.Second,
 	})
-	logging.Error(err)
+	if err != nil {
+		return fmt.Errorf("failed to create pulsar client: %w", err)
+	}
 
 	defer client.Close()
 
 	prod, err := client.CreateProducer(pulsar.ProducerOptions{
 		Topic: topic,
 	})
-	logging.Error(err)
+	if err != nil {
+		return fmt.Errorf("failed to create producer: %w", err)
+	}
 	defer prod.Close()
 
 	payload, err := json.Marshal(req)

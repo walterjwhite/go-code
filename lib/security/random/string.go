@@ -7,7 +7,9 @@ import (
 )
 
 const (
-	defaultCharset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+	defaultCharset  = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+	maxStringLength = 1024 // Maximum allowed string length to prevent memory exhaustion
+	minUniqueChars  = 2    // Minimum unique characters required for adequate entropy
 )
 
 func validateInput(length int, charset string) error {
@@ -15,8 +17,20 @@ func validateInput(length int, charset string) error {
 		return errors.New("please enter a non-zero length")
 	}
 
-	if len(charset) <= 0 {
-		return errors.New("please enter a non-empty charset")
+	if length > maxStringLength {
+		return errors.New("length exceeds maximum allowed size")
+	}
+
+	if len(charset) < minUniqueChars {
+		return errors.New("charset must contain at least 2 unique characters for adequate entropy")
+	}
+
+	charSet := make(map[rune]bool)
+	for _, c := range charset {
+		if charSet[c] {
+			return errors.New("charset contains duplicate characters which reduces entropy")
+		}
+		charSet[c] = true
 	}
 
 	return nil

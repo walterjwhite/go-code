@@ -3,7 +3,12 @@ package workdayats
 import (
 	"context"
 	"fmt"
+	"net/url"
+	"path/filepath"
+	"regexp"
+	"slices"
 	"strings"
+	"time"
 
 	atsclient "github.com/walterjwhite/go-code/lib/utils/ats-client"
 	"github.com/walterjwhite/go-code/lib/utils/ats-client/ai"
@@ -31,13 +36,156 @@ const (
 	applicationFormSelector   = `[data-automation-id="applicationForm"]`
 )
 
-type WorkdayATS struct{}
+var (
+	emailRegex   = regexp.MustCompile(`^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`)
+	phoneRegex   = regexp.MustCompile(`^\+?[0-9\s\-\(\)]{7,20}$`)
+	nameRegex    = regexp.MustCompile(`^[a-zA-Z\s'-]{1,50}$`)
+	zipCodeRegex = regexp.MustCompile(`^[0-9]{5}(-[0-9]{4})?$`)
+)
+
+type WorkdayATS struct {
+	lastOperationTime time.Time
+	rateLimitDelay    time.Duration
+}
+
+func NewWorkdayATS() *WorkdayATS {
+	return &WorkdayATS{
+		rateLimitDelay: 500 * time.Millisecond, // Minimum delay between operations
+	}
+}
 
 func (w *WorkdayATS) GetName() string {
 	return "workday"
 }
 
+func (w *WorkdayATS) applyRateLimit() {
+	if time.Since(w.lastOperationTime) < w.rateLimitDelay {
+		time.Sleep(w.rateLimitDelay - time.Since(w.lastOperationTime))
+	}
+	w.lastOperationTime = time.Now()
+}
+
+func (w *WorkdayATS) validateEmail(email string) error {
+	if !emailRegex.MatchString(email) {
+		return fmt.Errorf("invalid email format")
+	}
+	if len(email) > 254 {
+		return fmt.Errorf("email exceeds maximum length")
+	}
+	return nil
+}
+
+func (w *WorkdayATS) validatePassword(password string) error {
+	if len(password) < 8 {
+		return fmt.Errorf("password must be at least 8 characters")
+	}
+	if len(password) > 128 {
+		return fmt.Errorf("password exceeds maximum length")
+	}
+	return nil
+}
+
+func (w *WorkdayATS) validateName(name string) error {
+	if !nameRegex.MatchString(name) {
+		return fmt.Errorf("invalid name format")
+	}
+	return nil
+}
+
+func (w *WorkdayATS) validatePhone(phone string) error {
+	if phone == "" {
+		return nil // Phone is optional
+	}
+	if !phoneRegex.MatchString(phone) {
+		return fmt.Errorf("invalid phone format")
+	}
+	return nil
+}
+
+func (w *WorkdayATS) validateZipCode(zipCode string) error {
+	if zipCode == "" {
+		return nil // Zip code is optional
+	}
+	if !zipCodeRegex.MatchString(zipCode) {
+		return fmt.Errorf("invalid zip code format")
+	}
+	return nil
+}
+
+func (w *WorkdayATS) sanitizeInput(input string) string {
+	input = strings.Map(func(r rune) rune {
+		if r < 32 && r != 0 {
+			return -1
+		}
+		return r
+	}, input)
+	return strings.TrimSpace(input)
+}
+
+func (w *WorkdayATS) validateResumePath(resumePath string) error {
+	if resumePath == "" {
+		return nil
+	}
+
+	if strings.Contains(resumePath, "..") {
+		return fmt.Errorf("invalid resume path: path traversal detected")
+	}
+
+	ext := strings.ToLower(filepath.Ext(resumePath))
+	allowedExtensions := []string{".pdf", ".doc", ".docx", ".txt", ".rtf"}
+	allowed := slices.Contains(allowedExtensions, ext)
+	if !allowed {
+		return fmt.Errorf("invalid resume file type: only PDF, DOC, DOCX, TXT, RTF allowed")
+	}
+
+	if strings.Contains(resumePath, "://") {
+		return fmt.Errorf("invalid resume path: URL schemes not allowed")
+	}
+
+	if strings.HasPrefix(resumePath, "http") {
+		_, err := url.ParseRequestURI(resumePath)
+		if err != nil {
+			return fmt.Errorf("invalid resume URL format")
+		}
+	}
+
+	return nil
+}
+
 func (w *WorkdayATS) RegisterAccount(executor *atsclient.Executor, account *Account) error {
+	w.applyRateLimit()
+
+	if err := w.validateEmail(account.Email); err != nil {
+		return fmt.Errorf("email validation failed: %w", err)
+	}
+
+	if err := w.validatePassword(account.Password); err != nil {
+		return fmt.Errorf("password validation failed: %w", err)
+	}
+
+	if err := w.validateName(account.FirstName); err != nil {
+		return fmt.Errorf("first name validation failed: %w", err)
+	}
+
+	if err := w.validateName(account.LastName); err != nil {
+		return fmt.Errorf("last name validation failed: %w", err)
+	}
+
+	if err := w.validatePhone(account.Phone); err != nil {
+		return fmt.Errorf("phone validation failed: %w", err)
+	}
+
+	if err := w.validateZipCode(account.ZipCode); err != nil {
+		return fmt.Errorf("zip code validation failed: %w", err)
+	}
+
+	account.Email = w.sanitizeInput(account.Email)
+	account.FirstName = w.sanitizeInput(account.FirstName)
+	account.LastName = w.sanitizeInput(account.LastName)
+	account.Phone = w.sanitizeInput(account.Phone)
+	account.Address = w.sanitizeInput(account.Address)
+	account.City = w.sanitizeInput(account.City)
+
 	err := executor.WaitAndClick(registerButtonSelector)
 	if err != nil {
 		return fmt.Errorf("failed to click register button: %w", err)
@@ -102,6 +250,18 @@ func (w *WorkdayATS) RegisterAccount(executor *atsclient.Executor, account *Acco
 }
 
 func (w *WorkdayATS) LoginAccount(executor *atsclient.Executor, email, password string) error {
+	w.applyRateLimit()
+
+	if err := w.validateEmail(email); err != nil {
+		return fmt.Errorf("email validation failed: %w", err)
+	}
+
+	if err := w.validatePassword(password); err != nil {
+		return fmt.Errorf("password validation failed: %w", err)
+	}
+
+	email = w.sanitizeInput(email)
+
 	err := executor.SetValue(emailInputSelector, email)
 	if err != nil {
 		return fmt.Errorf("failed to set email: %w", err)
@@ -121,6 +281,10 @@ func (w *WorkdayATS) LoginAccount(executor *atsclient.Executor, email, password 
 }
 
 func (w *WorkdayATS) ApplyForJob(executor *atsclient.Executor, resumePath string, qaMap map[string]string, aiEnabled bool) error {
+	if err := w.validateResumePath(resumePath); err != nil {
+		return fmt.Errorf("resume path validation failed: %w", err)
+	}
+
 	err := executor.WaitForElement(applicationFormSelector)
 	if err != nil {
 		return fmt.Errorf("application form not found: %w", err)
@@ -183,7 +347,7 @@ func (w *WorkdayATS) ProcessQuestionsWithAnswers(executor *atsclient.Executor, q
 
 			for qPattern, predefinedAnswer := range qaMap {
 				if strings.Contains(strings.ToLower(questionText), strings.ToLower(qPattern)) {
-					answer = predefinedAnswer
+					answer = w.sanitizeInput(predefinedAnswer)
 					foundAnswer = true
 					break
 				}
@@ -194,6 +358,7 @@ func (w *WorkdayATS) ProcessQuestionsWithAnswers(executor *atsclient.Executor, q
 				if err != nil {
 					answer = "Appropriate response to: " + questionText
 				}
+				answer = w.sanitizeInput(answer)
 			}
 
 			switch inputType {
@@ -208,7 +373,7 @@ func (w *WorkdayATS) ProcessQuestionsWithAnswers(executor *atsclient.Executor, q
 			}
 
 			if err != nil {
-				fmt.Printf("Failed to answer question '%s': %v\n", questionText, err)
+				fmt.Printf("Failed to process question: %v\n", err)
 			}
 		}
 	}

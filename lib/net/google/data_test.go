@@ -12,7 +12,7 @@ func TestConf_String(t *testing.T) {
 		CredentialsFile: "test_credentials.json",
 		ProjectId:       "test_project",
 	}
-	expected := "Conf: {CredentialsFile: test_credentials.json, ProjectId: test_project}"
+	expected := "Conf: {ProjectId: test_project}"
 	assert.Equal(t, expected, conf.String())
 }
 

@@ -14,13 +14,29 @@ func ValidateFilePath(filePath string) error {
 		return fmt.Errorf("file path cannot be empty")
 	}
 
-	absPath, err := filepath.Abs(filePath)
+	cleanPath := filepath.Clean(filePath)
+
+	if strings.Contains(cleanPath, "..") {
+		return fmt.Errorf("path traversal detected: relative paths not allowed")
+	}
+
+	absPath, err := filepath.Abs(cleanPath)
 	if err != nil {
 		return fmt.Errorf("invalid file path: %w", err)
 	}
 
 	if strings.Contains(absPath, "..") {
-		return fmt.Errorf("path traversal detected")
+		return fmt.Errorf("path traversal detected: resolved path contains parent references")
+	}
+
+	if _, err := os.Stat(absPath); err == nil {
+		fileInfo, err := os.Lstat(absPath)
+		if err != nil {
+			return fmt.Errorf("cannot access file: %w", err)
+		}
+		if !fileInfo.Mode().IsRegular() {
+			return fmt.Errorf("path is not a regular file")
+		}
 	}
 
 	return nil

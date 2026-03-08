@@ -1,5 +1,12 @@
 package main
 
+const (
+	MaxNameLength    = 100
+	MaxSubjectLength = 200
+	MaxMessageLength = 5000
+	MaxEmailLength   = 254
+)
+
 type album struct {
 	ID     string  `json:"id"`
 	Title  string  `json:"title"`

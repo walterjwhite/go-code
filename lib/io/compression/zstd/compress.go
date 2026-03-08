@@ -1,12 +1,29 @@
 package zstd
 
 import (
+	"context"
 	"fmt"
-	"github.com/klauspost/compress/zstd"
 	"io"
+
+	"github.com/klauspost/compress/zstd"
 )
 
+const DefaultMaxEncodedSize = 1024 * 1024 * 1024 // 1 GB
+
+var encoderOptions = []zstd.EOption{
+	zstd.WithEncoderConcurrency(0), // Use GOMAXPROCS
+	zstd.WithEncoderCRC(true),      // Enable CRC for integrity checking
+}
+
+func getEncoder(out io.Writer) (*zstd.Encoder, error) {
+	return zstd.NewWriter(out, encoderOptions...)
+}
+
 func CompressStream(in io.Reader, out io.Writer) (err error) {
+	return CompressStreamWithContext(context.Background(), in, out)
+}
+
+func CompressStreamWithContext(ctx context.Context, in io.Reader, out io.Writer) (err error) {
 	if closer, ok := out.(io.Closer); ok {
 		defer func() {
 			if cerr := closer.Close(); err == nil {
@@ -14,24 +31,42 @@ func CompressStream(in io.Reader, out io.Writer) (err error) {
 			}
 		}()
 	}
-	enc, err := zstd.NewWriter(out)
-	if err != nil {
-		return err
-	}
-	_, err = io.Copy(enc, in)
-	if err != nil {
-		err2 := enc.Close()
-		if err2 != nil {
-			err = fmt.Errorf("%w; Second error", err2)
-		}
 
-		return err
+	enc, err := getEncoder(out)
+	if err != nil {
+		return fmt.Errorf("failed to create encoder: %w", err)
 	}
-	return enc.Close()
+	defer func() {
+		if cerr := enc.Close(); cerr != nil && err == nil {
+			err = cerr
+		}
+	}()
+
+	done := make(chan error, 1)
+	go func() {
+		_, copyErr := io.Copy(enc, in)
+		done <- copyErr
+	}()
+
+	select {
+	case <-ctx.Done():
+		return ctx.Err()
+	case copyErr := <-done:
+		if copyErr != nil {
+			return copyErr
+		}
+	}
+
+	return nil
 }
 
-var encoder, _ = zstd.NewWriter(nil)
+func CompressBuffer(src []byte) ([]byte, error) {
+	enc, err := zstd.NewWriter(nil, encoderOptions...)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create encoder: %w", err)
+	}
+	defer func() { _ = enc.Close() }()
 
-func CompressBuffer(src []byte) []byte {
-	return encoder.EncodeAll(src, make([]byte, 0, len(src)))
+	result := enc.EncodeAll(src, make([]byte, 0, len(src)))
+	return result, nil
 }

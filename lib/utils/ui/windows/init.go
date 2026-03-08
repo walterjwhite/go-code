@@ -2,6 +2,7 @@ package windows
 
 import (
 	"bytes"
+	"fmt"
 
 	_ "embed"
 
@@ -25,26 +26,47 @@ var (
 
 	windows11TermsAcceptanceButtonData  []byte
 	windows11TermsAcceptanceButtonImage image.Image
+
+	initErr error
 )
 
 func init() {
-	windows10PngData, err := png.Decode(bytes.NewReader(windows10StartButtonData))
-	logging.Error(err)
+	var err error
+	var pngData image.Image
 
-	windows10StartButtonImage = locateimage.Convert(windows10PngData)
+	pngData, err = png.Decode(bytes.NewReader(windows10StartButtonData))
+	if err != nil {
+		initErr = fmt.Errorf("failed to decode windows 10 start button image: %w", err)
+		logging.Error(initErr)
+		return
+	}
+	windows10StartButtonImage = locateimage.Convert(pngData)
 
-	windows11PngData, err := png.Decode(bytes.NewReader(windows11StartButtonData))
-	logging.Error(err)
+	pngData, err = png.Decode(bytes.NewReader(windows11StartButtonData))
+	if err != nil {
+		initErr = fmt.Errorf("failed to decode windows 11 start button image: %w", err)
+		logging.Error(initErr)
+		return
+	}
+	windows11StartButtonImage = locateimage.Convert(pngData)
 
-	windows11StartButtonImage = locateimage.Convert(windows11PngData)
+	pngData, err = png.Decode(bytes.NewReader(windows10TermsAcceptanceButtonData))
+	if err != nil {
+		initErr = fmt.Errorf("failed to decode windows 10 terms acceptance button image: %w", err)
+		logging.Error(initErr)
+		return
+	}
+	windows10TermsAcceptanceButtonImage = locateimage.Convert(pngData)
 
-	windows10TermsAcceptancePngData, err := png.Decode(bytes.NewReader(windows10TermsAcceptanceButtonData))
-	logging.Error(err)
+	pngData, err = png.Decode(bytes.NewReader(windows11TermsAcceptanceButtonData))
+	if err != nil {
+		initErr = fmt.Errorf("failed to decode windows 11 terms acceptance button image: %w", err)
+		logging.Error(initErr)
+		return
+	}
+	windows11TermsAcceptanceButtonImage = locateimage.Convert(pngData)
+}
 
-	windows10TermsAcceptanceButtonImage = locateimage.Convert(windows10TermsAcceptancePngData)
-
-	windows11TermsAcceptancePngData, err := png.Decode(bytes.NewReader(windows11TermsAcceptanceButtonData))
-	logging.Error(err)
-
-	windows11TermsAcceptanceButtonImage = locateimage.Convert(windows11TermsAcceptancePngData)
+func GetInitError() error {
+	return initErr
 }

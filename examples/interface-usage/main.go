@@ -15,16 +15,13 @@ import (
 func example1() {
 	fmt.Println("=== Example 1: Individual Interfaces ===")
 
-	var encryptor encryption.Encryptor
-	var compressor compression.Compressor
-
 	key := []byte("12345678901234567890123456789012") // 32 bytes for AES-256
 	encryptor, err := aes.NewAES(key)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	compressor = zstd.NewCompressor()
+	compressor := zstd.NewCompressor()
 
 	original := []byte("This is sensitive data that needs to be compressed and encrypted")
 
@@ -104,12 +101,16 @@ func NewSecureMessageService(enc encryption.Encryptor, comp compression.Compress
 }
 
 func (s *SecureMessageService) SendMessage(message []byte) ([]byte, error) {
-	compressed, err := s.compressor.Compress(message)
-	if err != nil {
-		return nil, fmt.Errorf("compression failed: %w", err)
+	data := message
+	if len(message) > 100 {
+		compressed, err := s.compressor.Compress(message)
+		if err != nil {
+			return nil, fmt.Errorf("compression failed: %w", err)
+		}
+		data = compressed
 	}
 
-	encrypted, err := s.encryptor.Encrypt(compressed)
+	encrypted, err := s.encryptor.Encrypt(data)
 	if err != nil {
 		return nil, fmt.Errorf("encryption failed: %w", err)
 	}
@@ -125,7 +126,7 @@ func (s *SecureMessageService) ReceiveMessage(encrypted []byte) ([]byte, error) 
 
 	decompressed, err := s.compressor.Decompress(decrypted)
 	if err != nil {
-		return nil, fmt.Errorf("decompression failed: %w", err)
+		return decrypted, nil
 	}
 
 	return decompressed, nil

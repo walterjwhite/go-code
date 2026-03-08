@@ -22,23 +22,14 @@ func NewSQSPublisher(
 	queueURL string,
 	serializer serialization.Serializer,
 	compressor compression.Compressor,
-	encryptor any,
+	encryptor encryption.Encryptor,
 	enableCompression bool,
 	enableEncryption bool,
 ) *SQSPublisher {
-	var encInt encryption.Encryptor
-	if encryptor != nil {
-		var ok bool
-		encInt, ok = encryptor.(encryption.Encryptor)
-		if !ok {
-			panic("encryptor must implement encryption.Encryptor interface")
-		}
-	}
-
 	processor := messaging.NewMessageProcessor(
 		serializer,
 		compressor,
-		encInt,
+		encryptor,
 		false, // serialization handled separately
 		enableCompression,
 		enableEncryption,
@@ -88,23 +79,14 @@ func NewSQSSubscriber(
 	queueURL string,
 	serializer serialization.Serializer,
 	compressor compression.Compressor,
-	encryptor any,
+	encryptor encryption.Encryptor,
 	enableCompression bool,
 	enableEncryption bool,
 ) *SQSSubscriber {
-	var encInt encryption.Encryptor
-	if encryptor != nil {
-		var ok bool
-		encInt, ok = encryptor.(encryption.Encryptor)
-		if !ok {
-			panic("encryptor must implement encryption.Encryptor interface")
-		}
-	}
-
 	processor := messaging.NewMessageProcessor(
 		serializer,
 		compressor,
-		encInt,
+		encryptor,
 		false, // serialization handled separately
 		enableCompression,
 		enableEncryption,

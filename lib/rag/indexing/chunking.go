@@ -7,6 +7,14 @@ func ChunkText(input string, maxChars, overlap int) []string {
 	if input == "" {
 		return nil
 	}
+
+	if maxChars <= 0 {
+		return nil
+	}
+	if overlap < 0 {
+		overlap = 0
+	}
+
 	if len(input) <= maxChars {
 		return []string{input}
 	}

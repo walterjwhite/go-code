@@ -69,7 +69,7 @@ func isValid(config RequiredFields, value reflect.Value, fieldName string) bool 
 	}
 
 	fieldValue := f.String()
-	log.Debug().Msgf("fieldValue: %v / %v / %v", f, fieldValue, fieldName)
+	log.Debug().Msgf("validating field: %s", fieldName)
 	if len(fieldValue) == 0 {
 		log.Warn().Msgf("field %s is empty", fieldName)
 		return false

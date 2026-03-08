@@ -16,6 +16,7 @@ import (
 	"github.com/walterjwhite/go-code/lib/events/transport"
 	"github.com/walterjwhite/go-code/lib/io/compression/zstd"
 	"github.com/walterjwhite/go-code/lib/io/serialization"
+	"github.com/walterjwhite/go-code/lib/security/encryption"
 	"github.com/walterjwhite/go-code/lib/security/encryption/aes"
 )
 
@@ -23,7 +24,32 @@ const (
 	commandList    = "list"
 	commandRespond = "respond"
 	commandListen  = "listen"
+	maxFileSize    = 10 * 1024 * 1024 // 10MB limit
+	maxEvents      = 10000
+	maxArgs        = 100
+	maxArgLength   = 1000
 )
+
+type ServiceConfig struct {
+	ProjectID     string
+	UseEncryption bool
+	EncryptionKey string
+	Topic         string
+	Subscription  string
+	RegistryFile  string
+}
+
+type ServiceFactory struct {
+	config *ServiceConfig
+}
+
+func NewServiceFactory(config *ServiceConfig) *ServiceFactory {
+	return &ServiceFactory{config: config}
+}
+
+func (sf *ServiceFactory) CreateEventService(ctx context.Context) *service.EventService {
+	return initEventService(ctx, sf.config.ProjectID, sf.config.UseEncryption, sf.config.EncryptionKey)
+}
 
 func main() {
 	if len(os.Args) < 2 {
@@ -48,7 +74,7 @@ func main() {
 }
 
 func printUsage() {
-	fmt.Println(`Event Client - Manage events and send responses
+	fmt.Println(`Event Client - Manage events and send event responses
 
 Usage:
   event-client list [--project PROJECT_ID] [--registry FILE]
@@ -60,13 +86,36 @@ Usage:
 
   event-client listen --subscription SUB [--project PROJECT_ID]
     [--use-encryption] [--encryption-key-file FILE]
-    Listen for events on a subscription
+    Listen for events from a subscription
 
 Examples:
   event-client list --project my-project
   event-client respond --event-id 1 --action-id 1 --project my-project --topic responses
   event-client respond --event-id 2 --action-id 2 --args "git,push" --project my-project --topic responses
   event-client listen --subscription event-sub --project my-project`)
+}
+
+func isValidCharacter(r rune) bool {
+	return (r >= 'a' && r <= 'z') || (r >= 'A' && r <= 'Z') || (r >= '0' && r <= '9') ||
+		r == '-' || r == '_' || r == '.' || r == '/' || r == ':' || r == ',' || r == ' '
+}
+
+func validateArgument(arg string) error {
+	if arg == "" {
+		return fmt.Errorf("argument cannot be empty")
+	}
+	if len(arg) > 1000 {
+		return fmt.Errorf("argument too long: maximum 1000 characters allowed")
+	}
+	if strings.Contains(arg, "..") {
+		return fmt.Errorf("argument contains invalid character: \"..\"")
+	}
+	for _, r := range arg {
+		if !isValidCharacter(r) {
+			return fmt.Errorf("argument contains invalid character: %c", r)
+		}
+	}
+	return nil
 }
 
 func handleList() {
@@ -83,7 +132,15 @@ func handleList() {
 	}
 
 	ctx := context.Background()
-	eventSvc := initEventService(ctx, *projectID, false, "")
+
+	config := &ServiceConfig{
+		ProjectID:     *projectID,
+		UseEncryption: false,
+		EncryptionKey: "",
+		RegistryFile:  *registryFile,
+	}
+	factory := NewServiceFactory(config)
+	eventSvc := factory.CreateEventService(ctx)
 
 	defer func() {
 		if err := eventSvc.Close(); err != nil {
@@ -117,13 +174,34 @@ func handleList() {
 	}
 }
 
+func parseAndValidateArgs(argsStr string) []string {
+	if argsStr == "" {
+		return nil
+	}
+
+	rawArgs := strings.Split(argsStr, ",")
+	if len(rawArgs) > maxArgs {
+		log.Fatalf("Too many arguments: maximum %d arguments allowed", maxArgs)
+	}
+
+	args := make([]string, 0, len(rawArgs))
+	for _, arg := range rawArgs {
+		trimmed := strings.TrimSpace(arg)
+		if err := validateArgument(trimmed); err != nil {
+			log.Fatalf("Invalid argument: %v", err)
+		}
+		args = append(args, trimmed)
+	}
+	return args
+}
+
 func handleRespond() {
 	fs := flag.NewFlagSet("respond", flag.ExitOnError)
 	eventID := fs.Int("event-id", 0, "Event ID")
 	actionID := fs.Int("action-id", 0, "Action ID")
 	argsStr := fs.String("args", "", "Comma-separated arguments")
 	projectID := fs.String("project", os.Getenv("GCP_PROJECT_ID"), "GCP Project ID")
-	topic := fs.String("topic", "responses", "Pub/Sub topic to publish response to")
+	topic := fs.String("topic", "responses", "Pub/Sub topic to publish responses to")
 	useEncryption := fs.Bool("use-encryption", false, "Enable encryption")
 	keyFile := fs.String("encryption-key-file", "", "Path to encryption key file")
 
@@ -140,27 +218,23 @@ func handleRespond() {
 	}
 
 	ctx := context.Background()
-	eventSvc := initEventService(ctx, *projectID, *useEncryption, *keyFile)
+
+	config := &ServiceConfig{
+		ProjectID:     *projectID,
+		UseEncryption: *useEncryption,
+		EncryptionKey: *keyFile,
+		Topic:         *topic,
+	}
+	factory := NewServiceFactory(config)
+	eventSvc := factory.CreateEventService(ctx)
+
 	defer func() {
 		if err := eventSvc.Close(); err != nil {
 			log.Printf("Failed to close event service: %v", err)
 		}
 	}()
 
-	var args []string
-	if *argsStr != "" {
-		rawArgs := strings.Split(*argsStr, ",")
-		if len(rawArgs) > 100 {
-			log.Fatal("Too many arguments: maximum 100 arguments allowed")
-		}
-		for _, arg := range rawArgs {
-			trimmed := strings.TrimSpace(arg)
-			if err := validateArgument(trimmed); err != nil {
-				log.Fatalf("Invalid argument: %v", err)
-			}
-			args = append(args, trimmed)
-		}
-	}
+	args := parseAndValidateArgs(*argsStr)
 
 	response := &events.Response{
 		EventID:  *eventID,
@@ -186,7 +260,7 @@ func handleRespond() {
 
 func handleListen() {
 	fs := flag.NewFlagSet("listen", flag.ExitOnError)
-	subscription := fs.String("subscription", "", "Pub/Sub subscription to listen on")
+	subscription := fs.String("subscription", "", "Pub/Sub subscription to listen to")
 	projectID := fs.String("project", os.Getenv("GCP_PROJECT_ID"), "GCP Project ID")
 	useEncryption := fs.Bool("use-encryption", false, "Enable decryption")
 	keyFile := fs.String("encryption-key-file", "", "Path to encryption key file")
@@ -204,7 +278,16 @@ func handleListen() {
 	}
 
 	ctx := context.Background()
-	eventSvc := initEventService(ctx, *projectID, *useEncryption, *keyFile)
+
+	config := &ServiceConfig{
+		ProjectID:     *projectID,
+		UseEncryption: *useEncryption,
+		EncryptionKey: *keyFile,
+		Subscription:  *subscription,
+	}
+	factory := NewServiceFactory(config)
+	eventSvc := factory.CreateEventService(ctx)
+
 	defer func() {
 		if err := eventSvc.Close(); err != nil {
 			log.Printf("Failed to close event service: %v", err)
@@ -245,7 +328,7 @@ func initEventService(
 	serializer := serialization.NewJSONSerializer()
 	compressor := zstd.NewCompressor()
 
-	var encryptor any
+	var encryptor encryption.Encryptor
 	if useEncryption && keyFile != "" {
 		enc, err := aes.NewAESFromFile(keyFile)
 		if err != nil {
@@ -275,7 +358,7 @@ func initEventService(
 	return service.NewEventService(pub, sub, serializer)
 }
 
-func loadEventsFromFile(filename string, svc *service.EventService) {
+func validateFilePath(filename string) string {
 	absPath, err := filepath.Abs(filename)
 	if err != nil {
 		log.Fatalf("Failed to resolve file path: %v", err)
@@ -298,26 +381,20 @@ func loadEventsFromFile(filename string, svc *service.EventService) {
 		log.Fatalf("Invalid file path: file must be within the current working directory")
 	}
 
-	fileInfo, err := os.Stat(realPath)
+	return realPath
+}
+
+func validateFileSize(path string) {
+	fileInfo, err := os.Stat(path)
 	if err != nil {
 		log.Fatalf("Failed to stat file: %v", err)
 	}
-	const maxFileSize = 10 * 1024 * 1024 // 10MB limit
 	if fileInfo.Size() > maxFileSize {
 		log.Fatalf("Registry file too large: %d bytes (max %d bytes)", fileInfo.Size(), maxFileSize)
 	}
+}
 
-	data, err := os.ReadFile(realPath)
-	if err != nil {
-		log.Fatalf("Failed to read registry file: %v", err)
-	}
-
-	var eventsList []events.Event
-	if err := json.Unmarshal(data, &eventsList); err != nil {
-		log.Fatalf("Failed to parse registry file: %v", err)
-	}
-
-	const maxEvents = 10000
+func registerEvents(eventsList []events.Event, svc *service.EventService) {
 	if len(eventsList) > maxEvents {
 		log.Fatalf("Too many events in registry: %d (max %d)", len(eventsList), maxEvents)
 	}
@@ -329,35 +406,19 @@ func loadEventsFromFile(filename string, svc *service.EventService) {
 	}
 }
 
-func validateArgument(arg string) error {
-	if len(arg) > 4096 {
-		return fmt.Errorf("argument exceeds maximum length (4096 chars): %d", len(arg))
+func loadEventsFromFile(filename string, svc *service.EventService) {
+	realPath := validateFilePath(filename)
+	validateFileSize(realPath)
+
+	data, err := os.ReadFile(realPath)
+	if err != nil {
+		log.Fatalf("Failed to read registry file: %v", err)
 	}
 
-	if strings.ContainsRune(arg, '\x00') {
-		return fmt.Errorf("argument contains null bytes")
+	var eventsList []events.Event
+	if err := json.Unmarshal(data, &eventsList); err != nil {
+		log.Fatalf("Failed to parse registry file: %v", err)
 	}
 
-	suspiciousPatterns := []string{"$(", "`", "&", "|", ";", ">", "<", "\n", "\r"}
-	for _, pattern := range suspiciousPatterns {
-		if strings.Contains(arg, pattern) {
-			return fmt.Errorf("argument contains suspicious pattern: %q", pattern)
-		}
-	}
-
-	if strings.Contains(arg, "/") || strings.Contains(arg, "\\") {
-		if arg != ".." && arg != "." && arg != "~" && !strings.HasPrefix(arg, "..") && !strings.HasPrefix(arg, "./") && !strings.HasPrefix(arg, "../") {
-			absPath, err := filepath.Abs(arg)
-			if err == nil {
-				cwd, _ := os.Getwd()
-				cleanAbsPath := filepath.Clean(absPath)
-				cleanCwd := filepath.Clean(cwd)
-				if !strings.HasPrefix(cleanAbsPath, cleanCwd+string(filepath.Separator)) && cleanAbsPath != cleanCwd {
-					return fmt.Errorf("file path argument references outside current directory")
-				}
-			}
-		}
-	}
-
-	return nil
+	registerEvents(eventsList, svc)
 }

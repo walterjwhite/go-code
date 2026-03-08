@@ -33,10 +33,7 @@ func EncodeSegments(data []byte, opts *SegmentOptions) ([]*Segment, error) {
 
 	dataChecksum := sha256.Sum256(data)
 
-	errorLevel := max(opts.ErrorLevel, 0)
-	if errorLevel > 3 {
-		errorLevel = 3
-	}
+	errorLevel := min(max(opts.ErrorLevel, 0), 3)
 	redundancy := []int{10, 20, 30, 40}[errorLevel]
 
 	effectiveSegmentSize := (opts.MaxSegmentSize*100)/(100+redundancy) - 12
@@ -289,10 +286,7 @@ func decodeSegmentWithBits(matrix [][]int, opts *Options, bitsPerModule int) ([]
 	encodedLen := min((totalNeeded*(100+redundancy)+99)/100, len(bits))
 	bits = bits[:encodedLen]
 
-	originalLen := max((len(bits)*100)/(100+redundancy), totalNeeded)
-	if originalLen > len(bits) {
-		originalLen = len(bits)
-	}
+	originalLen := min(max((len(bits)*100)/(100+redundancy), totalNeeded), len(bits))
 	bits = bits[:originalLen]
 
 	if len(bits) < totalNeeded {

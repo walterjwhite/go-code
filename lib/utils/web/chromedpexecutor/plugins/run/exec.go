@@ -16,7 +16,6 @@ type Exec struct {
 }
 
 var allowedCommands = map[string]bool{
-	"echo":   true,
 	"sleep":  true,
 	"test":   true,
 	"true":   true,

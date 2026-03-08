@@ -94,7 +94,7 @@ func parseFlags() (*config, error) {
 
 	flag.Parse()
 
-	if (cfg.inputText == "") == (cfg.inputFile == "") {
+	if (cfg.inputText != "") == (cfg.inputFile != "") {
 		return nil, errors.New("provide exactly one of -text or -file")
 	}
 	if !cfg.writePNG && !cfg.terminal {
@@ -220,7 +220,7 @@ func segmentedFilename(outputPath string, index, total int) string {
 	if ext == "" {
 		ext = ".png"
 	}
-	return fmt.Sprintf("%s-%04d-of-%04d%s", base, index+1, total, ext)
+	return fmt.Sprintf("%s-%04d-of-%04d%s", base, index, total, ext)
 }
 
 func displaySegmentsTerminal(segments []*densecode.Segment, advanceKey string) error {
@@ -264,7 +264,7 @@ func waitForAdvance(reader *bufio.Reader, advanceKey string, nextSegment, total 
 		case "any":
 			return nil
 		case "space":
-			if token == "space" || token == " " {
+			if token == "space" || strings.TrimSpace(token) == "" {
 				return nil
 			}
 		default:

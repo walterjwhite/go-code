@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/walterjwhite/go-code/lib/application/logging"
 	"os"
 	"strings"
 	"sync"
@@ -29,7 +28,9 @@ func contactWorker(wg *sync.WaitGroup) {
 	}
 
 	emailCfg, err := getEmailConfigFromEnv()
-	logging.Error(err)
+	if err != nil {
+		fmt.Printf("failed to get email config: %v\n", err)
+	}
 
 	client, err := pulsar.NewClient(pulsar.ClientOptions{
 		URL:               serviceURL,
@@ -47,7 +48,10 @@ func contactWorker(wg *sync.WaitGroup) {
 		SubscriptionName: subscription,
 		Type:             pulsar.Shared,
 	})
-	logging.Error(err)
+	if err != nil {
+		fmt.Printf("could not create consumer: %v\n", err)
+		os.Exit(1)
+	}
 	defer consumer.Close()
 
 	fmt.Printf("Worker started: listening on topic=%s subscription=%s\n", topic, subscription)
@@ -63,13 +67,17 @@ func contactWorker(wg *sync.WaitGroup) {
 		var req ContactRequest
 		if err := json.Unmarshal(msg.Payload(), &req); err != nil {
 			fmt.Printf("invalid message payload: %v\n", err)
-			logging.Warn(consumer.Ack(msg), "error acknowledging malformed message")
+			if ackErr := consumer.Ack(msg); ackErr != nil {
+				fmt.Printf("error acknowledging malformed message: %v\n", ackErr)
+			}
 			continue
 		}
 
 		if strings.TrimSpace(req.Email) == "" || !validateEmailAddress(req.Email) {
 			fmt.Printf("invalid email in message, acknowledging and skipping\n")
-			logging.Warn(consumer.Ack(msg), "error acknowledging - invalid email address in message")
+			if ackErr := consumer.Ack(msg); ackErr != nil {
+				fmt.Printf("error acknowledging - invalid email address in message: %v\n", ackErr)
+			}
 			continue
 		}
 
@@ -80,7 +88,9 @@ func contactWorker(wg *sync.WaitGroup) {
 			continue
 		}
 
-		logging.Warn(consumer.Ack(msg), "error acknowledging successful delivery of message")
+		if ackErr := consumer.Ack(msg); ackErr != nil {
+			fmt.Printf("error acknowledging successful delivery of message: %v\n", ackErr)
+		}
 		fmt.Printf("email sent and message acknowledged\n")
 	}
 }

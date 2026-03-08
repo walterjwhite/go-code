@@ -7,7 +7,7 @@ type Config struct {
 	HTTPTimeoutSeconds int    `yaml:"http_timeout_seconds" flag:"http-timeout-seconds" desc:"HTTP timeout in seconds"`
 }
 
-func (c *Config) PreLoad() {
+func (c *Config) Preload() {
 	if len(c.DB) == 0 {
 		c.DB = DefaultDBPath
 	}

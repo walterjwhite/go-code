@@ -1,6 +1,7 @@
 package write
 
 import (
+	"fmt"
 	"github.com/emersion/go-imap"
 	"github.com/emersion/go-imap/client"
 	"github.com/rs/zerolog/log"
@@ -10,6 +11,10 @@ import (
 )
 
 func (s *EmailSession) ReadAsync(folderName string, function func(msg *imap.Message), incrementIndex bool) error {
+	if err := validateFolderName(folderName); err != nil {
+		return fmt.Errorf("invalid folder name: %w", err)
+	}
+
 	_, err := s.client.Select(folderName, false)
 	if err != nil {
 		return err

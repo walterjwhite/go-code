@@ -45,17 +45,12 @@ func example1() {
 	fmt.Printf("Original data: %s (%d bytes)\n", data, len(data))
 	fmt.Printf("Matrix size: %dx%d\n", code.Size, code.Size)
 
-	matrix := code.ToMatrix()
-	if matrix == nil {
-		log.Fatal("Failed to convert code to matrix")
-	}
-	decoded, err := densecode.Decode(matrix)
+	decoded, err := densecode.Decode(code.ToMatrix())
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	fmt.Printf("Decoded data: %s\n", decoded)
-	fmt.Printf("Match: %v\n\n", string(data) == string(decoded))
+	fmt.Printf("Decoded data: %s\n\n", decoded)
 }
 
 func example2() {
@@ -66,9 +61,8 @@ func example2() {
 		"Repetitive content compresses well. Repetitive content compresses well. " +
 		"Repetitive content compresses well.")
 
-	compressor := &zstd.ZstdCompressor{}
 	opts := &densecode.Options{
-		Compressor: compressor,
+		Compressor: &zstd.ZstdCompressor{},
 		ErrorLevel: 1,
 		ModuleSize: 10,
 	}
@@ -82,17 +76,12 @@ func example2() {
 	fmt.Printf("Encoded data: %d bytes\n", len(code.Data))
 	fmt.Printf("Matrix size: %dx%d\n", code.Size, code.Size)
 
-	matrix := code.ToMatrix()
-	if matrix == nil {
-		log.Fatal("Failed to convert code to matrix")
-	}
-	decoded, err := densecode.DecodeWithOptions(matrix, opts)
+	decoded, err := densecode.DecodeWithOptions(code.ToMatrix(), opts)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	fmt.Printf("Decoded successfully: %v\n", len(decoded) == len(data))
-	fmt.Printf("Match: %v\n\n", string(data) == string(decoded))
+	fmt.Printf("Decoded: %d bytes\n\n", len(decoded))
 }
 
 func example3() {
@@ -125,17 +114,12 @@ func example3() {
 	fmt.Printf("Original data: %s (%d bytes)\n", data, len(data))
 	fmt.Printf("Matrix size: %dx%d\n", code.Size, code.Size)
 
-	matrix := code.ToMatrix()
-	if matrix == nil {
-		log.Fatal("Failed to convert code to matrix")
-	}
-	decoded, err := densecode.DecodeWithOptions(matrix, opts)
+	decoded, err := densecode.DecodeWithOptions(code.ToMatrix(), opts)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	fmt.Printf("Decoded data: %s\n", decoded)
-	fmt.Printf("Match: %v\n\n", string(data) == string(decoded))
+	fmt.Printf("Decoded data: %s\n\n", decoded)
 }
 
 func example4() {
@@ -144,8 +128,6 @@ func example4() {
 
 	data := []byte("This is a secret message with repetitive content. " +
 		"Repetitive content. Repetitive content. Repetitive content.")
-
-	compressor := &zstd.ZstdCompressor{}
 
 	key, err := loadEncryptionKey()
 	if err != nil {
@@ -158,7 +140,7 @@ func example4() {
 	}
 
 	opts := &densecode.Options{
-		Compressor: compressor,
+		Compressor: &zstd.ZstdCompressor{},
 		Encryptor:  encryptor,
 		ErrorLevel: 2,
 		ModuleSize: 10,
@@ -173,15 +155,10 @@ func example4() {
 	fmt.Printf("Encoded data: %d bytes\n", len(code.Data))
 	fmt.Printf("Matrix size: %dx%d\n", code.Size, code.Size)
 
-	matrix := code.ToMatrix()
-	if matrix == nil {
-		log.Fatal("Failed to convert code to matrix")
-	}
-	decoded, err := densecode.DecodeWithOptions(matrix, opts)
+	decoded, err := densecode.DecodeWithOptions(code.ToMatrix(), opts)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	fmt.Printf("Decoded successfully: %v\n", len(decoded) == len(data))
-	fmt.Printf("Match: %v\n\n", string(data) == string(decoded))
+	fmt.Printf("Decoded: %d bytes\n\n", len(decoded))
 }

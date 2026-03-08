@@ -18,9 +18,6 @@ func (c *Conf) Validate() error {
 	if c.LunchStartHour < minHour || c.LunchStartHour > maxHour {
 		return errors.New("LunchStartHour must be between 0 and 23")
 	}
-	if c.isPastEndTime() {
-		return errors.New("end hour already passed")
-	}
 	c.mu.RLock()
 	defer c.mu.RUnlock()
 	if c.worker == nil {

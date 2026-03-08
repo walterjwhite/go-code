@@ -2,7 +2,9 @@ package zstd
 
 import (
 	"bytes"
+	"context"
 	"testing"
+	"time"
 )
 
 func TestZstdCompressor(t *testing.T) {
@@ -56,4 +58,78 @@ func TestZstdCompressor(t *testing.T) {
 			t.Error("Expected error for invalid compressed data, got nil")
 		}
 	})
+}
+
+func TestZstdContextCompressor(t *testing.T) {
+	compressor := NewContextCompressor()
+
+	t.Run("Compress and Decompress with context", func(t *testing.T) {
+		original := []byte("This is test data for context-aware compression")
+
+		ctx := context.Background()
+
+		compressed, err := compressor.CompressWithContext(ctx, original)
+		if err != nil {
+			t.Fatalf("CompressWithContext failed: %v", err)
+		}
+
+		decompressed, err := compressor.DecompressWithContext(ctx, compressed)
+		if err != nil {
+			t.Fatalf("DecompressWithContext failed: %v", err)
+		}
+
+		if !bytes.Equal(original, decompressed) {
+			t.Errorf("Decompressed data doesn't match original")
+		}
+	})
+
+	t.Run("Compress with cancelled context", func(t *testing.T) {
+		original := []byte("test data")
+
+		ctx, cancel := context.WithCancel(context.Background())
+		cancel() // Cancel immediately
+
+		_, err := compressor.CompressWithContext(ctx, original)
+		if err == nil {
+			t.Error("Expected context cancellation error, got nil")
+		}
+	})
+
+	t.Run("Decompress with cancelled context", func(t *testing.T) {
+		original := []byte("test data")
+		compressed, _ := compressor.Compress(original)
+
+		ctx, cancel := context.WithCancel(context.Background())
+		cancel() // Cancel immediately
+
+		_, err := compressor.DecompressWithContext(ctx, compressed)
+		if err == nil {
+			t.Error("Expected context cancellation error, got nil")
+		}
+	})
+
+	t.Run("Compress with timeout context", func(t *testing.T) {
+		original := []byte("test data for timeout")
+
+		ctx, cancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
+		defer cancel()
+
+		compressed, err := compressor.CompressWithContext(ctx, original)
+		if err != nil {
+			t.Fatalf("CompressWithContext with timeout failed: %v", err)
+		}
+
+		decompressed, err := compressor.DecompressWithContext(ctx, compressed)
+		if err != nil {
+			t.Fatalf("DecompressWithContext with timeout failed: %v", err)
+		}
+
+		if !bytes.Equal(original, decompressed) {
+			t.Error("Decompressed data doesn't match original")
+		}
+	})
+}
+
+func TestContextCompressorInterface(t *testing.T) {
+	var _ ContextCompressor = &ZstdContextCompressor{}
 }

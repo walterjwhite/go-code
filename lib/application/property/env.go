@@ -11,7 +11,7 @@ import (
 )
 
 func LoadEnv(config any) {
-	prefix := getShortPrefix(config)
+	prefix := sanitizeEnvKey(typename.Get(config))
 	log.Debug().Msgf("Loading environment variables with prefix: %s", prefix)
 
 	err := envconfig.InitWithOptions(config, envconfig.Options{Prefix: prefix, AllOptional: true})
@@ -20,10 +20,6 @@ func LoadEnv(config any) {
 			log.Debug().Msgf("LoadEnv - InitWithOptions failed: %v", err)
 		}
 	}
-}
-
-func getShortPrefix(config any) string {
-	return sanitizeEnvKey(typename.Get(config))
 }
 
 func sanitizeEnvKey(key string) string {

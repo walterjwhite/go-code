@@ -2,6 +2,8 @@ package windows
 
 import (
 	"context"
+	"os"
+	"strconv"
 
 	"github.com/walterjwhite/go-code/lib/utils/ui/graphical"
 	"github.com/walterjwhite/go-code/lib/utils/web/chromedpexecutor/action"
@@ -9,8 +11,23 @@ import (
 )
 
 const (
-	matchThreshold = 0.04
+	defaultMatchThreshold = 0.80 // Default threshold for reliable image matching (0-1 scale)
+	minMatchThreshold     = 0.50 // Minimum safe threshold to prevent false positives
+	maxMatchThreshold     = 0.95 // Maximum threshold for strict matching
 )
+
+func getMatchThreshold() float64 {
+	if envVal := os.Getenv("IMAGE_MATCH_THRESHOLD"); envVal != "" {
+		if val, err := strconv.ParseFloat(envVal, 64); err == nil {
+			if val >= minMatchThreshold && val <= maxMatchThreshold {
+				return val
+			}
+		}
+	}
+	return defaultMatchThreshold
+}
+
+var matchThreshold = getMatchThreshold()
 
 func (c *WindowsConf) IsLocked(ctx context.Context) (bool, error) {
 	isPresent, err := c.IsStartMenuButtonPresent(ctx)

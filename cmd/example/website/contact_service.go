@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog/log"
@@ -34,33 +35,19 @@ func contactValidateRequest(c *gin.Context) *ContactRequest {
 		return nil
 	}
 
-	if strings.TrimSpace(contactRequest.Name) == "" ||
-		strings.TrimSpace(contactRequest.Email) == "" ||
-		strings.TrimSpace(contactRequest.Subject) == "" ||
-		strings.TrimSpace(contactRequest.Message) == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "all fields are required"})
-		return nil
-	}
-
-	if len(contactRequest.Message) > 5000 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "message exceeds maximum length of 5000 characters"})
-		return nil
-	}
-
-	if !validateEmailAddress(contactRequest.Email) {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid email address"})
+	if err := validateContactRequest(&contactRequest); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return nil
 	}
 
 	return &contactRequest
 }
 
-func validateEmailAddress(email string) bool {
-	_, err := mail.ParseAddress(email)
-	return err == nil
-}
-
 func contactSendMessage(contactRequest *ContactRequest) error {
+	if emailAccount == nil || emailAccount.EmailAddress == nil {
+		return errors.New("email account is not configured")
+	}
+
 	log.Debug().Msg("attempting to send message")
 	err := write.Send(emailAccount, contactRequestToEmailMessage(contactRequest))
 	logging.Warn(err, "contactSendMessage - failed to send message")

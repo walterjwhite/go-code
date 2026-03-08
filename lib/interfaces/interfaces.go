@@ -3,6 +3,9 @@ package interfaces
 import (
 	"context"
 	"io"
+	"net/url"
+	"regexp"
+	"strings"
 )
 
 type Serializer interface {
@@ -56,13 +59,6 @@ type Attachment interface {
 	Name() string
 	Content() io.Reader
 	ContentType() string
-}
-
-type FileStorage interface {
-	Read(path string) ([]byte, error)
-	Write(path string, data []byte) error
-	Delete(path string) error
-	Exists(path string) bool
 }
 
 type ConfigLoader interface {
@@ -136,4 +132,72 @@ type MetricsCollector interface {
 type HealthChecker interface {
 	Check(ctx context.Context) error
 	Name() string
+}
+
+type SecureSecretProvider interface {
+	Get(ctx context.Context, key string) (string, error)
+	Set(ctx context.Context, key string, value string) error
+	Delete(ctx context.Context, key string) error
+	Rotate(ctx context.Context, key string, newValue string) error
+}
+
+type SanitizedField struct {
+	Key   string
+	Value string
+}
+
+func Sanitize(value string) string {
+	sanitized := strings.ReplaceAll(value, "\n", "")
+	sanitized = strings.ReplaceAll(sanitized, "\r", "")
+	sanitized = strings.ReplaceAll(sanitized, "\x00", "")
+	if len(sanitized) > 10000 {
+		sanitized = sanitized[:10000] + "...[truncated]"
+	}
+	return sanitized
+}
+
+type SecureLogger interface {
+	Debug(msg string, fields ...SanitizedField)
+	Info(msg string, fields ...SanitizedField)
+	Warn(msg string, fields ...SanitizedField)
+	Error(msg string, fields ...SanitizedField)
+	Fatal(msg string, fields ...SanitizedField)
+}
+
+type URLValidationResult struct {
+	IsValid    bool
+	ParsedURL  *url.URL
+	Error      error
+	IsInternal bool
+}
+
+type URLValidator interface {
+	Validate(rawURL string) (*URLValidationResult, error)
+	IsAllowedScheme(scheme string) bool
+	IsInternalIP(ip string) bool
+}
+
+var AllowedHTTPSchemes = map[string]bool{
+	"https": true,
+	"http":  true,
+}
+
+var InternalIPPatterns = []*regexp.Regexp{
+	regexp.MustCompile(`^127\.`),                        // localhost
+	regexp.MustCompile(`^10\.`),                         // private class A
+	regexp.MustCompile(`^172\.(1[6-9]|2[0-9]|3[01])\.`), // private class B
+	regexp.MustCompile(`^192\.168\.`),                   // private class C
+	regexp.MustCompile(`^169\.254\.`),                   // link-local
+	regexp.MustCompile(`^0\.`),                          // current network
+	regexp.MustCompile(`^::1$`),                         // IPv6 localhost
+	regexp.MustCompile(`^fc00:`),                        // IPv6 unique local
+	regexp.MustCompile(`^fe80:`),                        // IPv6 link-local
+}
+
+type SecureHTTPClient interface {
+	Get(ctx context.Context, url string, headers map[string]string) ([]byte, error)
+	Post(ctx context.Context, url string, body []byte, headers map[string]string) ([]byte, error)
+	Put(ctx context.Context, url string, body []byte, headers map[string]string) ([]byte, error)
+	Delete(ctx context.Context, url string, headers map[string]string) ([]byte, error)
+	SetURLValidator(validator URLValidator)
 }

@@ -2,13 +2,22 @@ package aes
 
 import (
 	"bytes"
+	"crypto/rand"
 	"testing"
 
 	"github.com/walterjwhite/go-code/lib/security/encryption"
 )
 
+func generateSecureKey() []byte {
+	key := make([]byte, 32) // 32 bytes = AES-256
+	if _, err := rand.Read(key); err != nil {
+		panic("failed to generate secure random key: " + err.Error())
+	}
+	return key
+}
+
 func TestAESEncryptor(t *testing.T) {
-	key := []byte("12345678901234567890123456789012")
+	key := generateSecureKey()
 
 	t.Run("Implements Encryptor interface", func(t *testing.T) {
 		var _ encryption.Encryptor = (*AES)(nil)

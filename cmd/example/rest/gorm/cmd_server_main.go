@@ -1,22 +1,17 @@
 package main
 
 import (
-	"github.com/rs/zerolog/log"
-	"github.com/walterjwhite/go-code/lib/application"
-	"github.com/walterjwhite/go-code/lib/application/logging"
-
 	"context"
-	"gorm.io/gorm"
-
 	"time"
+
+	"github.com/rs/zerolog/log"
+	"gorm.io/gorm"
 )
 
 func init() {
-	application.Configure()
+	Configure()
 
 	log.Debug().Msg("initializing database")
-
-
 }
 
 func cleanup(database *gorm.DB, server *Server) {
@@ -32,11 +27,9 @@ func cleanup(database *gorm.DB, server *Server) {
 }
 
 func main() {
-	defer application.OnPanic()
+	defer OnPanic()
 	cfg, err := Load()
-	logging.Error(err)
-
-
+	Error(err)
 
 	database, err := NewSQLite(cfg.DatabaseURL)
 	if err != nil {
@@ -62,7 +55,8 @@ func main() {
 
 	log.Info().Msgf("server started on :%s", cfg.AppPort)
 
-	application.Wait()
+	Wait()
+
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 

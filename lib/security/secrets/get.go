@@ -42,6 +42,26 @@ func Get(secretName string) string {
 }
 
 func isValidSecretName(secretName string) bool {
+	if len(secretName) == 0 || len(secretName) > 256 {
+		return false
+	}
+
 	re := regexp.MustCompile(`^[a-zA-Z0-9/_-]+$`)
-	return re.MatchString(secretName)
+	if !re.MatchString(secretName) {
+		return false
+	}
+
+	if strings.HasPrefix(secretName, "/") || strings.HasSuffix(secretName, "/") {
+		return false
+	}
+
+	if strings.Contains(secretName, "//") {
+		return false
+	}
+
+	if strings.Contains(secretName, "..") {
+		return false
+	}
+
+	return true
 }

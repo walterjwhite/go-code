@@ -2,6 +2,11 @@ package graphical
 
 import (
 	"bytes"
+	"crypto/rand"
+	"encoding/hex"
+	"errors"
+	"fmt"
+	"io"
 
 	"github.com/rs/zerolog/log"
 	"github.com/walterjwhite/go-code/lib/application/logging"
@@ -9,30 +14,56 @@ import (
 	"image"
 	"image/png"
 	"os"
+	"path/filepath"
 )
 
 func (i *ImageMatch) debug(image image.Image) {
 	log.Debug().Msg("match end - no matches")
 
-	if log.Debug().Enabled() {
-		logging.Warn(i.write(image, "screenshot-*.png"), "Matches.debug.write - screenshot")
-		logging.Warn(i.write(i.Image, "search-*.png"), "Matches.debug.write - image")
+	if log.Debug().Enabled() && os.Getenv("IMAGE_MATCH_DEBUG_WRITE") == "1" {
+		logging.Warn(i.write(image, "screenshot"), "Matches.debug.write - screenshot")
+		logging.Warn(i.write(i.Image, "search"), "Matches.debug.write - image")
 	}
 }
 
-func (i *ImageMatch) write(image image.Image, fileNameTemplate string) error {
-	tempFile, err := os.CreateTemp("", fileNameTemplate)
+func secureTempName(prefix string) (string, error) {
+	bytes := make([]byte, 16)
+	if _, err := io.ReadFull(rand.Reader, bytes); err != nil {
+		return "", fmt.Errorf("failed to generate random bytes: %w", err)
+	}
+	return fmt.Sprintf("%s-%s.png", prefix, hex.EncodeToString(bytes)), nil
+}
+
+func (i *ImageMatch) write(image image.Image, fileNamePrefix string) error {
+	if image == nil {
+		return errors.New("write image failed: image is nil")
+	}
+
+	fileName, err := secureTempName(fileNamePrefix)
 	if err != nil {
 		return err
 	}
 
-	var bytes []byte
-	bytes, err = ImageToBytes(image)
+	tempDir := os.TempDir()
+	tempPath := filepath.Join(tempDir, fileName)
+
+	tempFile, err := os.OpenFile(tempPath, os.O_CREATE|os.O_WRONLY|os.O_EXCL, 0600)
+	if err != nil {
+		return fmt.Errorf("failed to create temp file: %w", err)
+	}
+
+	defer func() {
+		_ = tempFile.Close()
+		_ = os.Remove(tempPath)
+	}()
+
+	var imgBytes []byte
+	imgBytes, err = ImageToBytes(image)
 	if err != nil {
 		return err
 	}
 
-	err = os.WriteFile(tempFile.Name(), bytes, 0600)
+	_, err = tempFile.Write(imgBytes)
 	if err != nil {
 		return err
 	}

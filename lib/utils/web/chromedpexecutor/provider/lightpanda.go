@@ -26,30 +26,34 @@ func newLightpandaAllocator(pctx context.Context) (context.Context, context.Canc
 }
 
 func launchLightpanda(pctx context.Context) int {
-	port, err := freeport.GetRandomUnusedPort()
+	portAllocation, err := freeport.GetPortAllocation()
 	logging.Error(err)
 
-	ctx, cancel := context.WithCancel(pctx)
+	go runLightpanda(pctx, portAllocation)
+	time.Sleep(lightpandaInitDelay)
 
-	cmd := exec.CommandContext(ctx, lightpandaCmd, "serve", "--host", "127.0.0.1", "--port", strconv.Itoa(port)) // #nosec G204 - command is hardcoded constant
+	return portAllocation.Port
+}
+
+func runLightpanda(pctx context.Context, portAllocation *freeport.PortAllocation) {
+	ctx, cancel := context.WithCancel(pctx)
+	defer cancel()
+
+	cmd := exec.CommandContext(ctx, lightpandaCmd, "serve", "--host", "127.0.0.1", "--port", strconv.Itoa(portAllocation.Port))
 
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 
-	err = cmd.Start()
-	logging.Error(err)
+	logging.Error(portAllocation.Close())
+	logging.Error(cmd.Start())
 
-	log.Info().Msgf("launched lightpanda: 127.0.0.1:%d", port)
+	log.Info().Msgf("launched lightpanda: 127.0.0.1:%d", portAllocation.Port)
 
-	go lightpandaHandleContextEnded(ctx, cmd, cancel)
-	go lightpandaExited(cmd, ctx)
-
-	time.Sleep(lightpandaInitDelay)
-
-	return port
+	go shutdownLightpandaGracefully(ctx, cmd)
+	go lightpandaExited(cmd, ctx, cancel)
 }
 
-func lightpandaHandleContextEnded(ctx context.Context, cmd *exec.Cmd, cancel context.CancelFunc) {
+func shutdownLightpandaGracefully(ctx context.Context, cmd *exec.Cmd) {
 	<-ctx.Done()
 	if cmd.Process != nil {
 		log.Info().Msg("terminating lightpanda process...")
@@ -60,11 +64,9 @@ func lightpandaHandleContextEnded(ctx context.Context, cmd *exec.Cmd, cancel con
 
 		_, _ = cmd.Process.Wait()
 	}
-
-	cancel()
 }
 
-func lightpandaExited(cmd *exec.Cmd, ctx context.Context) {
+func lightpandaExited(cmd *exec.Cmd, ctx context.Context, cancel context.CancelFunc) {
 	if err := cmd.Wait(); err != nil {
 		if ctx.Err() == nil {
 			log.Error().Err(err).Msg("lightpanda process exited with error")
@@ -72,4 +74,6 @@ func lightpandaExited(cmd *exec.Cmd, ctx context.Context) {
 	} else if ctx.Err() == nil {
 		log.Info().Msg("lightpanda process exited successfully")
 	}
+
+	cancel()
 }

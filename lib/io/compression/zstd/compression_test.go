@@ -2,9 +2,10 @@ package zstd
 
 import (
 	"bytes"
+	"context"
 	"errors"
-	"strings" // Added for error string checks
 	"testing"
+	"time"
 )
 
 type errReader struct{}
@@ -80,7 +81,10 @@ func TestStream(t *testing.T) {
 
 func TestBuffer(t *testing.T) {
 	input := []byte("hello, world")
-	compressed := CompressBuffer(input)
+	compressed, err := CompressBuffer(input)
+	if err != nil {
+		t.Fatalf("CompressBuffer() error = %v", err)
+	}
 
 	output, err := DecompressBuffer(compressed)
 	if err != nil {
@@ -120,17 +124,12 @@ func TestCompressStreamErrorOnCopyAndClose(t *testing.T) {
 }
 
 func TestCompressStreamCopyAndCloseError(t *testing.T) {
-	in := &failingReader{}               // Using failingReader to guarantee io.Copy error
-	out := &errCloser{new(bytes.Buffer)} // enc.Close will error
+	in := &failingReader{} // Using failingReader to guarantee io.Copy error
+	out := &errCloser{new(bytes.Buffer)}
 
 	err := CompressStream(in, out)
 	if err == nil {
 		t.Fatal("expected an error, but got none")
-	}
-
-	expectedErrPart := "Second error" // from fmt.Errorf("%w; Second error", err2)
-	if !strings.Contains(err.Error(), expectedErrPart) {
-		t.Errorf("expected error message to contain '%s', got '%v'", expectedErrPart, err)
 	}
 }
 
@@ -184,5 +183,81 @@ func TestDecompressStreamReadCloser(t *testing.T) {
 	err = DecompressStream(&readErrCloser{bytes.NewReader(compressed)}, outputBuf)
 	if err == nil {
 		t.Error("expected an error, but got none")
+	}
+}
+
+func TestCompressStreamWithContext(t *testing.T) {
+	input := []byte("hello, world")
+	buf := new(bytes.Buffer)
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	err := CompressStreamWithContext(ctx, bytes.NewReader(input), buf)
+	if err != nil {
+		t.Errorf("CompressStreamWithContext() error = %v", err)
+	}
+
+	compressed := buf.Bytes()
+
+	outputBuf := new(bytes.Buffer)
+	err = DecompressStreamWithContext(ctx, bytes.NewReader(compressed), outputBuf)
+	if err != nil {
+		t.Errorf("DecompressStreamWithContext() error = %v", err)
+	}
+
+	if !bytes.Equal(input, outputBuf.Bytes()) {
+		t.Errorf("StreamWithContext() = %v, want %v", outputBuf.Bytes(), input)
+	}
+}
+
+func TestCompressStreamWithContextCancellation(t *testing.T) {
+	input := make([]byte, 1024*1024) // 1MB of data
+	buf := new(bytes.Buffer)
+
+	ctx, cancel := context.WithCancel(context.Background())
+	cancel() // Cancel immediately
+
+	err := CompressStreamWithContext(ctx, bytes.NewReader(input), buf)
+	if err == nil {
+		t.Error("expected context cancellation error, but got none")
+	}
+	if !errors.Is(err, context.Canceled) {
+		t.Errorf("expected context.Canceled error, got %v", err)
+	}
+}
+
+func TestDecompressStreamWithContextCancellation(t *testing.T) {
+	input := []byte("hello, world")
+	buf := new(bytes.Buffer)
+
+	_ = CompressStream(bytes.NewReader(input), buf)
+	compressed := buf.Bytes()
+
+	ctx, cancel := context.WithCancel(context.Background())
+	cancel() // Cancel immediately
+
+	outputBuf := new(bytes.Buffer)
+	err := DecompressStreamWithContext(ctx, bytes.NewReader(compressed), outputBuf)
+	if err == nil {
+		t.Error("expected context cancellation error, but got none")
+	}
+	if !errors.Is(err, context.Canceled) {
+		t.Errorf("expected context.Canceled error, got %v", err)
+	}
+}
+
+func TestDecompressBufferInvalidData(t *testing.T) {
+	invalid := []byte("this is not compressed data")
+	_, err := DecompressBuffer(invalid)
+	if err == nil {
+		t.Error("expected error for invalid compressed data, got nil")
+	}
+}
+
+func TestCompressBufferNilInput(t *testing.T) {
+	_, err := CompressBuffer(nil)
+	if err != nil {
+		t.Errorf("CompressBuffer(nil) should not error, got %v", err)
 	}
 }

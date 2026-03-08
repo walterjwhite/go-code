@@ -45,6 +45,15 @@ func (s *Session) String() string {
 	return fmt.Sprintf("Endpoint: %s", s.Endpoint)
 }
 
+func (s *Session) Close() {
+	if s.cancel != nil {
+		s.cancel()
+	}
+	if s.Credentials != nil {
+		s.Credentials.Clear()
+	}
+}
+
 
 
 
@@ -55,6 +64,21 @@ type Credentials struct {
 	Password string
 
 	Pin string
+}
+
+func (c *Credentials) Clear() {
+	for i := range c.Password {
+		c.Password = c.Password[:i] + "\x00" + c.Password[i+1:]
+	}
+	c.Password = ""
+
+	for i := range c.Pin {
+		c.Pin = c.Pin[:i] + "\x00" + c.Pin[i+1:]
+	}
+	c.Pin = ""
+
+	c.Username = ""
+	c.Domain = ""
 }
 
 type Endpoint struct {

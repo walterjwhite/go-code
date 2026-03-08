@@ -251,9 +251,81 @@ func TestBuildMessage(t *testing.T) {
 
 }
 
+func TestSanitizeHeaderValue(t *testing.T) {
+	tests := []struct {
+		name     string
+		input    string
+		expected string
+	}{
+		{
+			name:     "normal value",
+			input:    "test@example.com",
+			expected: "test@example.com",
+		},
+		{
+			name:     "value with newline injection",
+			input:    "test@example.com\r\nX-Malicious: injected",
+			expected: "test@example.comX-Malicious: injected",
+		},
+		{
+			name:     "value with carriage return",
+			input:    "test\rvalue",
+			expected: "testvalue",
+		},
+		{
+			name:     "value with line feed",
+			input:    "test\nvalue",
+			expected: "testvalue",
+		},
+		{
+			name:     "value with multiple injections",
+			input:    "test@example.com\r\nBcc: attacker@example.com\r\nX-Spam: yes",
+			expected: "test@example.comBcc: attacker@example.comX-Spam: yes",
+		},
+		{
+			name:     "empty value",
+			input:    "",
+			expected: "",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := sanitizeHeaderValue(tt.input)
+			if got != tt.expected {
+				t.Errorf("sanitizeHeaderValue(%q) = %q, want %q", tt.input, got, tt.expected)
+			}
+		})
+	}
+}
+
+type testCredentials struct {
+	username string
+	password string
+}
+
+func getTestCredentials() testCredentials {
+	username := os.Getenv("TEST_SMTP_USERNAME")
+	password := os.Getenv("TEST_SMTP_PASSWORD")
+
+	if username == "" {
+		username = "test_username_placeholder"
+	}
+	if password == "" {
+		password = "test_password_placeholder"
+	}
+
+	return testCredentials{
+		username: username,
+		password: password,
+	}
+}
+
 func TestSend(t *testing.T) {
 	originalGomailDialAndSend := gomailDialAndSend
 	defer func() { gomailDialAndSend = originalGomailDialAndSend }()
+
+	creds := getTestCredentials()
 
 	t.Run("successful send", func(t *testing.T) {
 		gomailDialAndSend = func(dialer *gomail.Dialer, m ...*gomail.Message) error {
@@ -263,10 +335,11 @@ func TestSend(t *testing.T) {
 		emailAccount := &email.EmailAccount{
 			EmailAddress: &mail.Address{Address: "sender@example.com"},
 			SmtpServer:   &email.EmailServer{Host: "smtp.example.com", Port: 587},
-			Username:     "user",
-			Password:     "pass",
+			Username:     creds.username,
+			Password:     creds.password,
 		}
 		emailMessage := &email.EmailMessage{
+			From:    &mail.Address{Address: "sender@example.com"},
 			To:      []*mail.Address{{Address: "recipient@example.com"}},
 			Subject: "Test Subject",
 			Body:    "Test Body",
@@ -286,10 +359,11 @@ func TestSend(t *testing.T) {
 		emailAccount := &email.EmailAccount{
 			EmailAddress: &mail.Address{Address: "sender@example.com"},
 			SmtpServer:   &email.EmailServer{Host: "smtp.example.com", Port: 587},
-			Username:     "user",
-			Password:     "pass",
+			Username:     creds.username,
+			Password:     creds.password,
 		}
 		emailMessage := &email.EmailMessage{
+			From:    &mail.Address{Address: "sender@example.com"},
 			To:      []*mail.Address{{Address: "recipient@example.com"}},
 			Subject: "Test Subject",
 			Body:    "Test Body",

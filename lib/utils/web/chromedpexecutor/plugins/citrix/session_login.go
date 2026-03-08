@@ -85,6 +85,13 @@ func validateToken(token string) error {
 	if len(token) != 6 {
 		return fmt.Errorf("invalid token format: expected 6-digit token")
 	}
+
+	for _, c := range token {
+		if c < '0' || c > '9' {
+			return fmt.Errorf("invalid token format: token must contain only digits")
+		}
+	}
+
 	return nil
 }
 

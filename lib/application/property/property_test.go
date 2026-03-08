@@ -2,9 +2,9 @@ package property
 
 import (
 	"bytes"
-	"flag"
 	"os"
 	"path/filepath"
+	"reflect"
 	"testing"
 
 	"github.com/rs/zerolog"
@@ -205,18 +205,12 @@ func TestSanitizeEnvKey(t *testing.T) {
 
 func TestLoadCli(t *testing.T) {
 	config := &TestConfig{}
-
-	fs := flag.NewFlagSet("test", flag.ContinueOnError)
-	originalCommandLine := flag.CommandLine
-	flag.CommandLine = fs
-
-	defer func() { flag.CommandLine = originalCommandLine }()
+	originalArgs := os.Args
+	defer func() { os.Args = originalArgs }()
 
 	os.Args = []string{"cmd", "--name=cli-name", "--value=789", "--enabled=true"}
 
 	LoadCli(config)
-
-	_ = fs.Parse(os.Args[1:])
 
 	assert.Equal(t, "cli-name", config.Name)
 	assert.Equal(t, 789, config.Value)
@@ -346,4 +340,215 @@ func TestLoadSecrets_NilPointerToStruct(t *testing.T) {
 
 	LoadSecrets(nilConfig)
 	assert.Contains(t, output.String(), "LoadSecrets expects a pointer to a struct; got: ptr")
+}
+
+type RequiredFieldsConfig struct {
+	RequiredField string
+	OptionalField string
+}
+
+func (c *RequiredFieldsConfig) RequiredFields() []string {
+	return []string{"RequiredField"}
+}
+
+func TestValidateRequiredFields_ValidConfig(t *testing.T) {
+	config := &RequiredFieldsConfig{
+		RequiredField: "has-value",
+		OptionalField: "",
+	}
+	validateRequiredFields(config)
+}
+
+func TestValidateRequiredFields_MissingField(t *testing.T) {
+	config := &RequiredFieldsConfig{
+		RequiredField: "",
+		OptionalField: "value",
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			t.Logf("Recovered from panic: %v", r)
+		}
+	}()
+	validateRequiredFields(config)
+}
+
+func TestValidateRequiredFields_NonExistentField(t *testing.T) {
+	config := &RequiredFieldsConfig{
+		RequiredField: "value",
+	}
+	validateRequiredFields(config)
+	assert.Equal(t, "value", config.RequiredField)
+}
+
+func TestValidateRequiredFields_NoImplementation(t *testing.T) {
+	config := &TestConfig{}
+	validateRequiredFields(config)
+}
+
+func TestValidateRequiredFields_NilPointer(t *testing.T) {
+	var config *RequiredFieldsConfig = nil
+	validateRequiredFields(config)
+}
+
+func TestValidateRequiredFields_NonStructPointer(t *testing.T) {
+	type ConfigAsString string
+	var config ConfigAsString = "test"
+	validateRequiredFields(&config)
+}
+
+func TestValidateRequiredFields_MultipleMissingFields(t *testing.T) {
+	output := &bytes.Buffer{}
+	log.Logger = log.Output(output)
+	defer func() {
+		log.Logger = zerolog.New(os.Stderr).With().Timestamp().Logger()
+	}()
+
+	type MultiFieldConfig struct {
+		Field1 string
+		Field2 string
+		Field3 string
+	}
+
+	cfg := &MultiFieldConfig{}
+	validateRequiredFields(cfg)
+}
+
+type ConfigForFieldValidation struct {
+	StringField     string
+	IntField        int
+	BoolField       bool
+	UnexportedField string
+	EmptyString     string
+}
+
+func (c *ConfigForFieldValidation) RequiredFields() []string {
+	return []string{"StringField", "IntField", "BoolField", "UnexportedField", "NonExistent"}
+}
+
+func TestIsValid_WithValidStringField(t *testing.T) {
+	config := &ConfigForFieldValidation{
+		StringField: "valid-value",
+	}
+	result := isValid(config, reflect.ValueOf(config).Elem(), "StringField")
+	assert.True(t, result)
+}
+
+func TestIsValid_WithEmptyStringField(t *testing.T) {
+	config := &ConfigForFieldValidation{
+		StringField: "",
+	}
+	result := isValid(config, reflect.ValueOf(config).Elem(), "StringField")
+	assert.False(t, result)
+}
+
+func TestIsValid_WithNonStringField(t *testing.T) {
+	config := &ConfigForFieldValidation{}
+	result := isValid(config, reflect.ValueOf(config).Elem(), "IntField")
+	assert.False(t, result)
+}
+
+func TestIsValid_WithNonExistentField(t *testing.T) {
+	config := &ConfigForFieldValidation{
+		StringField: "value",
+	}
+	result := isValid(config, reflect.ValueOf(config).Elem(), "NonExistent")
+	assert.False(t, result)
+}
+
+func TestLoadEnv_PartialEnvVars(t *testing.T) {
+	config := &TestConfig{}
+	_ = os.Setenv("PROPERTY_TESTCONFIG_NAME", "test-value")
+	_ = os.Unsetenv("PROPERTY_TESTCONFIG_VALUE")
+
+	LoadEnv(config)
+	assert.Equal(t, "test-value", config.Name)
+}
+
+func TestLoadEnv_InvalidEnvVarType(t *testing.T) {
+	config := &TestConfig{}
+	_ = os.Setenv("PROPERTY_TESTCONFIG_VALUE", "not-a-number")
+
+	LoadEnv(config)
+}
+
+type DeepConfig struct {
+	Level1 struct {
+		Level2 struct {
+			Level3 struct {
+				SecretField string
+			}
+		}
+	}
+}
+
+func (c *DeepConfig) SecretFields() []string {
+	return []string{"Level1.Level2.Level3.SecretField"}
+}
+
+func TestLoadSecrets_DeepNesting(t *testing.T) {
+	config := &DeepConfig{}
+	config.Level1.Level2.Level3.SecretField = "secret://deep-secret"
+
+	originalGetSecret := getSecretFunc
+	defer func() { getSecretFunc = originalGetSecret }()
+	getSecretFunc = func(name string) string {
+		if name == "deep-secret" {
+			return "decrypted-deep-value"
+		}
+		return ""
+	}
+
+	LoadSecrets(config)
+	assert.Equal(t, "decrypted-deep-value", config.Level1.Level2.Level3.SecretField)
+}
+
+func TestGetField_NestedPath(t *testing.T) {
+	config := &TestConfig{
+		Nested: struct {
+			Field1 string  `yaml:"field1"`
+			Field2 float64 `yaml:"field2"`
+		}{
+			Field1: "nested-value",
+			Field2: 3.14,
+		},
+	}
+
+	val := reflect.ValueOf(config).Elem()
+	field := getField(val, "Nested.Field1")
+	assert.True(t, field.IsValid())
+	assert.Equal(t, "nested-value", field.String())
+}
+
+func TestGetField_SingleLevelPath(t *testing.T) {
+	config := &TestConfig{
+		Name: "test-value",
+	}
+
+	val := reflect.ValueOf(config).Elem()
+	field := getField(val, "Name")
+	assert.True(t, field.IsValid())
+	assert.Equal(t, "test-value", field.String())
+}
+
+type CliConfig struct {
+	Name  string
+	Value int
+}
+
+func TestLoadCli_NoArgs(t *testing.T) {
+	config := &CliConfig{}
+	originalArgs := os.Args
+	defer func() { os.Args = originalArgs }()
+
+	os.Args = []string{"cmd"}
+	LoadCli(config)
+}
+
+func TestSanitizeEnvKey_SpecialCharacters(t *testing.T) {
+	assert.Equal(t, "MYAPP_CONFIG", sanitizeEnvKey("MyApp.Config"))
+	assert.Equal(t, "ANOTHER_CONFIG", sanitizeEnvKey("Another-Config"))
+	assert.Equal(t, "APP_WITH_UNDERSCORES", sanitizeEnvKey("App_With_Underscores"))
+	assert.Equal(t, "NUMBERS123", sanitizeEnvKey("Numbers123"))
+	assert.Equal(t, "MULTIPLE_SEPS", sanitizeEnvKey("Multiple...___SEPS"))
+	assert.Equal(t, "ONLY_ALPHANUMERIC_", sanitizeEnvKey("ONLY-ALPHANUMERIC!@#"))
 }

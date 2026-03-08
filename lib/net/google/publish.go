@@ -3,14 +3,26 @@ package google
 import (
 	"cloud.google.com/go/pubsub/v2"
 	"encoding/json"
+	"errors"
+	"fmt"
 	"github.com/rs/zerolog/log"
 	"github.com/walterjwhite/go-code/lib/io/compression/zstd"
 )
 
+const MaxMessageSize = 10 * 1024 * 1024
+
 func (c *Conf) prepareMessage(message []byte) ([]byte, error) {
+	if len(message) > MaxMessageSize {
+		return nil, fmt.Errorf("message size %d exceeds maximum allowed size %d", len(message), MaxMessageSize)
+	}
+
 	data, err := c.serialize(message)
 	if err != nil {
 		return nil, err
+	}
+
+	if len(data) > MaxMessageSize {
+		return nil, errors.New("serialized message size exceeds maximum allowed size")
 	}
 
 	compressed, err := c.compress(data)
@@ -18,9 +30,17 @@ func (c *Conf) prepareMessage(message []byte) ([]byte, error) {
 		return nil, err
 	}
 
+	if len(compressed) > MaxMessageSize {
+		return nil, errors.New("compressed message size exceeds maximum allowed size")
+	}
+
 	encrypted, err := c.encrypt(compressed)
 	if err != nil {
 		return nil, err
+	}
+
+	if len(encrypted) > MaxMessageSize {
+		return nil, errors.New("encrypted message size exceeds maximum allowed size")
 	}
 
 	return encrypted, nil
@@ -74,5 +94,6 @@ func (c *Conf) compress(data []byte) ([]byte, error) {
 		return data, nil
 	}
 
-	return zstd.CompressBuffer(data), nil
+	compressed, err := zstd.CompressBuffer(data)
+	return compressed, err
 }

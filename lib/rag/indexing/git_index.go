@@ -2,6 +2,7 @@ package indexing
 
 import (
 	"fmt"
+	"os"
 	"path/filepath"
 	"strconv"
 	"strings"
@@ -12,20 +13,81 @@ import (
 	"github.com/walterjwhite/go-code/lib/rag/git"
 )
 
-func IndexGitRepository(repoPath, branch, tag, namespace string, logLimit, maxFileBytes int) []schema.Document {
-	absRepoPath, err := filepath.Abs(repoPath)
-	logging.Error(err)
+func validateGitRepoPath(repoPath string) error {
+	if repoPath == "" {
+		return fmt.Errorf("repository path cannot be empty")
+	}
+	if strings.Contains(repoPath, "..") {
+		return fmt.Errorf("repository path contains invalid traversal sequence")
+	}
+	absPath, err := filepath.Abs(repoPath)
+	if err != nil {
+		return fmt.Errorf("invalid repository path: %w", err)
+	}
+	realPath, err := filepath.EvalSymlinks(absPath)
+	if err != nil {
+		return fmt.Errorf("invalid repository path: %w", err)
+	}
+	if _, err := os.Stat(realPath); os.IsNotExist(err) {
+		return fmt.Errorf("repository path does not exist: %s", repoPath)
+	}
+	return nil
+}
 
-	ref := git.ResolveRef(absRepoPath, branch, tag)
+func sanitizeRef(ref string) error {
+	if ref == "" {
+		return fmt.Errorf("ref cannot be empty")
+	}
+	dangerousChars := []string{"..", ";", "|", "&", "$", "`", "(", ")", "<", ">", "\\", "\n", "\r"}
+	for _, char := range dangerousChars {
+		if strings.Contains(ref, char) {
+			return fmt.Errorf("ref contains invalid characters")
+		}
+	}
+	return nil
+}
+
+func IndexGitRepository(repoPath, branch, tag, namespace string, logLimit, maxFileBytes int) []schema.Document {
+	if err := validateGitRepoPath(repoPath); err != nil {
+		logging.Error(fmt.Errorf("invalid repository path: %w", err))
+		return nil
+	}
+
+	if branch != "" {
+		if err := sanitizeRef(branch); err != nil {
+			logging.Error(fmt.Errorf("invalid branch name: %w", err))
+			return nil
+		}
+	}
+	if tag != "" {
+		if err := sanitizeRef(tag); err != nil {
+			logging.Error(fmt.Errorf("invalid tag name: %w", err))
+			return nil
+		}
+	}
+
+	absRepoPath, err := filepath.Abs(repoPath)
+	if err != nil {
+		logging.Error(fmt.Errorf("resolve absolute path: %w", err))
+		return nil
+	}
+
+	realRepoPath, err := filepath.EvalSymlinks(absRepoPath)
+	if err != nil {
+		logging.Error(fmt.Errorf("resolve symlinks: %w", err))
+		return nil
+	}
+
+	ref := git.ResolveRef(realRepoPath, branch, tag)
 	if namespace == "" {
-		namespace = fmt.Sprintf("%s::%s", absRepoPath, ref.Name)
+		namespace = fmt.Sprintf("%s::%s", realRepoPath, ref.Name)
 	}
 
 	docs := make([]schema.Document, 0, 1024)
-	indexFilesDocs(&docs, absRepoPath, ref, namespace, maxFileBytes)
-	indexLogDocs(&docs, absRepoPath, ref, namespace, logLimit)
+	indexFilesDocs(&docs, realRepoPath, ref, namespace, maxFileBytes)
+	indexLogDocs(&docs, realRepoPath, ref, namespace, logLimit)
 
-	log.Info().Msgf("indexed %d git docs from repo=%s ref=%s namespace=%s", len(docs), absRepoPath, ref.Name, namespace)
+	log.Info().Msgf("indexed %d git docs from repo=%s ref=%s namespace=%s", len(docs), realRepoPath, ref.Name, namespace)
 	return docs
 }
 

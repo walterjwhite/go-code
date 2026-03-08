@@ -11,12 +11,14 @@ import (
 
 	"os"
 	"os/signal"
+	"strings"
 	"syscall"
 )
 
 var (
-	Context context.Context
-	Cancel  context.CancelFunc
+	appFlags = flag.NewFlagSet("application", flag.ExitOnError)
+	Context  context.Context
+	Cancel   context.CancelFunc
 )
 
 func init() {
@@ -33,7 +35,17 @@ func init() {
 }
 
 func Configure(configurations ...any) {
-	flag.Parse()
+	isTest := false
+	for _, arg := range os.Args {
+		if strings.HasPrefix(arg, "-test.") {
+			isTest = true
+			break
+		}
+	}
+
+	if !isTest {
+		logging.Error(appFlags.Parse(os.Args[1:]), "appFlags.Parse")
+	}
 	Load(configurations...)
 
 	configureLogging()

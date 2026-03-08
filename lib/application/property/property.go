@@ -17,7 +17,7 @@ type PostLoad interface {
 }
 
 func Load(applicationName string, config any) {
-	log.Debug().Msgf("before configuration: %v", config)
+	log.Debug().Msgf("loading configuration for: %T", config)
 
 	logging.Warn(LoadFile(applicationName, config), "LoadFile")
 
@@ -27,5 +27,5 @@ func Load(applicationName string, config any) {
 
 	validateRequiredFields(config)
 
-	log.Debug().Msgf("after configuration: %v", config)
+	log.Debug().Msgf("configuration loaded for: %T", config)
 }

@@ -18,6 +18,31 @@ func (g *GreenhouseATS) GetName() string {
 	return "greenhouse"
 }
 
+func sanitizeForSelector(input string) string {
+	replacer := strings.NewReplacer(
+		"'", "",
+		"\"", "",
+		"[", "",
+		"]", "",
+		"(", "",
+		")", "",
+		":", "",
+		",", "",
+		".", "",
+		"#", "",
+		">", "",
+		"+", "",
+		"~", "",
+		" ", "_",
+		"\\", "",
+		"&", "",
+		"|", "",
+		";", "",
+		"<", "",
+	)
+	return replacer.Replace(strings.ToLower(input))
+}
+
 func (g *GreenhouseATS) RegisterAccount(executor *atsclient.Executor, account *Account) error {
 	log.Println("Starting Greenhouse account registration")
 
@@ -87,13 +112,16 @@ func (g *GreenhouseATS) ApplyForJob(executor *atsclient.Executor, resumePath str
 			continue
 		}
 
+		sanitizedPattern := sanitizeForSelector(questionPattern)
+		sanitizedAnswer := sanitizeForSelector(answer)
+
 		selector := fmt.Sprintf("input[type='text'][name*='%s'], textarea[name*='%s'], input[type='radio'][value*='%s'], input[type='checkbox'][value*='%s']",
-			strings.ToLower(questionPattern), strings.ToLower(questionPattern), strings.ToLower(answer), strings.ToLower(answer))
+			sanitizedPattern, sanitizedPattern, sanitizedAnswer, sanitizedAnswer)
 
 
 		err := executor.SetValue(selector, answer)
 		if err != nil {
-			altSelector := fmt.Sprintf("[placeholder*='%s'], [title*='%s']", strings.ToLower(questionPattern), strings.ToLower(questionPattern))
+			altSelector := fmt.Sprintf("[placeholder*='%s'], [title*='%s']", sanitizedPattern, sanitizedPattern)
 			err = executor.SetValue(altSelector, answer)
 			if err != nil {
 				log.Println("Could not find field for question pattern, continuing")
@@ -106,12 +134,10 @@ func (g *GreenhouseATS) ApplyForJob(executor *atsclient.Executor, resumePath str
 	}
 
 	for _, answer := range qaMap {
-		if err := g.validateInput("", answer); err != nil {
-			continue
-		}
+		sanitizedAnswer := sanitizeForSelector(answer)
 
 		radioSelector := fmt.Sprintf("input[type='radio'][value*='%s'], input[type='checkbox'][value*='%s']",
-			strings.ToLower(answer), strings.ToLower(answer))
+			sanitizedAnswer, sanitizedAnswer)
 
 		err := executor.Click(radioSelector)
 		if err != nil {

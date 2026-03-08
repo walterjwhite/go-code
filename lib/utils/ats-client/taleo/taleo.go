@@ -4,19 +4,112 @@ import (
 	"fmt"
 	"log"
 	"strings"
+	"sync"
+	"time"
 
 	atsclient "github.com/walterjwhite/go-code/lib/utils/ats-client"
 )
 
 type Account = atsclient.Account
 
-type TaleoATS struct{}
+const (
+	maxInputLength = 1024
+	maxEmailLength = 254
+	rateLimitDelay = 500 * time.Millisecond
+)
+
+type TaleoATS struct {
+	mu           sync.Mutex
+	lastActionAt time.Time
+}
 
 func (t *TaleoATS) GetName() string {
 	return "taleo"
 }
 
+func (t *TaleoATS) applyRateLimit() {
+	t.mu.Lock()
+	defer t.mu.Unlock()
+
+	if !t.lastActionAt.IsZero() {
+		elapsed := time.Since(t.lastActionAt)
+		if elapsed < rateLimitDelay {
+			time.Sleep(rateLimitDelay - elapsed)
+		}
+	}
+	t.lastActionAt = time.Now()
+}
+
+func sanitizeForSelector(input string) string {
+	replacer := strings.NewReplacer(
+		"'", "",
+		"\"", "",
+		"[", "",
+		"]", "",
+		"(", "",
+		")", "",
+		":", "",
+		",", "",
+		".", "",
+		"#", "",
+		">", "",
+		"+", "",
+		"~", "",
+		" ", "_",
+		"\\", "",
+		"&", "",
+		"|", "",
+		";", "",
+		"<", "",
+	)
+	return replacer.Replace(strings.ToLower(input))
+}
+
+func validateInput(pattern, value string) error {
+	if len(value) > maxInputLength {
+		return fmt.Errorf("input exceeds maximum length of %d", maxInputLength)
+	}
+	if len(pattern) > maxInputLength {
+		return fmt.Errorf("pattern exceeds maximum length of %d", maxInputLength)
+	}
+
+	dangerousChars := []string{"<script", "</script>", "javascript:", "data:", "vbscript:"}
+	for _, char := range dangerousChars {
+		if strings.Contains(strings.ToLower(value), char) || strings.Contains(strings.ToLower(pattern), char) {
+			return fmt.Errorf("input contains potentially dangerous script content")
+		}
+	}
+
+	return nil
+}
+
+func validateEmail(email string) error {
+	if email == "" {
+		return fmt.Errorf("email cannot be empty")
+	}
+	if len(email) > maxEmailLength {
+		return fmt.Errorf("email exceeds maximum length of %d", maxEmailLength)
+	}
+	if !strings.Contains(email, "@") || !strings.Contains(email, ".") {
+		return fmt.Errorf("invalid email format")
+	}
+	return nil
+}
+
 func (t *TaleoATS) RegisterAccount(executor *atsclient.Executor, account *Account) error {
+	if executor == nil {
+		return fmt.Errorf("executor cannot be nil")
+	}
+	if account == nil {
+		return fmt.Errorf("account cannot be nil")
+	}
+
+	if account.Email != "" {
+		if err := validateEmail(account.Email); err != nil {
+			return fmt.Errorf("invalid email: %w", err)
+		}
+	}
+
 	log.Println("Starting Taleo account registration")
 
 	baseURL := "https://talent.oracle.com/"
@@ -94,6 +187,8 @@ func (t *TaleoATS) RegisterAccount(executor *atsclient.Executor, account *Accoun
 }
 
 func (t *TaleoATS) LoginAccount(executor *atsclient.Executor, email, password string) error {
+	t.applyRateLimit()
+
 	log.Println("Starting Taleo login")
 
 	baseURL := "https://talent.oracle.com/"
@@ -217,13 +312,21 @@ func (t *TaleoATS) ApplyForJob(executor *atsclient.Executor, resumePath string, 
 
 
 	for questionPattern, answer := range qaMap {
+		if err := validateInput(questionPattern, answer); err != nil {
+			log.Printf("Invalid input detected: %v, skipping question", err)
+			continue
+		}
+
+		sanitizedPattern := sanitizeForSelector(questionPattern)
+		sanitizedAnswer := sanitizeForSelector(answer)
+
 		textFieldSelector := fmt.Sprintf("input[type='text'][name*='%s'], input[type='text'][id*='%s'], textarea[name*='%s'], textarea[id*='%s']",
-			strings.ToLower(questionPattern), strings.ToLower(questionPattern), strings.ToLower(questionPattern), strings.ToLower(questionPattern))
+			sanitizedPattern, sanitizedPattern, sanitizedPattern, sanitizedPattern)
 
 		err := executor.SetValue(textFieldSelector, answer)
 		if err != nil {
 			altTextFieldSelector := fmt.Sprintf("input[name*='%s'], input[id*='%s'], textarea[name*='%s'], textarea[id*='%s']",
-				strings.ToLower(questionPattern), strings.ToLower(questionPattern), strings.ToLower(questionPattern), strings.ToLower(questionPattern))
+				sanitizedPattern, sanitizedPattern, sanitizedPattern, sanitizedPattern)
 
 			err = executor.SetValue(altTextFieldSelector, answer)
 			if err != nil {
@@ -236,7 +339,7 @@ func (t *TaleoATS) ApplyForJob(executor *atsclient.Executor, resumePath string, 
 		}
 
 		radioCheckboxSelector := fmt.Sprintf("input[type='radio'][value*='%s'], input[type='checkbox'][value*='%s'], input[type='radio'][id*='%s'], input[type='checkbox'][id*='%s']",
-			strings.ToLower(answer), strings.ToLower(answer), strings.ToLower(answer), strings.ToLower(answer))
+			sanitizedAnswer, sanitizedAnswer, sanitizedAnswer, sanitizedAnswer)
 
 		err = executor.Click(radioCheckboxSelector)
 		if err != nil {
@@ -246,7 +349,7 @@ func (t *TaleoATS) ApplyForJob(executor *atsclient.Executor, resumePath string, 
 		}
 
 		dropdownSelector := fmt.Sprintf("select[name*='%s'], select[id*='%s']",
-			strings.ToLower(questionPattern), strings.ToLower(questionPattern))
+			sanitizedPattern, sanitizedPattern)
 
 		err = t.selectDropdownOption(executor, dropdownSelector, answer)
 		if err != nil {

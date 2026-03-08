@@ -15,7 +15,7 @@ import (
 
 func main() {
 	config := &Config{}
-	config.PreLoad()
+	config.Preload()
 	application.Configure(config)
 
 	if len(config.Proxy) == 0 {

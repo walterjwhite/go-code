@@ -3,6 +3,8 @@ package transport
 import (
 	"context"
 	"fmt"
+	"net/mail"
+	"regexp"
 	"strings"
 
 	"github.com/walterjwhite/go-code/lib/io/compression"
@@ -12,11 +14,27 @@ import (
 	"gopkg.in/gomail.v2"
 )
 
+var emailRegex = regexp.MustCompile(`^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$`)
+
 type EmailPublisher struct {
 	dialer     *gomail.Dialer
 	from       string
 	processor  *messaging.MessageProcessor
 	serializer serialization.Serializer
+}
+
+type EmailPublisherConfig struct {
+	Host              string
+	Port              int
+	Username          string
+	Password          string
+	From              string
+	Serializer        serialization.Serializer
+	Compressor        compression.Compressor
+	Encryptor         encryption.Encryptor
+	EnableCompression bool
+	EnableEncryption  bool
+	UseTLS            bool
 }
 
 func NewEmailPublisher(
@@ -27,25 +45,17 @@ func NewEmailPublisher(
 	from string,
 	serializer serialization.Serializer,
 	compressor compression.Compressor,
-	encryptor any,
+	encryptor encryption.Encryptor,
 	enableCompression bool,
 	enableEncryption bool,
 ) *EmailPublisher {
 	dialer := gomail.NewDialer(host, port, username, password)
-
-	var encInt encryption.Encryptor
-	if encryptor != nil {
-		var ok bool
-		encInt, ok = encryptor.(encryption.Encryptor)
-		if !ok {
-			panic("encryptor must implement encryption.Encryptor interface")
-		}
-	}
+	dialer.TLSConfig = nil // Uses default TLS config
 
 	processor := messaging.NewMessageProcessor(
 		serializer,
 		compressor,
-		encInt,
+		encryptor,
 		false, // serialization handled separately
 		enableCompression,
 		enableEncryption,
@@ -59,9 +69,61 @@ func NewEmailPublisher(
 	}
 }
 
+func NewEmailPublisherWithConfig(cfg EmailPublisherConfig) *EmailPublisher {
+	dialer := gomail.NewDialer(cfg.Host, cfg.Port, cfg.Username, cfg.Password)
+	if cfg.UseTLS {
+		dialer.TLSConfig = nil // Uses default TLS config
+	}
+
+	processor := messaging.NewMessageProcessor(
+		cfg.Serializer,
+		cfg.Compressor,
+		cfg.Encryptor,
+		false, // serialization handled separately
+		cfg.EnableCompression,
+		cfg.EnableEncryption,
+	)
+
+	return &EmailPublisher{
+		dialer:     dialer,
+		from:       cfg.From,
+		processor:  processor,
+		serializer: cfg.Serializer,
+	}
+}
+
+func validateEmailAddress(email string) error {
+	if email == "" {
+		return fmt.Errorf("email address cannot be empty")
+	}
+
+	if strings.ContainsAny(email, "\r\n") {
+		return fmt.Errorf("invalid email address: contains control characters")
+	}
+
+	if !emailRegex.MatchString(email) {
+		return fmt.Errorf("invalid email address format: %s", email)
+	}
+
+	_, err := mail.ParseAddress(email)
+	if err != nil {
+		return fmt.Errorf("invalid email address: %w", err)
+	}
+
+	return nil
+}
+
 func (p *EmailPublisher) Publish(ctx context.Context, topic string, event any) error {
 	if p.dialer == nil {
 		return fmt.Errorf("email dialer not initialized")
+	}
+
+	if err := validateEmailAddress(topic); err != nil {
+		return fmt.Errorf("invalid recipient: %w", err)
+	}
+
+	if err := validateEmailAddress(p.from); err != nil {
+		return fmt.Errorf("invalid sender: %w", err)
 	}
 
 	serialized, err := p.serializer.Serialize(event)
@@ -81,7 +143,7 @@ func (p *EmailPublisher) Publish(ctx context.Context, topic string, event any) e
 	m.SetBody("text/plain", string(processed))
 
 	if err := p.dialer.DialAndSend(m); err != nil {
-		return fmt.Errorf("failed to send email to %s: %w", topic, err)
+		return fmt.Errorf("failed to send email: %w", err)
 	}
 
 	return nil
@@ -99,29 +161,32 @@ type EmailSubscriber struct {
 	serializer serialization.Serializer
 }
 
+type EmailSubscriberConfig struct {
+	Host              string
+	Username          string
+	Password          string
+	Serializer        serialization.Serializer
+	Compressor        compression.Compressor
+	Encryptor         encryption.Encryptor
+	EnableCompression bool
+	EnableEncryption  bool
+	UseTLS            bool
+}
+
 func NewEmailSubscriber(
 	host string,
 	username string,
 	password string,
 	serializer serialization.Serializer,
 	compressor compression.Compressor,
-	encryptor any,
+	encryptor encryption.Encryptor,
 	enableCompression bool,
 	enableEncryption bool,
 ) *EmailSubscriber {
-	var encInt encryption.Encryptor
-	if encryptor != nil {
-		var ok bool
-		encInt, ok = encryptor.(encryption.Encryptor)
-		if !ok {
-			panic("encryptor must implement encryption.Encryptor interface")
-		}
-	}
-
 	processor := messaging.NewMessageProcessor(
 		serializer,
 		compressor,
-		encInt,
+		encryptor,
 		false, // serialization handled separately
 		enableCompression,
 		enableEncryption,
@@ -133,6 +198,25 @@ func NewEmailSubscriber(
 		password:   password,
 		processor:  processor,
 		serializer: serializer,
+	}
+}
+
+func NewEmailSubscriberWithConfig(cfg EmailSubscriberConfig) *EmailSubscriber {
+	processor := messaging.NewMessageProcessor(
+		cfg.Serializer,
+		cfg.Compressor,
+		cfg.Encryptor,
+		false, // serialization handled separately
+		cfg.EnableCompression,
+		cfg.EnableEncryption,
+	)
+
+	return &EmailSubscriber{
+		host:       cfg.Host,
+		username:   cfg.Username,
+		password:   cfg.Password,
+		processor:  processor,
+		serializer: cfg.Serializer,
 	}
 }
 

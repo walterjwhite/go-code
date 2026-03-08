@@ -1,12 +1,32 @@
 package write
 
 import (
+	"fmt"
 	"github.com/emersion/go-imap"
 	"github.com/rs/zerolog/log"
-	"github.com/walterjwhite/go-code/lib/application/logging"
+	"regexp"
 )
 
+var folderNamePattern = regexp.MustCompile(`^[a-zA-Z0-9._\-/\s]+$`)
+
+func validateFolderName(folderName string) error {
+	if folderName == "" {
+		return fmt.Errorf("folder name cannot be empty")
+	}
+	if len(folderName) > 255 {
+		return fmt.Errorf("folder name exceeds maximum length of 255 characters")
+	}
+	if !folderNamePattern.MatchString(folderName) {
+		return fmt.Errorf("folder name contains invalid characters")
+	}
+	return nil
+}
+
 func (s *EmailSession) Read(folderName string, function func(msg *imap.Message), incrementIndex bool) error {
+	if err := validateFolderName(folderName); err != nil {
+		return fmt.Errorf("invalid folder name: %w", err)
+	}
+
 	mbox, err := s.client.Select(folderName, false)
 	if err != nil {
 		return err
@@ -31,9 +51,15 @@ func (s *EmailSession) Read(folderName string, function func(msg *imap.Message),
 			done <- s.client.Fetch(seqSet, items, messageChannel)
 		}()
 
-		logging.Error(<-done)
+		err = <-done
+		if err != nil {
+			close(messageChannel)
+			return fmt.Errorf("fetch failed: %w", err)
+		}
 
-		function(<-messageChannel)
+		msg := <-messageChannel
+		close(messageChannel)
+		function(msg)
 		seqSet.Clear()
 
 		if incrementIndex {

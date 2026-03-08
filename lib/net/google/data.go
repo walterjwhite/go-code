@@ -6,7 +6,6 @@ import (
 	"os"
 
 	"cloud.google.com/go/pubsub/v2"
-	"github.com/walterjwhite/go-code/lib/net/messaging"
 	"github.com/walterjwhite/go-code/lib/security/encryption"
 	"github.com/walterjwhite/go-code/lib/security/encryption/aes"
 	"google.golang.org/api/option"
@@ -26,8 +25,7 @@ type Conf struct {
 	Compress          bool
 	Serialize         bool
 
-	encryptor        encryption.Encryptor
-	messageProcessor *messaging.MessageProcessor
+	encryptor encryption.Encryptor
 
 	ctx    context.Context
 	cancel context.CancelFunc
@@ -44,9 +42,9 @@ func (c *Conf) Init(pctx context.Context) error {
 
 	if _, err := os.Stat(c.CredentialsFile); err != nil {
 		if os.IsNotExist(err) {
-			return fmt.Errorf("credentials file not found: %s", c.CredentialsFile)
+			return fmt.Errorf("credentials file not found")
 		}
-		return fmt.Errorf("credentials file validation failed: %w", err)
+		return fmt.Errorf("credentials file validation failed")
 	}
 
 	realClient, err := pubsub.NewClient(c.ctx, c.ProjectId, option.WithAuthCredentialsFile(option.ServiceAccount, c.CredentialsFile))
@@ -68,7 +66,7 @@ func (c *Conf) Init(pctx context.Context) error {
 }
 
 func (c *Conf) String() string {
-	return fmt.Sprintf("Conf: {CredentialsFile: %s, ProjectId: %s}", c.CredentialsFile, c.ProjectId)
+	return fmt.Sprintf("Conf: {ProjectId: %s}", c.ProjectId)
 }
 
 func (c *Conf) Cancel() {

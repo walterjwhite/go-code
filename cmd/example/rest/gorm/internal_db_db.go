@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"time"
 
 	"gorm.io/driver/postgres"
@@ -43,6 +44,9 @@ func Close(db *gorm.DB) {
 }
 
 func Ping(db *gorm.DB) error {
+	if db == nil {
+		return errors.New("db is nil")
+	}
 	sqlDB, err := db.DB()
 	if err != nil {
 		return err

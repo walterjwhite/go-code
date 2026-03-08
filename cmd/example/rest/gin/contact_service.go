@@ -16,6 +16,19 @@ func contact(c *gin.Context) {
 		return
 	}
 
+	req.Name = sanitizeInput(req.Name)
+	req.Email = sanitizeInput(req.Email)
+	req.Subject = sanitizeInput(req.Subject)
+	req.Message = sanitizeInput(req.Message)
+
+	if len(req.Name) > MaxNameLength ||
+		len(req.Email) > MaxEmailLength ||
+		len(req.Subject) > MaxSubjectLength ||
+		len(req.Message) > MaxMessageLength {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "input exceeds maximum allowed length"})
+		return
+	}
+
 	if strings.TrimSpace(req.Name) == "" ||
 		strings.TrimSpace(req.Email) == "" ||
 		strings.TrimSpace(req.Subject) == "" ||

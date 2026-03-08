@@ -15,6 +15,7 @@ type MockPublisher struct {
 	LastTopic string
 	LastEvent any
 	Err       error
+	CloseErr  error
 }
 
 func (m *MockPublisher) Publish(ctx context.Context, topic string, event any) error {
@@ -24,19 +25,27 @@ func (m *MockPublisher) Publish(ctx context.Context, topic string, event any) er
 }
 
 func (m *MockPublisher) Close() error {
-	return nil
+	return m.CloseErr
 }
 
 type MockSubscriber struct {
-	Err error
+	Err          error
+	CloseErr     error
+	MessageBytes []byte
 }
 
 func (m *MockSubscriber) Subscribe(ctx context.Context, subscription string, handler transport.MessageHandler) error {
-	return m.Err
+	if m.Err != nil {
+		return m.Err
+	}
+	if m.MessageBytes != nil {
+		return handler(ctx, m.MessageBytes)
+	}
+	return nil
 }
 
 func (m *MockSubscriber) Close() error {
-	return nil
+	return m.CloseErr
 }
 
 func TestEventRegistry(t *testing.T) {
@@ -298,5 +307,137 @@ func TestEventService(t *testing.T) {
 		svc := NewEventService(mockPublisher, mockSubscriber, serializer)
 		err := svc.Close()
 		assert.NoError(t, err)
+	})
+
+	t.Run("Publish Event with Nil Event", func(t *testing.T) {
+		svc := NewEventService(mockPublisher, mockSubscriber, serializer)
+		err := svc.PublishEvent(context.Background(), "events", nil)
+		assert.Error(t, err)
+		assert.Contains(t, err.Error(), "event cannot be nil")
+	})
+
+	t.Run("Publish Event with Empty Topic", func(t *testing.T) {
+		svc := NewEventService(mockPublisher, mockSubscriber, serializer)
+		event := &events.Event{EventID: 1, Details: "Test"}
+		err := svc.PublishEvent(context.Background(), "", event)
+		assert.Error(t, err)
+		assert.Contains(t, err.Error(), "topic cannot be empty")
+	})
+
+	t.Run("Publish Response with Empty Topic", func(t *testing.T) {
+		svc := NewEventService(mockPublisher, mockSubscriber, serializer)
+		event := &events.Event{
+			EventID: 1,
+			SupportedActions: []events.Action{
+				{ActionID: 1, SupportsArgs: false},
+			},
+		}
+		err := svc.RegisterEvent(event)
+		require.NoError(t, err)
+
+		response := &events.Response{EventID: 1, ActionID: 1}
+		err = svc.PublishResponse(context.Background(), "", response)
+		assert.Error(t, err)
+		assert.Contains(t, err.Error(), "topic cannot be empty")
+	})
+
+	t.Run("Publish Response with Long Topic", func(t *testing.T) {
+		svc := NewEventService(mockPublisher, mockSubscriber, serializer)
+		event := &events.Event{
+			EventID: 1,
+			SupportedActions: []events.Action{
+				{ActionID: 1, SupportsArgs: false},
+			},
+		}
+		err := svc.RegisterEvent(event)
+		require.NoError(t, err)
+
+		longTopic := string(make([]byte, 257))
+		response := &events.Response{EventID: 1, ActionID: 1}
+		err = svc.PublishResponse(context.Background(), longTopic, response)
+		assert.Error(t, err)
+		assert.Contains(t, err.Error(), "topic length exceeds maximum")
+	})
+
+	t.Run("Validate Nil Response", func(t *testing.T) {
+		svc := NewEventService(mockPublisher, mockSubscriber, serializer)
+		err := svc.ValidateResponse(nil)
+		assert.Error(t, err)
+		assert.Contains(t, err.Error(), "response cannot be nil")
+	})
+
+	t.Run("Subscribe with Valid Handler", func(t *testing.T) {
+		svc := NewEventService(mockPublisher, mockSubscriber, serializer)
+		handler := func(event *events.Event) error {
+			return nil
+		}
+		err := svc.Subscribe(context.Background(), "test-subscription", handler)
+		assert.NoError(t, err)
+	})
+
+	t.Run("Subscribe with Nil Subscriber", func(t *testing.T) {
+		svc := NewEventService(mockPublisher, nil, serializer)
+		handler := func(event *events.Event) error {
+			return nil
+		}
+		err := svc.Subscribe(context.Background(), "test-subscription", handler)
+		assert.Error(t, err)
+		assert.Contains(t, err.Error(), "subscriber not configured")
+	})
+
+	t.Run("Close Service with Errors", func(t *testing.T) {
+		mockPub := &MockPublisher{CloseErr: assert.AnError}
+		mockSub := &MockSubscriber{CloseErr: assert.AnError}
+		svc := NewEventService(mockPub, mockSub, serializer)
+		err := svc.Close()
+		assert.Error(t, err)
+	})
+
+	t.Run("Publish Event Already Registered", func(t *testing.T) {
+		svc := NewEventService(mockPublisher, mockSubscriber, serializer)
+		event := &events.Event{EventID: 1, Details: "Test"}
+
+		err := svc.RegisterEvent(event)
+		require.NoError(t, err)
+
+		err = svc.PublishEvent(context.Background(), "events", event)
+		assert.NoError(t, err)
+	})
+
+	t.Run("Publish Response with Publisher Error", func(t *testing.T) {
+		mockPub := &MockPublisher{Err: assert.AnError}
+		svc := NewEventService(mockPub, mockSubscriber, serializer)
+		event := &events.Event{
+			EventID: 1,
+			SupportedActions: []events.Action{
+				{ActionID: 1, SupportsArgs: false},
+			},
+		}
+		err := svc.RegisterEvent(event)
+		require.NoError(t, err)
+
+		response := &events.Response{EventID: 1, ActionID: 1}
+		err = svc.PublishResponse(context.Background(), "responses", response)
+		assert.Error(t, err)
+	})
+
+	t.Run("Subscribe with Message Handling", func(t *testing.T) {
+		event := &events.Event{EventID: 1, Details: "Test"}
+		eventBytes, err := serializer.Serialize(event)
+		require.NoError(t, err)
+
+		mockSub := &MockSubscriber{MessageBytes: eventBytes}
+		svc := NewEventService(mockPublisher, mockSub, serializer)
+
+		handlerCalled := false
+		handler := func(e *events.Event) error {
+			handlerCalled = true
+			assert.Equal(t, 1, e.EventID)
+			return nil
+		}
+
+		err = svc.Subscribe(context.Background(), "test-subscription", handler)
+		assert.NoError(t, err)
+		assert.True(t, handlerCalled)
 	})
 }

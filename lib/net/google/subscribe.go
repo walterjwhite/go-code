@@ -4,20 +4,34 @@ import (
 	"cloud.google.com/go/pubsub/v2"
 	"context"
 	"encoding/json"
+	"errors"
+	"fmt"
 	"github.com/rs/zerolog/log"
 	"github.com/walterjwhite/go-code/lib/application/logging"
 	"github.com/walterjwhite/go-code/lib/io/compression/zstd"
 )
 
 func (c *Conf) processMessage(ms MessageSubscriber, data []byte) error {
+	if len(data) > MaxMessageSize {
+		return fmt.Errorf("received message size %d exceeds maximum allowed size %d", len(data), MaxMessageSize)
+	}
+
 	decrypted, err := c.decrypt(data)
 	if err != nil {
 		return err
 	}
 
+	if len(decrypted) > MaxMessageSize {
+		return errors.New("decrypted message size exceeds maximum allowed size")
+	}
+
 	decompressed, err := c.decompress(decrypted)
 	if err != nil {
 		return err
+	}
+
+	if len(decompressed) > MaxMessageSize {
+		return errors.New("decompressed message size exceeds maximum allowed size")
 	}
 
 	deserialized, err := c.deserialize(ms, decompressed)
