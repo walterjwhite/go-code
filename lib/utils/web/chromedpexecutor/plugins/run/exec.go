@@ -27,7 +27,7 @@ var allowedCommands = map[string]bool{
 
 func (e *Exec) Do(context.Context) error {
 	if !isCommandAllowed(e.Command) {
-		return errors.New("command not whitelisted: " + e.Command)
+		return errors.New("command not allowlisted: " + e.Command)
 	}
 
 	if slices.ContainsFunc(e.Arguments, containsDangerousPatterns) {

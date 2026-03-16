@@ -3,6 +3,8 @@ package main
 import (
 	"context"
 	"flag"
+	"os"
+	"strings"
 	"time"
 
 	"net/http"
@@ -27,15 +29,26 @@ var (
 	pipeReader             = &pipe.Reader{}
 )
 
+func isRunningTests() bool {
+	for _, arg := range os.Args {
+		if strings.HasPrefix(arg, "-test.") {
+			return true
+		}
+	}
+	return false
+}
+
 func init() {
-	application.Configure(emailAccount, requestLogEmailFlusher, pipeReader)
+	if !isRunningTests() {
+		application.Configure(emailAccount, requestLogEmailFlusher, pipeReader)
 
-	log.Warn().Msgf("email account loaded: %v", emailAccount)
+		log.Warn().Msgf("email account loaded: %v", emailAccount)
 
-	requestLogEmailFlusher.Account = emailAccount
-	pipeReader.Flusher = requestLogEmailFlusher
+		requestLogEmailFlusher.Account = emailAccount
+		pipeReader.Flusher = requestLogEmailFlusher
 
-	log.Debug().Msg("initialized")
+		log.Debug().Msg("initialized")
+	}
 }
 
 func main() {

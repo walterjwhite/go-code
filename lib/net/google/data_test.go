@@ -52,7 +52,7 @@ func TestConf_Cancel_NilCancel(t *testing.T) {
 func TestConf_Init_NoEncryption(t *testing.T) {
 
 	conf := &Conf{
-		CredentialsFile: "/dev/null", // Use a dummy file path
+		CredentialsFile: "/dev/null", // Use a placeholder file path
 		ProjectId:       "test_project",
 	}
 
@@ -69,7 +69,7 @@ func TestConf_Init_NoEncryption(t *testing.T) {
 func TestConf_Init_WithEncryption(t *testing.T) {
 
 	conf := &Conf{
-		CredentialsFile:   "/dev/null", // Dummy file
+		CredentialsFile:   "/dev/null", // Placeholder file
 		ProjectId:         "test_project",
 		EncryptionKeyFile: "non_existent_key.aes", // This will cause logging.Error without mocking
 	}

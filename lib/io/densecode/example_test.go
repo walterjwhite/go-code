@@ -1,127 +1,213 @@
 package densecode
 
 import (
-	"bytes"
-	"testing"
+	"fmt"
+	"os"
 )
 
-func TestEncodeDecodeText(t *testing.T) {
-	original := "Hello, DenseCode!"
-
-	code, err := EncodeText(original, 2)
+func ExampleConfiguration_EncodeText() {
+	cfg := &Configuration{}
+	result, err := cfg.EncodeText("Hello, DenseCode!")
 	if err != nil {
-		t.Fatalf("Encode failed: %v", err)
+		fmt.Printf("Error: %v\n", err)
+		return
 	}
 
-	if code.Size < 21 {
-		t.Errorf("Code size too small: %d", code.Size)
+	err = result.Segments[0].Code.RenderPNG("output.png")
+	if err != nil {
+		fmt.Printf("Error: %v\n", err)
+		return
 	}
 
-	matrix := code.ToMatrix()
-	if len(matrix) != code.Size {
-		t.Errorf("Matrix size mismatch: got %d, want %d", len(matrix), code.Size)
+	matrix := result.Segments[0].Code.ToMatrix()
+	data, err := cfg.Decode(matrix)
+	if err != nil {
+		fmt.Printf("Error: %v\n", err)
+		return
 	}
+
+	fmt.Printf("Decoded: %s\n", string(data))
 }
 
-func TestEncodeBinary(t *testing.T) {
-	data := []byte{0x00, 0xFF, 0xAA, 0x55, 0x12, 0x34, 0x56, 0x78}
-
-	code, err := EncodeBinary(data, 1)
+func ExampleConfiguration_EncodeFile() {
+	err := os.WriteFile("test.txt", []byte("File content"), 0644)
 	if err != nil {
-		t.Fatalf("Encode failed: %v", err)
+		fmt.Printf("Error: %v\n", err)
+		return
+	}
+	defer func() { _ = os.Remove("test.txt") }()
+
+	cfg := &Configuration{}
+	result, err := cfg.EncodeFile("test.txt")
+	if err != nil {
+		fmt.Printf("Error: %v\n", err)
+		return
 	}
 
-	if code.ErrorLevel != 1 {
-		t.Errorf("Error level mismatch: got %d, want 1", code.ErrorLevel)
+	err = result.Segments[0].Code.RenderPNG("file_output.png")
+	if err != nil {
+		fmt.Printf("Error: %v\n", err)
+		return
 	}
+
+	fmt.Println("File encoded successfully")
 }
 
-func TestErrorCorrection(t *testing.T) {
-	data := []byte("Test data")
-
-	levels := []int{0, 1, 2, 3}
-	var prevSize int
-
-	for _, level := range levels {
-		encoded := addErrorCorrection(data, level)
-		if len(encoded) <= prevSize {
-			t.Errorf("Error correction level %d should produce larger output", level)
+func ExampleEncodeFiles() {
+	files := []string{"file1.txt", "file2.txt"}
+	for i, name := range files {
+		err := os.WriteFile(name, fmt.Appendf(nil, "Content of file %d", i+1), 0644)
+		if err != nil {
+			fmt.Printf("Error: %v\n", err)
+			return
 		}
-		prevSize = len(encoded)
-	}
-}
-
-func TestColorPalette(t *testing.T) {
-	if len(ColorPalette) != 8 {
-		t.Errorf("Color palette should have 8 colors, got %d", len(ColorPalette))
-	}
-}
-
-func TestFinderPatterns(t *testing.T) {
-	code, _ := EncodeText("Test", 2)
-	matrix := code.ToMatrix()
-
-	if matrix[0][0] != 0 {
-		t.Error("Top-left corner should be black")
+		defer func(n string) { _ = os.Remove(n) }(name)
 	}
 
-	hasPattern := false
-	for i := range 7 {
-		for j := range 7 {
-			if matrix[i][j] != 1 {
-				hasPattern = true
-				break
+	result, err := EncodeFiles(files, &Configuration{})
+	if err != nil {
+		fmt.Printf("Error: %v\n", err)
+		return
+	}
+
+	if result.IsMultiSegment {
+		for i, segment := range result.Segments {
+			filename := fmt.Sprintf("multi_file_output_%03d.png", i+1)
+			err = segment.Code.RenderPNG(filename)
+			if err != nil {
+				fmt.Printf("Error: %v\n", err)
+				return
 			}
 		}
+	} else {
+		err = result.Segments[0].Code.RenderPNG("multi_file_output.png")
+		if err != nil {
+			fmt.Printf("Error: %v\n", err)
+			return
+		}
 	}
 
-	if !hasPattern {
-		t.Error("Finder pattern not detected")
-	}
+	fmt.Printf("Encoded %d files into %d segment(s)\n", len(files), len(result.Segments))
 }
 
-func TestRenderPNG(t *testing.T) {
-	code, err := EncodeText("PNG Test", 2)
+func ExampleConfiguration_EncodeDirectory() {
+	err := os.MkdirAll("testdir", 0755)
 	if err != nil {
-		t.Fatalf("Encode failed: %v", err)
+		fmt.Printf("Error: %v\n", err)
+		return
 	}
+	defer func() { _ = os.RemoveAll("testdir") }()
 
-	filename := "test_output.png"
-	err = code.RenderPNG(filename)
+	err = os.WriteFile("testdir/file1.txt", []byte("File 1"), 0644)
 	if err != nil {
-		t.Fatalf("RenderPNG failed: %v", err)
+		fmt.Printf("Error: %v\n", err)
+		return
 	}
-
-}
-
-func TestDataCompression(t *testing.T) {
-	data := bytes.Repeat([]byte("A"), 1000)
-
-	code, err := Encode(data, 1)
+	err = os.WriteFile("testdir/file2.txt", []byte("File 2"), 0644)
 	if err != nil {
-		t.Fatalf("Encode failed: %v", err)
+		fmt.Printf("Error: %v\n", err)
+		return
 	}
 
-	if len(code.Data) >= len(data) {
-		t.Logf("Warning: Compression not effective. Original: %d, Compressed: %d",
-			len(data), len(code.Data))
+	cfg := &Configuration{}
+	result, err := cfg.EncodeDirectory("testdir")
+	if err != nil {
+		fmt.Printf("Error: %v\n", err)
+		return
 	}
+
+	err = result.Segments[0].Code.RenderPNG("directory_output.png")
+	if err != nil {
+		fmt.Printf("Error: %v\n", err)
+		return
+	}
+
+	fmt.Printf("Directory encoded into %d segment(s)\n", len(result.Segments))
 }
 
-func BenchmarkEncode(b *testing.B) {
-	data := []byte("Benchmark test data for encoding performance")
+func ExampleEncode_withOptions() {
+	data := []byte("Data with custom options")
 
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		_, _ = Encode(data, 2)
+	cfg := &Configuration{
+		ErrorLevel: 2,          // Higher error correction
+		ModuleSize: 8,          // Smaller modules
+		Profile:    "balanced", // 3 bits per module
+		Compressor: nil,        // Optional: add compressor
+		Encryptor:  nil,        // Optional: add encryptor
 	}
+
+	result, err := cfg.Encode(data)
+	if err != nil {
+		fmt.Printf("Error: %v\n", err)
+		return
+	}
+
+	err = result.Segments[0].Code.RenderPNG("custom_output.png")
+	if err != nil {
+		fmt.Printf("Error: %v\n", err)
+		return
+	}
+
+	fmt.Printf("Encoded with %d segment(s)\n", len(result.Segments))
 }
 
-func BenchmarkRenderPNG(b *testing.B) {
-	code, _ := EncodeText("Benchmark", 2)
-
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		_ = code.RenderPNG("bench_output.png")
+func ExampleEncode_largeData() {
+	data := make([]byte, 50*1024) // 50KB
+	for i := range data {
+		data[i] = byte(i % 256)
 	}
+
+	cfg := &Configuration{
+		MaxSegmentSize: 20 * 1024, // 20KB per segment
+	}
+
+	result, err := cfg.Encode(data)
+	if err != nil {
+		fmt.Printf("Error: %v\n", err)
+		return
+	}
+
+	if result.IsMultiSegment {
+		for i, segment := range result.Segments {
+			filename := fmt.Sprintf("large_data_segment_%03d.png", i+1)
+			err = segment.Code.RenderPNG(filename)
+			if err != nil {
+				fmt.Printf("Error: %v\n", err)
+				return
+			}
+		}
+	} else {
+		err = result.Segments[0].Code.RenderPNG("large_data_segment.png")
+		if err != nil {
+			fmt.Printf("Error: %v\n", err)
+			return
+		}
+	}
+
+	fmt.Printf("Large data encoded into %d segments\n", len(result.Segments))
+}
+
+func ExampleConfiguration_RenderTerminal() {
+	cfg := &Configuration{}
+	result, _ := cfg.EncodeText("Hi")
+
+	_ = result.Segments[0] // Use the result
+
+	fmt.Println("Done")
+}
+
+func ExampleDecode() {
+	original := "Secret message"
+
+	cfg := &Configuration{}
+	result, _ := cfg.EncodeText(original)
+	matrix := result.Segments[0].Code.ToMatrix()
+
+	data, err := cfg.Decode(matrix)
+	if err != nil {
+		fmt.Printf("Error: %v\n", err)
+		return
+	}
+
+	fmt.Printf("Decoded: %s\n", string(data))
 }

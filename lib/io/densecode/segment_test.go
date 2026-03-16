@@ -11,11 +11,12 @@ import (
 func TestEncodeDecodeSegments_Small(t *testing.T) {
 	data := []byte("Hello, World!")
 
+	cfg := &Configuration{
+		ErrorLevel: 1,
+		ModuleSize: 10,
+	}
 	opts := &SegmentOptions{
-		Options: &Options{
-			ErrorLevel: 1,
-			ModuleSize: 10,
-		},
+		Configuration:  cfg,
 		MaxSegmentSize: 1024,
 	}
 
@@ -28,7 +29,7 @@ func TestEncodeDecodeSegments_Small(t *testing.T) {
 		t.Errorf("Expected 1 segment, got %d", len(segments))
 	}
 
-	decoded, err := DecodeSegments(segments, opts.Options)
+	decoded, err := DecodeSegments(segments, cfg)
 	if err != nil {
 		t.Fatalf("DecodeSegments failed: %v", err)
 	}
@@ -41,11 +42,12 @@ func TestEncodeDecodeSegments_Small(t *testing.T) {
 func TestEncodeDecodeSegments_Large(t *testing.T) {
 	data := bytes.Repeat([]byte("This is a test message. "), 2000) // ~48KB
 
+	cfg := &Configuration{
+		ErrorLevel: 1,
+		ModuleSize: 10,
+	}
 	opts := &SegmentOptions{
-		Options: &Options{
-			ErrorLevel: 1,
-			ModuleSize: 10,
-		},
+		Configuration:  cfg,
 		MaxSegmentSize: 16 * 1024, // 16KB segments
 	}
 
@@ -69,7 +71,7 @@ func TestEncodeDecodeSegments_Large(t *testing.T) {
 		}
 	}
 
-	decoded, err := DecodeSegments(segments, opts.Options)
+	decoded, err := DecodeSegments(segments, cfg)
 	if err != nil {
 		t.Fatalf("DecodeSegments failed: %v", err)
 	}
@@ -82,11 +84,12 @@ func TestEncodeDecodeSegments_Large(t *testing.T) {
 func TestEncodeDecodeSegments_OutOfOrder(t *testing.T) {
 	data := bytes.Repeat([]byte("Test data. "), 1000) // ~11KB
 
+	cfg := &Configuration{
+		ErrorLevel: 1,
+		ModuleSize: 10,
+	}
 	opts := &SegmentOptions{
-		Options: &Options{
-			ErrorLevel: 1,
-			ModuleSize: 10,
-		},
+		Configuration:  cfg,
 		MaxSegmentSize: 4 * 1024, // 4KB segments
 	}
 
@@ -105,7 +108,7 @@ func TestEncodeDecodeSegments_OutOfOrder(t *testing.T) {
 		shuffled[i], shuffled[j] = shuffled[j], shuffled[i]
 	}
 
-	decoded, err := DecodeSegments(shuffled, opts.Options)
+	decoded, err := DecodeSegments(shuffled, cfg)
 	if err != nil {
 		t.Fatalf("DecodeSegments failed: %v", err)
 	}
@@ -119,12 +122,13 @@ func TestEncodeDecodeSegments_WithCompression(t *testing.T) {
 	data := bytes.Repeat([]byte("Repetitive content. "), 2000) // ~40KB
 
 	compressor := &zstd.ZstdCompressor{}
+	cfg := &Configuration{
+		Compressor: compressor,
+		ErrorLevel: 1,
+		ModuleSize: 10,
+	}
 	opts := &SegmentOptions{
-		Options: &Options{
-			Compressor: compressor,
-			ErrorLevel: 1,
-			ModuleSize: 10,
-		},
+		Configuration:  cfg,
 		MaxSegmentSize: 16 * 1024,
 	}
 
@@ -135,7 +139,7 @@ func TestEncodeDecodeSegments_WithCompression(t *testing.T) {
 
 	t.Logf("Original: %d bytes, Segments: %d", len(data), len(segments))
 
-	decoded, err := DecodeSegments(segments, opts.Options)
+	decoded, err := DecodeSegments(segments, cfg)
 	if err != nil {
 		t.Fatalf("DecodeSegments failed: %v", err)
 	}
@@ -154,12 +158,13 @@ func TestEncodeDecodeSegments_WithEncryption(t *testing.T) {
 		t.Fatalf("Failed to create encryptor: %v", err)
 	}
 
+	cfg := &Configuration{
+		Encryptor:  encryptor,
+		ErrorLevel: 1,
+		ModuleSize: 10,
+	}
 	opts := &SegmentOptions{
-		Options: &Options{
-			Encryptor:  encryptor,
-			ErrorLevel: 1,
-			ModuleSize: 10,
-		},
+		Configuration:  cfg,
 		MaxSegmentSize: 8 * 1024,
 	}
 
@@ -168,7 +173,7 @@ func TestEncodeDecodeSegments_WithEncryption(t *testing.T) {
 		t.Fatalf("EncodeSegments failed: %v", err)
 	}
 
-	decoded, err := DecodeSegments(segments, opts.Options)
+	decoded, err := DecodeSegments(segments, cfg)
 	if err != nil {
 		t.Fatalf("DecodeSegments failed: %v", err)
 	}
@@ -188,13 +193,14 @@ func TestEncodeDecodeSegments_WithBoth(t *testing.T) {
 		t.Fatalf("Failed to create encryptor: %v", err)
 	}
 
+	cfg := &Configuration{
+		Compressor: compressor,
+		Encryptor:  encryptor,
+		ErrorLevel: 2,
+		ModuleSize: 10,
+	}
 	opts := &SegmentOptions{
-		Options: &Options{
-			Compressor: compressor,
-			Encryptor:  encryptor,
-			ErrorLevel: 2,
-			ModuleSize: 10,
-		},
+		Configuration:  cfg,
 		MaxSegmentSize: 16 * 1024,
 	}
 
@@ -205,7 +211,7 @@ func TestEncodeDecodeSegments_WithBoth(t *testing.T) {
 
 	t.Logf("Original: %d bytes, Segments: %d", len(data), len(segments))
 
-	decoded, err := DecodeSegments(segments, opts.Options)
+	decoded, err := DecodeSegments(segments, cfg)
 	if err != nil {
 		t.Fatalf("DecodeSegments failed: %v", err)
 	}
@@ -218,11 +224,12 @@ func TestEncodeDecodeSegments_WithBoth(t *testing.T) {
 func TestDecodeSegmentMetadata(t *testing.T) {
 	data := bytes.Repeat([]byte("Test. "), 1000)
 
+	cfg := &Configuration{
+		ErrorLevel: 1,
+		ModuleSize: 10,
+	}
 	opts := &SegmentOptions{
-		Options: &Options{
-			ErrorLevel: 1,
-			ModuleSize: 10,
-		},
+		Configuration:  cfg,
 		MaxSegmentSize: 4 * 1024,
 	}
 
@@ -245,7 +252,7 @@ func TestDecodeSegmentMetadata(t *testing.T) {
 		if total != len(segments) {
 			t.Errorf("Segment %d: wrong total %d (expected %d)", i, total, len(segments))
 		}
-		if checksum != seg.DataChecksum[0] {
+		if checksum != seg.dataChecksum[0] {
 			t.Errorf("Segment %d: wrong checksum byte", i)
 		}
 	}
@@ -254,12 +261,13 @@ func TestDecodeSegmentMetadata(t *testing.T) {
 func TestEncodeDecodeSegments_MaxDensity(t *testing.T) {
 	data := bytes.Repeat([]byte("High-density segment test payload. "), 800)
 
+	cfg := &Configuration{
+		ErrorLevel:    2,
+		ModuleSize:    10,
+		BitsPerModule: 4,
+	}
 	opts := &SegmentOptions{
-		Options: &Options{
-			ErrorLevel:    2,
-			ModuleSize:    10,
-			BitsPerModule: 4,
-		},
+		Configuration:  cfg,
 		MaxSegmentSize: 8 * 1024,
 	}
 
@@ -268,7 +276,7 @@ func TestEncodeDecodeSegments_MaxDensity(t *testing.T) {
 		t.Fatalf("EncodeSegments failed: %v", err)
 	}
 
-	decoded, err := DecodeSegments(segments, opts.Options)
+	decoded, err := DecodeSegments(segments, cfg)
 	if err != nil {
 		t.Fatalf("DecodeSegments failed: %v", err)
 	}
@@ -281,11 +289,12 @@ func TestEncodeDecodeSegments_MaxDensity(t *testing.T) {
 func TestEncodeSegments_MissingSegment(t *testing.T) {
 	data := bytes.Repeat([]byte("Test. "), 1000)
 
+	cfg := &Configuration{
+		ErrorLevel: 1,
+		ModuleSize: 10,
+	}
 	opts := &SegmentOptions{
-		Options: &Options{
-			ErrorLevel: 1,
-			ModuleSize: 10,
-		},
+		Configuration:  cfg,
 		MaxSegmentSize: 4 * 1024,
 	}
 
@@ -300,7 +309,7 @@ func TestEncodeSegments_MissingSegment(t *testing.T) {
 
 	incomplete := segments[:len(segments)-1]
 
-	_, err = DecodeSegments(incomplete, opts.Options)
+	_, err = DecodeSegments(incomplete, cfg)
 	if err == nil {
 		t.Error("Expected error for incomplete segments, got nil")
 	}
@@ -309,11 +318,12 @@ func TestEncodeSegments_MissingSegment(t *testing.T) {
 func TestEncodeSegments_DuplicateSegment(t *testing.T) {
 	data := bytes.Repeat([]byte("Test. "), 1000)
 
+	cfg := &Configuration{
+		ErrorLevel: 1,
+		ModuleSize: 10,
+	}
 	opts := &SegmentOptions{
-		Options: &Options{
-			ErrorLevel: 1,
-			ModuleSize: 10,
-		},
+		Configuration:  cfg,
 		MaxSegmentSize: 4 * 1024,
 	}
 
@@ -328,7 +338,7 @@ func TestEncodeSegments_DuplicateSegment(t *testing.T) {
 
 	duplicate := append(segments, segments[0])
 
-	_, err = DecodeSegments(duplicate, opts.Options)
+	_, err = DecodeSegments(duplicate, cfg)
 	if err == nil {
 		t.Error("Expected error for duplicate segment, got nil")
 	}
@@ -337,11 +347,12 @@ func TestEncodeSegments_DuplicateSegment(t *testing.T) {
 func TestEncodeSegments_VeryLarge(t *testing.T) {
 	data := bytes.Repeat([]byte("Large data test. "), 60000) // ~1MB
 
+	cfg := &Configuration{
+		ErrorLevel: 1,
+		ModuleSize: 10,
+	}
 	opts := &SegmentOptions{
-		Options: &Options{
-			ErrorLevel: 1,
-			ModuleSize: 10,
-		},
+		Configuration:  cfg,
 		MaxSegmentSize: 32 * 1024, // 32KB segments
 	}
 
@@ -352,7 +363,7 @@ func TestEncodeSegments_VeryLarge(t *testing.T) {
 
 	t.Logf("Data size: %d bytes, Segments: %d", len(data), len(segments))
 
-	decoded, err := DecodeSegments(segments, opts.Options)
+	decoded, err := DecodeSegments(segments, cfg)
 	if err != nil {
 		t.Fatalf("DecodeSegments failed: %v", err)
 	}

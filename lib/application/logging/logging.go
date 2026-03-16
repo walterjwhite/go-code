@@ -3,41 +3,26 @@ package logging
 import (
 	"fmt"
 	"github.com/rs/zerolog/log"
-	"os"
+
+	"runtime/debug"
 )
-
-func logContextuals(contextuals ...any) {
-	if len(contextuals) == 0 {
-		return
-	}
-	for i := range contextuals {
-		log.Warn().Interface(fmt.Sprintf("contextual: %d", i), contextuals[i]).Msg("Contextual")
-	}
-}
-
-func isDevEnvironment() bool {
-	return os.Getenv("ENVIRONMENT") == "development"
-}
-
-func logErrorMessage(err error) {
-	log.Error().Msgf("error - %s", err.Error())
-}
-
-func logSecurityNote() {
-	log.Debug().Msgf("Stack trace unavailable in production for security reasons")
-}
 
 func Error(err error, contextuals ...any) {
 	if err == nil {
 		return
 	}
 
-	logContextuals(contextuals...)
-	logErrorMessage(err)
-
-	if isDevEnvironment() {
-		logSecurityNote()
+	if contextuals != nil || len(contextuals) > 0 {
+		for i := range contextuals {
+			log.Warn().Interface(fmt.Sprintf("contextual: %d", i), contextuals[i]).Msg("Contextual")
+		}
 	}
+
+	log.Error().Msgf("error - %s", err.Error())
+	stackTrace := debug.Stack()
+	log.Error().Msgf("Stack trace:\n%s", stackTrace)
+
+	log.Panic().Err(err).Msg("Error")
 }
 
 func Warn(err error, message string) {
@@ -46,4 +31,6 @@ func Warn(err error, message string) {
 	}
 
 	log.Warn().Msgf("%s - %s", message, err.Error())
+	stackTrace := debug.Stack()
+	log.Warn().Msgf("Stack trace:\n%s", stackTrace)
 }

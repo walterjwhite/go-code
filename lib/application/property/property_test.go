@@ -2,6 +2,7 @@ package property
 
 import (
 	"bytes"
+	"flag"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -10,6 +11,7 @@ import (
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"github.com/stretchr/testify/assert"
+	"github.com/urfave/sflags/gen/gflag"
 )
 
 type TestConfig struct {
@@ -210,7 +212,9 @@ func TestLoadCli(t *testing.T) {
 
 	os.Args = []string{"cmd", "--name=cli-name", "--value=789", "--enabled=true"}
 
-	LoadCli(config)
+	fs := flag.NewFlagSet("test", flag.ContinueOnError)
+	_ = gflag.ParseTo(config, fs)
+	_ = fs.Parse(os.Args[1:])
 
 	assert.Equal(t, "cli-name", config.Name)
 	assert.Equal(t, 789, config.Value)
@@ -541,7 +545,10 @@ func TestLoadCli_NoArgs(t *testing.T) {
 	defer func() { os.Args = originalArgs }()
 
 	os.Args = []string{"cmd"}
-	LoadCli(config)
+
+	fs := flag.NewFlagSet("test", flag.ContinueOnError)
+	_ = gflag.ParseTo(config, fs)
+	_ = fs.Parse(os.Args[1:])
 }
 
 func TestSanitizeEnvKey_SpecialCharacters(t *testing.T) {

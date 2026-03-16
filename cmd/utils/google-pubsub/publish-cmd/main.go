@@ -6,11 +6,9 @@ import (
 	"github.com/walterjwhite/go-code/lib/application"
 	"github.com/walterjwhite/go-code/lib/application/logging"
 
-	"github.com/walterjwhite/go-code/lib/net/exec"
 	"github.com/walterjwhite/go-code/lib/net/google"
 
-	"flag"
-	"strings"
+	"os"
 )
 
 type PublisherConfiguration struct {
@@ -20,9 +18,6 @@ type PublisherConfiguration struct {
 
 var (
 	publisherConfiguration = &PublisherConfiguration{}
-
-	functionName = flag.String("func", "", "function to execute")
-	arguments    = flag.String("args", "", "arguments to pass function, optional")
 )
 
 func init() {
@@ -35,16 +30,11 @@ func init() {
 func main() {
 	defer application.OnPanic()
 
-	if len(*functionName) == 0 {
-		logging.Error(errors.New("expecting command to be non-empty"))
+	if len(os.Args) == 1 {
+		logging.Error(errors.New("expecting arguments, at least a command/function must be provided"))
 	}
 
-	c := exec.Cmd{FunctionName: *functionName}
-	if len(*arguments) != 0 {
-		c.Args = strings.Fields(*arguments)
-	}
-
-	jsonString, err := json.Marshal(c)
+	jsonString, err := json.Marshal(os.Args[1:])
 	if err != nil {
 		logging.Warn(err, "unable to convert to json")
 		return

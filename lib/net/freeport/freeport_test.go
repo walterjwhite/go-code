@@ -118,7 +118,7 @@ func TestPortAllocationNilListener(t *testing.T) {
 func TestClose(t *testing.T) {
 	listener, err := net.Listen("tcp", ":0")
 	if err != nil {
-		t.Fatalf("Failed to create dummy listener: %v", err)
+		t.Fatalf("Failed to create placeholder listener: %v", err)
 	}
 
 	closeResource(listener)

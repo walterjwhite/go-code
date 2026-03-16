@@ -52,7 +52,11 @@ func getSysLogger() io.WriteCloser {
 	syslogger, err := syslog.New(syslog.LOG_KERN|syslog.LOG_EMERG|syslog.LOG_ERR|syslog.LOG_INFO|syslog.LOG_CRIT|syslog.LOG_WARNING|syslog.LOG_NOTICE|syslog.LOG_DEBUG, ApplicationName)
 	logging.Error(err)
 
-	return zerolog.ConsoleWriter{Out: syslogger, TimeFormat: logDateTimeFormat, NoColor: true}
+	return zerolog.ConsoleWriter{
+		Out:             syslogger,
+		NoColor:         true,
+		FormatTimestamp: func(i any) string { return "" },
+	}
 }
 
 func getFileLogger() io.WriteCloser {

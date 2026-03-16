@@ -12,113 +12,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestLogContextuals(t *testing.T) {
-	var buf bytes.Buffer
-	originalLogger := log.Logger
-	log.Logger = log.Output(io.MultiWriter(&buf, os.Stderr))
-	defer func() {
-		log.Logger = originalLogger
-	}()
-
-	tests := []struct {
-		name       string
-		contextual []any
-		expectLog  bool
-	}{
-		{
-			name:       "nil contextuals",
-			contextual: nil,
-			expectLog:  false,
-		},
-		{
-			name:       "empty contextuals",
-			contextual: []any{},
-			expectLog:  false,
-		},
-		{
-			name:       "with contextuals",
-			contextual: []any{"context1", 123},
-			expectLog:  true,
-		},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			buf.Reset()
-			logContextuals(tt.contextual...)
-			if tt.expectLog {
-				assert.NotEmpty(t, buf.String())
-			} else {
-				assert.Empty(t, buf.String())
-			}
-		})
-	}
-}
-
-func TestIsDevEnvironment(t *testing.T) {
-	tests := []struct {
-		name   string
-		envVal string
-		want   bool
-	}{
-		{
-			name:   "development environment",
-			envVal: "development",
-			want:   true,
-		},
-		{
-			name:   "production environment",
-			envVal: "production",
-			want:   false,
-		},
-		{
-			name:   "empty environment",
-			envVal: "",
-			want:   false,
-		},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			t.Setenv("ENVIRONMENT", tt.envVal)
-
-			assert.Equal(t, tt.want, isDevEnvironment())
-		})
-	}
-}
-
-func TestLogErrorMessage(t *testing.T) {
-	var buf bytes.Buffer
-	originalLogger := log.Logger
-	log.Logger = log.Output(io.MultiWriter(&buf, os.Stderr))
-	defer func() {
-		log.Logger = originalLogger
-	}()
-
-	buf.Reset()
-	err := errors.New("test error message")
-	logErrorMessage(err)
-
-	output := buf.String()
-	assert.Contains(t, output, "level\":\"error")
-	assert.Contains(t, output, "test error message")
-}
-
-func TestLogSecurityNote(t *testing.T) {
-	var buf bytes.Buffer
-	originalLogger := log.Logger
-	log.Logger = log.Output(io.MultiWriter(&buf, os.Stderr))
-	defer func() {
-		log.Logger = originalLogger
-	}()
-
-	buf.Reset()
-	logSecurityNote()
-
-	output := buf.String()
-	assert.Contains(t, output, "Stack trace unavailable in production for security reasons")
-}
-
 func TestError(t *testing.T) {
 	type args struct {
 		err         error
@@ -135,14 +28,14 @@ func TestError(t *testing.T) {
 			wantPanic: false,
 		},
 		{
-			name:      "non-nil error, should not panic",
+			name:      "non-nil error, should panic",
 			args:      args{err: errors.New("test error")},
-			wantPanic: false,
+			wantPanic: true,
 		},
 		{
-			name:      "non-nil error with contextuals, should not panic",
+			name:      "non-nil error with contextuals, should panic",
 			args:      args{err: errors.New("test error with context"), contextuals: []any{"context1", 123}},
-			wantPanic: false,
+			wantPanic: true,
 		},
 	}
 	for _, tt := range tests {
@@ -198,7 +91,7 @@ func TestWarn(t *testing.T) {
 
 		{
 
-			name: "non-nil error, should log message without stack trace",
+			name: "non-nil error, should log message with stack trace",
 
 			err: errors.New("warning error"),
 
@@ -209,6 +102,8 @@ func TestWarn(t *testing.T) {
 				"level\":\"warn",
 
 				"message\":\"test message - warning error",
+
+				"Stack trace:",
 			},
 
 			notExpectedLogs: []string{
@@ -216,8 +111,6 @@ func TestWarn(t *testing.T) {
 				"level\":\"panic",
 
 				"error\":\"warning error",
-
-				"Stack trace:",
 			},
 		},
 	}

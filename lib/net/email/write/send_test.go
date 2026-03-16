@@ -170,7 +170,7 @@ func TestAddAttachments_WriteError(t *testing.T) {
 	}()
 
 	osCreateTemp = func(dir, pattern string) (*os.File, error) {
-		return os.NewFile(0, "mock-file"), nil // Return a dummy os.File
+		return os.NewFile(0, "mock-file"), nil // Return a placeholder os.File
 	}
 
 	fileWrite = func(f *os.File, b []byte) (n int, err error) {

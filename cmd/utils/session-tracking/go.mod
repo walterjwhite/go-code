@@ -5,7 +5,7 @@ go 1.25.5
 require (
 	github.com/rs/zerolog v1.34.0
 	github.com/walterjwhite/go-code v1.0.0
-	golang.org/x/net v0.51.0
+	golang.org/x/net v0.52.0
 	modernc.org/sqlite v1.46.1
 )
 
@@ -20,9 +20,8 @@ require (
 	github.com/urfave/sflags v0.4.1 // indirect
 	github.com/vrischmann/envconfig v1.4.1 // indirect
 	golang.org/x/sys v0.42.0 // indirect
-	golang.org/x/tools v0.42.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
-	modernc.org/libc v1.69.0 // indirect
+	modernc.org/libc v1.70.0 // indirect
 	modernc.org/mathutil v1.7.1 // indirect
 	modernc.org/memory v1.11.0 // indirect
 )

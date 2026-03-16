@@ -2,7 +2,6 @@ package application
 
 import (
 	"context"
-	"flag"
 
 	"github.com/rs/zerolog/log"
 
@@ -11,14 +10,12 @@ import (
 
 	"os"
 	"os/signal"
-	"strings"
 	"syscall"
 )
 
 var (
-	appFlags = flag.NewFlagSet("application", flag.ExitOnError)
-	Context  context.Context
-	Cancel   context.CancelFunc
+	Context context.Context
+	Cancel  context.CancelFunc
 )
 
 func init() {
@@ -35,17 +32,6 @@ func init() {
 }
 
 func Configure(configurations ...any) {
-	isTest := false
-	for _, arg := range os.Args {
-		if strings.HasPrefix(arg, "-test.") {
-			isTest = true
-			break
-		}
-	}
-
-	if !isTest {
-		logging.Error(appFlags.Parse(os.Args[1:]), "appFlags.Parse")
-	}
 	Load(configurations...)
 
 	configureLogging()

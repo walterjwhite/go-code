@@ -6,26 +6,26 @@ import (
 )
 
 type Segment struct {
-	Code          *DenseCode
+	Code          *Configuration
 	SegmentIndex  int // 0-based index
 	TotalSegments int
-	DataChecksum  [32]byte // SHA-256 of complete original data
+	dataChecksum  [32]byte // SHA-256 of complete original data
 }
 
 type SegmentOptions struct {
-	*Options
+	Configuration  *Configuration
 	MaxSegmentSize int // Maximum bytes per segment (default: 32KB)
 }
 
 func EncodeSegments(data []byte, opts *SegmentOptions) ([]*Segment, error) {
 	if opts == nil {
 		opts = &SegmentOptions{
-			Options:        &Options{ErrorLevel: 1, ModuleSize: 10},
+			Configuration:  WithDefaults(),
 			MaxSegmentSize: 32 * 1024, // 32KB default
 		}
 	}
-	if opts.Options == nil {
-		opts.Options = &Options{ErrorLevel: 1, ModuleSize: 10}
+	if opts.Configuration == nil {
+		opts.Configuration = WithDefaults()
 	}
 	if opts.MaxSegmentSize == 0 {
 		opts.MaxSegmentSize = 32 * 1024
@@ -33,7 +33,7 @@ func EncodeSegments(data []byte, opts *SegmentOptions) ([]*Segment, error) {
 
 	dataChecksum := sha256.Sum256(data)
 
-	errorLevel := min(max(opts.ErrorLevel, 0), 3)
+	errorLevel := min(max(opts.Configuration.ErrorLevel, 0), 3)
 	redundancy := []int{10, 20, 30, 40}[errorLevel]
 
 	effectiveSegmentSize := (opts.MaxSegmentSize*100)/(100+redundancy) - 12
@@ -51,9 +51,9 @@ func EncodeSegments(data []byte, opts *SegmentOptions) ([]*Segment, error) {
 	for i := range totalSegments {
 		start := i * effectiveSegmentSize
 		end := min(start+effectiveSegmentSize, len(data))
-		segmentData := data[start:end]
+		segmentdata := data[start:end]
 
-		code, err := encodeSegment(segmentData, i, totalSegments, dataChecksum, opts.Options)
+		code, err := encodeSegmentWithOptions(segmentdata, i, totalSegments, dataChecksum, opts.Configuration)
 		if err != nil {
 			return nil, fmt.Errorf("failed to encode segment %d: %w", i, err)
 		}
@@ -62,43 +62,47 @@ func EncodeSegments(data []byte, opts *SegmentOptions) ([]*Segment, error) {
 			Code:          code,
 			SegmentIndex:  i,
 			TotalSegments: totalSegments,
-			DataChecksum:  dataChecksum,
+			dataChecksum:  dataChecksum,
 		}
 	}
 
 	return segments, nil
 }
 
-func encodeSegment(segmentData []byte, index, total int, dataChecksum [32]byte, opts *Options) (*DenseCode, error) {
-	if opts == nil {
-		opts = &Options{ErrorLevel: 1, ModuleSize: 10}
+func encodeSegmentWithOptions(segmentdata []byte, index, total int, dataChecksum [32]byte, cfg *Configuration) (*Configuration, error) {
+	config := WithDefaults()
+	config.ModuleSize = cfg.ModuleSize
+	config.ErrorLevel = cfg.ErrorLevel
+	config.BitsPerModule = cfg.BitsPerModule
+	config.Compressor = cfg.Compressor
+	config.Encryptor = cfg.Encryptor
+
+	if config.ModuleSize == 0 {
+		config.ModuleSize = 10
 	}
-	if opts.ModuleSize == 0 {
-		opts.ModuleSize = 10
-	}
-	bitsPerModule, err := normalizeBitsPerModule(opts.BitsPerModule)
+	bitsPerModule, err := config.normalizeBitsPerModule()
 	if err != nil {
 		return nil, err
 	}
 
-	processed := segmentData
+	processed := segmentdata
 
-	if opts.Compressor != nil {
-		processed, err = opts.Compressor.Compress(processed)
+	if config.Compressor != nil {
+		processed, err = config.Compressor.Compress(processed)
 		if err != nil {
 			return nil, fmt.Errorf("compression failed: %w", err)
 		}
 	}
 
-	if opts.Encryptor != nil {
-		processed, err = opts.Encryptor.Encrypt(processed)
+	if config.Encryptor != nil {
+		processed, err = config.Encryptor.Encrypt(processed)
 		if err != nil {
 			return nil, fmt.Errorf("encryption failed: %w", err)
 		}
 	}
 
 
-	metadata := encodeMetadata(opts.ErrorLevel, bitsPerModule, true)
+	metadata := config.encodeMetadata(bitsPerModule, true)
 
 	dataLen := 1 + len(processed) + 4
 	if dataLen > 0xFFFF {
@@ -106,61 +110,50 @@ func encodeSegment(segmentData []byte, index, total int, dataChecksum [32]byte, 
 	}
 
 	payload := make([]byte, 0, 1+2+2+2+dataLen)
-	payload = append(payload, metadata)
+	payload = append(payload, metadata...)
 	payload = append(payload, byte(dataLen>>8), byte(dataLen&0xFF))
 	payload = append(payload, byte(index>>8), byte(index&0xFF))
 	payload = append(payload, byte(total>>8), byte(total&0xFF))
 	payload = append(payload, dataChecksum[0]) // First byte of data checksum for verification
 	payload = append(payload, processed...)
 
-	segmentHash := sha256.Sum256(segmentData)
+	segmentHash := sha256.Sum256(segmentdata)
 	payload = append(payload, segmentHash[:4]...)
 
-	encoded := addErrorCorrection(payload, opts.ErrorLevel)
+	encoded := config.addErrorCorrection(payload, config.ErrorLevel)
 
-	bitsNeeded := len(encoded) * 8
-	modulesNeeded := (bitsNeeded + bitsPerModule - 1) / bitsPerModule
-
-	size := max(int(sqrt(modulesNeeded))+1, 21)
-
-	for {
-		totalModules := size * size
-		reservedModules := 3*7*7 + 2*(size-14)
-		usableModules := totalModules - reservedModules
-
-		if usableModules >= modulesNeeded {
-			break
-		}
-		size++
-
-		if size > 1000 {
-			return nil, fmt.Errorf("segment too large: requires matrix size > 1000")
-		}
+	size, err := config.calculateGridSize(len(encoded), bitsPerModule)
+	if err != nil {
+		return nil, err
 	}
 
-	return &DenseCode{
-		Data:          encoded,
-		Size:          size,
-		ModuleSize:    opts.ModuleSize,
-		ErrorLevel:    opts.ErrorLevel,
+	segmentConfig := &Configuration{
+		data:          encoded,
+		size:          size,
+		ModuleSize:    config.ModuleSize,
+		ErrorLevel:    config.ErrorLevel,
 		BitsPerModule: bitsPerModule,
-	}, nil
+		Compressor:    config.Compressor,
+		Encryptor:     config.Encryptor,
+	}
+
+	return segmentConfig, nil
 }
 
-func DecodeSegments(segments []*Segment, opts *Options) ([]byte, error) {
+func DecodeSegments(segments []*Segment, cfg *Configuration) ([]byte, error) {
 	if len(segments) == 0 {
 		return nil, fmt.Errorf("no segments provided")
 	}
 
 	totalSegments := segments[0].TotalSegments
-	dataChecksum := segments[0].DataChecksum
+	dataChecksum := segments[0].dataChecksum
 
 	for i, seg := range segments {
 		if seg.TotalSegments != totalSegments {
 			return nil, fmt.Errorf("segment %d has mismatched total count: expected %d, got %d",
 				i, totalSegments, seg.TotalSegments)
 		}
-		if seg.DataChecksum != dataChecksum {
+		if seg.dataChecksum != dataChecksum {
 			return nil, fmt.Errorf("segment %d has mismatched data checksum", i)
 		}
 	}
@@ -170,6 +163,15 @@ func DecodeSegments(segments []*Segment, opts *Options) ([]byte, error) {
 	}
 
 	segmentMap := make(map[int][]byte)
+	config := WithDefaults()
+	if cfg != nil {
+		config.Compressor = cfg.Compressor
+		config.Encryptor = cfg.Encryptor
+		config.ErrorLevel = cfg.ErrorLevel
+		config.ModuleSize = cfg.ModuleSize
+		config.BitsPerModule = cfg.BitsPerModule
+	}
+
 	for _, seg := range segments {
 		if seg.SegmentIndex < 0 || seg.SegmentIndex >= totalSegments {
 			return nil, fmt.Errorf("invalid segment index: %d (total: %d)", seg.SegmentIndex, totalSegments)
@@ -179,21 +181,21 @@ func DecodeSegments(segments []*Segment, opts *Options) ([]byte, error) {
 		}
 
 		matrix := seg.Code.ToMatrix()
-		segmentData, err := decodeSegment(matrix, opts)
+		segmentdata, err := config.decodeSegment(matrix)
 		if err != nil {
 			return nil, fmt.Errorf("failed to decode segment %d: %w", seg.SegmentIndex, err)
 		}
 
-		segmentMap[seg.SegmentIndex] = segmentData
+		segmentMap[seg.SegmentIndex] = segmentdata
 	}
 
 	var result []byte
 	for i := range totalSegments {
-		segmentData, ok := segmentMap[i]
+		segmentdata, ok := segmentMap[i]
 		if !ok {
 			return nil, fmt.Errorf("missing segment %d", i)
 		}
-		result = append(result, segmentData...)
+		result = append(result, segmentdata...)
 	}
 
 	resultChecksum := sha256.Sum256(result)
@@ -204,22 +206,21 @@ func DecodeSegments(segments []*Segment, opts *Options) ([]byte, error) {
 	return result, nil
 }
 
-func decodeSegment(matrix [][]int, opts *Options) ([]byte, error) {
-	if opts == nil {
-		opts = &Options{}
-	}
+func (c *Configuration) decodeSegment(matrix [][]int) ([]byte, error) {
 	bitsToTry := []int{4, 3, 2, 1}
-	if opts.BitsPerModule != 0 {
-		bitsPerModule, err := normalizeBitsPerModule(opts.BitsPerModule)
+	if c.BitsPerModule != 0 {
+		bitsPerModule, err := c.normalizeBitsPerModule()
 		if err != nil {
 			return nil, err
 		}
 		bitsToTry = []int{bitsPerModule}
 	}
 
+	c.size = len(matrix)
+
 	var lastErr error
 	for _, bitsPerModule := range bitsToTry {
-		decoded, err := decodeSegmentWithBits(matrix, opts, bitsPerModule)
+		decoded, err := c.decodeSegmentWithBits(matrix, bitsPerModule)
 		if err == nil {
 			return decoded, nil
 		}
@@ -231,43 +232,15 @@ func decodeSegment(matrix [][]int, opts *Options) ([]byte, error) {
 	return nil, lastErr
 }
 
-func DecodeSegmentMetadata(matrix [][]int) (index, total int, dataChecksum byte, err error) {
-	for _, bitsPerModule := range []int{3, 2, 1} {
-		bits := extractBytesFromMatrix(matrix, bitsPerModule)
-		if len(bits) < 8 {
-			continue
-		}
-
-		metadata := bits[0]
-		_, storedBits, isSegment, err := decodeMetadata(metadata)
-		if err != nil {
-			continue
-		}
-		if storedBits != bitsPerModule {
-			continue
-		}
-
-		if !isSegment {
-			continue
-		}
-
-		index = int(bits[3])<<8 | int(bits[4])
-		total = int(bits[5])<<8 | int(bits[6])
-		dataChecksum = bits[7]
-		return index, total, dataChecksum, nil
-	}
-
-	return 0, 0, 0, fmt.Errorf("insufficient or invalid data for segment metadata")
-}
-
-func decodeSegmentWithBits(matrix [][]int, opts *Options, bitsPerModule int) ([]byte, error) {
-	bits := extractBytesFromMatrix(matrix, bitsPerModule)
+func (c *Configuration) decodeSegmentWithBits(matrix [][]int, bitsPerModule int) ([]byte, error) {
+	c.size = len(matrix) // Ensure size is set
+	bits := c.extractBytesFromMatrix(matrix, bitsPerModule)
 	if len(bits) < 8 {
 		return nil, fmt.Errorf("insufficient data: got %d bytes, need at least 8", len(bits))
 	}
 
 	metadata := bits[0]
-	errorLevel, storedBits, isSegment, metadataErr := decodeMetadata(metadata)
+	errorLevel, storedBits, isSegment, metadataErr := c.decodeMetadata(metadata, bitsPerModule)
 	if metadataErr != nil {
 		return nil, metadataErr
 	}
@@ -307,14 +280,14 @@ func decodeSegmentWithBits(matrix [][]int, opts *Options, bitsPerModule int) ([]
 	processed := bits[:checksumStart]
 
 	var err error
-	if opts.Encryptor != nil {
-		processed, err = opts.Encryptor.Decrypt(processed)
+	if c.Encryptor != nil {
+		processed, err = c.Encryptor.Decrypt(processed)
 		if err != nil {
 			return nil, fmt.Errorf("decryption failed: %w", err)
 		}
 	}
-	if opts.Compressor != nil {
-		processed, err = opts.Compressor.Decompress(processed)
+	if c.Compressor != nil {
+		processed, err = c.Compressor.Decompress(processed)
 		if err != nil {
 			return nil, fmt.Errorf("decompression failed: %w", err)
 		}
@@ -328,4 +301,42 @@ func decodeSegmentWithBits(matrix [][]int, opts *Options, bitsPerModule int) ([]
 	}
 
 	return processed, nil
+}
+
+func (c *Configuration) decodeMetadata(metadata byte, expectedBits int) (int, int, bool, error) {
+	errorLevel := int((metadata >> 6) & 0x3)
+	storedBits := int(((metadata >> 4) & 0x3) + 1)
+	isSegment := (metadata & 0x08) != 0
+
+	return errorLevel, storedBits, isSegment, nil
+}
+
+func DecodeSegmentMetadata(matrix [][]int) (index, total int, dataChecksum byte, err error) {
+	config := &Configuration{size: len(matrix)}
+	for _, bitsPerModule := range []int{3, 2, 1} {
+		bits := config.extractBytesFromMatrix(matrix, bitsPerModule)
+		if len(bits) < 8 {
+			continue
+		}
+
+		metadata := bits[0]
+		_, storedBits, isSegment, metadataErr := config.decodeMetadata(metadata, bitsPerModule)
+		if metadataErr != nil {
+			continue
+		}
+		if storedBits != bitsPerModule {
+			continue
+		}
+
+		if !isSegment {
+			continue
+		}
+
+		index = int(bits[3])<<8 | int(bits[4])
+		total = int(bits[5])<<8 | int(bits[6])
+		dataChecksum = bits[7]
+		return index, total, dataChecksum, nil
+	}
+
+	return 0, 0, 0, fmt.Errorf("insufficient or invalid data for segment metadata")
 }

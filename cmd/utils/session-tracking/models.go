@@ -75,14 +75,14 @@ func getDevicePublicIP(serviceURL string, timeoutSeconds int) (string, error) {
 func extractIP(text string) string {
 	parts := strings.FieldsSeq(text)
 	for part := range parts {
-		cleaned := ""
+		var cleaned strings.Builder
 		for _, ch := range part {
 			if (ch >= '0' && ch <= '9') || ch == '.' {
-				cleaned += string(ch)
+				cleaned.WriteString(string(ch))
 			}
 		}
-		if net.ParseIP(cleaned) != nil {
-			return cleaned
+		if net.ParseIP(cleaned.String()) != nil {
+			return cleaned.String()
 		}
 	}
 	return ""
