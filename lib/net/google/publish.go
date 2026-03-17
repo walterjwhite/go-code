@@ -11,6 +11,33 @@ import (
 
 const MaxMessageSize = 10 * 1024 * 1024
 
+func (c *Conf) Publish(topicName string, message []byte) error {
+	select {
+	case <-c.ctx.Done():
+		return c.ctx.Err()
+	default:
+	}
+
+	log.Info().Msgf("publishing to: %v", topicName)
+
+	encrypted, err := c.prepareMessage(message)
+	if err != nil {
+		return err
+	}
+
+	publisher := c.client.Publisher(topicName)
+	defer publisher.Stop()
+
+	publishResult := publisher.Publish(c.ctx, &pubsub.Message{Data: encrypted})
+	id, err := publishResult.Get(c.ctx)
+	if err != nil {
+		return err
+	}
+
+	log.Info().Msgf("published message with ID %s", id)
+	return nil
+}
+
 func (c *Conf) prepareMessage(message []byte) ([]byte, error) {
 	if len(message) > MaxMessageSize {
 		return nil, fmt.Errorf("message size %d exceeds maximum allowed size %d", len(message), MaxMessageSize)
@@ -44,33 +71,6 @@ func (c *Conf) prepareMessage(message []byte) ([]byte, error) {
 	}
 
 	return encrypted, nil
-}
-
-func (c *Conf) Publish(topicName string, message []byte) error {
-	select {
-	case <-c.ctx.Done():
-		return c.ctx.Err()
-	default:
-	}
-
-	log.Info().Msgf("publishing to: %v", topicName)
-
-	encrypted, err := c.prepareMessage(message)
-	if err != nil {
-		return err
-	}
-
-	publisher := c.client.Publisher(topicName)
-	defer publisher.Stop()
-
-	publishResult := publisher.Publish(c.ctx, &pubsub.Message{Data: encrypted})
-	id, err := publishResult.Get(c.ctx)
-	if err != nil {
-		return err
-	}
-
-	log.Info().Msgf("published message with ID %s", id)
-	return nil
 }
 
 func (c *Conf) serialize(message []byte) ([]byte, error) {

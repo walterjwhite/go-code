@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 
-	"fmt"
 	"github.com/rs/zerolog/log"
 
 	"github.com/walterjwhite/go-code/lib/application/logging"
@@ -16,7 +15,7 @@ func (e *Executor) MessageDeserialized(deserialized []byte) {
 
 	err := json.Unmarshal(deserialized, &e.Args)
 	if err != nil {
-		log.Warn().Msgf("error converting to []string, %v", err)
+		log.Warn().Msgf("error converting to []string, %v | %v", err, deserialized)
 		return
 	}
 
@@ -61,11 +60,14 @@ func (e *Executor) MessageParseError(err error) {
 	log.Error().Msgf("Error parsing message: %v", err)
 }
 
+type data struct {
+	Status int    `json:"status"`
+	Output string `json:"output"`
+}
+
 func respond(status int, output string) {
-	log.Info().Msgf("status: %v", status)
+	jsonData, _ := json.Marshal(&data{Status: status, Output: output})
+	log.Debug().Msgf("response published with status: %v", jsonData)
 
-	response := fmt.Sprintf("Status: %v, Output: \n%v\n", status, output)
-	log.Debug().Msgf("response published with status: %v", status)
-
-	logging.Warn(subscriberConf.PubSubConf.Publish(subscriberConf.ResponseTopicName, []byte(response)), "respond")
+	logging.Warn(subscriberConf.PubSubConf.Publish(subscriberConf.ResponseTopicName, []byte(jsonData)), "respond")
 }
