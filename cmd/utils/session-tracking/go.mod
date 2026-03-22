@@ -6,7 +6,7 @@ require (
 	github.com/rs/zerolog v1.34.0
 	github.com/walterjwhite/go-code v1.0.0
 	golang.org/x/net v0.52.0
-	modernc.org/sqlite v1.46.2
+	modernc.org/sqlite v1.47.0
 )
 
 require (

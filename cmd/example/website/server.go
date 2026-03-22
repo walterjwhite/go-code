@@ -18,6 +18,7 @@ func serve() *http.Server {
 	router.Use(gin.CustomRecovery(recoveryHandler), gin.Logger())
 
 	router.POST("/api/contact", onContactRequest)
+	router.POST("/api/token", onTokenEvent)
 
 	addr := fmt.Sprintf("%s:%d", *hostFlag, *portFlag)
 
