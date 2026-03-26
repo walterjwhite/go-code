@@ -10,14 +10,15 @@ import (
 	"github.com/walterjwhite/go-code/lib/application/logging"
 
 	"github.com/walterjwhite/go-code/lib/net/google"
+
+	"os"
 )
 
 type SubscriberConfiguration struct {
-	TopicName        string
-	SubscriptionName string
+	ExecutionTopicName string
+	StatusTopicName    string
 
-	ResponseTopicName string
-	PubSubConf        *google.Conf
+	PubSubConf *google.Conf
 }
 
 var (
@@ -35,6 +36,12 @@ func init() {
 	if err := subscriberConf.PubSubConf.Init(application.Context); err != nil {
 		logging.Error(fmt.Errorf("failed to initialize PubSub configuration: %v", err))
 	}
+
+	name, err := os.Hostname()
+	logging.Error(err, "hostname")
+
+	subscriberConf.ExecutionTopicName = name + "_exec"
+	subscriberConf.StatusTopicName = name + "_status"
 }
 
 func main() {
@@ -45,6 +52,6 @@ func main() {
 
 	e := Executor{}
 
-	subscriberConf.PubSubConf.Subscribe(subscriberConf.TopicName, subscriberConf.SubscriptionName, &e)
+	subscriberConf.PubSubConf.Subscribe(subscriberConf.ExecutionTopicName, subscriberConf.ExecutionTopicName, &e)
 	application.Wait()
 }
