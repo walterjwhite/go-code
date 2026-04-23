@@ -36,11 +36,6 @@ func CompressStreamWithContext(ctx context.Context, in io.Reader, out io.Writer)
 	if err != nil {
 		return fmt.Errorf("failed to create encoder: %w", err)
 	}
-	defer func() {
-		if cerr := enc.Close(); cerr != nil && err == nil {
-			err = cerr
-		}
-	}()
 
 	done := make(chan error, 1)
 	go func() {
@@ -50,8 +45,14 @@ func CompressStreamWithContext(ctx context.Context, in io.Reader, out io.Writer)
 
 	select {
 	case <-ctx.Done():
+		if cerr := enc.Close(); cerr != nil && err == nil {
+			err = cerr
+		}
 		return ctx.Err()
 	case copyErr := <-done:
+		if cerr := enc.Close(); cerr != nil && err == nil {
+			err = cerr
+		}
 		if copyErr != nil {
 			return copyErr
 		}

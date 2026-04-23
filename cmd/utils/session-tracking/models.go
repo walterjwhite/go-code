@@ -113,5 +113,5 @@ func setupProxyClient(socksProxy string, timeoutSeconds int) (*http.Client, erro
 }
 
 func closeBody(body io.ReadCloser) {
-	logging.Warn(body.Close(), false, "Failed to close body")
+	logging.Warn(body.Close(), "Failed to close body")
 }

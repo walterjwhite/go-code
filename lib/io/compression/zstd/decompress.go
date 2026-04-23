@@ -39,7 +39,6 @@ func DecompressStreamWithContext(ctx context.Context, in io.Reader, out io.Write
 	if err != nil {
 		return fmt.Errorf("failed to create decoder: %w", err)
 	}
-	defer d.Close()
 
 	limitedOut := &limitingWriter{w: out, limit: DefaultMaxDecompressedSize}
 
@@ -51,8 +50,10 @@ func DecompressStreamWithContext(ctx context.Context, in io.Reader, out io.Write
 
 	select {
 	case <-ctx.Done():
+		d.Close()
 		return ctx.Err()
 	case copyErr := <-done:
+		d.Close()
 		if copyErr != nil {
 			if errors.Is(copyErr, errWriteLimitExceeded) {
 				return ErrDecompressionLimitExceeded
