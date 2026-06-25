@@ -1,0 +1,18 @@
+version: "3.9"
+
+services:
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: qdrant
+    restart: unless-stopped
+    ports:
+      - "6333:6333"   # REST API  (used by go-rag)
+      - "6334:6334"   # gRPC API  (not used by go-rag, exposed for tooling)
+    volumes:
+      - qdrant_storage:/qdrant/storage
+    environment:
+      QDRANT__LOG_LEVEL: WARN
+
+volumes:
+  qdrant_storage:
+    driver: local

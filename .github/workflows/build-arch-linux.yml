@@ -1,0 +1,66 @@
+name: Build (Arch Linux)
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      debug:
+        description: 'debug'
+        required: true
+        default: false
+        type: boolean
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+  CONF_LOG_LEVEL: ${{ github.event.inputs.debug == 'true' && '0' || '2' }}
+
+jobs:
+  build-cachyos-arch:
+    runs-on: ubuntu-latest
+    
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v6
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Local Environment Image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: .github/Dockerfile
+          push: false # We only want it locally on the runner, no registry required
+          load: true  # Exports the image to the local Docker daemon
+          tags: local-archlinux-build-env:latest
+          cache-from: type=gha # Leverages GitHub Actions native cache for speed
+          cache-to: type=gha,mode=max
+
+      - name: Format, Build, and Verify Go Code
+        uses: addnab/docker-run-action@v3
+        with:
+          image: local-archlinux-build-env:latest
+          options: --privileged -v ${{ github.workspace }}:/workspace -w /workspace -e CONF_LOG_LEVEL=${{ env.CONF_LOG_LEVEL }}
+          run: |
+            git config --global --add safe.directory /workspace
+            
+            format && build
+
+      - name: Commit and Push changes
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "Changes detected, committing and pushing..."
+            git add .
+            git commit -m "chore: automated go formatting and build artifacts [skip ci]"
+            git push origin HEAD:main
+          else
+            echo "No changes detected. Skipping push."
+          fi

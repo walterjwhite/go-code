@@ -1,0 +1,8 @@
+*.out
+coverage.html
+target
+*.log
+
+**/*.vlog
+**/*.sqlite
+*.db
