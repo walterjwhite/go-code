@@ -29,7 +29,7 @@ require (
 	github.com/vrischmann/envconfig v1.4.1
 	golang.org/x/crypto v0.53.0
 	golang.org/x/net v0.56.0
-	google.golang.org/api v0.286.0
+	google.golang.org/api v0.287.0
 	gopkg.in/gomail.v2 v2.0.0-20160411212932-81ebce5c23df
 	gopkg.in/yaml.v2 v2.4.0
 	modernc.org/sqlite v1.53.0
