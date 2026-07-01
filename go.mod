@@ -8,7 +8,7 @@ require (
 	github.com/avast/retry-go v3.0.0+incompatible
 	github.com/aws/aws-sdk-go-v2 v1.42.0
 	github.com/aws/aws-sdk-go-v2/config v1.32.25
-	github.com/aws/aws-sdk-go-v2/service/sqs v1.44.0
+	github.com/aws/aws-sdk-go-v2/service/sqs v1.44.1
 	github.com/chromedp/cdproto v0.0.0-20260427013145-5737772c319b
 	github.com/chromedp/chromedp v0.15.1
 	github.com/emersion/go-imap v1.2.1
